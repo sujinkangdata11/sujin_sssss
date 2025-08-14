@@ -250,7 +250,7 @@
 }
 
 .form-notice-success {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-base); /* 16px */
   color: #059669; /* green text */
   background-color: rgba(16, 185, 129, 0.1); /* very light green with 10% opacity */
   padding: var(--spacing-2) var(--spacing-3);
