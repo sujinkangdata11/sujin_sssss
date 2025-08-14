@@ -233,10 +233,11 @@ const App: React.FC = () => {
               <input id="geminiApiKey" type="password" value={geminiApiKey} onChange={(e) => setGeminiApiKey(e.target.value)} placeholder={t('geminiApiKeyPlaceholder')} className="form-input" />
                <p className="form-notice">{t('geminiApiNotice')}</p>
             </div>
-            <div className="form-group-span-1 form-group-self-end">
-               <button onClick={handleSearch} disabled={isLoading} className="btn-primary">
-                {isLoading ? <svg className="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> : t('searchButton')}
-              </button>
+            <div>
+              <label htmlFor="dateRange" className="form-label">{t('dateRangeLabel')}</label>
+              <select id="dateRange" value={dateRange} onChange={(e) => setDateRange(e.target.value)} className="form-input">
+                {getDateRanges(language).map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
             </div>
             <div className="form-group-span-2">
               <label htmlFor="keyword" className="form-label">{t('keywordLabel')}</label>
@@ -246,11 +247,10 @@ const App: React.FC = () => {
               <label htmlFor="countries" className="form-label">{t('countriesLabel')}</label>
               <CountrySelector selectedCountries={selectedCountries} onChange={setSelectedCountries} language={language} />
             </div>
-            <div>
-              <label htmlFor="dateRange" className="form-label">{t('dateRangeLabel')}</label>
-              <select id="dateRange" value={dateRange} onChange={(e) => setDateRange(e.target.value)} className="form-input">
-                {getDateRanges(language).map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
-              </select>
+            <div className="form-group-span-1 form-group-self-end search-button-container">
+               <button onClick={handleSearch} disabled={isLoading} className="btn-primary">
+                {isLoading ? <svg className="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> : t('searchButton')}
+              </button>
             </div>
           </div>
 

@@ -184,6 +184,17 @@
   }
 }
 
+/* Search Button Responsive Layout */
+.search-button-container {
+  order: 10; /* Move to end on mobile */
+}
+
+@media (min-width: 1024px) {
+  .search-button-container {
+    order: 0; /* Normal order on desktop */
+  }
+}
+
 .form-group-span-2 {
   grid-column: span 2;
 }
