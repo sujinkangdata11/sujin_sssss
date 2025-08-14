@@ -249,7 +249,7 @@
 }
 
 .form-notice {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-base); /* 16px */
   color: #374151; /* dark grey text */
   margin-top: var(--spacing-1);
 }
@@ -319,9 +319,9 @@
   text-align: left;
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: #5b21b6; /* purple text */
-  background-color: rgba(196, 181, 253, 0.3); /* very light purple background */
-  border: 1px solid rgba(196, 181, 253, 0.5); /* light purple border */
+  color: #7c3aed; /* consistent purple text */
+  background-color: rgba(124, 58, 237, 0.1); /* consistent light purple background */
+  border: 1px solid rgba(124, 58, 237, 0.2); /* consistent light purple border */
   border-radius: var(--radius-lg);
   padding: var(--spacing-2) var(--spacing-3);
   cursor: pointer;
@@ -330,9 +330,9 @@
 }
 
 .advanced-toggle:hover {
-  color: #4c1d95; /* darker purple on hover */
-  background-color: rgba(196, 181, 253, 0.4); /* slightly darker purple background on hover */
-  border-color: rgba(167, 139, 250, 0.7); /* darker purple border on hover */
+  color: #6d28d9; /* darker purple on hover */
+  background-color: rgba(124, 58, 237, 0.15); /* slightly darker purple background on hover */
+  border-color: rgba(124, 58, 237, 0.3); /* darker purple border on hover */
 }
 
 .advanced-icon {
@@ -409,17 +409,21 @@
 .channel-add-btn {
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: #4f46e5; /* indigo color */
-  background: none;
-  border: none;
+  color: #7c3aed; /* consistent purple color */
+  background-color: rgba(124, 58, 237, 0.1); /* consistent light purple background */
+  border: 1px solid rgba(124, 58, 237, 0.2); /* consistent light purple border */
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2) var(--spacing-3); /* small padding for compact look */
   cursor: pointer;
   display: flex;
   align-items: center;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .channel-add-btn:hover {
-  color: #4338ca; /* darker indigo on hover */
+  color: #6d28d9; /* darker purple on hover */
+  background-color: rgba(124, 58, 237, 0.15); /* slightly darker purple background on hover */
+  border-color: rgba(124, 58, 237, 0.3); /* darker purple border on hover */
 }
 
 /* File Upload Styles */
@@ -445,17 +449,19 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-2);
-  background-color: #c4b5fd; /* light purple background */
-  color: #4c1d95; /* dark purple text */
+  background-color: rgba(124, 58, 237, 0.1); /* consistent light purple background */
+  color: #7c3aed; /* consistent purple text */
   font-weight: 600;
   padding: var(--spacing-3) var(--spacing-4);
   border-radius: var(--radius-lg);
+  border: 1px solid rgba(124, 58, 237, 0.2); /* consistent light purple border */
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .file-upload-label:hover {
-  background-color: #a78bfa; /* slightly darker purple on hover */
+  background-color: rgba(124, 58, 237, 0.15); /* slightly darker purple background on hover */
+  border-color: rgba(124, 58, 237, 0.3); /* darker purple border on hover */
 }
 
 .file-input-hidden {
@@ -464,18 +470,19 @@
 
 .example-btn {
   flex-shrink: 0;
-  background-color: #c4b5fd; /* light purple background */
-  border: 1px solid #a78bfa; /* purple border */
-  color: #4c1d95; /* dark purple text */
+  background-color: rgba(124, 58, 237, 0.1); /* consistent light purple background */
+  border: 1px solid rgba(124, 58, 237, 0.2); /* consistent light purple border */
+  color: #7c3aed; /* consistent purple text */
   font-weight: 600;
   padding: var(--spacing-3) var(--spacing-4);
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .example-btn:hover {
-  background-color: #a78bfa; /* darker purple on hover */
+  background-color: rgba(124, 58, 237, 0.15); /* slightly darker purple background on hover */
+  border-color: rgba(124, 58, 237, 0.3); /* darker purple border on hover */
 }
 
 /* Example Tooltip */
@@ -501,7 +508,7 @@
 }
 
 .example-tooltip-title {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base); /* 16px */
   font-weight: 600;
   color: #000000; /* black text */
   display: flex;
@@ -517,7 +524,7 @@
 }
 
 .example-tooltip-pre {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-base); /* 16px */
   color: #374151; /* dark grey text */
   white-space: pre-wrap;
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Inconsolata, "Roboto Mono", monospace;
