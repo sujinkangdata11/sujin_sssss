@@ -357,10 +357,11 @@
 .advanced-title {
   font-weight: 600;
   color: #000000; /* black text */
+  font-size: var(--font-size-xl); /* 20px */
 }
 
 .advanced-desc {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-base); /* 16px */
   color: #374151; /* dark grey text */
   margin-top: var(--spacing-1);
   margin-bottom: var(--spacing-4);
