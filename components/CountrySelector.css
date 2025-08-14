@@ -6,8 +6,8 @@
 
 .country-selector-button {
   width: 100%;
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-primary);
+  background-color: #f3f4f6; /* light grey background */
+  border: 1px solid #d1d5db; /* light grey border */
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding-left: var(--spacing-3);
@@ -15,7 +15,7 @@
   padding-top: var(--spacing-2);
   padding-bottom: var(--spacing-2);
   text-align: left;
-  color: var(--color-text-white);
+  color: #000000; /* black text */
   cursor: pointer;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -55,10 +55,10 @@
   z-index: 10;
   margin-top: var(--spacing-1);
   width: 100%;
-  background-color: var(--color-bg-secondary);
+  background-color: #ffffff; /* white background */
   box-shadow: var(--shadow-lg);
   border-radius: var(--radius-md);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid #d1d5db; /* light grey border */
   max-height: 15rem;
   overflow-y: auto;
 }
@@ -69,16 +69,16 @@
 
 .country-selector-search {
   width: 100%;
-  background-color: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border-primary);
+  background-color: #f3f4f6; /* light grey background */
+  border: 1px solid #d1d5db; /* light grey border */
   border-radius: var(--radius-md);
   padding: var(--spacing-3);
-  color: var(--color-text-white);
+  color: #000000; /* black text */
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .country-selector-search::placeholder {
-  color: var(--color-text-tertiary);
+  color: #6b7280; /* grey placeholder text */
 }
 
 .country-selector-search:focus {
@@ -88,7 +88,7 @@
 }
 
 .country-selector-option {
-  color: var(--color-text-gray-200);
+  color: #000000; /* black text */
   cursor: pointer;
   user-select: none;
   position: relative;
@@ -97,7 +97,7 @@
 }
 
 .country-selector-option:hover {
-  background-color: var(--color-bg-tertiary);
+  background-color: #f3f4f6; /* light grey hover */
 }
 
 .country-selector-option-content {
