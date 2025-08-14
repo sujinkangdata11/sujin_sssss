@@ -120,10 +120,10 @@
 .language-button {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  justify-content: center;
   background-color: #ffffff; /* white background */
   color: #000000; /* black text */
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base); /* slightly larger font */
   font-weight: 500;
   padding: var(--spacing-2) var(--spacing-4);
   border-radius: var(--radius-lg);
@@ -137,10 +137,9 @@
   border-color: #9ca3af; /* darker border on hover */
 }
 
-.language-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  color: #6b7280; /* grey icon */
+.language-emoji-text {
+  font-size: 1.125rem; /* 18px - larger emoji and text */
+  line-height: 1.2;
 }
 
 /* Main Content */

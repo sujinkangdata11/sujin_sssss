@@ -212,8 +212,7 @@ const App: React.FC = () => {
                 <span className="header-title-accent">{t('headerTitle')}</span> {t('headerSubtitle')}
             </h1>
             <button onClick={() => setIsLangModalOpen(true)} className="language-button">
-                <svg xmlns="http://www.w3.org/2000/svg" className="language-icon" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.874 6 7.5 6h5c.626 0 .988-.27 1.256-.579a6.012 6.012 0 011.912 2.706C15.988 8.27 15.626 8.5 15 8.5h-1a.5.5 0 00-.5.5v2a.5.5 0 00.5.5h1c.626 0 .988.23 1.256.579a6.012 6.012 0 01-1.912 2.706C13.488 14.27 13.126 14 12.5 14h-5c-.626 0-.988.27-1.256.579a6.012 6.012 0 01-1.912-2.706C4.012 11.73 4.374 11.5 5 11.5h1a.5.5 0 00.5-.5v-2a.5.5 0 00-.5-.5H5c-.626 0-.988-.23-1.256-.579z" clipRule="evenodd" /></svg>
-                <span>{currentLanguageName}</span>
+                <span className="language-emoji-text">{currentLanguageName}</span>
             </button>
         </div>
       </header>
