@@ -314,25 +314,25 @@
 
 /* Advanced Settings */
 .advanced-toggle {
-  width: 100%;
+  width: auto; /* fit content width */
+  display: inline-flex; /* inline-flex to fit content */
   text-align: left;
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: #4f46e5; /* indigo color */
-  background-color: #f8fafc; /* very light grey background */
-  border: 1px solid #e2e8f0; /* light border */
+  color: #5b21b6; /* purple text */
+  background-color: rgba(196, 181, 253, 0.3); /* very light purple background */
+  border: 1px solid rgba(196, 181, 253, 0.5); /* light purple border */
   border-radius: var(--radius-lg);
-  padding: var(--spacing-3) var(--spacing-4);
+  padding: var(--spacing-2) var(--spacing-3);
   cursor: pointer;
-  display: flex;
   align-items: center;
   transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .advanced-toggle:hover {
-  color: #4338ca; /* darker indigo on hover */
-  background-color: #f1f5f9; /* slightly darker background on hover */
-  border-color: #cbd5e1; /* darker border on hover */
+  color: #4c1d95; /* darker purple on hover */
+  background-color: rgba(196, 181, 253, 0.4); /* slightly darker purple background on hover */
+  border-color: rgba(167, 139, 250, 0.7); /* darker purple border on hover */
 }
 
 .advanced-icon {
