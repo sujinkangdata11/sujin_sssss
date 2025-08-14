@@ -89,7 +89,7 @@
 
 /* Header Styles */
 .app-header {
-  background-color: var(--color-bg-header);
+  background-color: #f3f4f6; /* light grey background */
   backdrop-filter: blur(8px);
   position: sticky;
   top: 0;
@@ -109,37 +109,37 @@
 .header-title {
   font-size: var(--font-size-2xl);
   font-weight: bold;
-  color: var(--color-text-white);
+  color: #000000; /* black text */
   letter-spacing: 0.025em;
 }
 
 .header-title-accent {
-  color: var(--color-accent-light);
+  color: #4f46e5; /* indigo accent color */
 }
 
 .language-button {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
-  background-color: var(--color-bg-secondary);
-  color: var(--color-text-secondary);
+  background-color: #ffffff; /* white background */
+  color: #000000; /* black text */
   font-size: var(--font-size-sm);
   font-weight: 500;
   padding: var(--spacing-2) var(--spacing-4);
   border-radius: var(--radius-lg);
-  border: none;
+  border: 1px solid #d1d5db; /* light grey border */
   cursor: pointer;
   transition: background-color var(--transition-fast);
 }
 
 .language-button:hover {
-  background-color: var(--color-bg-tertiary);
+  background-color: #f9fafb; /* light grey on hover */
 }
 
 .language-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: var(--color-text-tertiary);
+  color: #6b7280; /* grey icon */
 }
 
 /* Main Content */
