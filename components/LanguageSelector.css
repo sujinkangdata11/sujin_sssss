@@ -13,7 +13,7 @@
 
 .language-selector-modal {
   background-color: #ffffff; /* white background */
-  border-radius: var(--radius-xl);
+  border-radius: 0.75rem; /* 12px */
   box-shadow: var(--shadow-2xl);
   width: 100%;
   max-width: 28rem;
@@ -41,7 +41,7 @@
   width: 100%;
   background-color: #f3f4f6; /* light grey background */
   border: 1px solid #d1d5db; /* light grey border */
-  border-radius: var(--radius-lg);
+  border-radius: 0.75rem; /* 12px */
   padding: var(--spacing-4);
   color: #000000; /* black text */
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
@@ -70,7 +70,7 @@
   width: 100%;
   text-align: left;
   padding: var(--spacing-3) var(--spacing-4);
-  border-radius: var(--radius-lg);
+  border-radius: 0.75rem; /* 12px */
   display: flex;
   justify-content: space-between;
   align-items: center;

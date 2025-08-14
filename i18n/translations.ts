@@ -50,7 +50,7 @@ export const translations: Record<Language, Record<string, string>> = {
     languageSelector: "언어",
     youtubeApiKeyLabel: "YouTube 데이터 API 키",
     youtubeApiKeyPlaceholder: "YouTube API 키를 입력하세요",
-    youtubeApiNotice: "보안을 위해 브라우저는 이 API 키를 저장하지 않습니다. 새로고침하면 키 값이 사라집니다.",
+    youtubeApiNotice: "보안을 위해 브라우저는 이 API 키를 저장하지 않습니다.\n새로고침하면 키 값이 사라집니다.",
     geminiApiKeyLabel: "Gemini API 키",
     geminiApiKeyPlaceholder: "Gemini API 키를 입력하세요",
     geminiApiNotice: "키워드를 각 나라 언어로 번역하기 위해 Gemini가 필요합니다. 보안을 위해 이 키는 저장되지 않으며, 새로고침하면 사라집니다.",

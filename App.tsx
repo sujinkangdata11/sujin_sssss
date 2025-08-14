@@ -238,6 +238,12 @@ const App: React.FC = () => {
       
       <LanguageSelector isOpen={isLangModalOpen} onClose={() => setIsLangModalOpen(false)} onSelect={setLanguage} currentLanguage={language} />
       
+      <div className="hero-section">
+        <h2 className="hero-title">
+          전세계 쇼츠를 검색하고<br />트렌드를 확인하세요
+        </h2>
+      </div>
+      
       <main className="main-container">
         <div className="form-card">
           <div className="form-grid">
