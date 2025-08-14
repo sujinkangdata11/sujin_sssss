@@ -262,27 +262,34 @@
 /* Button Styles */
 .btn-primary {
   width: 100%;
-  background-color: var(--color-accent-secondary);
-  color: var(--color-text-white);
+  background-color: #4f46e5; /* indigo-600 */
+  color: #ffffff; /* white text */
   font-weight: bold;
   padding: var(--spacing-2) var(--spacing-4);
   border-radius: var(--radius-lg);
   border: none;
   cursor: pointer;
   box-shadow: var(--shadow-lg);
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent-tertiary);
+  background-color: #4338ca; /* darker indigo-700 on hover */
+  transform: translateY(-1px); /* subtle lift effect */
+}
+
+.btn-primary:active {
+  background-color: #3730a3; /* even darker indigo-800 when pressed */
+  transform: translateY(0); /* reset lift when pressed */
 }
 
 .btn-primary:disabled {
-  background-color: var(--color-accent-quinary);
+  background-color: #6b7280; /* grey when disabled */
   cursor: not-allowed;
+  transform: none; /* no hover effects when disabled */
 }
 
 .btn-secondary {
