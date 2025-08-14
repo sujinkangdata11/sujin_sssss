@@ -157,12 +157,12 @@
 
 /* Form Styles */
 .form-card {
-  background-color: var(--color-bg-card);
+  background-color: #f9fafb; /* light grey */
   padding: var(--spacing-6);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-2xl);
   margin-bottom: var(--spacing-8);
-  border: 1px solid var(--color-border-secondary);
+  border: 1px solid #e5e7eb; /* light grey border */
 }
 
 .form-grid {
