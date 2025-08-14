@@ -2,17 +2,17 @@
 import { Country, DateRangeOption, Language, LanguageOption } from './types';
 
 export const SUPPORTED_LANGUAGES: LanguageOption[] = [
-  { code: 'en', name: 'English', nativeName: 'English' },
-  { code: 'ko', name: 'Korean', nativeName: '한국어' },
-  { code: 'ja', name: 'Japanese', nativeName: '日本語' },
-  { code: 'zh', name: 'Chinese', nativeName: '中文' },
-  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी' },
-  { code: 'es', name: 'Spanish', nativeName: 'Español' },
-  { code: 'fr', name: 'French', nativeName: 'Français' },
-  { code: 'de', name: 'German', nativeName: 'Deutsch' },
-  { code: 'nl', name: 'Dutch', nativeName: 'Nederlands' },
-  { code: 'pt', name: 'Portuguese', nativeName: 'Português' },
-  { code: 'ru', name: 'Russian', nativeName: 'Русский' },
+  { code: 'en', name: 'English', nativeName: '🇺🇸 English' },
+  { code: 'ko', name: 'Korean', nativeName: '🇰🇷 한국어' },
+  { code: 'ja', name: 'Japanese', nativeName: '🇯🇵 日本語' },
+  { code: 'zh', name: 'Chinese', nativeName: '🇨🇳 中文' },
+  { code: 'hi', name: 'Hindi', nativeName: '🇮🇳 हिन्दी' },
+  { code: 'es', name: 'Spanish', nativeName: '🇪🇸 Español' },
+  { code: 'fr', name: 'French', nativeName: '🇫🇷 Français' },
+  { code: 'de', name: 'German', nativeName: '🇩🇪 Deutsch' },
+  { code: 'nl', name: 'Dutch', nativeName: '🇳🇱 Nederlands' },
+  { code: 'pt', name: 'Portuguese', nativeName: '🇵🇹 Português' },
+  { code: 'ru', name: 'Russian', nativeName: '🇷🇺 Русский' },
 ];
 
 export const getDateRanges = (lang: Language): DateRangeOption[] => {
