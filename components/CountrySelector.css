@@ -27,7 +27,7 @@
 .country-selector-button:focus {
   outline: none;
   border-color: var(--color-accent-secondary);
-  box-shadow: 0 0 0 1px var(--color-accent-secondary);
+  box-shadow: 0 0 0 0.5px var(--color-accent-secondary);
   background-color: #ffffff; /* white background when focused */
 }
 
@@ -120,7 +120,7 @@
 }
 
 .country-selector-checkbox:focus {
-  box-shadow: 0 0 0 1px var(--color-accent-secondary);
+  box-shadow: 0 0 0 0.5px var(--color-accent-secondary);
 }
 
 .country-selector-option-text {

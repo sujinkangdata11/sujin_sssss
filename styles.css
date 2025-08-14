@@ -137,6 +137,11 @@
   border-color: #9ca3af; /* darker border on hover */
 }
 
+.language-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.5px var(--color-accent-secondary);
+}
+
 .language-emoji-text {
   font-size: 1.125rem; /* 18px - larger emoji and text */
   line-height: 1.2;
@@ -271,7 +276,7 @@ select.form-input {
 .form-input:focus {
   outline: none;
   border-color: var(--color-accent-secondary);
-  box-shadow: 0 0 0 1px var(--color-accent-secondary);
+  box-shadow: 0 0 0 0.5px var(--color-accent-secondary);
   background-color: #ffffff; /* white background when focused */
 }
 
@@ -419,7 +424,7 @@ select.form-input {
 .channel-input:focus {
   outline: none;
   border-color: var(--color-accent-secondary);
-  box-shadow: 0 0 0 1px var(--color-accent-secondary);
+  box-shadow: 0 0 0 0.5px var(--color-accent-secondary);
 }
 
 .channel-remove-btn {
@@ -640,7 +645,7 @@ select.form-input {
 }
 
 .sort-toggle-btn {
-  padding: var(--spacing-1) var(--spacing-4);
+  padding: var(--spacing-2) var(--spacing-4); /* increased top/bottom padding from 4px to 8px */
   font-size: var(--font-size-sm);
   font-weight: 500;
   border-radius: 0.75rem; /* 12px */
