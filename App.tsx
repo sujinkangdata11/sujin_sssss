@@ -226,12 +226,22 @@ const App: React.FC = () => {
             <div className="form-group-span-2">
               <label htmlFor="youtubeApiKey" className="form-label">{t('youtubeApiKeyLabel')}</label>
               <input id="youtubeApiKey" type="password" value={youtubeApiKey} onChange={(e) => setYoutubeApiKey(e.target.value)} placeholder={t('youtubeApiKeyPlaceholder')} className="form-input" />
-              <p className="form-notice-success">{t('youtubeApiNotice')}</p>
+              <p className="form-notice-success">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+                {t('youtubeApiNotice')}
+              </p>
             </div>
             <div className="form-group-span-2">
               <label htmlFor="geminiApiKey" className="form-label">{t('geminiApiKeyLabel')}</label>
               <input id="geminiApiKey" type="password" value={geminiApiKey} onChange={(e) => setGeminiApiKey(e.target.value)} placeholder={t('geminiApiKeyPlaceholder')} className="form-input" />
-               <p className="form-notice-success">{t('geminiApiNotice')}</p>
+               <p className="form-notice-success">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+                {t('geminiApiNotice')}
+              </p>
             </div>
             <div>
               <label htmlFor="dateRange" className="form-label">{t('dateRangeLabel')}</label>
