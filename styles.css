@@ -355,8 +355,8 @@
 
 .channel-remove-btn {
   padding: var(--spacing-2);
-  background-color: var(--color-bg-tertiary);
-  color: var(--color-text-tertiary);
+  background-color: #ef4444; /* red background */
+  color: #ffffff; /* white icon */
   border: none;
   border-radius: 50%;
   cursor: pointer;
@@ -364,8 +364,8 @@
 }
 
 .channel-remove-btn:hover {
-  background-color: rgba(239, 68, 68, 0.5);
-  color: #fca5a5;
+  background-color: #dc2626; /* darker red on hover */
+  color: #ffffff; /* white icon on hover */
 }
 
 .channel-add-btn {
