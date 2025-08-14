@@ -40,6 +40,17 @@ const App: React.FC = () => {
     };
   }, []);
 
+  // Auto-dismiss error after 10 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 10000); // 10 seconds
+      
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const handleFavoriteChannelChange = (index: number, value: string) => {
     const newChannels = [...favoriteChannels];
     newChannels[index] = value;

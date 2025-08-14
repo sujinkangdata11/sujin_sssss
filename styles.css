@@ -159,7 +159,7 @@
 .form-card {
   background-color: #f9fafb; /* light grey */
   padding: var(--spacing-10) var(--spacing-6); /* 40px top/bottom, 24px left/right */
-  border-radius: var(--radius-xl);
+  border-radius: 1.5rem; /* 24px */
   border: 1px solid #d1d5db; /* light grey border line */
   margin-top: var(--spacing-10); /* 40px top margin */
   margin-bottom: var(--spacing-10); /* 40px bottom margin */
@@ -274,7 +274,7 @@
   border-radius: var(--radius-lg);
   border: none;
   cursor: pointer;
-  box-shadow: var(--shadow-lg);
+  box-shadow: none;
   transition: background-color var(--transition-fast), transform var(--transition-fast);
   display: flex;
   align-items: center;
@@ -672,6 +672,8 @@
 
 .no-results-text {
   color: var(--color-text-tertiary);
+  white-space: pre-line;
+  font-size: var(--font-size-xl); /* 20px */
 }
 
 /* Animations */
