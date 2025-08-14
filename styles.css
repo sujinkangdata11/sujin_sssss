@@ -216,7 +216,7 @@
 /* Input Styles */
 .form-label {
   display: block;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xl); /* 20px */
   font-weight: 500;
   color: #000000; /* black text for labels */
   margin-bottom: var(--spacing-1);
