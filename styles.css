@@ -129,11 +129,12 @@
   border-radius: var(--radius-lg);
   border: 1px solid #d1d5db; /* light grey border */
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .language-button:hover {
-  background-color: #f9fafb; /* light grey on hover */
+  background-color: #f3f4f6; /* slightly darker grey on hover */
+  border-color: #9ca3af; /* darker border on hover */
 }
 
 .language-icon {
@@ -230,13 +231,18 @@
   box-shadow: var(--shadow-sm);
   padding: var(--spacing-2) var(--spacing-4);
   color: #000000; /* black text */
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.form-input:hover {
+  background-color: #e5e7eb; /* slightly darker grey on hover */
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--color-accent-secondary);
   box-shadow: 0 0 0 2px var(--color-accent-secondary);
+  background-color: #ffffff; /* white background when focused */
 }
 
 .form-input::placeholder {

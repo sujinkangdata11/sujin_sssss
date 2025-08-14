@@ -17,13 +17,18 @@
   text-align: left;
   color: #000000; /* black text */
   cursor: pointer;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.country-selector-button:hover {
+  background-color: #e5e7eb; /* slightly darker grey on hover */
 }
 
 .country-selector-button:focus {
   outline: none;
   border-color: var(--color-accent-secondary);
   box-shadow: 0 0 0 2px var(--color-accent-secondary);
+  background-color: #ffffff; /* white background when focused */
 }
 
 .country-selector-button-text {
