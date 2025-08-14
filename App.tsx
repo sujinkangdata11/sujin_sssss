@@ -239,8 +239,8 @@ const App: React.FC = () => {
       <LanguageSelector isOpen={isLangModalOpen} onClose={() => setIsLangModalOpen(false)} onSelect={setLanguage} currentLanguage={language} />
       
       <div className="hero-section">
-        <h2 className="hero-title">
-          전세계 쇼츠를 검색하고<br />트렌드를 확인하세요
+        <h2 className="hero-title" style={{whiteSpace: 'pre-line'}}>
+          {t('heroTitle')}
         </h2>
       </div>
       
@@ -248,7 +248,12 @@ const App: React.FC = () => {
         <div className="form-card">
           <div className="form-grid">
             <div className="form-group-span-2">
-              <label htmlFor="youtubeApiKey" className="form-label">{t('youtubeApiKeyLabel')}</label>
+              <label htmlFor="youtubeApiKey" className="form-label">
+                <div className="label-with-badge">
+                  <span className="free-badge">Free</span>
+                  <span>{t('youtubeApiKeyLabel')}</span>
+                </div>
+              </label>
               <input id="youtubeApiKey" type="password" value={youtubeApiKey} onChange={(e) => setYoutubeApiKey(e.target.value)} placeholder={t('youtubeApiKeyPlaceholder')} className="form-input" />
               <p className="form-notice-success">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -258,7 +263,12 @@ const App: React.FC = () => {
               </p>
             </div>
             <div className="form-group-span-2">
-              <label htmlFor="geminiApiKey" className="form-label">{t('geminiApiKeyLabel')}</label>
+              <label htmlFor="geminiApiKey" className="form-label">
+                <div className="label-with-badge">
+                  <span className="free-badge">Free</span>
+                  <span>{t('geminiApiKeyLabel')}</span>
+                </div>
+              </label>
               <input id="geminiApiKey" type="password" value={geminiApiKey} onChange={(e) => setGeminiApiKey(e.target.value)} placeholder={t('geminiApiKeyPlaceholder')} className="form-input" />
                <p className="form-notice-success">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
