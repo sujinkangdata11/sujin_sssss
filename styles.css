@@ -520,10 +520,11 @@
 .error-message {
   margin-top: var(--spacing-4);
   text-align: center;
-  color: var(--color-error);
-  background-color: var(--color-error-bg);
+  color: #dc2626; /* red text */
+  background-color: rgba(239, 68, 68, 0.1); /* very light red with 10% opacity */
   padding: var(--spacing-3);
   border-radius: var(--radius-lg);
+  border: 1px solid rgba(239, 68, 68, 0.2); /* slightly more visible red border */
 }
 
 /* Loading Styles */
