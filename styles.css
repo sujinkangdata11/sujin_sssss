@@ -312,19 +312,19 @@
 .advanced-panel {
   margin-top: var(--spacing-4);
   padding: var(--spacing-4);
-  background-color: var(--color-bg-advanced);
-  border: 1px solid var(--color-border-secondary);
+  background-color: #f3f4f6; /* light grey background */
+  border: 1px solid #d1d5db; /* light grey border */
   border-radius: var(--radius-lg);
 }
 
 .advanced-title {
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: #000000; /* black text */
 }
 
 .advanced-desc {
   font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
+  color: #374151; /* dark grey text */
   margin-top: var(--spacing-1);
   margin-bottom: var(--spacing-4);
 }
@@ -338,12 +338,12 @@
 
 .channel-input {
   flex-grow: 1;
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-primary);
+  background-color: #ffffff; /* white background */
+  border: 1px solid #d1d5db; /* light grey border */
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--spacing-2) var(--spacing-4);
-  color: var(--color-text-white);
+  color: #000000; /* black text */
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
@@ -371,7 +371,7 @@
 .channel-add-btn {
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-accent-light);
+  color: #4f46e5; /* indigo color */
   background: none;
   border: none;
   cursor: pointer;
@@ -381,7 +381,7 @@
 }
 
 .channel-add-btn:hover {
-  color: var(--color-accent-lighter);
+  color: #4338ca; /* darker indigo on hover */
 }
 
 /* File Upload Styles */
@@ -500,7 +500,7 @@
 .divider-text {
   flex-shrink: 1;
   margin: 0 var(--spacing-4);
-  color: var(--color-text-muted);
+  color: #6b7280; /* grey text */
   font-size: var(--font-size-xs);
   font-weight: 600;
 }
