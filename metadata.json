@@ -1,0 +1,5 @@
+{
+  "name": "Global Shorts Finder",
+  "description": "Discover top-performing YouTube Shorts globally. Enter a YouTube Data API key and a keyword. The app translates your keyword to search for popular shorts in selected countries, with results sortable by view count or publication date.",
+  "requestFramePermissions": []
+}

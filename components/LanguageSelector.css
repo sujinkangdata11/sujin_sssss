@@ -1,0 +1,104 @@
+/* Language Selector Styles */
+.language-selector-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-bg-modal);
+  backdrop-filter: blur(4px);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+}
+
+.language-selector-modal {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  width: 100%;
+  max-width: 28rem;
+  border: 1px solid var(--color-border-secondary);
+  display: flex;
+  flex-direction: column;
+}
+
+.language-selector-header {
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.language-selector-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text-white);
+}
+
+.language-selector-search-container {
+  padding: var(--spacing-4);
+}
+
+.language-selector-search {
+  width: 100%;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  color: var(--color-text-white);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.language-selector-search::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.language-selector-search:focus {
+  outline: none;
+  border-color: var(--color-accent-secondary);
+  box-shadow: 0 0 0 2px var(--color-accent-secondary);
+}
+
+.language-selector-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 60vh;
+  padding-left: var(--spacing-2);
+  padding-right: var(--spacing-2);
+  padding-bottom: var(--spacing-2);
+}
+
+.language-selector-item {
+  width: 100%;
+  text-align: left;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all var(--transition-fast);
+  border: none;
+  cursor: pointer;
+}
+
+.language-selector-item.active {
+  background-color: var(--color-accent-secondary);
+  color: var(--color-text-white);
+  font-weight: bold;
+}
+
+.language-selector-item.inactive {
+  color: var(--color-text-primary);
+  background-color: transparent;
+}
+
+.language-selector-item.inactive:hover {
+  background-color: rgba(51, 65, 85, 0.5); /* slate-700/50 */
+}
+
+.language-selector-native-name {
+  font-size: var(--font-size-base);
+}
+
+.language-selector-english-name {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+}
