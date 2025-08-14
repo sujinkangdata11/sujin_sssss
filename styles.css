@@ -207,18 +207,18 @@
   display: block;
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: #000000; /* black text for labels */
   margin-bottom: var(--spacing-1);
 }
 
 .form-input {
   width: 100%;
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-primary);
+  background-color: #f3f4f6; /* light grey background */
+  border: 1px solid #d1d5db; /* light grey border */
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--spacing-2) var(--spacing-4);
-  color: var(--color-text-white);
+  color: #000000; /* black text */
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
@@ -229,7 +229,7 @@
 }
 
 .form-input::placeholder {
-  color: var(--color-text-tertiary);
+  color: #6b7280; /* grey placeholder text */
 }
 
 .form-notice {
