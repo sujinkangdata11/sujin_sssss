@@ -278,7 +278,12 @@ const App: React.FC = () => {
               </p>
             </div>
             <div>
-              <label htmlFor="dateRange" className="form-label">{t('dateRangeLabel')}</label>
+              <label htmlFor="dateRange" className="form-label">
+                <div className="label-with-badge">
+                  <span className="free-badge invisible">Free</span>
+                  <span>{t('dateRangeLabel')}</span>
+                </div>
+              </label>
               <select id="dateRange" value={dateRange} onChange={(e) => setDateRange(e.target.value)} className="form-input">
                 {getDateRanges(language).map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
               </select>

@@ -623,7 +623,7 @@ select.form-input {
 }
 
 .results-count {
-  color: var(--color-text-secondary);
+  color: #000000; /* black text */
 }
 
 .results-count-number {
@@ -634,16 +634,16 @@ select.form-input {
 .sort-toggle-group {
   display: flex;
   gap: var(--spacing-2);
-  background-color: var(--color-bg-secondary);
+  background-color: #f3f4f6; /* light grey background */
   padding: var(--spacing-1);
-  border-radius: var(--radius-lg);
+  border-radius: 0.75rem; /* 12px */
 }
 
 .sort-toggle-btn {
   padding: var(--spacing-1) var(--spacing-4);
   font-size: var(--font-size-sm);
   font-weight: 500;
-  border-radius: var(--radius-md);
+  border-radius: 0.75rem; /* 12px */
   border: none;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -656,12 +656,12 @@ select.form-input {
 }
 
 .sort-toggle-btn.inactive {
-  color: var(--color-text-secondary);
+  color: #000000; /* black text */
   background: none;
 }
 
 .sort-toggle-btn.inactive:hover {
-  background-color: var(--color-bg-tertiary);
+  background-color: #e5e7eb; /* light grey hover */
 }
 
 /* Results Grid */
@@ -775,6 +775,13 @@ select.form-input {
   border-radius: 6px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+/* Invisible Badge - for alignment with Free badges */
+.free-badge.invisible {
+  background-color: transparent;
+  color: transparent;
+  border: 1px solid transparent;
 }
 
 /* Text Utilities */
