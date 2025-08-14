@@ -226,12 +226,12 @@ const App: React.FC = () => {
             <div className="form-group-span-2">
               <label htmlFor="youtubeApiKey" className="form-label">{t('youtubeApiKeyLabel')}</label>
               <input id="youtubeApiKey" type="password" value={youtubeApiKey} onChange={(e) => setYoutubeApiKey(e.target.value)} placeholder={t('youtubeApiKeyPlaceholder')} className="form-input" />
-              <p className="form-notice">{t('youtubeApiNotice')}</p>
+              <p className="form-notice-success">{t('youtubeApiNotice')}</p>
             </div>
             <div className="form-group-span-2">
               <label htmlFor="geminiApiKey" className="form-label">{t('geminiApiKeyLabel')}</label>
               <input id="geminiApiKey" type="password" value={geminiApiKey} onChange={(e) => setGeminiApiKey(e.target.value)} placeholder={t('geminiApiKeyPlaceholder')} className="form-input" />
-               <p className="form-notice">{t('geminiApiNotice')}</p>
+               <p className="form-notice-success">{t('geminiApiNotice')}</p>
             </div>
             <div>
               <label htmlFor="dateRange" className="form-label">{t('dateRangeLabel')}</label>

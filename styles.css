@@ -245,7 +245,17 @@
 
 .form-notice {
   font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
+  color: #374151; /* dark grey text */
+  margin-top: var(--spacing-1);
+}
+
+.form-notice-success {
+  font-size: var(--font-size-xs);
+  color: #059669; /* green text */
+  background-color: rgba(16, 185, 129, 0.1); /* very light green with 10% opacity */
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(16, 185, 129, 0.2); /* slightly more visible green border */
   margin-top: var(--spacing-1);
 }
 
