@@ -318,17 +318,21 @@
   text-align: left;
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-accent-light);
-  background: none;
-  border: none;
+  color: #4f46e5; /* indigo color */
+  background-color: #f8fafc; /* very light grey background */
+  border: 1px solid #e2e8f0; /* light border */
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-3) var(--spacing-4);
   cursor: pointer;
   display: flex;
   align-items: center;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .advanced-toggle:hover {
-  color: var(--color-accent-lighter);
+  color: #4338ca; /* darker indigo on hover */
+  background-color: #f1f5f9; /* slightly darker background on hover */
+  border-color: #cbd5e1; /* darker border on hover */
 }
 
 .advanced-icon {
