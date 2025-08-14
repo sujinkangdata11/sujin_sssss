@@ -12,25 +12,25 @@
 }
 
 .language-selector-modal {
-  background-color: var(--color-bg-secondary);
+  background-color: #ffffff; /* white background */
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-2xl);
   width: 100%;
   max-width: 28rem;
-  border: 1px solid var(--color-border-secondary);
+  border: 1px solid #d1d5db; /* light grey border */
   display: flex;
   flex-direction: column;
 }
 
 .language-selector-header {
   padding: var(--spacing-4);
-  border-bottom: 1px solid var(--color-border-secondary);
+  border-bottom: 1px solid #e5e7eb; /* light grey border */
 }
 
 .language-selector-title {
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--color-text-white);
+  color: #000000; /* black text */
 }
 
 .language-selector-search-container {
@@ -39,16 +39,16 @@
 
 .language-selector-search {
   width: 100%;
-  background-color: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border-primary);
+  background-color: #f3f4f6; /* light grey background */
+  border: 1px solid #d1d5db; /* light grey border */
   border-radius: var(--radius-lg);
   padding: var(--spacing-4);
-  color: var(--color-text-white);
+  color: #000000; /* black text */
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .language-selector-search::placeholder {
-  color: var(--color-text-tertiary);
+  color: #6b7280; /* grey placeholder text */
 }
 
 .language-selector-search:focus {
@@ -80,18 +80,18 @@
 }
 
 .language-selector-item.active {
-  background-color: var(--color-accent-secondary);
-  color: var(--color-text-white);
+  background-color: #4f46e5; /* indigo background */
+  color: #ffffff; /* white text for active item */
   font-weight: bold;
 }
 
 .language-selector-item.inactive {
-  color: var(--color-text-primary);
+  color: #000000; /* black text */
   background-color: transparent;
 }
 
 .language-selector-item.inactive:hover {
-  background-color: rgba(51, 65, 85, 0.5); /* slate-700/50 */
+  background-color: #f3f4f6; /* light grey hover */
 }
 
 .language-selector-native-name {
@@ -99,6 +99,6 @@
 }
 
 .language-selector-english-name {
-  color: var(--color-text-tertiary);
+  color: #6b7280; /* grey text for english names */
   font-size: var(--font-size-sm);
 }
