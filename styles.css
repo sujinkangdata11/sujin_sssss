@@ -94,7 +94,7 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  box-shadow: var(--shadow-lg);
+  border-bottom: 1px solid #e5e7eb; /* light grey border line */
 }
 
 .header-container {
@@ -160,9 +160,8 @@
   background-color: #f9fafb; /* light grey */
   padding: var(--spacing-6);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-2xl);
+  border: 1px solid #d1d5db; /* light grey border line */
   margin-bottom: var(--spacing-8);
-  border: 1px solid #e5e7eb; /* light grey border */
 }
 
 .form-grid {
