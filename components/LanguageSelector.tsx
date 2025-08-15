@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { Language, LanguageOption } from '../types';
 import { SUPPORTED_LANGUAGES } from '../constants';
 import './LanguageSelector.css';
@@ -31,7 +32,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ isOpen, onClose, on
     onClose();
   };
 
-  return (
+  return createPortal(
     <div
       className="language-selector-overlay"
       onClick={onClose}
@@ -71,7 +72,8 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ isOpen, onClose, on
           ))}
         </ul>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

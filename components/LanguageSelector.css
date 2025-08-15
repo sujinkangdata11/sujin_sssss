@@ -1,10 +1,13 @@
 /* Language Selector Styles */
 .language-selector-overlay {
   position: fixed;
-  inset: 0;
-  background-color: var(--color-bg-modal);
-  backdrop-filter: blur(4px);
-  z-index: 40;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7); /* stronger dimmed effect */
+  backdrop-filter: blur(6px);
+  z-index: 9999; /* much higher z-index to ensure it's above everything */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,6 +23,23 @@
   border: 1px solid #d1d5db; /* light grey border */
   display: flex;
   flex-direction: column;
+  transform: scale(1);
+  opacity: 1;
+  transition: all 0.2s ease-out;
+}
+
+/* Animation for modal appearance */
+.language-selector-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .language-selector-header {
