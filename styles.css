@@ -359,9 +359,11 @@
   cursor: pointer;
   transition: background-color var(--transition-fast), transform var(--transition-fast);
   margin-top: var(--spacing-6); /* 24px top margin */
-  display: flex;
+  display: inline-flex; /* inline-flex for Link component */
   align-items: center;
   gap: 0.5rem; /* 8px gap between text and arrow */
+  text-decoration: none; /* remove underline for Link */
+  width: fit-content; /* only take up necessary width */
 }
 
 .hero-guide-button:hover {
@@ -1524,7 +1526,7 @@ select.form-input {
   }
   
   .news-title {
-    font-size: 2rem;
+    font-size: 2.8125rem; /* 45px */
   }
 }
 
@@ -1755,5 +1757,112 @@ select.form-input {
   
   .article-youtube-embed iframe {
     height: 250px;
+  }
+}
+
+/* Mobile Menu Styles */
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  color: #374151;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color var(--transition-fast);
+}
+
+.mobile-menu-button:hover {
+  background-color: #f3f4f6;
+}
+
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+}
+
+.mobile-nav-buttons {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-4);
+  gap: var(--spacing-2);
+}
+
+.mobile-nav-buttons .nav-button {
+  text-align: left;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition-fast);
+}
+
+.mobile-nav-buttons .nav-button:hover {
+  background-color: #f3f4f6;
+}
+
+.mobile-nav-buttons .nav-button.active {
+  font-weight: 600; /* bold */
+  background-color: #e5e7eb; /* light gray background */
+}
+
+.mobile-nav-buttons .nav-button.active::after {
+  display: none; /* remove underline in mobile menu */
+}
+
+.mobile-language-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: none;
+  border: none;
+  border-top: 1px solid #e5e7eb; /* light gray separator line */
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  text-align: left;
+  width: 100%;
+  color: #000000; /* black text */
+  margin-top: var(--spacing-2); /* small margin above the separator */
+}
+
+.mobile-language-button:hover {
+  background-color: #f3f4f6;
+}
+
+/* Desktop/Mobile Navigation Visibility */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  
+  .mobile-menu-button {
+    display: block;
+  }
+  
+  .app-header {
+    position: relative;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-menu-button {
+    display: none;
+  }
+  
+  .mobile-menu {
+    display: none;
+  }
+}
+
+/* Hero Section Mobile Styles */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem; /* 40px - reduced from 60px by 20px */
+    line-height: 45px; /* adjusted line height proportionally */
   }
 }

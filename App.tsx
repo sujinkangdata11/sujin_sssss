@@ -14,6 +14,7 @@ const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) 
   onLanguageSelect 
 }) => {
   const [isLangModalOpen, setIsLangModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
@@ -48,16 +49,69 @@ const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) 
           </h1>
         </Link>
         <div className="header-nav">
-          <div className="nav-buttons">
+          {/* Desktop Navigation */}
+          <div className="nav-buttons desktop-nav">
             <Link to="/" className={getNavButtonClass('/')}>{t('navShortsFinder')}</Link>
             <Link to="/shortsmaker" className={getNavButtonClass('/shortsmaker')}>{t('navShortsmaker')}</Link>
             <Link to="/news" className={getNavButtonClass('/news')}>{t('navNews')}</Link>
           </div>
-          <button onClick={() => setIsLangModalOpen(true)} className="language-button">
+          
+          {/* Desktop Language Button */}
+          <button onClick={() => setIsLangModalOpen(true)} className="language-button desktop-nav">
             <span className="language-emoji">{currentLanguageInfo.emoji}</span>
             <span className="language-text">{currentLanguageInfo.text}</span>
           </button>
+
+          {/* Mobile Menu Button */}
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+            className="mobile-menu-button"
+            aria-label="Toggle mobile menu"
+          >
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {isMobileMenuOpen && (
+          <div className="mobile-menu">
+            <div className="mobile-nav-buttons">
+              <Link 
+                to="/" 
+                className={getNavButtonClass('/')}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('navShortsFinder')}
+              </Link>
+              <Link 
+                to="/shortsmaker" 
+                className={getNavButtonClass('/shortsmaker')}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('navShortsmaker')}
+              </Link>
+              <Link 
+                to="/news" 
+                className={getNavButtonClass('/news')}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('navNews')}
+              </Link>
+              <button 
+                onClick={() => {
+                  setIsLangModalOpen(true);
+                  setIsMobileMenuOpen(false);
+                }} 
+                className="mobile-language-button"
+              >
+                <span className="language-emoji">{currentLanguageInfo.emoji}</span>
+                <span className="language-text">{currentLanguageInfo.text}</span>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
       
       <LanguageSelector 
