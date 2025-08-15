@@ -40,6 +40,8 @@ const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) 
     <header className="app-header">
       <div className="header-container">
         <Link to="/" className="header-title-link">
+          <img src="/vidhunt_logo.svg" alt="VidHunt Logo" className="header-logo" />
+          <div className="header-divider"></div>
           <h1 className="header-title">
             {t('vidhuntTitle')}
           </h1>

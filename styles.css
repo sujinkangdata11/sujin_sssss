@@ -109,11 +109,33 @@
 .header-title-link {
   text-decoration: none;
   color: inherit;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: 0.5rem;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
-.header-title-link:hover .header-title {
-  color: #1f2937; /* slightly darker on hover */
+.header-title-link:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
 }
+
+/* Header Logo */
+.header-logo {
+  width: 110px;
+  height: auto;
+}
+
+/* Header Divider */
+.header-divider {
+  width: 1px;
+  height: 16px;
+  background-color: #d1d5db;
+  opacity: 0.7;
+}
+
 
 .header-title {
   font-family: var(--font-family); /* same as form labels */
@@ -213,6 +235,15 @@
   max-width: 1200px; /* match main-container max-width */
   margin: 0 auto;
   padding-left: var(--spacing-8); /* align with form content */
+}
+
+/* Hero Logo */
+.hero-logo {
+  width: 150px;
+  height: auto;
+  margin-bottom: 50px;
+  margin-top: -50px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
 .hero-title {
@@ -500,6 +531,7 @@ select.form-input {
   background-color: #EBFAF5; /* light green background */
   padding: var(--spacing-2) var(--spacing-3);
   border-radius: 0.75rem; /* 12px */
+  opacity: 0.8; /* 80% opacity */
   border: 1px solid rgba(16, 185, 129, 0.2); /* slightly more visible green border */
   margin-top: var(--spacing-1);
 }

@@ -261,6 +261,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   return (
     <>
       <div className="hero-section">
+        <img src="/vidhunt_logo.svg" alt="VidHunt Logo" className="hero-logo" />
         <h2 className="hero-title typing-title" lang={language} style={{whiteSpace: 'pre-line'}}>
           {displayedText}
           <span className="typing-cursor">|</span>
