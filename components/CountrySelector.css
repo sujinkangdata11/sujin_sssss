@@ -7,13 +7,13 @@
 .country-selector-button {
   width: 100%;
   background-color: #ffffff; /* white background */
-  border: 1px solid #d1d5db; /* light grey border */
+  border: 0.5px solid #d1d5db; /* light grey border */
   border-radius: 0.75rem; /* 12px */
   box-shadow: var(--shadow-sm);
   padding-left: var(--spacing-3);
   padding-right: 2.5rem;
-  padding-top: var(--spacing-2);
-  padding-bottom: var(--spacing-2);
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
   text-align: left;
   color: #000000; /* black text */
   cursor: pointer;

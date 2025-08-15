@@ -325,7 +325,7 @@
 
 .form-card {
   background-color: #f9fafb; /* light grey */
-  padding: var(--spacing-10) var(--spacing-6); /* 40px top/bottom, 24px left/right */
+  padding: var(--spacing-10) 2.125rem; /* 40px top/bottom, 34px left/right */
   border-radius: 1.5rem; /* 24px */
   border: 1px solid #d1d5db; /* light grey border line */
   margin-top: var(--spacing-10); /* 40px top margin */
@@ -335,7 +335,7 @@
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--spacing-6);
+  gap: 2.125rem;
   align-items: start;
 }
 
@@ -385,17 +385,17 @@
   display: block;
   font-size: var(--font-size-xl); /* 20px */
   font-weight: 500;
-  color: #000000; /* black text for labels */
+  color: #323545; /* dark grey text for labels */
   margin-bottom: var(--spacing-1);
 }
 
 .form-input {
   width: 100%;
   background-color: #ffffff; /* white background */
-  border: 1px solid #d1d5db; /* light grey border */
+  border: 0.5px solid #d1d5db; /* light grey border */
   border-radius: 0.75rem; /* 12px */
   box-shadow: var(--shadow-sm);
-  padding: var(--spacing-2) var(--spacing-4);
+  padding: 0.875rem var(--spacing-4);
   color: #000000; /* black text */
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
@@ -438,8 +438,8 @@ select.form-input {
 
 .form-notice-success {
   font-size: var(--font-size-base); /* 16px */
-  color: #059669; /* green text */
-  background-color: rgba(16, 185, 129, 0.1); /* very light green with 10% opacity */
+  color: #2DAB84; /* lighter green text */
+  background-color: #EBFAF5; /* light green background */
   padding: var(--spacing-2) var(--spacing-3);
   border-radius: 0.75rem; /* 12px */
   border: 1px solid rgba(16, 185, 129, 0.2); /* slightly more visible green border */
@@ -452,7 +452,7 @@ select.form-input {
   background-color: #4f46e5; /* indigo-600 */
   color: #ffffff; /* white text */
   font-weight: bold;
-  padding: var(--spacing-2) var(--spacing-4);
+  padding: 0.875rem var(--spacing-4);
   border-radius: 0.75rem; /* 12px */
   border: none;
   cursor: pointer;
@@ -538,13 +538,13 @@ select.form-input {
 
 .advanced-title {
   font-weight: 600;
-  color: #000000; /* black text */
+  color: #323545; /* dark grey text */
   font-size: var(--font-size-xl); /* 20px */
 }
 
 .advanced-desc {
   font-size: var(--font-size-base); /* 16px */
-  color: #374151; /* dark grey text */
+  color: #323545; /* dark grey text */
   margin-top: var(--spacing-1);
   margin-bottom: var(--spacing-4);
 }
