@@ -6,6 +6,7 @@ export interface YouTubeShort {
   channelTitle: string;
   publishedAt: string;
   viewCount: number;
+  duration?: string;
 }
 
 export interface Country {

@@ -477,7 +477,7 @@
   font-size: var(--font-size-xl); /* 20px */
   font-weight: 500;
   color: #323545; /* dark grey text for labels */
-  margin-bottom: var(--spacing-1);
+  margin-bottom: 10px; /* 10px spacing between label and input */
 }
 
 .form-input {
@@ -1008,22 +1008,37 @@ select.form-input {
 /* Label with Badge */
 .label-with-badge {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Free Badge */
 .free-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background-color: #10b981; /* emerald-500 green */
   color: #ffffff; /* white text */
   font-size: 0.75rem; /* 12px */
   font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  padding: 6px 12px; /* more padding for chubby look */
+  border-radius: 12px; /* more rounded for chubby look */
+  text-transform: none; /* remove uppercase */
+  letter-spacing: 0.025em;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.free-badge:hover {
+  background-color: #059669; /* darker green on hover */
+  transform: translateY(-1px); /* subtle lift effect */
+}
+
+.free-badge-arrow {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2;
 }
 
 /* Invisible Badge - for alignment with Free badges */
@@ -1537,6 +1552,20 @@ select.form-input {
   padding: var(--spacing-6);
 }
 
+.article-image-container {
+  width: 100%;
+  margin-bottom: var(--spacing-6);
+}
+
+.article-header-image {
+  width: 100% !important;
+  height: 200px !important;
+  border-radius: var(--radius-lg) !important;
+  display: block;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
 .article-detail-header {
   display: flex;
   align-items: center;
@@ -1597,6 +1626,21 @@ select.form-input {
   margin: 0 auto;
 }
 
+/* Common content width for all article elements */
+.article-image-container,
+.article-content,
+.article-inline-image {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ensure header image has border-radius everywhere */
+.article-detail .article-image-container .article-header-image,
+.article-detail-container .article-image-container .article-header-image {
+  border-radius: var(--radius-lg) !important;
+}
+
 .article-detail-title {
   font-family: 'Newsreader', serif;
   font-size: 2.5rem;
@@ -1620,27 +1664,21 @@ select.form-input {
 }
 
 .article-inline-image {
-  margin: var(--spacing-6) 0;
-  text-align: center;
+  margin: var(--spacing-6) auto;
 }
 
 .article-inline-image-placeholder {
   width: 100%;
-  max-width: 600px;
   height: 300px;
   background-color: #e5e7eb;
   border-radius: var(--border-radius);
-  margin: 0 auto;
 }
 
 .article-inline-image-actual {
   width: 100%;
-  max-width: 600px;
   height: auto;
   border-radius: var(--border-radius);
-  margin: 0 auto;
   display: block;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .article-youtube-embed {
@@ -1653,7 +1691,6 @@ select.form-input {
   width: 100%;
   height: 450px;
   border-radius: var(--border-radius);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .article-footer {

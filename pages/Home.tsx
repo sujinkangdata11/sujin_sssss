@@ -284,8 +284,13 @@ const Home: React.FC<HomeProps> = ({ language }) => {
             <div className="form-group-span-2">
               <label htmlFor="youtubeApiKey" className="form-label">
                 <div className="label-with-badge">
-                  <span className="free-badge">Free</span>
                   <span>{t('youtubeApiKeyLabel')}</span>
+                  <span className="free-badge">
+                    Get Free Key
+                    <svg className="free-badge-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </span>
                 </div>
               </label>
               <input id="youtubeApiKey" type="password" value={youtubeApiKey} onChange={(e) => setYoutubeApiKey(e.target.value)} placeholder={t('youtubeApiKeyPlaceholder')} className="form-input" />
@@ -299,8 +304,13 @@ const Home: React.FC<HomeProps> = ({ language }) => {
             <div className="form-group-span-2">
               <label htmlFor="geminiApiKey" className="form-label">
                 <div className="label-with-badge">
-                  <span className="free-badge">Free</span>
                   <span>{t('geminiApiKeyLabel')}</span>
+                  <span className="free-badge">
+                    Get Free Key
+                    <svg className="free-badge-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </span>
                 </div>
               </label>
               <input id="geminiApiKey" type="password" value={geminiApiKey} onChange={(e) => setGeminiApiKey(e.target.value)} placeholder={t('geminiApiKeyPlaceholder')} className="form-input" />
@@ -313,10 +323,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
             </div>
             <div>
               <label htmlFor="dateRange" className="form-label">
-                <div className="label-with-badge">
-                  <span className="free-badge invisible">Free</span>
-                  <span>{t('dateRangeLabel')}</span>
-                </div>
+                {t('dateRangeLabel')}
               </label>
               <select id="dateRange" value={dateRange} onChange={(e) => setDateRange(e.target.value)} className="form-input">
                 {getDateRanges(language).map(option => <option key={option.value} value={option.value}>{option.label}</option>)}

@@ -12,6 +12,13 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
-      }
+      },
+      server: {
+        headers: {
+          'Content-Security-Policy': ''
+        },
+        middlewareMode: false
+      },
+      assetsInclude: ['**/*.txt']
     };
 });

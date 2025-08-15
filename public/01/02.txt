@@ -20,3 +20,78 @@ YouTube Shorts continues to be one of the most dynamic platforms for content cre
 5. Trend remixes: Taking popular trends and adding unique personal twists.
 
 These trends reflect the platform's evolution toward more sophisticated short-form content that balances entertainment with genuine value for viewers.
+
+
+# YouTube Data API v3, 무료로 5분만에 발급받기!
+
+## YouTube Data API v3가 뭔가요?
+
+YouTube Data API v3에 대해 처음 듣는 분들이 많을 텐데요, 걱정하지 마세요! 
+
+**"돈을 내야 하나요?"** → 아니요, 완전 무료입니다.
+**"신용카드가 필요한가요?"** → 전혀 필요 없습니다.
+**"어려운가요?"** → 10세 어린이도 따라할 수 있을 정도로 간단합니다.
+
+YouTube Data API v3는 구글에서 제공하는 무료 서비스입니다. 
+
+예를 들어, `help.vidhunt@gmail.com` 계정을 만들면, 구글이 해당 계정에 **"YouTube 전체 데이터를 정밀하게 조회할 수 있는 권한"**을 제공해주는 거죠.
+
+쉽게 말해서, 구글이 제공하는 무료 서비스 중 하나입니다!
+
+## 정말 간단합니다 - 클릭 7번이면 끝!
+
+제가 직접 새로 API를 발급받아보니, 정말 **클릭 7번**이면 금방 API 키를 받을 수 있더라구요. 
+
+그러니까 함께 따라해보세요!
+
+### 📹 영상으로 보고 싶다면?
+[유튜브 링크 임베디드]
+
+### 📝 단계별 텍스트 가이드
+
+영상을 보기 어려운 분들을 위해 이미지와 함께 상세히 설명해드릴게요.
+
+#### 1단계: Google Cloud Console 접속
+구글에서 **"google console"**을 검색하세요. 가장 첫 번째로 나오는 구글 공식 웹사이트를 클릭합니다.
+
+[IMAGE:02_image_2.png]
+
+#### 2단계: 계정 설정
+가입 팝업창이 나타나면 약관에 체크한 후 가입을 진행하세요.
+
+⚠️ **주의사항**: 각 나라마다 다르지만, 가입과 동시에 $300 크레딧을 제공한다며 가입을 유도하는 경우가 있습니다. 이때는 **"뒤로가기"** 버튼을 누르세요. 우리는 무료 API만 사용할 예정이니까요!
+
+[IMAGE:02_image_3.png]
+
+#### 3단계: YouTube Data API 검색
+가입이 완료되면 상단 검색창에 **"youtube"**라고 입력하세요. 검색 결과에서 맨 첫 번째에 나오는 **"YouTube Data API v3"**를 클릭합니다.
+
+[IMAGE:02_image_4.png]
+
+#### 4단계: API 활성화
+**이 파란색 버튼**을 클릭하세요. 그러면 YouTube Data API 관리 화면이 나타납니다.
+
+[IMAGE:02_image_5.png]
+
+#### 5단계: API 키 생성
+**3번째 탭**을 클릭한 후, **+ 플러스 버튼**을 누르면 됩니다.
+
+정말 간단하죠?
+
+[IMAGE:02_image_6.png]
+
+### 💡 유용한 팁!
+
+API 키를 잊어버려도 걱정하지 마세요. 언제든지 Google Cloud Console에서 확인할 수 있고, 필요하다면 삭제 후 새로 발급받는 것도 가능합니다.
+
+[IMAGE:02_image_7.png]
+
+## 이제 구글의 강력한 서비스를 활용해보세요!
+
+축하합니다! 이제 YouTube Data API v3를 통해 구글이 제공하는 다양한 데이터 서비스를 마음껏 활용할 수 있습니다.
+
+[IMAGE:02_image_8.png]
+
+---
+
+*더 자세한 활용 방법이나 궁금한 점이 있으시면 언제든지 댓글로 남겨주세요. 빠르게 답변드리겠습니다!*

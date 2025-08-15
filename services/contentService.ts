@@ -16,79 +16,110 @@ interface LanguageSection {
 
 const parseLanguageSections = (fileContent: string): LanguageSection[] => {
   const sections: LanguageSection[] = [];
-  const parts = fileContent.split(/^--$/gm);
   
-  for (const part of parts) {
-    const trimmedPart = part.trim();
-    if (!trimmedPart) continue;
+  console.log('File content preview:', fileContent.substring(0, 500));
+  
+  // Split by language markers like [korea], [Japanese], etc.
+  const languageMarkerRegex = /\[(\w+)\]/g;
+  const matches = [...fileContent.matchAll(languageMarkerRegex)];
+  
+  console.log('Found language markers:', matches.map(m => m[0]));
+  
+  if (matches.length === 0) {
+    // No language markers found, treat entire content as English
+    console.log('No language markers found, treating as English');
+    const parsed = parseSection(fileContent, 'en');
+    if (parsed) sections.push(parsed);
+    return sections;
+  }
+  
+  // First section (before any language marker) is English
+  const firstMarkerIndex = matches[0].index!;
+  if (firstMarkerIndex > 0) {
+    const englishContent = fileContent.substring(0, firstMarkerIndex).trim();
+    const parsed = parseSection(englishContent, 'en');
+    if (parsed) sections.push(parsed);
+  }
+  
+  // Process each language section
+  for (let i = 0; i < matches.length; i++) {
+    const match = matches[i];
+    const langMarker = match[1].toLowerCase();
+    const startIndex = match.index! + match[0].length;
+    const endIndex = i < matches.length - 1 ? matches[i + 1].index! : fileContent.length;
     
-    // Check if section starts with language marker like [korea]
-    const languageMatch = trimmedPart.match(/^\[(\w+)\]/);
-    let languageCode = 'en'; // default to English
-    let contentToParse = trimmedPart;
+    const sectionContent = fileContent.substring(startIndex, endIndex).trim();
     
-    if (languageMatch) {
-      const langMarker = languageMatch[1].toLowerCase();
-      // Map language markers to codes
-      const langMap: Record<string, string> = {
-        'korea': 'ko',
-        'korean': 'ko',
-        'japan': 'ja',
-        'japanese': 'ja',
-        'china': 'zh',
-        'chinese': 'zh',
-        'spanish': 'es',
-        'french': 'fr',
-        'german': 'de',
-        'dutch': 'nl',
-        'portuguese': 'pt',
-        'russian': 'ru',
-        'hindi': 'hi'
-      };
-      
-      languageCode = langMap[langMarker] || 'en';
-      contentToParse = trimmedPart.replace(/^\[(\w+)\]\s*/, '');
-    }
+    // Map language markers to codes
+    const langMap: Record<string, string> = {
+      'korea': 'ko',
+      'korean': 'ko',
+      'japan': 'ja',
+      'japanese': 'ja',
+      'china': 'zh',
+      'chinese': 'zh',
+      'spanish': 'es',
+      'french': 'fr',
+      'german': 'de',
+      'dutch': 'nl',
+      'portuguese': 'pt',
+      'russian': 'ru',
+      'hindi': 'hi'
+    };
     
-    // Parse metadata and content for this section
-    const lines = contentToParse.split('\n');
-    const metadata: Record<string, string> = {};
-    let contentStartIndex = 0;
-    
-    // Parse metadata (first few lines before empty line)
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (line === '') {
-        contentStartIndex = i + 1;
-        break;
-      }
-      if (line.includes(':')) {
-        const [key, ...valueParts] = line.split(':');
-        metadata[key.trim()] = valueParts.join(':').trim();
-      }
-    }
-    
-    // Get content (everything after metadata)
-    const content = lines.slice(contentStartIndex).join('\n').trim();
-    
-    sections.push({
-      languageCode,
-      metadata,
-      content
-    });
+    const languageCode = langMap[langMarker] || 'en';
+    const parsed = parseSection(sectionContent, languageCode);
+    if (parsed) sections.push(parsed);
   }
   
   return sections;
 };
 
+const parseSection = (content: string, languageCode: string): LanguageSection | null => {
+  const lines = content.split('\n');
+  const metadata: Record<string, string> = {};
+  let contentStartIndex = 0;
+  
+  // Parse metadata (first few lines before empty line)
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line === '') {
+      contentStartIndex = i + 1;
+      break;
+    }
+    if (line.includes(':')) {
+      const [key, ...valueParts] = line.split(':');
+      metadata[key.trim()] = valueParts.join(':').trim();
+    }
+  }
+  
+  // Get content (everything after metadata)
+  const sectionContent = lines.slice(contentStartIndex).join('\n').trim();
+  
+  if (!sectionContent && Object.keys(metadata).length === 0) {
+    return null;
+  }
+  
+  return {
+    languageCode,
+    metadata,
+    content: sectionContent
+  };
+};
+
 export const parseContentFile = (fileContent: string, language: Language = 'en'): ParsedContent => {
   const sections = parseLanguageSections(fileContent);
+  
+  console.log('Parsed sections:', sections.map(s => ({ lang: s.languageCode, title: s.metadata.title })));
+  console.log('Looking for language:', language);
   
   // Find section for requested language, fallback to English
   let targetSection = sections.find(s => s.languageCode === language);
   if (!targetSection) {
     targetSection = sections.find(s => s.languageCode === 'en') || sections[0];
   }
+  
+  console.log('Selected section:', targetSection ? { lang: targetSection.languageCode, title: targetSection.metadata.title } : 'none');
   
   if (!targetSection) {
     return {

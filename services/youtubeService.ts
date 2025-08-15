@@ -2,6 +2,55 @@ import { YouTubeShort } from '../types';
 
 const API_BASE_URL = 'https://www.googleapis.com/youtube/v3';
 
+// Convert ISO 8601 duration (PT1M30S) to readable format (1:30)
+const formatDuration = (duration: string): string => {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return duration;
+  
+  const hours = parseInt(match[1] || '0');
+  const minutes = parseInt(match[2] || '0');
+  const seconds = parseInt(match[3] || '0');
+  
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  } else {
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+};
+
+// Convert duration to seconds for filtering
+const durationToSeconds = (duration: string): number => {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
+  
+  const hours = parseInt(match[1] || '0');
+  const minutes = parseInt(match[2] || '0');
+  const seconds = parseInt(match[3] || '0');
+  
+  return hours * 3600 + minutes * 60 + seconds;
+};
+
+// Convert formatted duration (1:30) to seconds
+const formattedDurationToSeconds = (duration: string): number => {
+  const parts = duration.split(':').map(Number);
+  if (parts.length === 2) {
+    return parts[0] * 60 + parts[1]; // MM:SS
+  } else if (parts.length === 3) {
+    return parts[0] * 3600 + parts[1] * 60 + parts[2]; // HH:MM:SS
+  }
+  return 0;
+};
+
+// Filter videos by duration for shorts (4 minutes or less)
+const filterVideosByDuration = (videos: YouTubeShort[]): YouTubeShort[] => {
+  return videos.filter(video => {
+    if (!video.duration) return true; // If no duration info, include it
+    
+    const durationInSeconds = formattedDurationToSeconds(video.duration);
+    return durationInSeconds <= 240; // 4 minutes or less
+  });
+};
+
 interface SearchOptions {
   regionCode?: string;
   channelId?: string;
@@ -14,15 +63,21 @@ export const searchYouTubeShorts = async (
   options: SearchOptions
 ): Promise<YouTubeShort[]> => {
   try {
+    // Build search query based on video type
+    let searchQuery = query || '';
     const searchParams = new URLSearchParams({
       part: 'snippet',
-      q: query ? `${query} #shorts` : '#shorts',
       type: 'video',
-      videoDuration: 'short',
       maxResults: '25',
       publishedAfter: options.publishedAfter,
       key: apiKey,
     });
+
+    // Search for shorts only
+    searchQuery = query ? `${query} #shorts` : '#shorts';
+    searchParams.set('videoDuration', 'short');
+
+    searchParams.set('q', searchQuery);
 
     if (options.channelId) {
         searchParams.set('channelId', options.channelId);
@@ -47,7 +102,7 @@ export const searchYouTubeShorts = async (
     const videoIds = searchData.items.map((item: any) => item.id.videoId).join(',');
 
     const videosParams = new URLSearchParams({
-      part: 'snippet,statistics',
+      part: 'snippet,statistics,contentDetails',
       id: videoIds,
       key: apiKey,
     });
@@ -59,14 +114,18 @@ export const searchYouTubeShorts = async (
     }
     const videosData = await videosResponse.json();
 
-    return videosData.items.map((item: any): YouTubeShort => ({
+    const allVideos = videosData.items.map((item: any): YouTubeShort => ({
       id: item.id,
       title: item.snippet.title,
       thumbnailUrl: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
       channelTitle: item.snippet.channelTitle,
       publishedAt: item.snippet.publishedAt,
       viewCount: parseInt(item.statistics.viewCount, 10) || 0,
+      duration: item.contentDetails?.duration ? formatDuration(item.contentDetails.duration) : undefined,
     }));
+
+    // Filter by duration on client side (4 minutes or less for shorts)
+    return filterVideosByDuration(allVideos);
   } catch (error) {
     console.error(`Error searching YouTube:`, error);
     if (error instanceof Error) {

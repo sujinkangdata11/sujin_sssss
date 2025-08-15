@@ -46,6 +46,19 @@
   background-color: rgba(0, 0, 0, 0.4);
 }
 
+.shorts-card-duration {
+  position: absolute;
+  bottom: var(--spacing-2);
+  right: var(--spacing-2);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  z-index: 10;
+}
+
 .shorts-card-content {
   padding: var(--spacing-4);
   display: flex;

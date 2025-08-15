@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Language, Article } from '../types';
 import { translations } from '../i18n/translations';
-import { loadArticleFromFile, processContentWithImages } from '../services/contentService';
+import { loadArticleFromFile, processContentWithImages, getThumbnailPath } from '../services/contentService';
 
 interface ArticleDetailProps {
   language: Language;
@@ -84,7 +84,20 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
       </div>
 
       <article className="article-detail">
-        <div className="article-image-placeholder"></div>
+        <div className="article-image-container">
+          <img 
+            src={getThumbnailPath(1, article.id)} 
+            alt={article.title}
+            className="article-header-image"
+            onError={(e) => {
+              // Fallback to placeholder if thumbnail fails to load
+              e.currentTarget.style.display = 'none';
+              const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+              if (placeholder) placeholder.style.display = 'block';
+            }}
+          />
+          <div className="article-image-placeholder" style={{ display: 'none' }}></div>
+        </div>
         
         <div className="article-content">
           <h1 className="article-detail-title" lang={language}>{article.title}</h1>
@@ -142,10 +155,20 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                 }
               }
               
+              // Process markdown-style formatting
+              const processedParagraph = paragraph
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **text** -> <strong>text</strong>
+                .replace(/\*(.*?)\*/g, '<em>$1</em>') // *text* -> <em>text</em>
+                .replace(/##(.*?)##/g, '<span style="font-size: 1.5em; font-weight: 600;">$1</span>') // ##text## -> large text
+                .replace(/#(.*?)#/g, '<span style="font-size: 1.25em; font-weight: 500;">$1</span>') // #text# -> medium large text  
+                .replace(/\\n/g, '<br>'); // \n -> <br>
+              
               return (
-                <p key={index} className="article-paragraph">
-                  {paragraph}
-                </p>
+                <p 
+                  key={index} 
+                  className="article-paragraph"
+                  dangerouslySetInnerHTML={{ __html: processedParagraph }}
+                />
               );
             })}
           </div>

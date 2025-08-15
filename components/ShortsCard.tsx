@@ -119,6 +119,9 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language }) => {
           loading="lazy"
         />
         <div className="shorts-card-overlay"></div>
+        {short.duration && (
+          <div className="shorts-card-duration">{short.duration}</div>
+        )}
       </div>
       <div className="shorts-card-content">
         <h3 className="shorts-card-title" title={short.title}>
