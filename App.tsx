@@ -124,8 +124,54 @@ const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) 
   );
 };
 
+// Function to detect browser language and map to supported languages
+const detectBrowserLanguage = (): Language => {
+  const browserLang = navigator.language.toLowerCase();
+  
+  // Map browser language codes to our supported languages
+  const languageMap: Record<string, Language> = {
+    'ko': 'ko',
+    'ko-kr': 'ko',
+    'ja': 'ja', 
+    'ja-jp': 'ja',
+    'zh': 'zh',
+    'zh-cn': 'zh',
+    'zh-tw': 'zh',
+    'hi': 'hi',
+    'hi-in': 'hi',
+    'es': 'es',
+    'es-es': 'es',
+    'es-mx': 'es',
+    'fr': 'fr',
+    'fr-fr': 'fr',
+    'de': 'de',
+    'de-de': 'de',
+    'nl': 'nl',
+    'nl-nl': 'nl',
+    'pt': 'pt',
+    'pt-br': 'pt',
+    'pt-pt': 'pt',
+    'ru': 'ru',
+    'ru-ru': 'ru'
+  };
+
+  // Check exact match first
+  if (languageMap[browserLang]) {
+    return languageMap[browserLang];
+  }
+
+  // Check language code only (e.g., 'en-US' -> 'en')
+  const langCode = browserLang.split('-')[0];
+  if (languageMap[langCode]) {
+    return languageMap[langCode];
+  }
+
+  // Default to English if no match
+  return 'en';
+};
+
 const App: React.FC = () => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(detectBrowserLanguage());
   
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
 
