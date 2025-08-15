@@ -296,6 +296,44 @@
   }
 }
 
+/* Hero Guide Button */
+.hero-guide-button {
+  background-color: #7c3aed; /* purple background */
+  color: #ffffff; /* white text */
+  font-size: var(--font-size-base); /* 16px */
+  font-weight: 600;
+  padding: 0.75rem 1.5rem; /* 12px top/bottom, 24px left/right */
+  border-radius: 0.75rem; /* 12px */
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  margin-top: var(--spacing-6); /* 24px top margin */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* 8px gap between text and arrow */
+}
+
+.hero-guide-button:hover {
+  background-color: #6d28d9; /* darker purple on hover */
+  transform: translateY(-1px); /* subtle lift effect */
+}
+
+.hero-guide-button:active {
+  background-color: #5b21b6; /* even darker purple when pressed */
+  transform: translateY(0); /* reset lift effect */
+}
+
+.hero-guide-arrow {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.5;
+  transition: transform var(--transition-fast);
+}
+
+.hero-guide-button:hover .hero-guide-arrow {
+  transform: translateX(2px); /* slight arrow movement on hover */
+}
+
 /* Form Styles */
 .form-section {
   position: relative;
@@ -449,9 +487,9 @@ select.form-input {
 /* Button Styles */
 .btn-primary {
   width: 100%;
-  background-color: #4f46e5; /* indigo-600 */
+  background-color: #7c3aed; /* purple background */
   color: #ffffff; /* white text */
-  font-weight: bold;
+  font-weight: 600;
   padding: 0.875rem var(--spacing-4);
   border-radius: 0.75rem; /* 12px */
   border: none;
@@ -464,12 +502,12 @@ select.form-input {
 }
 
 .btn-primary:hover {
-  background-color: #4338ca; /* darker indigo-700 on hover */
+  background-color: #6d28d9; /* darker purple on hover */
   transform: translateY(-1px); /* subtle lift effect */
 }
 
 .btn-primary:active {
-  background-color: #3730a3; /* even darker indigo-800 when pressed */
+  background-color: #5b21b6; /* even darker purple when pressed */
   transform: translateY(0); /* reset lift when pressed */
 }
 

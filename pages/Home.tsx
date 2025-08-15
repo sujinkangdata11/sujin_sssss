@@ -229,6 +229,12 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         <p className="hero-subtitle" lang={language} style={{whiteSpace: 'pre-line'}}>
           {t('heroSubtitle')}
         </p>
+        <button className="hero-guide-button">
+          {t('viewGuideButton')}
+          <svg className="hero-guide-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </button>
       </div>
       
       <main className="main-container">
