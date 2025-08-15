@@ -363,7 +363,7 @@
 
 .form-card {
   background-color: #f9fafb; /* light grey */
-  padding: var(--spacing-10) 2.125rem; /* 40px top/bottom, 34px left/right */
+  padding: 3rem 2.5rem; /* 48px top/bottom, 40px left/right */
   border-radius: 1.5rem; /* 24px */
   border: 1px solid #d1d5db; /* light grey border line */
   margin-top: var(--spacing-10); /* 40px top margin */
@@ -373,7 +373,7 @@
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.125rem;
+  gap: 1.5rem;
   align-items: start;
 }
 
