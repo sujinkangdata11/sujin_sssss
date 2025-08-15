@@ -6,7 +6,7 @@
 
 .country-selector-button {
   width: 100%;
-  background-color: #f3f4f6; /* light grey background */
+  background-color: #ffffff; /* white background */
   border: 1px solid #d1d5db; /* light grey border */
   border-radius: 0.75rem; /* 12px */
   box-shadow: var(--shadow-sm);

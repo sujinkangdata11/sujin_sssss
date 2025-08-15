@@ -219,8 +219,18 @@ const App: React.FC = () => {
     });
   }, [shorts, sortBy]);
   
-  const currentLanguageName = useMemo(() => {
-      return SUPPORTED_LANGUAGES.find(lang => lang.code === language)?.nativeName || 'Language';
+  const currentLanguageInfo = useMemo(() => {
+      const lang = SUPPORTED_LANGUAGES.find(lang => lang.code === language);
+      if (!lang) return { emoji: '', text: 'Language' };
+      
+      const nativeName = lang.nativeName;
+      const spaceIndex = nativeName.indexOf(' ');
+      if (spaceIndex === -1) return { emoji: '', text: nativeName };
+      
+      return {
+        emoji: nativeName.substring(0, spaceIndex),
+        text: nativeName.substring(spaceIndex + 1)
+      };
   }, [language]);
 
   return (
@@ -228,20 +238,31 @@ const App: React.FC = () => {
       <header className="app-header">
         <div className="header-container">
             <h1 className="header-title">
-                <span className="header-title-accent">{t('headerTitle')}</span> {t('headerSubtitle')}
+                {t('vidhuntTitle')}
             </h1>
-            <button onClick={() => setIsLangModalOpen(true)} className="language-button">
-                <span className="language-emoji-text">{currentLanguageName}</span>
-            </button>
+            <div className="header-nav">
+                <div className="nav-buttons">
+                    <button className="nav-button active">쇼츠파인더</button>
+                    <button className="nav-button">쇼츠메이커</button>
+                    <button className="nav-button">비드헌트뉴스</button>
+                </div>
+                <button onClick={() => setIsLangModalOpen(true)} className="language-button">
+                    <span className="language-emoji">{currentLanguageInfo.emoji}</span>
+                    <span className="language-text">{currentLanguageInfo.text}</span>
+                </button>
+            </div>
         </div>
       </header>
       
       <LanguageSelector isOpen={isLangModalOpen} onClose={() => setIsLangModalOpen(false)} onSelect={setLanguage} currentLanguage={language} />
       
       <div className="hero-section">
-        <h2 className="hero-title" style={{whiteSpace: 'pre-line'}}>
+        <h2 className="hero-title" lang={language} style={{whiteSpace: 'pre-line'}}>
           {t('heroTitle')}
         </h2>
+        <p className="hero-subtitle" lang={language} style={{whiteSpace: 'pre-line'}}>
+          {t('heroSubtitle')}
+        </p>
       </div>
       
       <main className="main-container">

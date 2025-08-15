@@ -107,34 +107,73 @@
 }
 
 .header-title {
-  font-size: var(--font-size-2xl);
-  font-weight: bold;
-  color: #000000; /* black text */
+  font-family: var(--font-family); /* same as form labels */
+  font-size: var(--font-size-base); /* same as nav buttons */
+  font-weight: 500; /* same as form labels */
+  color: #323545; /* dark grey text */
   letter-spacing: 0.025em;
 }
 
-.header-title-accent {
-  color: #4f46e5; /* indigo accent color */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8); /* 32px gap between nav buttons and language button */
+}
+
+.nav-buttons {
+  display: flex;
+  gap: var(--spacing-6); /* 24px gap between nav buttons */
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  color: #323545; /* dark grey text */
+  font-family: var(--font-family); /* same as form labels */
+  font-size: var(--font-size-base);
+  font-weight: 500; /* same as form labels */
+  padding: var(--spacing-2) var(--spacing-1);
+  cursor: pointer;
+  position: relative;
+  transition: color var(--transition-fast);
+  transform: translateY(4px); /* move text 4px down */
+}
+
+.nav-button:hover {
+  color: #1f2937; /* slightly darker on hover */
+}
+
+.nav-button.active {
+  color: #323545; /* dark grey text for active */
+}
+
+.nav-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: calc(-1 * var(--spacing-3) - 1px + 4px); /* compensate for button translateY and align with header border */
+  left: 0;
+  right: 0;
+  height: 1px; /* match header border thickness */
+  background-color: #000000; /* black underline */
 }
 
 .language-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ffffff; /* white background */
+  background-color: #f3f4f6; /* light grey background */
   color: #000000; /* black text */
-  font-size: var(--font-size-base); /* slightly larger font */
+  font-size: 0.9375rem; /* 15px */
   font-weight: 500;
   padding: var(--spacing-2) var(--spacing-4);
   border-radius: 0.75rem; /* 12px */
-  border: 1px solid #d1d5db; /* light grey border */
+  border: none; /* no border */
   cursor: pointer;
-  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  transition: background-color var(--transition-fast);
 }
 
 .language-button:hover {
-  background-color: #f3f4f6; /* slightly darker grey on hover */
-  border-color: #9ca3af; /* darker border on hover */
+  background-color: #e5e7eb; /* slightly darker grey on hover */
 }
 
 .language-button:focus {
@@ -142,25 +181,68 @@
   box-shadow: 0 0 0 0.5px var(--color-accent-secondary);
 }
 
-.language-emoji-text {
-  font-size: 1.125rem; /* 18px - larger emoji and text */
+.language-emoji {
+  font-size: 1.125rem; /* 18px - larger emoji */
+  margin-right: 0.25rem; /* 4px gap between emoji and text */
+}
+
+.language-text {
+  font-size: 0.9375rem; /* 15px - smaller text */
   line-height: 1.2;
 }
 
 /* Hero Section */
 .hero-section {
-  text-align: center;
-  padding: 3.25rem var(--spacing-4) var(--spacing-6); /* 52px top padding (32px + 20px) */
-  max-width: 560px;
+  text-align: left;
+  padding: 10rem var(--spacing-4) var(--spacing-6); /* 160px top padding (130px + 30px) */
+  max-width: 1200px; /* match main-container max-width */
   margin: 0 auto;
+  padding-left: var(--spacing-8); /* align with form content */
 }
 
 .hero-title {
-  font-size: 2.125rem; /* 34px */
-  font-weight: 600;
-  color: #000000; /* black text */
-  line-height: 1.4;
+  font-family: 'Newsreader', serif;
+  font-size: 3.75rem; /* 60px */
+  font-weight: 400; /* regular weight */
+  color: #323545; /* dark grey text */
+  line-height: 65px; /* 65px line height */
   margin: 0;
+}
+
+.hero-subtitle {
+  font-family: 'Newsreader', serif;
+  font-size: 1.25rem; /* 20px */
+  font-weight: 400; /* regular weight */
+  color: #323545; /* dark grey text */
+  line-height: 35px; /* 35px line height */
+  margin: 2rem 0 0 0; /* 32px top margin */
+  letter-spacing: -0.3px; /* default letter spacing */
+}
+
+/* Language-specific font overrides for hero title and subtitle */
+.hero-title[lang="ko"],
+.hero-subtitle[lang="ko"] {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.hero-subtitle[lang="ko"] {
+  letter-spacing: -1px; /* tighter letter spacing for Korean */
+}
+
+.hero-title[lang="ja"],
+.hero-subtitle[lang="ja"] {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.hero-title[lang="zh"],
+.hero-subtitle[lang="zh"] {
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.hero-title[lang="ru"],
+.hero-subtitle[lang="ru"] {
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 300; /* light weight */
 }
 
 /* Main Content */
@@ -177,6 +259,32 @@
 }
 
 /* Form Styles */
+.form-section {
+  position: relative;
+}
+
+.form-section-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--spacing-2); /* 8px gap between button and form card */
+}
+
+.usage-guide-btn {
+  background-color: #e5e7eb; /* grey background */
+  color: #000000; /* black text */
+  font-size: var(--font-size-sm); /* 14px */
+  font-weight: 500;
+  padding: var(--spacing-2) var(--spacing-3); /* 8px top/bottom, 12px left/right */
+  border-radius: 0.75rem; /* 12px */
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.usage-guide-btn:hover {
+  background-color: #d1d5db; /* darker grey on hover */
+}
+
 .form-card {
   background-color: #f9fafb; /* light grey */
   padding: var(--spacing-10) var(--spacing-6); /* 40px top/bottom, 24px left/right */
@@ -245,7 +353,7 @@
 
 .form-input {
   width: 100%;
-  background-color: #f3f4f6; /* light grey background */
+  background-color: #ffffff; /* white background */
   border: 1px solid #d1d5db; /* light grey border */
   border-radius: 0.75rem; /* 12px */
   box-shadow: var(--shadow-sm);
