@@ -1865,4 +1865,31 @@ select.form-input {
     font-size: 2.5rem; /* 40px - reduced from 60px by 20px */
     line-height: 45px; /* adjusted line height proportionally */
   }
+  
+  /* Footer Mobile Styles */
+  .footer-content {
+    flex-direction: column;
+    gap: var(--spacing-6);
+  }
+  
+  .footer-right {
+    text-align: left; /* change to left alignment */
+    order: 2; /* move to bottom */
+  }
+  
+  .footer-left {
+    order: 1; /* keep at top */
+  }
+  
+  .footer-contact-link {
+    text-align: left; /* left align the contact link */
+  }
+  
+  .footer-contact-desc {
+    text-align: left; /* left align the contact description */
+  }
+  
+  .app-footer {
+    padding-bottom: 100px; /* add bottom spacing for mobile */
+  }
 }
