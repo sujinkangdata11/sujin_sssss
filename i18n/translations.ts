@@ -57,6 +57,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "Example",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "So everyone can know trends and make money.",
   },
   ko: {
     vidhuntTitle: "비드헌트",
@@ -114,6 +115,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "예시",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "모두가 트렌드를 알고, 돈을 벌 수 있도록.",
   },
   ja: {
     vidhuntTitle: "ビッドハント",
@@ -171,6 +173,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "例",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "すべての人がトレンドを知り、お金を稼げるように。",
   },
   zh: {
     vidhuntTitle: "维德亨特",
@@ -228,6 +231,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "示例",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "让每个人都能了解趋势，赚到钱。",
   },
   hi: {
     vidhuntTitle: "विदहंट",
@@ -285,6 +289,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "उदाहरण",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "ताकि हर कोई ट्रेंड जान सके और पैसा कमा सके।",
   },
   es: {
     vidhuntTitle: "Vidjunt",
@@ -342,6 +347,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "Ejemplo",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "Para que todos puedan conocer las tendencias y ganar dinero.",
   },
   fr: {
     vidhuntTitle: "Vidonte",
@@ -399,6 +405,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "Exemple",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "Pour que chacun puisse connaître les tendances et gagner de l'argent.",
   },
   de: {
     vidhuntTitle: "VidHunt",
@@ -456,6 +463,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "Beispiel",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "Damit jeder Trends kennen und Geld verdienen kann.",
   },
   nl: {
     vidhuntTitle: "VidHunt",
@@ -513,6 +521,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "Voorbeeld",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "Zodat iedereen trends kan kennen en geld kan verdienen.",
   },
   pt: {
     vidhuntTitle: "Vidunte",
@@ -570,6 +579,7 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "Exemplo",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "Para que todos possam conhecer as tendências e ganhar dinheiro.",
   },
   ru: {
     vidhuntTitle: "Видхант",
@@ -627,5 +637,6 @@ export const translations: Record<Language, Record<string, string>> = {
     exampleButton: "Пример",
     txtExampleTitle: "example.txt",
     txtExampleContent: "@syukaworld, @3protv, @MrBeast",
+    newsSubtitle: "Чтобы все могли знать тренды и зарабатывать деньги.",
   },
 };

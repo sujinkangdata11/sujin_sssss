@@ -28,3 +28,12 @@ export interface LanguageOption {
   name: string; // English name
   nativeName: string; // Name in its own language
 }
+
+export interface Article {
+  id: number;
+  title: string;
+  date: string;
+  excerpt: string;
+  content: string;
+  category: string;
+}

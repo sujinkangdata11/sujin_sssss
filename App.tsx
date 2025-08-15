@@ -7,6 +7,7 @@ import LanguageSelector from './components/LanguageSelector';
 import Home from './pages/Home';
 import ShortsmaKer from './pages/ShortsmaKer';
 import News from './pages/News';
+import ArticleDetail from './pages/ArticleDetail';
 
 const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) => void }> = ({ 
   language, 
@@ -83,6 +84,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Home language={language} />} />
           <Route path="/shortsmaker" element={<ShortsmaKer language={language} />} />
           <Route path="/news" element={<News language={language} />} />
+          <Route path="/news/article/:id" element={<ArticleDetail language={language} />} />
         </Routes>
         
         <footer className="app-footer">
