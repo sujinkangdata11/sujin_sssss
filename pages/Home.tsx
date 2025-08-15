@@ -24,10 +24,48 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [favoriteChannels, setFavoriteChannels] = useState<string[]>(['']);
   const [showTxtExample, setShowTxtExample] = useState(false);
+  const [currentTitleIndex, setCurrentTitleIndex] = useState<number>(0);
+  const [displayedText, setDisplayedText] = useState<string>('');
+  const [isTyping, setIsTyping] = useState<boolean>(true);
   
   const exampleRef = useRef<HTMLDivElement>(null);
 
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
+  
+  const heroTitles = [t('heroTitle'), t('heroTitleAlt'), t('heroTitleAlt2')];
+  
+  // Typing animation effect
+  useEffect(() => {
+    const currentTitle = heroTitles[currentTitleIndex];
+    let timeoutId: NodeJS.Timeout;
+    
+    if (isTyping) {
+      // Typing effect - add characters
+      if (displayedText.length < currentTitle.length) {
+        timeoutId = setTimeout(() => {
+          setDisplayedText(currentTitle.slice(0, displayedText.length + 1));
+        }, 50); // Typing speed (50ms per character)
+      } else {
+        // Finished typing, wait 5 seconds then start deleting
+        timeoutId = setTimeout(() => {
+          setIsTyping(false);
+        }, 5000);
+      }
+    } else {
+      // Deleting effect - remove characters faster
+      if (displayedText.length > 0) {
+        timeoutId = setTimeout(() => {
+          setDisplayedText(displayedText.slice(0, -1));
+        }, 20); // Deleting speed (20ms per character - faster)
+      } else {
+        // Finished deleting, move to next title and start typing
+        setCurrentTitleIndex((prev) => (prev + 1) % heroTitles.length);
+        setIsTyping(true);
+      }
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [displayedText, isTyping, currentTitleIndex, heroTitles]);
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -223,8 +261,9 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   return (
     <>
       <div className="hero-section">
-        <h2 className="hero-title" lang={language} style={{whiteSpace: 'pre-line'}}>
-          {t('heroTitle')}
+        <h2 className="hero-title typing-title" lang={language} style={{whiteSpace: 'pre-line'}}>
+          {displayedText}
+          <span className="typing-cursor">|</span>
         </h2>
         <p className="hero-subtitle" lang={language} style={{whiteSpace: 'pre-line'}}>
           {t('heroSubtitle')}

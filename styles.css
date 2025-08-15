@@ -296,6 +296,26 @@
   }
 }
 
+/* Typing Hero Title */
+.typing-title {
+  min-height: 3.5em; /* Prevent layout shift during typing */
+}
+
+.typing-cursor {
+  animation: blink 1s infinite;
+  font-weight: 300;
+  color: #7c3aed; /* Purple cursor */
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
 /* Hero Guide Button */
 .hero-guide-button {
   background-color: #7c3aed; /* purple background */
