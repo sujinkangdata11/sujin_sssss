@@ -300,11 +300,16 @@ const ContentEditor: React.FC = () => {
       <div className="admin-content-form">
         <div className="admin-form-group">
           <label>Title:</label>
-          <input
-            type="text"
+          <textarea
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Article title"
+            rows={2}
+            style={{
+              resize: 'vertical',
+              minHeight: '3rem',
+              lineHeight: '1.5'
+            }}
           />
         </div>
 

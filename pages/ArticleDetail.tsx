@@ -218,7 +218,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
         </div>
         
         <div className="article-content">
-          <h1 className="article-detail-title" lang={language}>{article.title}</h1>
+          <h1 className="article-detail-title" lang={language} style={{ whiteSpace: 'pre-line' }}>
+            {article.title}
+          </h1>
           
           <div className="article-body">
             {article.content.split(/\n\s*\n/).map((paragraph, index) => {
@@ -264,7 +266,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                     return (
                       <div key={index} className="article-inline-image">
                         <img 
-                          src={imageName.startsWith('/') ? imageName : `/contents/images/${imageName}`} 
+                          src={imageName.startsWith('/') ? imageName : `/${imageName}`} 
                           alt={`Article image ${index + 1}`}
                           className="article-inline-image-actual"
                           loading="lazy"
