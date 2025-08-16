@@ -235,115 +235,132 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
           </h1>
           
           <div className="article-body">
-            {article.content.split(/\n\s*\n/).map((paragraph, index) => {
-              if (paragraph.includes('[IMAGE:')) {
-                const imageName = paragraph.match(/\[IMAGE:(.*?)\]/)?.[1];
-                if (imageName) {
-                  console.log('Looking for image:', imageName);
-                  
-                  // Check for published image in localStorage
-                  const imageKey = `published_image_${imageName}`;
-                  const imageData = localStorage.getItem(imageKey);
-                  
-                  console.log('Image key:', imageKey);
-                  console.log('Image data found:', !!imageData);
-                  
-                  if (imageData) {
-                    console.log('Found published image:', imageName);
-                    return (
-                      <div key={index} className="article-inline-image">
-                        <img 
-                          src={imageData} 
-                          alt={`Article image ${index + 1}`}
-                          className="article-inline-image-actual"
-                          loading="lazy"
-                          style={{ maxWidth: '100%', height: 'auto' }}
-                          onError={(e) => {
-                            console.error('Image failed to load:', imageName);
-                            // Fallback to placeholder if image fails to load
-                            e.currentTarget.style.display = 'none';
-                            const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
-                            if (placeholder) placeholder.style.display = 'block';
-                          }}
-                          onLoad={() => {
-                            console.log('Image loaded successfully:', imageName);
-                          }}
-                        />
-                        <div className="article-inline-image-placeholder" style={{ display: 'none' }}></div>
-                      </div>
-                    );
-                  } else {
-                    // Fallback to trying as a regular path (for file system images)
-                    console.log('Trying as file path:', imageName);
-                    return (
-                      <div key={index} className="article-inline-image">
-                        <img 
-                          src={imageName.startsWith('/') ? imageName : `/${imageName}`} 
-                          alt={`Article image ${index + 1}`}
-                          className="article-inline-image-actual"
-                          loading="lazy"
-                          style={{ maxWidth: '100%', height: 'auto' }}
-                          onError={(e) => {
-                            console.error('Image failed to load:', imageName);
-                            e.currentTarget.style.display = 'none';
-                            const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
-                            if (placeholder) placeholder.style.display = 'block';
-                          }}
-                        />
-                        <div className="article-inline-image-placeholder" style={{ display: 'none' }}></div>
-                      </div>
-                    );
-                  }
-                }
-                // Fallback for old [IMAGE] format
-                return (
-                  <div key={index} className="article-inline-image">
-                    <div className="article-inline-image-placeholder"></div>
-                  </div>
-                );
-              }
+            {(() => {
+              // Split content by lines and process each element
+              const lines = article.content.split('\n');
+              const elements = [];
+              let currentText = '';
               
-              if (paragraph.startsWith('[YOUTUBE:')) {
-                const url = paragraph.match(/\[YOUTUBE:(.*?)\]/)?.[1];
-                if (url) {
-                  // Convert YouTube URL to embed URL
-                  const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/)?.[1];
-                  if (videoId) {
-                    return (
-                      <div key={index} className="article-youtube-embed">
-                        <iframe
-                          width="100%"
-                          height="400"
-                          src={`https://www.youtube.com/embed/${videoId}`}
-                          title="YouTube video player"
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
-                      </div>
-                    );
+              for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                
+                // Check for special content (images, youtube)
+                if (line.trim().includes('[IMAGE:')) {
+                  // Save current text if exists
+                  if (currentText.trim() || currentText.includes('\n')) {
+                    elements.push({ type: 'text', content: currentText, key: `text-${elements.length}` });
+                    currentText = '';
+                  }
+                  // Add image
+                  elements.push({ type: 'image', content: line.trim(), key: `img-${elements.length}` });
+                } else if (line.trim().startsWith('[YOUTUBE:')) {
+                  // Save current text if exists
+                  if (currentText.trim() || currentText.includes('\n')) {
+                    elements.push({ type: 'text', content: currentText, key: `text-${elements.length}` });
+                    currentText = '';
+                  }
+                  // Add youtube
+                  elements.push({ type: 'youtube', content: line.trim(), key: `yt-${elements.length}` });
+                } else {
+                  // Add to current text (preserve all line breaks)
+                  if (currentText || line) {
+                    if (currentText) currentText += '\n';
+                    currentText += line;
                   }
                 }
               }
               
-              // Process markdown-style formatting (white-space: pre-line in CSS handles line breaks)
-              const processedParagraph = paragraph
-                .replace(/\r\n/g, '\n') // normalize line endings
-                .replace(/\r/g, '\n') // normalize line endings
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **text** -> <strong>text</strong>
-                .replace(/\*(.*?)\*/g, '<em>$1</em>') // *text* -> <em>text</em>
-                .replace(/##(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // ##text -> larger text
-                .replace(/#(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // #text -> larger text
-                .replace(/\[\[purple:(.*?)\]\]/g, '<span style="color: #7c3aed; font-weight: 600;">$1</span>') // [[purple:text]] -> purple text
+              // Add remaining text
+              if (currentText.trim() || currentText.includes('\n')) {
+                elements.push({ type: 'text', content: currentText, key: `text-${elements.length}` });
+              }
               
-              return (
-                <p 
-                  key={index} 
-                  className="article-paragraph"
-                  dangerouslySetInnerHTML={{ __html: processedParagraph }}
-                />
-              );
-            })}
+              return elements.map(element => {
+                if (element.type === 'image') {
+                  const imageName = element.content.match(/\[IMAGE:(.*?)\]/)?.[1];
+                  if (imageName) {
+                    console.log('Looking for image:', imageName);
+                    
+                    // Check for published image in localStorage
+                    const imageKey = `published_image_${imageName}`;
+                    const imageData = localStorage.getItem(imageKey);
+                    
+                    if (imageData) {
+                      return (
+                        <div key={element.key} className="article-inline-image">
+                          <img 
+                            src={imageData} 
+                            alt="Article image"
+                            className="article-inline-image-actual"
+                            loading="lazy"
+                            style={{ maxWidth: '100%', height: 'auto' }}
+                          />
+                        </div>
+                      );
+                    } else {
+                      const imagePath = imageName.startsWith('/') ? imageName : `/${imageName}`;
+                      return (
+                        <div key={element.key} className="article-inline-image">
+                          <img 
+                            src={imagePath} 
+                            alt="Article image"
+                            className="article-inline-image-actual"
+                            loading="lazy"
+                            style={{ maxWidth: '100%', height: 'auto' }}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                              if (placeholder) placeholder.style.display = 'block';
+                            }}
+                          />
+                          <div className="article-inline-image-placeholder" style={{ display: 'none' }}></div>
+                        </div>
+                      );
+                    }
+                  }
+                  return null;
+                } else if (element.type === 'youtube') {
+                  const url = element.content.match(/\[YOUTUBE:(.*?)\]/)?.[1];
+                  if (url) {
+                    const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/)?.[1];
+                    if (videoId) {
+                      return (
+                        <div key={element.key} className="article-youtube-embed">
+                          <iframe
+                            width="100%"
+                            height="400"
+                            src={`https://www.youtube.com/embed/${videoId}`}
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          ></iframe>
+                        </div>
+                      );
+                    }
+                  }
+                  return null;
+                } else if (element.type === 'text') {
+                  // Process markdown-style formatting
+                  const processedText = element.content
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **text** -> <strong>text</strong>
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>') // *text* -> <em>text</em>
+                    .replace(/##(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // ##text -> larger text
+                    .replace(/#(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // #text -> larger text
+                    .replace(/\[\[purple:(.*?)\]\]/g, '<span style="color: #7c3aed; font-weight: 600;">$1</span>'); // [[purple:text]] -> purple text
+                  
+                  return (
+                    <div 
+                      key={element.key} 
+                      className="article-text-block"
+                      style={{ whiteSpace: 'pre-line' }}
+                      dangerouslySetInnerHTML={{ __html: processedText }}
+                    />
+                  );
+                }
+                return null;
+              });
+            })()}
           </div>
         </div>
       </article>
