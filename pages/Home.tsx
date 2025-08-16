@@ -28,6 +28,9 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   const [currentTitleIndex, setCurrentTitleIndex] = useState<number>(0);
   const [displayedText, setDisplayedText] = useState<string>('');
   const [isTyping, setIsTyping] = useState<boolean>(true);
+  const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
+  const [videoVisible, setVideoVisible] = useState<boolean>(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   
   const exampleRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +38,34 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   
   const heroTitles = [t('heroTitle'), t('heroTitleAlt'), t('heroTitleAlt2')];
   
+  // Video visibility observer for lazy loading
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !videoVisible) {
+            setVideoVisible(true);
+            // Start loading video only when visible
+            if (!videoLoaded) {
+              videoElement.load();
+            }
+          }
+        });
+      },
+      { 
+        threshold: 0.25, // Start loading when 25% visible
+        rootMargin: '50px' // Start loading 50px before entering viewport
+      }
+    );
+
+    observer.observe(videoElement);
+    
+    return () => observer.disconnect();
+  }, [videoVisible, videoLoaded]);
+
   // Typing animation effect
   useEffect(() => {
     const currentTitle = heroTitles[currentTitleIndex];
@@ -280,13 +311,45 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         </div>
         <div className="hero-video">
           <video 
-            autoPlay 
+            ref={videoRef}
+            autoPlay={videoVisible}
             loop 
             muted 
             playsInline
+            preload="none"
             className="hero-video-player"
+            poster="/mainvideo-poster.jpg"
+            onLoadStart={() => {
+              console.log('Video loading started');
+            }}
+            onCanPlay={() => {
+              console.log('Video ready to play');
+              setVideoLoaded(true);
+            }}
+            onLoadedData={() => {
+              // Video fully loaded, can play smoothly
+              setVideoLoaded(true);
+            }}
+            style={{
+              opacity: videoLoaded ? 1 : 0.8,
+              transition: 'opacity 0.3s ease-in-out'
+            }}
           >
-            <source src="/mainvideo.mp4" type="video/mp4" />
+            {videoVisible && <source src="/mainvideo.mp4" type="video/mp4" />}
+            {!videoVisible && (
+              <div className="video-placeholder" style={{
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '1.2rem'
+              }}>
+                Loading video...
+              </div>
+            )}
             Your browser does not support the video tag.
           </video>
         </div>
