@@ -90,6 +90,14 @@ const ContentEditor: React.FC = () => {
     setContent(prev => prev + '##텍스트');
   };
 
+  const insertPurple = () => {
+    setContent(prev => prev + '[[purple:텍스트]]');
+  };
+
+  const insertYoutube = () => {
+    setContent(prev => prev + '[YOUTUBE:https://youtu.be/VIDEO_ID]');
+  };
+
   const insertImage = () => {
     // Create a hidden file input
     const fileInput = document.createElement('input');
@@ -328,6 +336,8 @@ const ContentEditor: React.FC = () => {
           <div className="admin-toolbar">
             <button onClick={insertBold}>**Bold**</button>
             <button onClick={insertLarge}>##Large</button>
+            <button onClick={insertPurple} style={{ color: '#7c3aed' }}>💜 Purple</button>
+            <button onClick={insertYoutube} style={{ color: '#ff0000' }}>📺 YouTube</button>
             <button onClick={insertImage}>🖼️ Image</button>
           </div>
           

@@ -334,6 +334,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                 .replace(/\*(.*?)\*/g, '<em>$1</em>') // *text* -> <em>text</em>
                 .replace(/##(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // ##text -> larger text
                 .replace(/#(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // #text -> larger text
+                .replace(/\[\[purple:(.*?)\]\]/g, '<span style="color: #7c3aed; font-weight: 600;">$1</span>') // [[purple:text]] -> purple text
               
               return (
                 <p 
