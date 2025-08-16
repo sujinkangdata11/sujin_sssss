@@ -52,6 +52,13 @@ const ContentEditor: React.FC = () => {
     try {
       setIsPublishing(true);
       
+      // DEBUG: 줄바꿈 문제 체크
+      console.log('=== PUBLISH DEBUG ===');
+      console.log('Content raw:', content);
+      console.log('Content lines:', content.split('\n').length);
+      console.log('Content with escaped newlines:', content.replace(/\n/g, '\\n'));
+      console.log('Content with JSON.stringify:', JSON.stringify(content));
+      
       // Create content object
       const contentData = {
         pageNumber,
@@ -60,9 +67,11 @@ const ContentEditor: React.FC = () => {
         title,
         excerpt,
         category,
-        content,
+        content: content, // 명시적으로 content 그대로 전달
         date: new Date().toISOString().split('T')[0]
       };
+
+      console.log('ContentData content:', JSON.stringify(contentData.content));
 
       await publishArticle(contentData, thumbnailFile || undefined);
       
@@ -223,6 +232,7 @@ const ContentEditor: React.FC = () => {
 
           <div className="admin-load-group">
             <button 
+              type="button"
               onClick={handleLoadArticle}
               disabled={isLoading}
               className="admin-load-btn"
@@ -296,6 +306,7 @@ const ContentEditor: React.FC = () => {
         {languages.map(lang => (
           <button
             key={lang.code}
+            type="button"
             className={`admin-lang-tab ${selectedLanguage === lang.code ? 'active' : ''}`}
             onClick={() => setSelectedLanguage(lang.code)}
           >
@@ -334,18 +345,31 @@ const ContentEditor: React.FC = () => {
         <div className="admin-form-group">
           <label>Content:</label>
           <div className="admin-toolbar">
-            <button onClick={insertBold}>**Bold**</button>
-            <button onClick={insertLarge}>##Large</button>
-            <button onClick={insertPurple} style={{ color: '#7c3aed' }}>💜 Purple</button>
-            <button onClick={insertYoutube} style={{ color: '#ff0000' }}>📺 YouTube</button>
-            <button onClick={insertImage}>🖼️ Image</button>
+            <button type="button" onClick={insertBold}>**Bold**</button>
+            <button type="button" onClick={insertLarge}>##Large</button>
+            <button type="button" onClick={insertPurple} style={{ color: '#7c3aed' }}>💜 Purple</button>
+            <button type="button" onClick={insertYoutube} style={{ color: '#ff0000' }}>📺 YouTube</button>
+            <button type="button" onClick={insertImage}>🖼️ Image</button>
           </div>
           
           <div style={{ position: 'relative' }}>
             <textarea
               value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Write your content here..."
+              onChange={(e) => {
+                console.log('Content change:', e.target.value);
+                console.log('Line breaks detected:', e.target.value.split('\n').length - 1);
+                setContent(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                console.log('Key pressed:', e.key);
+                if (e.key === 'Enter') {
+                  console.log('Enter key pressed - should create line break');
+                }
+              }}
+              placeholder="Write your content here...
+
+엔터키를 눌러서 줄바꿈을 만들 수 있습니다.
+**볼드텍스트** 또는 ##큰글씨## 또는 [[purple:보라색텍스트]] 사용 가능"
               rows={20}
               className="admin-content-textarea"
               style={{ 
@@ -357,7 +381,8 @@ const ContentEditor: React.FC = () => {
                 border: '1px solid #ced4da',
                 borderRadius: '4px',
                 color: '#000000',
-                background: '#ffffff'
+                background: '#ffffff',
+                whiteSpace: 'pre-wrap'
               }}
             />
             
@@ -409,6 +434,7 @@ const ContentEditor: React.FC = () => {
 
         <div style={{ display: 'flex', gap: '1rem' }}>
           <button 
+            type="button"
             onClick={handleClearForm}
             style={{
               background: '#6c757d',
@@ -426,6 +452,7 @@ const ContentEditor: React.FC = () => {
           </button>
           
           <button 
+            type="button"
             onClick={handlePublish} 
             className="admin-publish-btn"
             disabled={isPublishing}

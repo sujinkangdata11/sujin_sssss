@@ -341,6 +341,12 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                   }
                   return null;
                 } else if (element.type === 'text') {
+                  // DEBUG: 줄바꿈 처리 확인
+                  console.log('=== TEXT PROCESSING DEBUG ===');
+                  console.log('Original element.content:', element.content);
+                  console.log('Lines in content:', element.content.split('\n').length);
+                  console.log('Content with escaped newlines:', element.content.replace(/\n/g, '\\n'));
+                  
                   // Process markdown-style formatting
                   const processedText = element.content
                     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **text** -> <strong>text</strong>
@@ -348,6 +354,8 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                     .replace(/##(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // ##text -> larger text
                     .replace(/#(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // #text -> larger text
                     .replace(/\[\[purple:(.*?)\]\]/g, '<span style="color: #7c3aed; font-weight: 600;">$1</span>'); // [[purple:text]] -> purple text
+                  
+                  console.log('Processed text:', processedText);
                   
                   return (
                     <div 
