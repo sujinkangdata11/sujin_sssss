@@ -262,20 +262,34 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   return (
     <>
       <div className="hero-section">
-        <img src="/vidhunt_logo.svg" alt="VidHunt Logo" className="hero-logo" />
-        <h2 className="hero-title typing-title" lang={language} style={{whiteSpace: 'pre-line'}}>
-          {displayedText}
-          <span className="typing-cursor">|</span>
-        </h2>
-        <p className="hero-subtitle" lang={language} style={{whiteSpace: 'pre-line'}}>
-          {t('heroSubtitle')}
-        </p>
-        <Link to="/news/article/2" className="hero-guide-button">
-          {t('viewGuideButton')}
-          <svg className="hero-guide-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </Link>
+        <div className="hero-content">
+          <img src="/vidhunt_logo.svg" alt="VidHunt Logo" className="hero-logo" />
+          <h2 className="hero-title typing-title" lang={language} style={{whiteSpace: 'pre-line'}}>
+            {displayedText}
+            <span className="typing-cursor">|</span>
+          </h2>
+          <p className="hero-subtitle" lang={language} style={{whiteSpace: 'pre-line'}}>
+            {t('heroSubtitle')}
+          </p>
+          <Link to="/news/article/2" className="hero-guide-button">
+            {t('viewGuideButton')}
+            <svg className="hero-guide-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
+        </div>
+        <div className="hero-video">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="hero-video-player"
+          >
+            <source src="/mainvideo.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
       </div>
       
       <main className="main-container">

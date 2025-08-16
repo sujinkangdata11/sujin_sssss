@@ -11,17 +11,17 @@ interface CountrySelectorProps {
 }
 
 const translations: Record<Language, Record<string, string>> = {
-    en: { select: "Select countries", selected: "countries selected", search: "Search countries...", worldwide: "Worldwide (Select All)" },
-    ko: { select: "국가 선택", selected: "개국 선택됨", search: "국가 검색...", worldwide: "전세계 (전체 선택)" },
-    ja: { select: "国を選択", selected: "カ国選択済み", search: "国を検索...", worldwide: "全世界（すべて選択）" },
-    zh: { select: "选择国家", selected: "个国家已选", search: "搜索国家...", worldwide: "全球 (全选)" },
-    hi: { select: "देश चुनें", selected: "देश चुने गए", search: "देश खोजें...", worldwide: "दुनिया भर में (सभी चुनें)" },
-    es: { select: "Seleccionar países", selected: "países seleccionados", search: "Buscar países...", worldwide: "Todo el mundo (Seleccionar todo)" },
-    fr: { select: "Sélectionner des pays", selected: "pays sélectionnés", search: "Rechercher des pays...", worldwide: "Monde entier (Tout sélectionner)" },
-    de: { select: "Länder auswählen", selected: "Länder ausgewählt", search: "Länder suchen...", worldwide: "Weltweit (Alle auswählen)" },
-    nl: { select: "Landen selecteren", selected: "landen geselecteerd", search: "Landen zoeken...", worldwide: "Wereldwijd (Alles selecteren)" },
-    pt: { select: "Selecionar países", selected: "países selecionados", search: "Pesquisar países...", worldwide: "Mundo todo (Selecionar todos)" },
-    ru: { select: "Выберите страны", selected: "стран выбрано", search: "Поиск стран...", worldwide: "Весь мир (Выбрать все)" },
+    en: { select: "Select countries", selected: "countries selected", search: "Search countries...", worldwide: "Worldwide (Select All)", topRPM: "High RPM Top 20", viralPowerhouse: "Viral Powers Top 20" },
+    ko: { select: "국가 선택", selected: "개국 선택됨", search: "국가 검색...", worldwide: "전세계 (전체 선택)", topRPM: "고수익 20개국", viralPowerhouse: "바이럴 강국 20개국" },
+    ja: { select: "国を選択", selected: "カ国選択済み", search: "国を検索...", worldwide: "全世界（すべて選択）", topRPM: "高収益20カ国", viralPowerhouse: "バイラル強国20" },
+    zh: { select: "选择国家", selected: "个国家已选", search: "搜索国家...", worldwide: "全球 (全选)", topRPM: "高收益20国", viralPowerhouse: "病毒强国20" },
+    hi: { select: "देश चुनें", selected: "देश चुने गए", search: "देश खोजें...", worldwide: "दुनिया भर में (सभी चुनें)", topRPM: "हाई RPM टॉप 20", viralPowerhouse: "वायरल पावर टॉप 20" },
+    es: { select: "Seleccionar países", selected: "países seleccionados", search: "Buscar países...", worldwide: "Todo el mundo (Seleccionar todo)", topRPM: "Alto RPM Top 20", viralPowerhouse: "Potencias Virales 20" },
+    fr: { select: "Sélectionner des pays", selected: "pays sélectionnés", search: "Rechercher des pays...", worldwide: "Monde entier (Tout sélectionner)", topRPM: "Haut RPM Top 20", viralPowerhouse: "Puissances Viral 20" },
+    de: { select: "Länder auswählen", selected: "Länder ausgewählt", search: "Länder suchen...", worldwide: "Weltweit (Alle auswählen)", topRPM: "High RPM Top 20", viralPowerhouse: "Viral-Mächte Top 20" },
+    nl: { select: "Landen selecteren", selected: "landen geselecteerd", search: "Landen zoeken...", worldwide: "Wereldwijd (Alles selecteren)", topRPM: "Hoge RPM Top 20", viralPowerhouse: "Virale Machten 20" },
+    pt: { select: "Selecionar países", selected: "países selecionados", search: "Pesquisar países...", worldwide: "Mundo todo (Selecionar todos)", topRPM: "Alto RPM Top 20", viralPowerhouse: "Potências Virais 20" },
+    ru: { select: "Выберите страны", selected: "стран выбрано", search: "Поиск стран...", worldwide: "Весь мир (Выбрать все)", topRPM: "Высокий RPM Топ 20", viralPowerhouse: "Вирусные Державы 20" },
 };
 
 const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, onChange, language }) => {
@@ -36,10 +36,23 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, on
   );
   
   const allCountryCodes = COUNTRIES.map(c => c.code);
+  const topRPMCountryCodes = ['NO', 'CH', 'DK', 'SE', 'FI', 'LU', 'IS', 'US', 'GB', 'AT', 'BE', 'NZ', 'SG', 'HK', 'IE', 'CA', 'AU', 'DE', 'NL', 'FR'];
+  const viralPowerhouseCountryCodes = ['US', 'IN', 'BR', 'MX', 'KR', 'JP', 'ID', 'PH', 'TH', 'VN', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'TR', 'RU', 'ZA'];
+  
   const areAllSelected = selectedCountries.length === allCountryCodes.length;
+  const areTopRPMSelected = topRPMCountryCodes.every(code => selectedCountries.includes(code)) && selectedCountries.length === topRPMCountryCodes.length;
+  const areViralPowerhouseSelected = viralPowerhouseCountryCodes.every(code => selectedCountries.includes(code)) && selectedCountries.length === viralPowerhouseCountryCodes.length;
 
   const handleSelectAllToggle = () => {
       onChange(areAllSelected ? [] : allCountryCodes);
+  }
+
+  const handleTopRPMToggle = () => {
+      onChange(areTopRPMSelected ? [] : topRPMCountryCodes);
+  }
+
+  const handleViralPowerhouseToggle = () => {
+      onChange(areViralPowerhouseSelected ? [] : viralPowerhouseCountryCodes);
   }
 
   const handleToggle = (countryCode: string) => {
@@ -105,6 +118,34 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, on
                   className="country-selector-checkbox"
                 />
                 <span className="country-selector-option-text worldwide">{t('worldwide')}</span>
+              </div>
+            </li>
+            <li
+              onClick={handleTopRPMToggle}
+              className="country-selector-option"
+            >
+              <div className="country-selector-option-content">
+                <input
+                  type="checkbox"
+                  checked={areTopRPMSelected}
+                  readOnly
+                  className="country-selector-checkbox"
+                />
+                <span className="country-selector-option-text top-rpm">{t('topRPM')}</span>
+              </div>
+            </li>
+            <li
+              onClick={handleViralPowerhouseToggle}
+              className="country-selector-option"
+            >
+              <div className="country-selector-option-content">
+                <input
+                  type="checkbox"
+                  checked={areViralPowerhouseSelected}
+                  readOnly
+                  className="country-selector-checkbox"
+                />
+                <span className="country-selector-option-text viral-powerhouse">{t('viralPowerhouse')}</span>
               </div>
             </li>
             <hr className="country-selector-divider"/>

@@ -230,11 +230,37 @@
 
 /* Hero Section */
 .hero-section {
-  text-align: left;
+  position: relative;
   padding: 10rem var(--spacing-4) var(--spacing-6); /* 160px top padding (130px + 30px) */
   max-width: 1200px; /* match main-container max-width */
   margin: 0 auto;
   padding-left: var(--spacing-8); /* align with form content */
+  overflow: hidden; /* prevent video from overflowing */
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10; /* ensure text appears above video */
+  text-align: left;
+  width: 100%; /* window 전체 폭 사용 */
+  max-width: 100vw; /* viewport 전체 폭까지 허용 */
+}
+
+.hero-video {
+  position: absolute;
+  bottom: calc(3rem - 30px); /* 영상을 60px 아래로 내림 (기존 +30px에서 -30px로) */
+  right: var(--spacing-8); /* 메인 폼의 오른쪽 라인과 맞춤 */
+  z-index: 5; /* 텍스트보다 뒤에 위치 */
+  width: 691.2px; /* 576px * 1.2 = 691.2px */
+  height: auto;
+}
+
+.hero-video-player {
+  width: 100%;
+  max-width: 691.2px; /* 20% larger than 576px (576 * 1.2 = 691.2) */
+  height: auto;
+  border-radius: 1rem; /* 16px rounded corners */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Hero Logo */
@@ -319,6 +345,13 @@
   max-width: 1200px;
   margin: -20px auto 0;
   padding: var(--spacing-4);
+}
+
+/* Mobile: Reduce top margin for main container */
+@media (max-width: 768px) {
+  .main-container {
+    margin-top: -120px; /* 폼을 더 위로 올려서 영상과 간격 줄임 */
+  }
 }
 
 @media (min-width: 768px) {
@@ -428,6 +461,14 @@
   grid-template-columns: 1fr;
   gap: 1.5rem;
   align-items: start;
+}
+
+/* Mobile: All form fields should span full width */
+@media (max-width: 767px) {
+  .form-grid > div {
+    grid-column: span 1 !important;
+    width: 100%;
+  }
 }
 
 @media (min-width: 768px) {
@@ -1911,9 +1952,54 @@ select.form-input {
 
 /* Hero Section Mobile Styles */
 @media (max-width: 768px) {
+  .hero-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh; /* full viewport height for centering */
+    padding: var(--spacing-6) var(--spacing-4);
+    padding-bottom: 440px; /* 영상을 위한 공간 확보 - 40px 줄임 */
+  }
+  
+  .hero-content {
+    text-align: center;
+    max-width: 100%; /* 모바일에서는 전체 width 사용 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 80px; /* 80px 아래로 이동 */
+  }
+  
+  .hero-video {
+    position: absolute;
+    top: auto;
+    bottom: calc(var(--spacing-6) + 80px); /* 영상을 80px 위로 올림 */
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 432px;
+    max-width: 90vw;
+  }
+  
+  .hero-video-player {
+    max-width: 100%;
+  }
+  
+  .hero-logo {
+    margin-left: auto;
+    margin-right: auto;
+    display: block; /* center the logo on mobile */
+  }
+  
   .hero-title {
-    font-size: 2.5rem; /* 40px - reduced from 60px by 20px */
-    line-height: 45px; /* adjusted line height proportionally */
+    font-size: 1.9rem; /* 30.4px - more aggressive reduction */
+    line-height: 36px; /* tighter line height for better fitting */
+    max-width: 85vw; /* even more constrained width */
+    word-break: keep-all; /* prevent awkward word breaking */
+    letter-spacing: -0.5px; /* tighter letter spacing to save space */
   }
   
   /* Footer Mobile Styles */
@@ -1941,5 +2027,41 @@ select.form-input {
   
   .app-footer {
     padding-bottom: 100px; /* add bottom spacing for mobile */
+  }
+}
+
+/* Extra small mobile screens - further optimize text */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.7rem; /* 27.2px - even smaller for very narrow screens */
+    line-height: 32px; /* proportional line height */
+    max-width: 90vw; /* use more screen width */
+    letter-spacing: -0.8px; /* even tighter spacing */
+  }
+}
+
+/* Very small screens - emergency text sizing */
+@media (max-width: 360px) {
+  .hero-title {
+    font-size: 1.5rem; /* 24px - minimum readable size */
+    line-height: 28px; /* tight line height */
+    max-width: 95vw; /* almost full width */
+    letter-spacing: -1px; /* very tight spacing */
+  }
+}
+
+/* Russian and other long text languages - special handling */
+@media (max-width: 768px) {
+  .hero-title[lang="ru"] {
+    font-size: 1.7rem; /* 27.2px - smaller for Russian */
+    line-height: 32px;
+    letter-spacing: -0.8px;
+    max-width: 80vw;
+  }
+  
+  .hero-title[lang="de"] {
+    font-size: 1.8rem; /* 28.8px - slightly smaller for German */
+    line-height: 34px;
+    letter-spacing: -0.6px;
   }
 }

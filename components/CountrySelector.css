@@ -135,6 +135,16 @@
   font-weight: 600;
 }
 
+.country-selector-option-text.top-rpm {
+  font-weight: 600;
+  color: #059669; /* emerald-600 - green color for high RPM */
+}
+
+.country-selector-option-text.viral-powerhouse {
+  font-weight: 600;
+  color: #dc2626; /* red-600 - red color for viral powerhouse */
+}
+
 .country-selector-option-text.normal {
   font-weight: 400;
 }

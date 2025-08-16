@@ -35,16 +35,6 @@
   transform: scale(1.05);
 }
 
-.shorts-card-overlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.2);
-  transition: background-color var(--transition-normal);
-}
-
-.shorts-card:hover .shorts-card-overlay {
-  background-color: rgba(0, 0, 0, 0.4);
-}
 
 .shorts-card-duration {
   position: absolute;
