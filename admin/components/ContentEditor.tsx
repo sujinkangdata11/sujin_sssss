@@ -107,6 +107,10 @@ const ContentEditor: React.FC = () => {
     setContent(prev => prev + '[YOUTUBE:https://youtu.be/VIDEO_ID]');
   };
 
+  const insertDivider = () => {
+    setContent(prev => prev + (prev ? '\n\n' : '') + '---' + '\n\n');
+  };
+
   const insertImage = () => {
     // Create a hidden file input
     const fileInput = document.createElement('input');
@@ -348,6 +352,7 @@ const ContentEditor: React.FC = () => {
             <button type="button" onClick={insertBold}>**Bold**</button>
             <button type="button" onClick={insertLarge}>##Large</button>
             <button type="button" onClick={insertPurple} style={{ color: '#7c3aed' }}>💜 Purple</button>
+            <button type="button" onClick={insertDivider} style={{ color: '#6b7280' }}>➖ Divider</button>
             <button type="button" onClick={insertYoutube} style={{ color: '#ff0000' }}>📺 YouTube</button>
             <button type="button" onClick={insertImage}>🖼️ Image</button>
           </div>
@@ -369,7 +374,7 @@ const ContentEditor: React.FC = () => {
               placeholder="Write your content here...
 
 엔터키를 눌러서 줄바꿈을 만들 수 있습니다.
-**볼드텍스트** 또는 ##큰글씨## 또는 [[purple:보라색텍스트]] 사용 가능"
+**볼드텍스트** 또는 ##큰글씨## 또는 [[purple:보라색텍스트]] 또는 --- 구분선 사용 가능"
               rows={20}
               className="admin-content-textarea"
               style={{ 

@@ -244,7 +244,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
               for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
                 
-                // Check for special content (images, youtube)
+                // Check for special content (images, youtube, dividers)
                 if (line.trim().includes('[IMAGE:')) {
                   // Save current text if exists
                   if (currentText.trim() || currentText.includes('\n')) {
@@ -261,6 +261,14 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                   }
                   // Add youtube
                   elements.push({ type: 'youtube', content: line.trim(), key: `yt-${elements.length}` });
+                } else if (line.trim() === '---') {
+                  // Save current text if exists
+                  if (currentText.trim() || currentText.includes('\n')) {
+                    elements.push({ type: 'text', content: currentText, key: `text-${elements.length}` });
+                    currentText = '';
+                  }
+                  // Add divider
+                  elements.push({ type: 'divider', content: '---', key: `divider-${elements.length}` });
                 } else {
                   // Add to current text (preserve all line breaks)
                   if (currentText || line) {
@@ -340,6 +348,21 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                     }
                   }
                   return null;
+                } else if (element.type === 'divider') {
+                  return (
+                    <hr 
+                      key={element.key} 
+                      className="article-divider"
+                      style={{ 
+                        border: 'none',
+                        borderTop: '1px solid #d1d5db',
+                        margin: '2.5rem 0',
+                        width: '100%',
+                        height: '0',
+                        backgroundColor: 'transparent'
+                      }}
+                    />
+                  );
                 } else if (element.type === 'text') {
                   // DEBUG: 줄바꿈 처리 확인
                   console.log('=== TEXT PROCESSING DEBUG ===');
