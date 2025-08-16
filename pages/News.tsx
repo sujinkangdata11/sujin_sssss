@@ -16,6 +16,11 @@ const News: React.FC<NewsProps> = ({ language }) => {
   
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const loadArticles = async () => {
       try {
@@ -111,7 +116,19 @@ const News: React.FC<NewsProps> = ({ language }) => {
         </div>
         <div className="featured-content">
           <h2 className="featured-title" lang={language}>{featuredArticle.title}</h2>
-          <p className="featured-excerpt">{featuredArticle.excerpt}</p>
+          <p 
+            className="featured-excerpt"
+            dangerouslySetInnerHTML={{ 
+              __html: featuredArticle.excerpt
+                .replace(/\r\n/g, '\n') // normalize line endings
+                .replace(/\r/g, '\n') // normalize line endings
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **text** -> <strong>text</strong>
+                .replace(/\*(.*?)\*/g, '<em>$1</em>') // *text* -> <em>text</em>
+                .replace(/##(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // ##text -> larger text
+                .replace(/#(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // #text -> larger text
+                .replace(/\n/g, '<br>') 
+            }}
+          />
           <button className="read-more-btn">Read More</button>
         </div>
       </Link>
@@ -133,7 +150,19 @@ const News: React.FC<NewsProps> = ({ language }) => {
             </div>
             <div className="article-content">
               <h3 className="article-title" lang={language}>{article.title}</h3>
-              <p className="article-excerpt">{article.excerpt}</p>
+              <p 
+                className="article-excerpt"
+                dangerouslySetInnerHTML={{ 
+                  __html: article.excerpt
+                    .replace(/\r\n/g, '\n') // normalize line endings
+                    .replace(/\r/g, '\n') // normalize line endings
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **text** -> <strong>text</strong>
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>') // *text* -> <em>text</em>
+                    .replace(/##(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // ##text -> larger text
+                    .replace(/#(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // #text -> larger text
+                    .replace(/\n/g, '<br>') 
+                }}
+              />
             </div>
           </Link>
         ))}

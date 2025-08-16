@@ -15,6 +15,11 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
   const [error, setError] = useState<string | null>(null);
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
 
+  // Scroll to top when component mounts or ID changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
   useEffect(() => {
     const loadArticle = async () => {
       if (!id) {
@@ -216,27 +221,65 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
           <h1 className="article-detail-title" lang={language}>{article.title}</h1>
           
           <div className="article-body">
-            {article.content.split('\n\n').map((paragraph, index) => {
-              if (paragraph.startsWith('[IMAGE:')) {
-                const imagePath = paragraph.match(/\[IMAGE:(.*?)\]/)?.[1];
-                if (imagePath) {
-                  return (
-                    <div key={index} className="article-inline-image">
-                      <img 
-                        src={imagePath} 
-                        alt={`Article image ${index + 1}`}
-                        className="article-inline-image-actual"
-                        loading="lazy"
-                        onError={(e) => {
-                          // Fallback to placeholder if image fails to load
-                          e.currentTarget.style.display = 'none';
-                          const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
-                          if (placeholder) placeholder.style.display = 'block';
-                        }}
-                      />
-                      <div className="article-inline-image-placeholder" style={{ display: 'none' }}></div>
-                    </div>
-                  );
+            {article.content.split(/\n\s*\n/).map((paragraph, index) => {
+              if (paragraph.includes('[IMAGE:')) {
+                const imageName = paragraph.match(/\[IMAGE:(.*?)\]/)?.[1];
+                if (imageName) {
+                  console.log('Looking for image:', imageName);
+                  
+                  // Check for published image in localStorage
+                  const imageKey = `published_image_${imageName}`;
+                  const imageData = localStorage.getItem(imageKey);
+                  
+                  console.log('Image key:', imageKey);
+                  console.log('Image data found:', !!imageData);
+                  
+                  if (imageData) {
+                    console.log('Found published image:', imageName);
+                    return (
+                      <div key={index} className="article-inline-image">
+                        <img 
+                          src={imageData} 
+                          alt={`Article image ${index + 1}`}
+                          className="article-inline-image-actual"
+                          loading="lazy"
+                          style={{ maxWidth: '100%', height: 'auto' }}
+                          onError={(e) => {
+                            console.error('Image failed to load:', imageName);
+                            // Fallback to placeholder if image fails to load
+                            e.currentTarget.style.display = 'none';
+                            const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                            if (placeholder) placeholder.style.display = 'block';
+                          }}
+                          onLoad={() => {
+                            console.log('Image loaded successfully:', imageName);
+                          }}
+                        />
+                        <div className="article-inline-image-placeholder" style={{ display: 'none' }}></div>
+                      </div>
+                    );
+                  } else {
+                    // Fallback to trying as a regular path (for file system images)
+                    console.log('Trying as file path:', imageName);
+                    return (
+                      <div key={index} className="article-inline-image">
+                        <img 
+                          src={imageName.startsWith('/') ? imageName : `/contents/images/${imageName}`} 
+                          alt={`Article image ${index + 1}`}
+                          className="article-inline-image-actual"
+                          loading="lazy"
+                          style={{ maxWidth: '100%', height: 'auto' }}
+                          onError={(e) => {
+                            console.error('Image failed to load:', imageName);
+                            e.currentTarget.style.display = 'none';
+                            const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                            if (placeholder) placeholder.style.display = 'block';
+                          }}
+                        />
+                        <div className="article-inline-image-placeholder" style={{ display: 'none' }}></div>
+                      </div>
+                    );
+                  }
                 }
                 // Fallback for old [IMAGE] format
                 return (
@@ -269,13 +312,14 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                 }
               }
               
-              // Process markdown-style formatting
+              // Process markdown-style formatting (white-space: pre-line in CSS handles line breaks)
               const processedParagraph = paragraph
+                .replace(/\r\n/g, '\n') // normalize line endings
+                .replace(/\r/g, '\n') // normalize line endings
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **text** -> <strong>text</strong>
                 .replace(/\*(.*?)\*/g, '<em>$1</em>') // *text* -> <em>text</em>
-                .replace(/##(.*?)##/g, '<span style="font-size: 1.5em; font-weight: 600;">$1</span>') // ##text## -> large text
-                .replace(/#(.*?)#/g, '<span style="font-size: 1.25em; font-weight: 500;">$1</span>') // #text# -> medium large text  
-                .replace(/\\n/g, '<br>'); // \n -> <br>
+                .replace(/##(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // ##text -> larger text
+                .replace(/#(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // #text -> larger text
               
               return (
                 <p 

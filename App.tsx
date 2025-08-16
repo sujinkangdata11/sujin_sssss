@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import ShortsmaKer from './pages/ShortsmaKer';
 import News from './pages/News';
 import ArticleDetail from './pages/ArticleDetail';
+import AdminPanel from './admin/AdminPanel';
 
 const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) => void }> = ({ 
   language, 
@@ -185,6 +186,7 @@ const App: React.FC = () => {
           <Route path="/shortsmaker" element={<ShortsmaKer language={language} />} />
           <Route path="/news" element={<News language={language} />} />
           <Route path="/news/article/:id" element={<ArticleDetail language={language} />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
         
         <footer className="app-footer">
@@ -207,6 +209,26 @@ const App: React.FC = () => {
                 <p className="footer-contact-desc" style={{whiteSpace: 'pre-line'}}>
                   {t('footerContactDesc')}
                 </p>
+                
+                {/* Hidden Admin Button */}
+                <button 
+                  onClick={() => window.location.href = '/admin'}
+                  title="Admin Access"
+                  style={{
+                    background: '#f3f4f6',
+                    border: '1px solid #d1d5db',
+                    color: '#6b7280',
+                    fontSize: '0.8rem',
+                    cursor: 'pointer',
+                    padding: '0.3rem 0.5rem',
+                    borderRadius: '4px',
+                    marginTop: '1rem',
+                    float: 'right',
+                    opacity: 0.3
+                  }}
+                >
+                  ⚙️
+                </button>
               </div>
             </div>
           </div>

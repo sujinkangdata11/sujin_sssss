@@ -141,6 +141,27 @@ export const parseContentFile = (fileContent: string, language: Language = 'en')
 };
 
 export const loadArticleFromFile = async (pageNumber: number, articleId: number, language: Language = 'en'): Promise<Article | null> => {
+  // First check localStorage for published articles
+  try {
+    const articleKey = `article_${pageNumber}_${articleId}_${language}`;
+    const storedArticle = localStorage.getItem(articleKey);
+    
+    if (storedArticle) {
+      const article = JSON.parse(storedArticle);
+      return {
+        id: article.id,
+        title: article.title,
+        excerpt: article.excerpt,
+        date: article.date,
+        content: article.content,
+        category: article.category
+      };
+    }
+  } catch (error) {
+    console.error('Error loading from localStorage:', error);
+  }
+
+  // Fallback to file system
   try {
     const paddedPageNumber = pageNumber.toString().padStart(2, '0');
     const paddedArticleId = articleId.toString().padStart(2, '0');
@@ -171,8 +192,9 @@ export const loadArticleFromFile = async (pageNumber: number, articleId: number,
 
 export const loadArticlesForPage = async (pageNumber: number, language: Language = 'en'): Promise<Article[]> => {
   const paddedPageNumber = pageNumber.toString().padStart(2, '0');
+  const articles: Article[] = [];
   
-  // Load articles in parallel for better performance
+  // Load articles from file system first
   const articlePromises: Promise<Article | null>[] = [];
   
   // Only try to load articles that we know exist (01.txt to 05.txt)
@@ -185,8 +207,53 @@ export const loadArticlesForPage = async (pageNumber: number, language: Language
   // Wait for all articles to load in parallel
   const results = await Promise.all(articlePromises);
   
-  // Filter out null results and return valid articles
-  return results.filter((article): article is Article => article !== null);
+  // Filter out null results and add to articles array
+  const fileArticles = results.filter((article): article is Article => article !== null);
+  articles.push(...fileArticles);
+  
+  // Load from localStorage (published articles)
+  const publishedArticles = getPublishedArticles(pageNumber, language);
+  articles.push(...publishedArticles);
+  
+  // Remove duplicates (prioritize localStorage over file system)
+  const uniqueArticles = articles.reduce((acc: Article[], current) => {
+    const existingIndex = acc.findIndex(article => article.id === current.id);
+    if (existingIndex >= 0) {
+      // If article exists, keep the one from localStorage (published articles come later)
+      acc[existingIndex] = current;
+    } else {
+      acc.push(current);
+    }
+    return acc;
+  }, []);
+  
+  return uniqueArticles.sort((a, b) => a.id - b.id);
+};
+
+// Helper function to get published articles from localStorage
+const getPublishedArticles = (pageNumber: number, language: Language): Article[] => {
+  try {
+    const publishedArticlesKey = 'published_articles';
+    const allPublished = JSON.parse(localStorage.getItem(publishedArticlesKey) || '[]');
+    
+    return allPublished
+      .filter((article: any) => 
+        article.pageNumber === pageNumber && 
+        article.language === language &&
+        article.published
+      )
+      .map((article: any) => ({
+        id: article.id,
+        title: article.title,
+        excerpt: article.excerpt,
+        content: article.content,
+        category: article.category,
+        date: article.date
+      }));
+  } catch (error) {
+    console.error('Error loading published articles:', error);
+    return [];
+  }
 };
 
 export const getImagePath = (pageNumber: number, imageName: string): string => {
@@ -195,6 +262,15 @@ export const getImagePath = (pageNumber: number, imageName: string): string => {
 };
 
 export const getThumbnailPath = (pageNumber: number, articleId: number): string => {
+  // Check localStorage first for published article thumbnails
+  const thumbnailKey = `thumbnail_${pageNumber}_${articleId}`;
+  const storedThumbnail = localStorage.getItem(thumbnailKey);
+  
+  if (storedThumbnail) {
+    return storedThumbnail; // Return base64 data URL
+  }
+  
+  // Fallback to file system
   const paddedPageNumber = pageNumber.toString().padStart(2, '0');
   const paddedArticleId = articleId.toString().padStart(2, '0');
   return `/contents/${paddedPageNumber}/${paddedArticleId}_thumbnail.png`;

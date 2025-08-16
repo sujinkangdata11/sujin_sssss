@@ -1847,6 +1847,7 @@ select.form-input {
 .article-paragraph {
   margin-bottom: var(--spacing-5);
   text-align: justify;
+  white-space: pre-line; /* preserve line breaks and spaces */
 }
 
 .article-inline-image {
@@ -2196,4 +2197,23 @@ select.form-input {
     line-height: 38px;
     letter-spacing: -0.5px;
   }
+}
+
+/* Admin Access Button */
+.admin-access-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  opacity: 0.1;
+  transition: opacity 0.2s;
+  position: static;
+  display: inline-block;
+  margin-left: 1rem;
+}
+
+.admin-access-btn:hover {
+  opacity: 0.8;
 }

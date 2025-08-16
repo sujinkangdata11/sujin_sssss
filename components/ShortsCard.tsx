@@ -195,7 +195,7 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language }) => {
           {short.title}
         </h3>
         <div className="shorts-card-meta">
-          <p className="shorts-card-channel" title={short.channelTitle}>{short.channelTitle}</p>
+          <p className="shorts-card-channel" title={`@${short.channelTitle}`}>@{short.channelTitle}</p>
           {short.subscriberCount !== undefined && (
             <p className="shorts-card-subscribers">
               {formatSubscriberCount(short.subscriberCount)}
