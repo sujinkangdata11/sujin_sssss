@@ -170,18 +170,23 @@ export const loadArticleFromFile = async (pageNumber: number, articleId: number,
 };
 
 export const loadArticlesForPage = async (pageNumber: number, language: Language = 'en'): Promise<Article[]> => {
-  const articles: Article[] = [];
   const paddedPageNumber = pageNumber.toString().padStart(2, '0');
   
-  // Try to load articles 01.txt through 10.txt
-  for (let i = 1; i <= 10; i++) {
-    const article = await loadArticleFromFile(pageNumber, i, language);
-    if (article) {
-      articles.push(article);
-    }
+  // Load articles in parallel for better performance
+  const articlePromises: Promise<Article | null>[] = [];
+  
+  // Only try to load articles that we know exist (01.txt, 02.txt for now)
+  const knownArticleIds = [1, 2]; // Add more as needed
+  
+  for (const i of knownArticleIds) {
+    articlePromises.push(loadArticleFromFile(pageNumber, i, language));
   }
   
-  return articles;
+  // Wait for all articles to load in parallel
+  const results = await Promise.all(articlePromises);
+  
+  // Filter out null results and return valid articles
+  return results.filter((article): article is Article => article !== null);
 };
 
 export const getImagePath = (pageNumber: number, imageName: string): string => {

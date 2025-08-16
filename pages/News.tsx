@@ -27,6 +27,12 @@ const News: React.FC<NewsProps> = ({ language }) => {
           setFeaturedArticle(loadedArticles[0]);
           // Rest become regular articles
           setArticles(loadedArticles.slice(1));
+          
+          // Preload thumbnail images for better UX
+          loadedArticles.forEach((article) => {
+            const img = new Image();
+            img.src = getThumbnailPath(currentPage, article.id);
+          });
         }
       } catch (error) {
         console.error('Error loading articles:', error);
@@ -45,9 +51,25 @@ const News: React.FC<NewsProps> = ({ language }) => {
           <h1 className="news-title" lang={language}>{t('navNews')}</h1>
           <p className="news-subtitle" lang={language}>{t('newsSubtitle')}</p>
         </div>
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          Loading articles...
+        
+        {/* Loading Skeleton */}
+        <div className="featured-article" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+          <div className="featured-image-placeholder featured-large-image" style={{ background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }}></div>
+          <div className="featured-content">
+            <div style={{ height: '2rem', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite', marginBottom: '1rem', borderRadius: '4px' }}></div>
+            <div style={{ height: '1rem', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite', marginBottom: '0.5rem', borderRadius: '4px', width: '80%' }}></div>
+            <div style={{ height: '1rem', background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite', borderRadius: '4px', width: '60%' }}></div>
+          </div>
         </div>
+        
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes shimmer {
+              0% { background-position: -200% 0; }
+              100% { background-position: 200% 0; }
+            }
+          `
+        }} />
       </main>
     );
   }
@@ -81,6 +103,7 @@ const News: React.FC<NewsProps> = ({ language }) => {
             src={getThumbnailPath(currentPage, featuredArticle.id)} 
             alt={featuredArticle.title}
             className="thumbnail-image featured-thumbnail"
+            loading="eager"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
             }}
@@ -102,6 +125,7 @@ const News: React.FC<NewsProps> = ({ language }) => {
                 src={getThumbnailPath(currentPage, article.id)} 
                 alt={article.title}
                 className="thumbnail-image small-thumbnail"
+                loading="lazy"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
