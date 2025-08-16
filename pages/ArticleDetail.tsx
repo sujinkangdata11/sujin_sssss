@@ -32,6 +32,10 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
           // Process content to include proper image paths
           const processedContent = processContentWithImages(loadedArticle.content, 1);
           setArticle({ ...loadedArticle, content: processedContent });
+          
+          // Preload article images for better UX
+          const img = new Image();
+          img.src = getThumbnailPath(1, loadedArticle.id);
         } else {
           setError('Article not found');
         }
@@ -54,9 +58,117 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
             ← Back to News
           </Link>
         </div>
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          Loading article...
-        </div>
+        
+        {/* Article Detail Skeleton */}
+        <article className="article-detail" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+          {/* Header Image Skeleton */}
+          <div className="article-image-container">
+            <div 
+              className="article-header-image" 
+              style={{ 
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', 
+                backgroundSize: '200% 100%', 
+                animation: 'shimmer 1.5s infinite',
+                height: '300px',
+                width: '100%'
+              }}
+            ></div>
+          </div>
+          
+          <div className="article-content">
+            {/* Title Skeleton */}
+            <div style={{ 
+              height: '3rem', 
+              background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', 
+              backgroundSize: '200% 100%', 
+              animation: 'shimmer 1.5s infinite',
+              marginBottom: '2rem',
+              borderRadius: '4px',
+              width: '80%'
+            }}></div>
+            
+            {/* Article Body Skeleton */}
+            <div className="article-body">
+              {/* First paragraph */}
+              <div style={{ 
+                height: '1.2rem', 
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', 
+                backgroundSize: '200% 100%', 
+                animation: 'shimmer 1.5s infinite',
+                marginBottom: '1rem',
+                borderRadius: '4px',
+                width: '100%'
+              }}></div>
+              <div style={{ 
+                height: '1.2rem', 
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', 
+                backgroundSize: '200% 100%', 
+                animation: 'shimmer 1.5s infinite',
+                marginBottom: '1rem',
+                borderRadius: '4px',
+                width: '95%'
+              }}></div>
+              <div style={{ 
+                height: '1.2rem', 
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', 
+                backgroundSize: '200% 100%', 
+                animation: 'shimmer 1.5s infinite',
+                marginBottom: '2rem',
+                borderRadius: '4px',
+                width: '85%'
+              }}></div>
+              
+              {/* Inline Image Skeleton */}
+              <div style={{ 
+                height: '200px', 
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', 
+                backgroundSize: '200% 100%', 
+                animation: 'shimmer 1.5s infinite',
+                marginBottom: '2rem',
+                borderRadius: '8px',
+                width: '100%'
+              }}></div>
+              
+              {/* More paragraph skeletons */}
+              <div style={{ 
+                height: '1.2rem', 
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', 
+                backgroundSize: '200% 100%', 
+                animation: 'shimmer 1.5s infinite',
+                marginBottom: '1rem',
+                borderRadius: '4px',
+                width: '90%'
+              }}></div>
+              <div style={{ 
+                height: '1.2rem', 
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', 
+                backgroundSize: '200% 100%', 
+                animation: 'shimmer 1.5s infinite',
+                marginBottom: '1rem',
+                borderRadius: '4px',
+                width: '100%'
+              }}></div>
+              <div style={{ 
+                height: '1.2rem', 
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)', 
+                backgroundSize: '200% 100%', 
+                animation: 'shimmer 1.5s infinite',
+                marginBottom: '2rem',
+                borderRadius: '4px',
+                width: '75%'
+              }}></div>
+            </div>
+          </div>
+        </article>
+        
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes shimmer {
+              0% { background-position: -200% 0; }
+              100% { background-position: 200% 0; }
+            }
+          `
+        }} />
       </main>
     );
   }
@@ -89,6 +201,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
             src={getThumbnailPath(1, article.id)} 
             alt={article.title}
             className="article-header-image"
+            loading="eager"
             onError={(e) => {
               // Fallback to placeholder if thumbnail fails to load
               e.currentTarget.style.display = 'none';
@@ -113,6 +226,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                         src={imagePath} 
                         alt={`Article image ${index + 1}`}
                         className="article-inline-image-actual"
+                        loading="lazy"
                         onError={(e) => {
                           // Fallback to placeholder if image fails to load
                           e.currentTarget.style.display = 'none';
