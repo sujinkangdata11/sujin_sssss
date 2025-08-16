@@ -15,17 +15,17 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language }) => {
     const formattedPercentage = Math.round(percentage).toLocaleString();
     
     const ratioTextMap: Record<Language, string> = {
-      en: 'vs subscribers',
-      ko: '구독자 대비',
-      ja: '登録者比',
-      zh: '相对订阅者',
-      hi: 'सब्सक्राइबर अनुपात',
-      es: 'vs suscriptores',
-      fr: 'vs abonnés',
-      de: 'vs Abonnenten',
-      nl: 'vs abonnees',
-      pt: 'vs inscritos',
-      ru: 'к подписчикам'
+      en: 'Views per subscriber',
+      ko: '구독자 대비 조회수',
+      ja: '登録者対視聴回数',
+      zh: '订阅者对观看次数',
+      hi: 'सब्सक्राइबर के अनुपात में व्यूज',
+      es: 'Vistas por suscriptor',
+      fr: 'Vues par abonné',
+      de: 'Aufrufe pro Abonnent',
+      nl: 'Weergaven per abonnee',
+      pt: 'Visualizações por inscrito',
+      ru: 'Просмотры на подписчика'
     };
     
     const ratioText = ratioTextMap[language] || ratioTextMap.en;
