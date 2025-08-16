@@ -175,8 +175,8 @@ export const loadArticlesForPage = async (pageNumber: number, language: Language
   // Load articles in parallel for better performance
   const articlePromises: Promise<Article | null>[] = [];
   
-  // Only try to load articles that we know exist (01.txt, 02.txt for now)
-  const knownArticleIds = [1, 2]; // Add more as needed
+  // Only try to load articles that we know exist (01.txt to 05.txt)
+  const knownArticleIds = [1, 2, 3, 4, 5]; // Add more as needed
   
   for (const i of knownArticleIds) {
     articlePromises.push(loadArticleFromFile(pageNumber, i, language));
