@@ -1,0 +1,821 @@
+[English]
+
+title: Get Your Google Gemini API Key for Free in Just 10 Seconds - No Credit Card Required!
+excerpt: Unlock Google's powerful AI with just 6 clicks - so simple even a 10-year-old can do it. Complete guide to free API access without any payments
+category: Technology
+date: 2025-01-15
+Did you know you can access Google's latest AI technology with just 6 clicks, completely free and without any credit card?
+
+Get Your Google Gemini API Key for Free in Just 10 Seconds!
+What is the Google Gemini API?
+Many of you might be hearing about the Google Gemini API for the first time, but don't worry!
+"Do I need to pay for it?" → No, it's completely free. "Do I need a credit card?" → Not at all. "Is it difficult?" → It's so simple that even a 10-year-old can follow along.
+
+[IMAGE:03_image_1.png]
+
+The Google Gemini API is a free AI service provided by Google.
+For example, if you create an account like help.aiassistant@gmail.com, Google will grant that account "permission to use Gemini AI's powerful features."
+Simply put, it's one of the free AI services that Google provides!
+
+[IMAGE:03_image_2.png]
+
+It's really simple - just 6 clicks and you're done!
+I tried getting a new API key myself, and it really only takes 6 clicks to get your API key quickly.
+So let's do it together!
+
+📹** Want to watch a video guide?**
+[유튜브 링크 임베디드]
+
+📝** Step-by-Step Guide**
+For those who have trouble watching videos, I'll explain in detail with images.
+Step 1: Access Google AI Studio
+Search for "ai studio" on Google. Click on the first result, which is the official Google AI Studio website.
+
+[IMAGE:03_image_3.png]
+
+Step 2: Start the Service
+Click the "Get Started" button in the top right corner.
+
+[IMAGE:03_image_4.png]
+
+Step 3: Accept Terms
+When the agreement screen appears, check the checkbox and click the "Continue" button.
+⚠️ Important Note: Sometimes a popup might appear trying to get you to sign up for paid services. In this case, select "Skip" or "Use Free Version." We're only going to use the free API!
+
+[IMAGE:03_image_5.png]
+
+Step 4: Start API Key Creation
+Click the blue "Get API Key" button at the top of the screen.
+
+[IMAGE:03_image_6.png]
+
+Step 5: Create API Key
+The API key settings window will appear. Of course, you don't have a key yet. Click the "Create New API Key" button.
+
+[IMAGE:03_image_7.png]
+
+Step 6: Complete!
+Click the "Generate API Key" button and you're done!
+Congratulations! Your API key has been successfully created.
+
+[IMAGE:03_image_8.png]
+
+💡** Useful Tips!**
+
+Forgot your key? Don't worry. You can click the "View API Key" button to check it again anytime.
+Want to delete your key? You can delete the existing key and create a new one. The new key will be completely unique and different from the previous one.
+Need multiple keys? You can create and manage different API keys for different projects.
+
+Now start using Google's powerful AI services!
+Congratulations! You can now fully utilize Google's cutting-edge AI features through the Google Gemini API.
+Try out various AI functions like text generation, image analysis, and coding assistance for free!
+If you have more detailed usage questions or any other inquiries, feel free to leave a comment anytime. I'll respond quickly!
+
+---
+
+[korea]
+
+title: Google Gemini API 키를 10초만에 무료 발급받는 놀라운 방법
+excerpt: 신용카드도 결제도 필요 없이 클릭 6번으로 구글의 강력한 AI를 내 손안에! 10세 아이도 따라할 수 있는 초간단 가이드
+category: Technology
+date: 2025-01-15
+완전 무료에 클릭 단 6번이면 구글 최신 AI를 바로 사용할 수 있다는 사실, 알고 계셨나요?
+
+Google Gemini API 키 무료로 10초만에 발급받기!
+
+Google Gemini API가 뭔가요?
+Google Gemini API에 대해 처음 듣는 분들이 많을 텐데요, 걱정하지 마세요!
+"돈을 내야 하나요?" → 아니요, 완전 무료입니다. "신용카드가 필요한가요?" → 전혀 필요 없습니다. "어려운가요?" → 10세 어린이도 따라할 수 있을 정도로 간단합니다.
+
+[IMAGE:03_image_1.png]
+
+Google Gemini API는 구글에서 제공하는 무료 AI 서비스입니다. 
+예를 들어, help.aiassistant@gmail.com 계정을 만들면,  구글이 해당 계정에 **"Gemini AI의 강력한 기능을 사용할 수 있는 권한"**을 제공해주는 거죠.
+
+쉽게 말해서, 구글이 제공하는 무료 AI 서비스 중 하나입니다!
+
+[IMAGE:03_image_2.png]
+
+정말 간단합니다 - 클릭 6번이면 끝!
+제가 직접 새로 API를 발급받아보니, 정말 클릭 6번이면 금방 API 키를 받을 수 있더라구요.
+그러니까 함께 따라해보세요!
+
+📹 영상으로 보고 싶다면?
+
+[유튜브 링크 임베디드]
+
+
+📝 단계별 가이드
+영상을 보기 어려운 분들을 위해 이미지와 함께 상세히 설명해드릴게요.
+1단계: Google AI Studio 접속
+구글에서 **"ai studio"**를 검색하세요. 가장 첫 번째로 나오는 Google AI Studio 공식 웹사이트를 클릭합니다.
+
+[IMAGE:03_image_3.png]
+
+2단계: 서비스 시작
+오른쪽 상단의 "시작하기" 버튼을 클릭해주세요.
+
+[IMAGE:03_image_4.png]
+
+3단계: 약관 동의
+동의하기 화면이 나타나면 체크박스에 체크한 후 "확인" 버튼을 눌러주세요.
+⚠️ 주의사항: 간혹 유료 서비스 가입을 유도하는 팝업이 뜰 수 있습니다.  이때는 "건너뛰기" 또는 **"무료 버전 사용"**을 선택하세요. 우리는 무료 API만 사용할 예정이니까요!
+
+[IMAGE:03_image_5.png]
+
+4단계: API 키 생성 시작
+화면 상단의 파란색 "API 키 받기" 버튼을 클릭합니다.
+ [IMAGE:03_image_6.png]
+
+5단계: API 키 만들기
+API 키 세팅 창이 나타납니다. 당연히 아직 키가 없죠. "새 API 키 만들기" 버튼을 클릭하세요.
+
+[IMAGE:03_image_7.png]
+
+6단계: 완료!
+"API 키 생성" 버튼을 클릭하면 끝입니다!
+축하합니다! API 키가 성공적으로 만들어졌습니다.
+
+[IMAGE:03_image_8.png]
+
+💡 유용한 팁!
+* 키를 잊어버렸다면? 걱정하지 마세요. "API 키 보기" 버튼을 눌러 언제든지 다시 확인할 수 있습니다.
+* 키를 삭제하고 싶다면? 기존 키를 삭제하고 새로 만들 수 있습니다. 새로운 키는 이전 키와 완전히 다른 고유한 키입니다.
+* 여러 개의 키가 필요하다면? 프로젝트별로 다른 API 키를 생성해서 관리할 수 있습니다.  
+이제 구글의 강력한 AI 서비스를 활용해보세요!
+축하합니다! 이제 Google Gemini API를 통해 구글이 제공하는 최첨단 AI 기능을 마음껏 활용할 수 있습니다.
+텍스트 생성, 이미지 분석, 코딩 도움 등 다양한 AI 기능을 무료로 사용해보세요! 
+
+더 자세한 활용 방법이나 궁금한 점이 있으시면 언제든지 댓글로 남겨주세요. 빠르게 답변드리겠습니다!
+
+---
+
+[Japanese]
+
+title: Google Gemini APIキーを10秒で無料取得！クレカ不要の驚きの方法
+excerpt: たった6クリックでGoogleの強力なAIを手に入れる！10歳の子供でもできる超簡単ガイド、支払い一切不要
+category: Technology
+date: 2025-01-15
+クレジットカードも支払いも一切不要で、たった6クリックでGoogleの最新AI技術にアクセスできることをご存知でしたか？
+
+Google Gemini APIキーを10秒で無料取得！
+Google Gemini APIって何ですか？
+Google Gemini APIについて初めて聞く方も多いと思いますが、心配いりません！
+「お金を払う必要があるの？」 → いいえ、完全無料です。「クレジットカードが必要？」 → 全く必要ありません。「難しいの？」 → 10歳のお子様でも付いてこられるほど簡単です。
+
+[IMAGE:03_image_1.png]
+
+Google Gemini APIは、Googleが提供する無料のAIサービスです。
+例えば、help.aiassistant@gmail.com というアカウントを作成すると、Googleがそのアカウントに**「Gemini AIの強力な機能を使用する権限」**を提供してくれるのです。
+簡単に言うと、Googleが提供する無料AIサービスの一つです！
+
+[IMAGE:03_image_2.png]
+
+本当に簡単です - クリック6回で完了！
+実際に新しくAPIを取得してみたところ、本当にクリック6回で簡単にAPIキーを取得できました。
+それでは一緒にやってみましょう！
+
+📹** 動画で見たい方は？**
+[유튜브 링크 임베디드]
+
+📝** ステップバイステップガイド**
+動画を見るのが難しい方のために、画像と共に詳しく説明いたします。
+ステップ1：Google AI Studioにアクセス
+Googleで**「ai studio」**を検索してください。最初に表示されるGoogle AI Studio公式ウェブサイトをクリックします。
+
+[IMAGE:03_image_3.png]
+
+ステップ2：サービス開始
+右上の**「始める」**ボタンをクリックしてください。
+
+[IMAGE:03_image_4.png]
+
+ステップ3：規約同意
+同意画面が表示されたら、チェックボックスにチェックを入れて**「確認」ボタンを押してください。
+⚠️ 注意事項：時々有料サービス加入を誘導するポップアップが表示されることがあります。その際は「スキップ」または「無料版を使用」**を選択してください。私たちは無料APIのみを使用する予定ですから！
+
+[IMAGE:03_image_5.png]
+
+ステップ4：APIキー生成開始
+画面上部の青い**「APIキーを取得」**ボタンをクリックします。
+
+[IMAGE:03_image_6.png]
+
+ステップ5：APIキー作成
+APIキー設定ウィンドウが表示されます。当然まだキーはありませんね。**「新しいAPIキーを作成」**ボタンをクリックしてください。
+
+[IMAGE:03_image_7.png]
+
+ステップ6：完了！
+**「APIキーを生成」**ボタンをクリックすれば完了です！
+おめでとうございます！APIキーが正常に作成されました。
+
+[IMAGE:03_image_8.png]
+
+💡** 便利なヒント！**
+
+キーを忘れてしまったら？ 心配いりません。**「APIキーを表示」**ボタンを押していつでも再確認できます。
+キーを削除したいなら？ 既存のキーを削除して新しく作成できます。新しいキーは以前のキーとは全く異なる固有のキーです。
+複数のキーが必要なら？ プロジェクトごとに異なるAPIキーを生成して管理できます。
+
+今すぐGoogleの強力なAIサービスを活用してみてください！
+おめでとうございます！これでGoogle Gemini APIを通じてGoogleが提供する最先端のAI機能を存分に活用できます。
+テキスト生成、画像分析、コーディング支援など、様々なAI機能を無料でお試しください！
+より詳しい活用方法やご質問がございましたら、いつでもコメントでお聞かせください。迅速にお答えいたします！
+
+---
+
+[Chinese]
+
+title: 10秒免费获取Google Gemini API密钥！无需信用卡的神奇方法
+excerpt: 仅需6次点击就能获得Google强大的AI！连10岁小孩都能跟着做的超简单指南，完全免费无需付费
+category: Technology
+date: 2025-01-15
+您知道吗？无需信用卡和任何付费，仅需6次点击就能立即使用Google最新的AI技术！
+
+10秒免费获取Google Gemini API密钥！
+什么是Google Gemini API？
+很多人可能第一次听说Google Gemini API，但别担心！
+"需要付费吗？" → 不需要，完全免费。"需要信用卡吗？" → 完全不需要。"很难吗？" → 简单到10岁小孩都能跟着操作。
+
+[IMAGE:03_image_1.png]
+
+Google Gemini API是Google提供的免费AI服务。
+例如，如果您创建一个help.aiassistant@gmail.com账户，Google就会为该账户提供**"使用Gemini AI强大功能的权限"**。
+简单来说，这是Google提供的免费AI服务之一！
+
+[IMAGE:03_image_2.png]
+
+真的很简单 - 只需点击6次就完成！
+我亲自重新申请了一个API，发现真的只需要点击6次就能快速获得API密钥。
+那么让我们一起来试试吧！
+
+📹** 想看视频教程？**
+[유튜브 링크 임베디드]
+
+📝** 详细步骤指南**
+为了方便无法观看视频的朋友，我将用图片详细说明每个步骤。
+第1步：访问Google AI Studio
+在Google上搜索**"ai studio"**。点击第一个出现的Google AI Studio官方网站。
+
+[IMAGE:03_image_3.png]
+
+第2步：开始服务
+点击右上角的**"开始使用"**按钮。
+
+[IMAGE:03_image_4.png]
+
+第3步：同意条款
+当同意界面出现时，勾选复选框后点击**"确认"按钮。
+⚠️ 注意事项：有时可能会弹出引导您购买付费服务的窗口。这时请选择"跳过"或"使用免费版本"**。我们只准备使用免费API！
+
+[IMAGE:03_image_5.png]
+
+第4步：开始创建API密钥
+点击屏幕顶部蓝色的**"获取API密钥"**按钮。
+
+[IMAGE:03_image_6.png]
+
+第5步：创建API密钥
+API密钥设置窗口会出现。当然现在还没有密钥。点击**"创建新API密钥"**按钮。
+
+[IMAGE:03_image_7.png]
+
+第6步：完成！
+点击**"生成API密钥"**按钮就完成了！
+恭喜您！API密钥已成功创建。
+
+[IMAGE:03_image_8.png]
+
+💡** 实用小贴士！**
+
+忘记密钥了？ 别担心。点击**"查看API密钥"**按钮，随时可以重新查看。
+想删除密钥？ 可以删除现有密钥并创建新的。新密钥与之前的密钥完全不同，具有唯一性。
+需要多个密钥？ 可以为不同项目生成和管理不同的API密钥。
+
+现在就开始使用Google强大的AI服务吧！
+恭喜您！现在您可以通过Google Gemini API充分利用Google提供的尖端AI功能。
+免费体验文本生成、图像分析、编程辅助等各种AI功能！
+如果您对更详细的使用方法有疑问，请随时在评论中留言。我会快速回复！
+
+---
+
+[Hindi]
+
+title: Google Gemini API Key को 10 सेकंड में मुफ्त प्राप्त करें - बिना Credit Card के!
+excerpt: सिर्फ 6 क्लिक में Google की शक्तिशाली AI का इस्तेमाल करें! 10 साल का बच्चा भी कर सकता है, बिल्कुल मुफ्त
+category: Technology
+date: 2025-01-15
+क्या आप जानते हैं कि बिना क्रेडिट कार्ड और बिना पेमेंट के सिर्फ 6 क्लिक में Google की नवीनतम AI तकनीक का उपयोग कर सकते हैं?
+
+Google Gemini API Key को 10 सेकंड में मुफ्त में प्राप्त करें!
+Google Gemini API क्या है?
+आप में से कई लोग Google Gemini API के बारे में पहली बार सुन रहे होंगे, लेकिन चिंता न करें!
+"क्या इसके लिए पैसे देने होंगे?" → नहीं, यह पूरी तरह मुफ्त है। "क्या क्रेडिट कार्ड की जरूरत है?" → बिल्कुल नहीं। "क्या यह कठिन है?" → यह इतना सरल है कि 10 साल का बच्चा भी इसे फॉलो कर सकता है।
+[IMAGE:03_image_1.png]
+Google Gemini API, Google द्वारा प्रदान की जाने वाली एक मुफ्त AI सेवा है।
+उदाहरण के लिए, यदि आप help.aiassistant@gmail.com जैसा अकाउंट बनाते हैं, तो Google उस अकाउंट को "Gemini AI की शक्तिशाली सुविधाओं का उपयोग करने की अनुमति" प्रदान करता है।
+सरल शब्दों में, यह Google द्वारा प्रदान की जाने वाली मुफ्त AI सेवाओं में से एक है!
+
+[IMAGE:03_image_2.png]
+
+यह वास्तव में सरल है - बस 6 क्लिक और हो गया!
+मैंने खुद नई API प्राप्त करके देखा है, और वास्तव में सिर्फ 6 क्लिक में API key तुरंत मिल जाती है।
+तो आइए एक साथ इसे करते हैं!
+
+📹** वीडियो में देखना चाहते हैं?**
+[유튜브 링크 임베디드]
+
+📝** चरणबद्ध गाइड**
+जिन लोगों को वीडियो देखने में कठिनाई हो, उनके लिए मैं छवियों के साथ विस्तार से समझाऊंगा।
+चरण 1: Google AI Studio पर जाएं
+Google में "ai studio" खोजें। सबसे पहले आने वाली Google AI Studio की आधिकारिक वेबसाइट पर क्लिक करें।
+
+[IMAGE:03_image_3.png]
+
+चरण 2: सेवा शुरू करें
+ऊपरी दाएं कोने में "शुरू करें" बटन पर क्लिक करें।
+
+[IMAGE:03_image_4.png]
+
+चरण 3: नियमों से सहमति
+जब सहमति स्क्रीन आए, तो चेकबॉक्स पर टिक करें और "पुष्टि करें" बटन दबाएं।
+⚠️ सावधानी: कभी-कभी पेड सर्विस के लिए साइन अप करने वाला पॉपअप आ सकता है। इस स्थिति में "छोड़ें" या "मुफ्त संस्करण उपयोग करें" चुनें। हम केवल मुफ्त API का उपयोग करने वाले हैं!
+
+[IMAGE:03_image_5.png]
+
+चरण 4: API Key बनाना शुरू करें
+स्क्रीन के ऊपर नीले रंग का "API Key प्राप्त करें" बटन क्लिक करें।
+
+[IMAGE:03_image_6.png]
+
+चरण 5: API Key बनाएं
+API key सेटिंग विंडो दिखाई देगी। स्वाभाविक रूप से अभी तक कोई key नहीं है। "नई API Key बनाएं" बटन पर क्लिक करें।
+
+[IMAGE:03_image_7.png]
+
+चरण 6: पूर्ण!
+"API Key जेनरेट करें" बटन पर क्लिक करें और हो गया!
+बधाई हो! API key सफलतापूर्वक बना दी गई है।
+
+[IMAGE:03_image_8.png]
+
+💡** उपयोगी टिप्स!**
+
+Key भूल गए हैं? चिंता न करें। "API Key देखें" बटन दबाकर कभी भी दोबारा चेक कर सकते हैं।
+Key को डिलीट करना चाहते हैं? मौजूदा key को डिलीट करके नई बना सकते हैं। नई key पुरानी key से पूरी तरह अलग और अनूठी होती है।
+कई keys की जरूरत है? अलग-अलग प्रोजेक्ट के लिए अलग API keys बनाकर मैनेज कर सकते हैं।
+
+अब Google की शक्तिशाली AI सेवाओं का उपयोग करें!
+बधाई हो! अब आप Google Gemini API के जरिए Google की अत्याधुनिक AI सुविधाओं का पूरा फायदा उठा सकते हैं।
+टेक्स्ट जेनरेशन, इमेज एनालिसिस, कोडिंग सहायता जैसी विभिन्न AI सुविधाओं को मुफ्त में आज़माएं!
+अधिक विस्तृत उपयोग के तरीकों या किसी प्रश्न के लिए कभी भी कमेंट में पूछें। मैं तुरंत जवाब दूंगा!
+
+---
+
+[Spanish]
+
+title: ¡Obtén tu Google Gemini API Key Gratis en 10 Segundos - Sin Tarjeta de Crédito!
+excerpt: Desbloquea la poderosa IA de Google con solo 6 clics - tan simple que hasta un niño de 10 años puede hacerlo. Completamente gratis
+category: Technology
+date: 2025-01-15
+¿Sabías que puedes acceder a la última tecnología de IA de Google con solo 6 clics, completamente gratis y sin tarjeta de crédito?
+
+¡Obtén tu clave de API de Google Gemini gratis en solo 10 segundos!
+¿Qué es la API de Google Gemini?
+Muchos de ustedes podrían estar escuchando sobre la API de Google Gemini por primera vez, ¡pero no se preocupen!
+"¿Tengo que pagar por esto?" → No, es completamente gratis. "¿Necesito una tarjeta de crédito?" → Para nada. "¿Es difícil?" → Es tan simple que hasta un niño de 10 años puede seguir los pasos.
+
+[IMAGE:03_image_1.png]
+
+La API de Google Gemini es un servicio gratuito de IA proporcionado por Google.
+Por ejemplo, si creas una cuenta como help.aiassistant@gmail.com, Google le otorgará a esa cuenta "permiso para usar las potentes funciones de Gemini AI."
+En pocas palabras, ¡es uno de los servicios gratuitos de IA que Google proporciona!
+
+[IMAGE:03_image_2.png]
+
+¡Es realmente simple - solo 6 clics y listo!
+Probé obtener una nueva clave de API yo mismo, y realmente solo toma 6 clics conseguir tu clave de API rápidamente.
+¡Así que hagámoslo juntos!
+📹** ¿Quieres ver una guía en video?**
+[유튜브 링크 임베디드]
+
+📝** Guía paso a paso**
+Para aquellos que tienen dificultades para ver videos, les explicaré detalladamente con imágenes.
+Paso 1: Acceder a Google AI Studio
+Busca "ai studio" en Google. Haz clic en el primer resultado, que es el sitio web oficial de Google AI Studio.
+
+[IMAGE:03_image_3.png]
+
+Paso 2: Iniciar el servicio
+Haz clic en el botón "Comenzar" en la esquina superior derecha.
+
+[IMAGE:03_image_4.png]
+
+Paso 3: Aceptar términos
+Cuando aparezca la pantalla de acuerdo, marca la casilla de verificación y haz clic en el botón "Continuar".
+⚠️ Nota importante: A veces puede aparecer una ventana emergente tratando de hacer que te suscribas a servicios pagos. En este caso, selecciona "Omitir" o "Usar versión gratuita." ¡Solo vamos a usar la API gratuita!
+
+[IMAGE:03_image_5.png]
+
+Paso 4: Comenzar la creación de clave API
+Haz clic en el botón azul "Obtener clave de API" en la parte superior de la pantalla.
+
+[IMAGE:03_image_6.png]
+
+Paso 5: Crear clave API
+Aparecerá la ventana de configuración de la clave API. Por supuesto, aún no tienes una clave. Haz clic en el botón "Crear nueva clave API".
+
+[IMAGE:03_image_7.png]
+
+Paso 6: ¡Completado!
+Haz clic en el botón "Generar clave API" ¡y ya está!
+¡Felicitaciones! Tu clave API se ha creado exitosamente.
+
+[IMAGE:03_image_8.png]
+
+💡** ¡Consejos útiles!**
+
+¿Olvidaste tu clave? No te preocupes. Puedes hacer clic en el botón "Ver clave API" para verificarla en cualquier momento.
+¿Quieres eliminar tu clave? Puedes eliminar la clave existente y crear una nueva. La nueva clave será completamente única y diferente a la anterior.
+¿Necesitas múltiples claves? Puedes crear y administrar diferentes claves API para diferentes proyectos.
+
+¡Ahora comienza a usar los poderosos servicios de IA de Google!
+¡Felicitaciones! Ahora puedes utilizar completamente las funciones de IA de vanguardia de Google a través de la API de Google Gemini.
+¡Prueba varias funciones de IA como generación de texto, análisis de imágenes y asistencia de codificación de forma gratuita!
+Si tienes preguntas más detalladas sobre el uso o cualquier otra consulta, no dudes en dejar un comentario en cualquier momento. ¡Responderé rápidamente!
+
+---
+
+
+[French]
+
+title: Obtenez votre Clé API Google Gemini Gratuitement en 10 Secondes - Sans Carte de Crédit !
+excerpt: Débloquez l'IA puissante de Google avec seulement 6 clics - si simple qu'un enfant de 10 ans peut le faire. Guide gratuit complet
+category: Technology
+date: 2025-01-15
+Saviez-vous que vous pouvez accéder à la dernière technologie IA de Google avec seulement 6 clics, complètement gratuitement et sans carte de crédit ?
+
+Obtenez votre clé API Google Gemini gratuitement en seulement 10 secondes !
+Qu'est-ce que l'API Google Gemini ?
+Beaucoup d'entre vous entendent peut-être parler de l'API Google Gemini pour la première fois, mais ne vous inquiétez pas !
+"Dois-je payer pour cela ?" → Non, c'est complètement gratuit. "Ai-je besoin d'une carte de crédit ?" → Pas du tout. "Est-ce difficile ?" → C'est si simple qu'même un enfant de 10 ans peut suivre.
+
+[IMAGE:03_image_1.png]
+
+L'API Google Gemini est un service d'IA gratuit fourni par Google.
+Par exemple, si vous créez un compte comme help.aiassistant@gmail.com, Google accordera à ce compte "la permission d'utiliser les fonctionnalités puissantes de Gemini AI."
+En termes simples, c'est l'un des services d'IA gratuits que Google fournit !
+
+[IMAGE:03_image_2.png]
+
+C'est vraiment simple - juste 6 clics et c'est fini !
+J'ai essayé d'obtenir une nouvelle clé API moi-même, et cela ne prend vraiment que 6 clics pour obtenir votre clé API rapidement.
+Alors faisons-le ensemble !
+
+📹** Vous voulez voir un guide vidéo ?**
+[유튜브 링크 임베디드]
+
+📝** Guide étape par étape**
+Pour ceux qui ont du mal à regarder des vidéos, je vais expliquer en détail avec des images.
+Étape 1 : Accéder à Google AI Studio
+Recherchez "ai studio" sur Google. Cliquez sur le premier résultat, qui est le site officiel de Google AI Studio.
+
+[IMAGE:03_image_3.png]
+
+Étape 2 : Démarrer le service
+Cliquez sur le bouton "Commencer" dans le coin supérieur droit.
+
+[IMAGE:03_image_4.png]
+
+Étape 3 : Accepter les conditions
+Lorsque l'écran d'accord apparaît, cochez la case et cliquez sur le bouton "Continuer".
+⚠️ Note importante : Parfois, une fenêtre pop-up peut apparaître pour vous inciter à vous inscrire aux services payants. Dans ce cas, sélectionnez "Ignorer" ou "Utiliser la version gratuite." Nous n'utiliserons que l'API gratuite !
+
+[IMAGE:03_image_5.png]
+
+Étape 4 : Commencer la création de la clé API
+Cliquez sur le bouton bleu "Obtenir la clé API" en haut de l'écran.
+
+[IMAGE:03_image_6.png]
+
+Étape 5 : Créer une clé API
+La fenêtre de paramétrage de la clé API apparaîtra. Bien sûr, vous n'avez pas encore de clé. Cliquez sur le bouton "Créer une nouvelle clé API".
+
+[IMAGE:03_image_7.png]
+
+Étape 6 : Terminé !
+Cliquez sur le bouton "Générer la clé API" et c'est fait !
+Félicitations ! Votre clé API a été créée avec succès.
+
+[IMAGE:03_image_8.png]
+
+💡** Conseils utiles !**
+
+Vous avez oublié votre clé ? Ne vous inquiétez pas. Vous pouvez cliquer sur le bouton "Voir la clé API" pour la vérifier à tout moment.
+Vous voulez supprimer votre clé ? Vous pouvez supprimer la clé existante et en créer une nouvelle. La nouvelle clé sera complètement unique et différente de la précédente.
+Vous avez besoin de plusieurs clés ? Vous pouvez créer et gérer différentes clés API pour différents projets.
+
+Maintenant, commencez à utiliser les puissants services d'IA de Google !
+Félicitations ! Vous pouvez maintenant pleinement utiliser les fonctionnalités d'IA de pointe de Google via l'API Google Gemini.
+Essayez diverses fonctions d'IA comme la génération de texte, l'analyse d'images et l'assistance au codage gratuitement !
+Si vous avez des questions plus détaillées sur l'utilisation ou toute autre question, n'hésitez pas à laisser un commentaire à tout moment. Je répondrai rapidement !
+
+----
+
+[German]
+
+title: Google Gemini API-Schlüssel in 10 Sekunden Kostenlos Erhalten - Ohne Kreditkarte!
+excerpt: Googles mächtige KI mit nur 6 Klicks freischalten - so einfach, dass es sogar ein 10-jähriges Kind kann. Vollständig kostenlos
+category: Technology
+date: 2025-01-15
+Wussten Sie, dass Sie mit nur 6 Klicks auf Googles neueste KI-Technologie zugreifen können - völlig kostenlos und ohne Kreditkarte?
+
+Holen Sie sich Ihren Google Gemini API-Schlüssel kostenlos in nur 10 Sekunden!
+Was ist die Google Gemini API?
+Viele von Ihnen hören vielleicht zum ersten Mal von der Google Gemini API, aber keine Sorge!
+"Muss ich dafür bezahlen?" → Nein, es ist völlig kostenlos. "Brauche ich eine Kreditkarte?" → Überhaupt nicht. "Ist es schwierig?" → Es ist so einfach, dass sogar ein 10-jähriges Kind mitmachen kann.
+
+[IMAGE:03_image_1.png]
+
+Die Google Gemini API ist ein kostenloser KI-Service von Google.
+Wenn Sie zum Beispiel ein Konto wie help.aiassistant@gmail.com erstellen, gewährt Google diesem Konto "die Berechtigung, die mächtigen Funktionen von Gemini AI zu nutzen."
+Einfach gesagt, es ist einer der kostenlosen KI-Services, die Google anbietet!
+
+[IMAGE:03_image_2.png]
+
+Es ist wirklich einfach - nur 6 Klicks und fertig!
+Ich habe selbst versucht, einen neuen API-Schlüssel zu bekommen, und es dauert wirklich nur 6 Klicks, um schnell Ihren API-Schlüssel zu erhalten.
+Also machen wir es zusammen!
+
+📹** Möchten Sie eine Video-Anleitung sehen?**
+[유튜브 링크 임베디드]
+
+📝** Schritt-für-Schritt-Anleitung**
+Für diejenigen, die Schwierigkeiten beim Anschauen von Videos haben, erkläre ich es detailliert mit Bildern.
+Schritt 1: Google AI Studio aufrufen
+Suchen Sie bei Google nach "ai studio". Klicken Sie auf das erste Ergebnis, das die offizielle Google AI Studio-Website ist.
+
+[IMAGE:03_image_3.png]
+
+Schritt 2: Service starten
+Klicken Sie auf die Schaltfläche "Loslegen" in der oberen rechten Ecke.
+
+[IMAGE:03_image_4.png]
+
+Schritt 3: Bedingungen akzeptieren
+Wenn der Zustimmungsbildschirm erscheint, aktivieren Sie das Kontrollkästchen und klicken Sie auf die Schaltfläche "Weiter".
+⚠️ Wichtiger Hinweis: Manchmal kann ein Pop-up erscheinen, das Sie dazu verleiten möchte, sich für kostenpflichtige Services anzumelden. Wählen Sie in diesem Fall "Überspringen" oder "Kostenlose Version verwenden." Wir werden nur die kostenlose API verwenden!
+
+[IMAGE:03_image_5.png]
+
+Schritt 4: API-Schlüssel-Erstellung beginnen
+Klicken Sie auf die blaue Schaltfläche "API-Schlüssel abrufen" oben auf dem Bildschirm.
+
+[IMAGE:03_image_6.png]
+
+Schritt 5: API-Schlüssel erstellen
+Das API-Schlüssel-Einstellungsfenster wird angezeigt. Natürlich haben Sie noch keinen Schlüssel. Klicken Sie auf die Schaltfläche "Neuen API-Schlüssel erstellen".
+
+[IMAGE:03_image_7.png]
+
+Schritt 6: Fertig!
+Klicken Sie auf die Schaltfläche "API-Schlüssel generieren" und Sie sind fertig!
+Herzlichen Glückwunsch! Ihr API-Schlüssel wurde erfolgreich erstellt.
+
+[IMAGE:03_image_8.png]
+
+💡** Nützliche Tipps!**
+
+Schlüssel vergessen? Keine Sorge. Sie können jederzeit auf die Schaltfläche "API-Schlüssel anzeigen" klicken, um ihn erneut zu überprüfen.
+Schlüssel löschen? Sie können den vorhandenen Schlüssel löschen und einen neuen erstellen. Der neue Schlüssel wird völlig einzigartig und anders als der vorherige sein.
+Mehrere Schlüssel benötigt? Sie können verschiedene API-Schlüssel für verschiedene Projekte erstellen und verwalten.
+
+Nutzen Sie jetzt Googles mächtige KI-Services!
+Herzlichen Glückwunsch! Sie können jetzt die hochmodernen KI-Funktionen von Google über die Google Gemini API voll ausnutzen.
+Probieren Sie kostenlos verschiedene KI-Funktionen wie Textgenerierung, Bildanalyse und Programmier-Unterstützung aus!
+Wenn Sie detailliertere Nutzungsfragen oder andere Anfragen haben, zögern Sie nicht, jederzeit einen Kommentar zu hinterlassen. Ich werde schnell antworten!
+
+---
+
+[Dutch]
+
+title: Krijg je Google Gemini API-Sleutel Gratis in 10 Seconden - Geen Creditcard Nodig!
+excerpt: Ontgrendel Google's krachtige AI met slechts 6 klikken - zo simpel dat zelfs een 10-jarige het kan. Volledig gratis handleiding
+category: Technology
+date: 2025-01-15
+Wist je dat je toegang kunt krijgen tot Google's nieuwste AI-technologie met slechts 6 klikken, volledig gratis en zonder creditcard?
+
+Krijg je Google Gemini API-sleutel gratis in slechts 10 seconden!
+Wat is de Google Gemini API?
+Velen van jullie horen misschien voor het eerst over de Google Gemini API, maar maak je geen zorgen!
+"Moet ik ervoor betalen?" → Nee, het is volledig gratis. "Heb ik een creditcard nodig?" → Helemaal niet. "Is het moeilijk?" → Het is zo simpel dat zelfs een 10-jarig kind het kan volgen.
+
+[IMAGE:03_image_1.png]
+
+De Google Gemini API is een gratis AI-service van Google.
+Bijvoorbeeld, als je een account aanmaakt zoals help.aiassistant@gmail.com, dan verleent Google dat account "toestemming om de krachtige functies van Gemini AI te gebruiken."
+Simpel gezegd, het is een van de gratis AI-services die Google biedt!
+
+[IMAGE:03_image_2.png]
+
+Het is echt simpel - slechts 6 klikken en klaar!
+Ik heb zelf geprobeerd om een nieuwe API-sleutel te krijgen, en het duurt echt maar 6 klikken om snel je API-sleutel te krijgen.
+Dus laten we het samen doen!
+
+📹** Wil je een video-gids zien?**
+[유튜브 링크 임베디드]
+
+📝** Stap-voor-stap gids**
+Voor degenen die moeite hebben met het bekijken van video's, zal ik het gedetailleerd uitleggen met afbeeldingen.
+Stap 1: Google AI Studio bezoeken
+Zoek naar "ai studio" op Google. Klik op het eerste resultaat, dat de officiële Google AI Studio website is.
+
+[IMAGE:03_image_3.png]
+
+Stap 2: Service starten
+Klik op de knop "Aan de slag" in de rechterbovenhoek.
+
+[IMAGE:03_image_4.png]
+
+Stap 3: Voorwaarden accepteren
+Wanneer het akkoordscherm verschijnt, vink het selectievakje aan en klik op de knop "Doorgaan".
+⚠️ Belangrijke opmerking: Soms kan er een pop-up verschijnen die je probeert te verleiden om je aan te melden voor betaalde services. Selecteer in dit geval "Overslaan" of "Gratis versie gebruiken." We gaan alleen de gratis API gebruiken!
+
+[IMAGE:03_image_5.png]
+
+Stap 4: API-sleutel aanmaken beginnen
+Klik op de blauwe knop "API-sleutel verkrijgen" bovenaan het scherm.
+
+[IMAGE:03_image_6.png]
+
+Stap 5: API-sleutel maken
+Het API-sleutel instellingenvenster verschijnt. Natuurlijk heb je nog geen sleutel. Klik op de knop "Nieuwe API-sleutel maken".
+
+[IMAGE:03_image_7.png]
+
+Stap 6: Voltooid!
+Klik op de knop "API-sleutel genereren" en je bent klaar!
+Gefeliciteerd! Je API-sleutel is succesvol aangemaakt.
+
+[IMAGE:03_image_8.png]
+
+💡** Handige tips!**
+
+Sleutel vergeten? Geen zorgen. Je kunt op de knop "API-sleutel bekijken" klikken om deze op elk moment opnieuw te controleren.
+Sleutel verwijderen? Je kunt de bestaande sleutel verwijderen en een nieuwe maken. De nieuwe sleutel zal volledig uniek en anders zijn dan de vorige.
+Meerdere sleutels nodig? Je kunt verschillende API-sleutels voor verschillende projecten maken en beheren.
+
+Begin nu met het gebruiken van Google's krachtige AI-services!
+Gefeliciteerd! Je kunt nu ten volle gebruikmaken van Google's geavanceerde AI-functies via de Google Gemini API.
+Probeer gratis verschillende AI-functies zoals tekstgeneratie, beeldanalyse en programmeerassistentie!
+Als je meer gedetailleerde gebruiksvragen hebt of andere vragen, aarzel dan niet om op elk moment een reactie achter te laten. Ik zal snel reageren!
+
+---
+
+[Portuguese]
+
+title: Obtenha sua Chave API Google Gemini Gratuitamente em 10 Segundos - Sem Cartão de Crédito!
+excerpt: Desbloqueie a poderosa IA do Google com apenas 6 cliques - tão simples que até uma criança de 10 anos consegue. Completamente grátis
+category: Technology
+date: 2025-01-15
+Você sabia que pode acessar a mais recente tecnologia de IA do Google com apenas 6 cliques, completamente gratuito e sem cartão de crédito?
+
+Obtenha sua chave da API do Google Gemini gratuitamente em apenas 10 segundos!
+O que é a API do Google Gemini?
+Muitos de vocês podem estar ouvindo sobre a API do Google Gemini pela primeira vez, mas não se preocupem!
+"Preciso pagar por isso?" → Não, é completamente gratuito. "Preciso de um cartão de crédito?" → De jeito nenhum. "É difícil?" → É tão simples que até uma criança de 10 anos pode acompanhar.
+
+[IMAGE:03_image_1.png]
+
+A API do Google Gemini é um serviço gratuito de IA fornecido pelo Google.
+Por exemplo, se você criar uma conta como help.aiassistant@gmail.com, o Google concederá a essa conta "permissão para usar os recursos poderosos do Gemini AI."
+Simplificando, é um dos serviços gratuitos de IA que o Google oferece!
+
+[IMAGE:03_image_2.png]
+
+É realmente simples - apenas 6 cliques e pronto!
+Eu mesmo tentei obter uma nova chave de API, e realmente leva apenas 6 cliques para conseguir sua chave de API rapidamente.
+Então vamos fazer isso juntos!
+
+📹** Quer ver um guia em vídeo?**
+[유튜브 링크 임베디드]
+📝** Guia passo a passo**
+Para aqueles que têm dificuldade em assistir vídeos, explicarei detalhadamente com imagens.
+Passo 1: Acessar o Google AI Studio
+Pesquise por "ai studio" no Google. Clique no primeiro resultado, que é o site oficial do Google AI Studio.
+
+[IMAGE:03_image_3.png]
+
+Passo 2: Iniciar o serviço
+Clique no botão "Começar" no canto superior direito.
+
+[IMAGE:03_image_4.png]
+
+Passo 3: Aceitar os termos
+Quando a tela de acordo aparecer, marque a caixa de seleção e clique no botão "Continuar".
+⚠️ Nota importante: Às vezes pode aparecer um pop-up tentando fazer você se inscrever em serviços pagos. Neste caso, selecione "Pular" ou "Usar versão gratuita." Vamos usar apenas a API gratuita!
+
+[IMAGE:03_image_5.png]
+
+Passo 4: Começar a criação da chave da API
+Clique no botão azul "Obter chave da API" na parte superior da tela.
+
+[IMAGE:03_image_6.png]
+
+Passo 5: Criar chave da API
+A janela de configuração da chave da API aparecerá. Claro, você ainda não tem uma chave. Clique no botão "Criar nova chave da API".
+
+[IMAGE:03_image_7.png]
+
+Passo 6: Concluído!
+Clique no botão "Gerar chave da API" e pronto!
+Parabéns! Sua chave da API foi criada com sucesso.
+
+[IMAGE:03_image_8.png]
+
+💡** Dicas úteis!**
+
+Esqueceu sua chave? Não se preocupe. Você pode clicar no botão "Ver chave da API" para verificá-la a qualquer momento.
+Quer deletar sua chave? Você pode deletar a chave existente e criar uma nova. A nova chave será completamente única e diferente da anterior.
+Precisa de múltiplas chaves? Você pode criar e gerenciar diferentes chaves da API para diferentes projetos.
+
+Agora comece a usar os poderosos serviços de IA do Google!
+Parabéns! Agora você pode utilizar plenamente os recursos de IA de ponta do Google através da API do Google Gemini.
+Experimente gratuitamente várias funções de IA como geração de texto, análise de imagens e assistência de programação!
+Se você tiver perguntas mais detalhadas sobre uso ou outras dúvidas, sinta-se à vontade para deixar um comentário a qualquer momento. Responderei rapidamente!
+
+---
+
+[Russian]
+
+title: Получите Google Gemini API Ключ Бесплатно за 10 Секунд - Без Кредитной Карты!
+excerpt: Разблокируйте мощный ИИ Google всего за 6 кликов - настолько просто, что даже 10-летний ребенок справится. Полностью бесплатно
+category: Technology
+date: 2025-01-15
+Знали ли вы, что можете получить доступ к новейшим AI-технологиям Google всего за 6 кликов, совершенно бесплатно и без кредитной карты?
+
+Получите ключ Google Gemini API бесплатно всего за 10 секунд!
+Что такое Google Gemini API?
+Многие из вас, возможно, впервые слышат о Google Gemini API, но не волнуйтесь!
+"Нужно ли за это платить?" → Нет, это совершенно бесплатно. "Нужна ли кредитная карта?" → Совсем не нужна. "Это сложно?" → Настолько просто, что даже 10-летний ребенок может следовать инструкции.
+
+[IMAGE:03_image_1.png]
+
+Google Gemini API — это бесплатный AI-сервис, предоставляемый Google.
+Например, если вы создадите аккаунт типа help.aiassistant@gmail.com, Google предоставит этому аккаунту "разрешение использовать мощные функции Gemini AI."
+Проще говоря, это один из бесплатных AI-сервисов, которые предоставляет Google!
+
+[IMAGE:03_image_2.png]
+
+Это действительно просто - всего 6 кликов и готово!
+Я сам попробовал получить новый API-ключ, и действительно требуется всего 6 кликов, чтобы быстро получить ваш API-ключ.
+Так что давайте сделаем это вместе!
+
+📹** Хотите посмотреть видео-руководство?**
+[유튜브 링크 임베디드]
+
+📝** Пошаговое руководство**
+Для тех, кому трудно смотреть видео, я подробно объясню с картинками.
+Шаг 1: Доступ к Google AI Studio
+Найдите в Google "ai studio". Нажмите на первый результат, который является официальным сайтом Google AI Studio.
+
+[IMAGE:03_image_3.png]
+
+Шаг 2: Запуск сервиса
+Нажмите кнопку "Начать" в правом верхнем углу.
+
+[IMAGE:03_image_4.png]
+
+Шаг 3: Принятие условий
+Когда появится экран соглашения, поставьте галочку и нажмите кнопку "Продолжить".
+⚠️ Важное примечание: Иногда может появиться всплывающее окно, пытающееся заставить вас подписаться на платные услуги. В этом случае выберите "Пропустить" или "Использовать бесплатную версию." Мы будем использовать только бесплатный API!
+
+[IMAGE:03_image_5.png]
+
+Шаг 4: Начало создания API-ключа
+Нажмите синюю кнопку "Получить API-ключ" в верхней части экрана.
+
+[IMAGE:03_image_6.png]
+
+Шаг 5: Создание API-ключа
+Появится окно настроек API-ключа. Конечно, у вас пока нет ключа. Нажмите кнопку "Создать новый API-ключ".
+
+[IMAGE:03_image_7.png]
+
+Шаг 6: Готово!
+Нажмите кнопку "Сгенерировать API-ключ" и всё готово!
+Поздравляем! Ваш API-ключ успешно создан.
+
+[IMAGE:03_image_8.png]
+
+💡** Полезные советы!**
+
+Забыли ключ? Не волнуйтесь. Вы можете нажать кнопку "Просмотреть API-ключ", чтобы проверить его в любое время.
+Хотите удалить ключ? Вы можете удалить существующий ключ и создать новый. Новый ключ будет полностью уникальным и отличным от предыдущего.
+Нужно несколько ключей? Вы можете создавать и управлять разными API-ключами для разных проектов.
+
+Теперь начните использовать мощные AI-сервисы Google!
+Поздравляем! Теперь вы можете полноценно использовать передовые AI-функции Google через Google Gemini API.
+Попробуйте бесплатно различные AI-функции, такие как генерация текста, анализ изображений и помощь в программировании!
+Если у вас есть более подробные вопросы об использовании или другие вопросы, не стесняйтесь оставлять комментарии в любое время. Я быстро отвечу!

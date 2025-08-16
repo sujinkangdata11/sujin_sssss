@@ -119,6 +119,7 @@ export const searchYouTubeShorts = async (
       title: item.snippet.title,
       thumbnailUrl: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
       channelTitle: item.snippet.channelTitle,
+      channelId: item.snippet.channelId,
       publishedAt: item.snippet.publishedAt,
       viewCount: parseInt(item.statistics.viewCount, 10) || 0,
       duration: item.contentDetails?.duration ? formatDuration(item.contentDetails.duration) : undefined,
@@ -132,6 +133,76 @@ export const searchYouTubeShorts = async (
         throw error;
     }
     throw new Error('An unknown error occurred while searching YouTube.');
+  }
+};
+
+// Get channel subscriber counts for multiple channels
+export const getChannelSubscriberCounts = async (apiKey: string, channelIds: string[]): Promise<Record<string, number>> => {
+  try {
+    if (channelIds.length === 0) return {};
+    
+    // YouTube API allows up to 50 channel IDs per request
+    const channelIdsString = channelIds.join(',');
+    
+    const channelsParams = new URLSearchParams({
+      part: 'statistics',
+      id: channelIdsString,
+      key: apiKey,
+    });
+
+    const response = await fetch(`${API_BASE_URL}/channels?${channelsParams.toString()}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`YouTube Channels API Error: ${errorData.error.message}`);
+    }
+    
+    const data = await response.json();
+    const subscriberCounts: Record<string, number> = {};
+    
+    data.items?.forEach((channel: any) => {
+      const subscriberCount = parseInt(channel.statistics.subscriberCount, 10) || 0;
+      subscriberCounts[channel.id] = subscriberCount;
+    });
+    
+    return subscriberCounts;
+  } catch (error) {
+    console.error('Error fetching channel subscriber counts:', error);
+    return {};
+  }
+};
+
+// Add subscriber counts and calculate views per subscriber ratio
+export const enhanceVideosWithSubscriberData = async (
+  apiKey: string, 
+  videos: YouTubeShort[]
+): Promise<YouTubeShort[]> => {
+  try {
+    if (videos.length === 0) return videos;
+    
+    // Get unique channel IDs
+    const uniqueChannelIds = [...new Set(videos.map(video => video.channelId).filter(Boolean))] as string[];
+    
+    // Fetch subscriber counts for all unique channels
+    const subscriberCounts = await getChannelSubscriberCounts(apiKey, uniqueChannelIds);
+    
+    // Enhance videos with subscriber data
+    return videos.map(video => {
+      const subscriberCount = video.channelId ? subscriberCounts[video.channelId] : undefined;
+      
+      let viewsPerSubscriber: number | undefined;
+      if (subscriberCount !== undefined && subscriberCount > 0) {
+        viewsPerSubscriber = (video.viewCount / subscriberCount) * 100; // Convert to percentage
+      }
+      
+      return {
+        ...video,
+        subscriberCount,
+        viewsPerSubscriber,
+      };
+    });
+  } catch (error) {
+    console.error('Error enhancing videos with subscriber data:', error);
+    return videos; // Return original videos if enhancement fails
   }
 };
 

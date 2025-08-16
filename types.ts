@@ -4,9 +4,12 @@ export interface YouTubeShort {
   title: string;
   thumbnailUrl: string;
   channelTitle: string;
+  channelId?: string;
   publishedAt: string;
   viewCount: number;
   duration?: string;
+  subscriberCount?: number;
+  viewsPerSubscriber?: number;
 }
 
 export interface Country {
@@ -20,7 +23,7 @@ export interface DateRangeOption {
   label: string;
 }
 
-export type SortOption = 'viewCount' | 'date';
+export type SortOption = 'viewCount' | 'date' | 'viewsPerSubscriber';
 
 export type Language = 'en' | 'ko' | 'ja' | 'zh' | 'hi' | 'es' | 'fr' | 'de' | 'nl' | 'pt' | 'ru';
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { YouTubeShort, SortOption, Language } from '../types';
 import { COUNTRIES, getDateRanges, SUPPORTED_LANGUAGES } from '../constants';
 import { translateKeywordForCountries } from '../services/geminiService';
-import { searchYouTubeShorts, resolveChannelUrlsToIds } from '../services/youtubeService';
+import { searchYouTubeShorts, resolveChannelUrlsToIds, enhanceVideosWithSubscriberData } from '../services/youtubeService';
 import { translations } from '../i18n/translations';
 import CountrySelector from '../components/CountrySelector';
 import ShortsCard from '../components/ShortsCard';
@@ -265,7 +265,10 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         
         if (searchError) setError(searchError);
         const uniqueShorts = Array.from(new Map(allShorts.map(short => [short.id, short])).values());
-        setShorts(uniqueShorts);
+        
+        // Enhance videos with subscriber data
+        const enhancedShorts = await enhanceVideosWithSubscriberData(youtubeApiKey, uniqueShorts);
+        setShorts(enhancedShorts);
         
     } catch (e: any) {
         const reasonString = e instanceof Error ? e.message : String(e);
@@ -285,6 +288,11 @@ const Home: React.FC<HomeProps> = ({ language }) => {
     return [...shorts].sort((a, b) => {
       if (sortBy === 'viewCount') {
         return b.viewCount - a.viewCount;
+      } else if (sortBy === 'viewsPerSubscriber') {
+        // Sort by views per subscriber (higher percentage first)
+        const aRatio = a.viewsPerSubscriber || 0;
+        const bRatio = b.viewsPerSubscriber || 0;
+        return bRatio - aRatio;
       }
       return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     });
@@ -540,6 +548,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
               <div className="sort-toggle-group">
                 <button onClick={() => setSortBy('viewCount')} className={`sort-toggle-btn ${sortBy === 'viewCount' ? 'active' : 'inactive'}`}>{t('sortMostViews')}</button>
                 <button onClick={() => setSortBy('date')} className={`sort-toggle-btn ${sortBy === 'date' ? 'active' : 'inactive'}`}>{t('sortNewest')}</button>
+                <button onClick={() => setSortBy('viewsPerSubscriber')} className={`sort-toggle-btn ${sortBy === 'viewsPerSubscriber' ? 'active' : 'inactive'}`}>{t('sortViewsPerSubscriber')}</button>
               </div>
             </div>
             <div className="results-grid">

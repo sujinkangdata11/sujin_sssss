@@ -9,6 +9,73 @@ interface ShortsCardProps {
 }
 
 const ShortsCard: React.FC<ShortsCardProps> = ({ short, language }) => {
+  const formatViewsPerSubscriber = (percentage: number): string => {
+    if (percentage === 0) return '';
+    
+    const formattedPercentage = Math.round(percentage).toLocaleString();
+    
+    const ratioTextMap: Record<Language, string> = {
+      en: 'vs subscribers',
+      ko: '구독자 대비',
+      ja: '登録者比',
+      zh: '相对订阅者',
+      hi: 'सब्सक्राइबर अनुपात',
+      es: 'vs suscriptores',
+      fr: 'vs abonnés',
+      de: 'vs Abonnenten',
+      nl: 'vs abonnees',
+      pt: 'vs inscritos',
+      ru: 'к подписчикам'
+    };
+    
+    const ratioText = ratioTextMap[language] || ratioTextMap.en;
+    return `${ratioText} ${formattedPercentage}%`;
+  };
+
+  const formatSubscriberCount = (count: number): string => {
+    const subscriberTextMap: Record<Language, string> = {
+      en: 'subscribers', ko: '구독자', ja: '登録者', zh: '订阅者', hi: 'सब्सक्राइबर',
+      es: 'suscriptores', fr: 'abonnés', de: 'Abonnenten', nl: 'abonnees', pt: 'inscritos', ru: 'подписчики'
+    };
+    const subscriberText = subscriberTextMap[language] || subscriberTextMap.en;
+
+    // Korean format with 억/만/천
+    if (language === 'ko') {
+      if (count >= 100000000) return `${subscriberText} ${(count / 100000000).toFixed(1)}억명`;
+      if (count >= 10000) return `${subscriberText} ${Math.floor(count / 10000)}만명`;
+      if (count >= 1000) return `${subscriberText} ${(count / 1000).toFixed(1)}천명`;
+      return `${subscriberText} ${count.toLocaleString()}명`;
+    }
+
+    // Japanese format with 億/万
+    if (language === 'ja') {
+      if (count >= 100000000) return `${subscriberText} ${(count / 100000000).toFixed(1)}億人`;
+      if (count >= 10000) return `${subscriberText} ${Math.floor(count / 10000)}万人`;
+      return `${subscriberText} ${count.toLocaleString()}人`;
+    }
+
+    // Chinese format with 亿/万
+    if (language === 'zh') {
+      if (count >= 100000000) return `${subscriberText} ${(count / 100000000).toFixed(1)}亿`;
+      if (count >= 10000) return `${subscriberText} ${Math.floor(count / 10000)}万`;
+      return `${subscriberText} ${count.toLocaleString()}`;
+    }
+
+    // Default format for other languages
+    const localeMap: Record<string, string> = {
+      en: 'en-US', hi: 'en-IN', es: 'es-ES', fr: 'fr-FR',
+      de: 'de-DE', nl: 'nl-NL', pt: 'pt-BR', ru: 'ru-RU'
+    };
+    const locale = localeMap[language] || 'en-US';
+    const formattedCount = new Intl.NumberFormat(locale, {
+      notation: 'compact',
+      compactDisplay: 'short',
+      maximumFractionDigits: 1
+    }).format(count);
+
+    return `${formattedCount} ${subscriberText}`;
+  };
+
   const formatViews = (views: number): string => {
     const viewTextMap: Record<Language, string> = {
       en: 'views', ko: '회', ja: '回視聴', zh: '次观看', hi: 'बार देखा गया',
@@ -129,11 +196,36 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language }) => {
         </h3>
         <div className="shorts-card-meta">
           <p className="shorts-card-channel" title={short.channelTitle}>{short.channelTitle}</p>
+          {short.subscriberCount !== undefined && (
+            <p className="shorts-card-subscribers">
+              {formatSubscriberCount(short.subscriberCount)}
+            </p>
+          )}
           <div className="shorts-card-stats">
             <span>{formatViews(short.viewCount)}</span>
             <span className="shorts-card-stats-separator">•</span>
             <span>{timeAgo(short.publishedAt)}</span>
           </div>
+          {short.subscriberCount === 0 && (
+            <div className="shorts-card-subscriber-ratio">
+              {language === 'ko' ? '예외처리/구독자 0명' :
+               language === 'ja' ? '例外処理/登録者0人' :
+               language === 'zh' ? '异常处理/订阅者0人' :
+               language === 'hi' ? 'एक्सेप्शन/0 सब्सक्राइबर' :
+               language === 'es' ? 'Excepción/0 suscriptores' :
+               language === 'fr' ? 'Exception/0 abonnés' :
+               language === 'de' ? 'Ausnahme/0 Abonnenten' :
+               language === 'nl' ? 'Uitzondering/0 abonnees' :
+               language === 'pt' ? 'Exceção/0 inscritos' :
+               language === 'ru' ? 'Исключение/0 подписчиков' :
+               'Exception/0 subscribers'}
+            </div>
+          )}
+          {short.viewsPerSubscriber && short.viewsPerSubscriber > 0 && (
+            <div className="shorts-card-subscriber-ratio">
+              {formatViewsPerSubscriber(short.viewsPerSubscriber)}
+            </div>
+          )}
         </div>
       </div>
     </a>

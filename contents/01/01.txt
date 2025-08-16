@@ -489,7 +489,7 @@ Apoiamos o crescimento do seu canal enquanto você se mantém à frente das tend
 
 ---
 
-[Russian]
+ 
 title: VIDHUNT VS Поиск YouTube, что лучше?
 excerpt: Многие задаются вопросом: "В чём разница между поиском популярных шортс с высокими просмотрами с помощью VIDHUNT и прямым поиском последних видео с высокими просмотрами на YouTube?"
 category: Technology

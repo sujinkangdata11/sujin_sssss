@@ -81,6 +81,13 @@
   margin-bottom: var(--spacing-1);
 }
 
+.shorts-card-subscribers {
+  font-size: var(--font-size-xs);
+  color: #6b7280; /* grey text for subscriber count */
+  margin-bottom: var(--spacing-1);
+  margin-top: 0;
+}
+
 .shorts-card-stats {
   font-size: var(--font-size-xs);
   color: #7c3aed; /* purple color for views and date */
@@ -91,4 +98,16 @@
 
 .shorts-card-stats-separator {
   color: #7c3aed; /* purple color for separator */
+}
+
+.shorts-card-subscriber-ratio {
+  font-size: var(--font-size-xs);
+  color: #ef4444; /* red color for high engagement indicator */
+  font-weight: 600;
+  margin-top: var(--spacing-1);
+  padding: 2px 6px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
 }
