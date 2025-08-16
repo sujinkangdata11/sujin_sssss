@@ -286,6 +286,7 @@
   font-size: 1.25rem; /* 20px */
   font-weight: 400; /* regular weight */
   color: #323545; /* dark grey text */
+  opacity: 0.5; /* 50% opacity */
   line-height: 35px; /* 35px line height */
   margin: 2rem 0 0 0; /* 32px top margin */
   letter-spacing: -0.3px; /* default letter spacing */
