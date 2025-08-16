@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Language, Article } from '../types';
 import { translations } from '../i18n/translations';
 import { loadArticlesForPage, getThumbnailPath } from '../services/contentService';
+import SEOHead from '../components/SEOHead';
 
 interface NewsProps {
   language: Language;
@@ -96,6 +97,13 @@ const News: React.FC<NewsProps> = ({ language }) => {
 
   return (
     <main className="news-container">
+      <SEOHead
+        title={`${t('navNews')} | VIDHUNT - Discover Trending YouTube Shorts News`}
+        description={`${t('newsSubtitle')} - Stay updated with the latest trends in YouTube Shorts and viral video content worldwide.`}
+        url="https://www.vidhunt.me/news"
+        keywords={`VIDHUNT news, YouTube Shorts news, viral video trends, trending content news, ${language === 'ko' ? '비드헌트 뉴스, 쇼츠 뉴스, 바이럴 영상 뉴스' : language === 'ja' ? 'ビッドハントニュース, ショート動画ニュース, バイラル動画ニュース' : language === 'zh' ? '维德亨特新闻, 短视频新闻, 病毒视频新闻' : 'shorts news, viral video news, trending shorts news'}`}
+        language={language}
+      />
       <div className="news-header">
         <h1 className="news-title" lang={language}>{t('navNews')}</h1>
         <p className="news-subtitle" lang={language}>{t('newsSubtitle')}</p>

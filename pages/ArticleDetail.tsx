@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Language, Article } from '../types';
 import { translations } from '../i18n/translations';
 import { loadArticleFromFile, processContentWithImages, getThumbnailPath } from '../services/contentService';
+import SEOHead from '../components/SEOHead';
 
 interface ArticleDetailProps {
   language: Language;
@@ -194,6 +195,17 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
 
   return (
     <main className="article-detail-container">
+      <SEOHead
+        title={`${article.title} | VIDHUNT News`}
+        description={article.excerpt || `${article.title} - Discover the latest trends in YouTube Shorts and viral video content on VIDHUNT.`}
+        url={`https://www.vidhunt.me/news/${id}`}
+        image={`https://www.vidhunt.me${getThumbnailPath(1, article.id)}`}
+        type="article"
+        language={language}
+        publishedTime={article.date ? new Date(article.date).toISOString() : new Date().toISOString()}
+        modifiedTime={new Date().toISOString()}
+        keywords={`${article.title}, VIDHUNT news, YouTube Shorts, viral videos, trending content, ${language === 'ko' ? '비드헌트 뉴스, 쇼츠 뉴스, 바이럴 영상' : language === 'ja' ? 'ビッドハントニュース, ショート動画ニュース, バイラル動画' : language === 'zh' ? '维德亨特新闻, 短视频新闻, 病毒视频' : 'VidHunt news, shorts news, viral video news'}`}
+      />
       <div className="article-detail-header">
         <Link to="/news" className="back-to-news-btn">
           ← Back to News

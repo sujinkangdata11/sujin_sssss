@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Home page with language alternates -->
+  <url>
+    <loc>https://www.vidhunt.me/</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.vidhunt.me/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vidhunt.me/" />
+  </url>
+  
+  <!-- News page -->
+  <url>
+    <loc>https://www.vidhunt.me/news</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- ShortsmaKer page -->
+  <url>
+    <loc>https://www.vidhunt.me/shortsmaker</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- News articles -->
+  <url>
+    <loc>https://www.vidhunt.me/news/1</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.vidhunt.me/news/2</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.vidhunt.me/news/3</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.vidhunt.me/news/4</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.vidhunt.me/news/5</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>
