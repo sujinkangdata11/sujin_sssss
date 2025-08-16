@@ -1995,8 +1995,8 @@ select.form-input {
   }
   
   .hero-title {
-    font-size: 1.9rem; /* 30.4px - more aggressive reduction */
-    line-height: 36px; /* tighter line height for better fitting */
+    font-size: 2.375rem; /* 38px */
+    line-height: 44px; /* proportional line height for 38px */
     max-width: 85vw; /* even more constrained width */
     word-break: keep-all; /* prevent awkward word breaking */
     letter-spacing: -0.5px; /* tighter letter spacing to save space */
@@ -2053,15 +2053,15 @@ select.form-input {
 /* Russian and other long text languages - special handling */
 @media (max-width: 768px) {
   .hero-title[lang="ru"] {
-    font-size: 1.7rem; /* 27.2px - smaller for Russian */
-    line-height: 32px;
-    letter-spacing: -0.8px;
-    max-width: 80vw;
+    font-size: 2rem; /* 32px - increased for better readability */
+    line-height: 38px;
+    letter-spacing: -0.5px;
+    max-width: 85vw;
   }
   
   .hero-title[lang="de"] {
-    font-size: 1.8rem; /* 28.8px - slightly smaller for German */
-    line-height: 34px;
-    letter-spacing: -0.6px;
+    font-size: 2rem; /* 32px - increased for better readability */
+    line-height: 38px;
+    letter-spacing: -0.5px;
   }
 }
