@@ -352,6 +352,21 @@
   .main-container {
     margin-top: -120px; /* 폼을 더 위로 올려서 영상과 간격 줄임 */
   }
+  
+  /* Mobile: Stack hero buttons vertically */
+  .hero-buttons {
+    flex-direction: column;
+    gap: 0.75rem; /* 12px gap between buttons on mobile */
+    align-items: stretch; /* Make buttons full width */
+  }
+  
+  .hero-quick-start-button,
+  .hero-guide-button {
+    width: 100%; /* Full width on mobile */
+    justify-content: center; /* Center content */
+    max-width: 280px; /* Limit maximum width */
+    margin: 0 auto; /* Center the buttons */
+  }
 }
 
 @media (min-width: 768px) {
@@ -418,6 +433,78 @@
 
 .hero-guide-button:hover .hero-guide-arrow {
   transform: translateX(2px); /* slight arrow movement on hover */
+}
+
+/* Hero Buttons Container */
+.hero-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem; /* 16px gap between buttons */
+  margin-top: var(--spacing-6); /* 24px top margin */
+  align-items: baseline; /* Align text baselines instead of center */
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+/* Hero Quick Start Button */
+.hero-quick-start-button {
+  background-color: #4f46e5; /* indigo background - primary color */
+  color: #ffffff; /* white text */
+  font-size: var(--font-size-base); /* 16px */
+  font-weight: 600;
+  padding: 0.75rem 1.5rem; /* 12px top/bottom, 24px left/right */
+  border-radius: 0.75rem; /* 12px */
+  border: 0.5px solid transparent; /* Match guide button border thickness */
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* 8px gap between text and arrow */
+  width: fit-content;
+  box-sizing: border-box; /* Ensure consistent sizing */
+  box-shadow: var(--shadow-sm); /* same shadow as guide button */
+}
+
+.hero-quick-start-button:hover {
+  background-color: #4338ca; /* darker indigo on hover */
+  transform: translateY(-2px); /* slight lift on hover */
+}
+
+.hero-quick-start-arrow {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.5;
+  transition: transform var(--transition-fast);
+}
+
+.hero-quick-start-button:hover .hero-quick-start-arrow {
+  transform: translateY(2px); /* slight arrow movement on hover (downward) */
+}
+
+/* Update guide button to match input field style */
+.hero-guide-button {
+  background-color: #ffffff; /* white background - same as form-input */
+  color: #374151; /* dark grey text - same as form text */
+  font-size: var(--font-size-base); /* 16px */
+  font-weight: 600;
+  padding: 0.75rem 1.5rem; /* 12px top/bottom, 24px left/right */
+  border-radius: 0.75rem; /* 12px */
+  border: 0.5px solid #d1d5db; /* light grey border - same as form-input */
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* 8px gap between text and arrow */
+  text-decoration: none;
+  width: fit-content;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-sm); /* same shadow as form-input */
+}
+
+.hero-guide-button:hover {
+  background-color: #e5e7eb; /* light grey on hover - same as form-input hover */
+  color: #374151; /* keep same text color */
+  transform: translateY(-2px); /* slight lift on hover */
+  border-color: #d1d5db; /* maintain border color */
 }
 
 /* Form Styles */

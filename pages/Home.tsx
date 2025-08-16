@@ -302,12 +302,26 @@ const Home: React.FC<HomeProps> = ({ language }) => {
           <p className="hero-subtitle" lang={language} style={{whiteSpace: 'pre-line'}}>
             {t('heroSubtitle')}
           </p>
-          <Link to="/news/article/2" className="hero-guide-button">
-            {t('viewGuideButton')}
-            <svg className="hero-guide-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
+          <div className="hero-buttons">
+            <button 
+              onClick={() => {
+                const searchSection = document.querySelector('.main-container');
+                searchSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hero-quick-start-button"
+            >
+              {t('quickStartButton')}
+              <svg className="hero-quick-start-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </button>
+            <Link to="/news/article/2" className="hero-guide-button">
+              {t('viewGuideButton')}
+              <svg className="hero-guide-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
         </div>
         <div className="hero-video">
           <video 
