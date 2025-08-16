@@ -1501,6 +1501,8 @@ select.form-input {
   display: grid;
   grid-template-columns: 170px 1fr;
   gap: var(--spacing-4);
+  align-items: start;
+  justify-items: stretch;
 }
 
 .article-card:hover {
@@ -1550,6 +1552,30 @@ select.form-input {
 .article-content {
   padding: var(--spacing-4);
   padding-left: 0;
+}
+
+/* Ensure article content takes full width in small cards */
+.article-card .article-content {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Small feed cards should have left-aligned text */
+.article-card .article-content {
+  text-align: left !important;
+}
+
+.article-card .article-title,
+.article-card .article-excerpt {
+  text-align: left !important;
+}
+
+/* Articles grid small cards text alignment */
+.articles-grid .article-card .article-title,
+.articles-grid .article-card .article-excerpt {
+  text-align: left !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
 }
 
 .article-title {

@@ -158,12 +158,13 @@ const News: React.FC<NewsProps> = ({ language }) => {
                 }}
               />
             </div>
-            <div className="article-content">
-              <h3 className="article-title" lang={language} style={{ whiteSpace: 'pre-line' }}>
+            <div className="article-content" style={{ textAlign: 'left', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+              <h3 className="article-title" lang={language} style={{ whiteSpace: 'pre-line', textAlign: 'left' }}>
                 {article.title}
               </h3>
               <p 
                 className="article-excerpt"
+                style={{ textAlign: 'left' }}
                 dangerouslySetInnerHTML={{ 
                   __html: article.excerpt
                     .replace(/\r\n/g, '\n') // normalize line endings
