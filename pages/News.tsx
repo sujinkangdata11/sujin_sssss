@@ -123,7 +123,9 @@ const News: React.FC<NewsProps> = ({ language }) => {
           />
         </div>
         <div className="featured-content">
-          <h2 className="featured-title" lang={language}>{featuredArticle.title}</h2>
+          <h2 className="featured-title" lang={language} style={{ whiteSpace: 'pre-line' }}>
+            {featuredArticle.title}
+          </h2>
           <p 
             className="featured-excerpt"
             dangerouslySetInnerHTML={{ 
@@ -157,7 +159,9 @@ const News: React.FC<NewsProps> = ({ language }) => {
               />
             </div>
             <div className="article-content">
-              <h3 className="article-title" lang={language}>{article.title}</h3>
+              <h3 className="article-title" lang={language} style={{ whiteSpace: 'pre-line' }}>
+                {article.title}
+              </h3>
               <p 
                 className="article-excerpt"
                 dangerouslySetInnerHTML={{ 
