@@ -370,6 +370,9 @@ const Home: React.FC<HomeProps> = ({ language }) => {
       </div>
       
       <main className="main-container">
+        <div className="form-section-header">
+          <h2 className="form-section-title" lang={language} style={{whiteSpace: 'pre-line'}}>{t('formSectionTitle')}</h2>
+        </div>
         <div className="form-card">
           <div className="form-grid">
             <div className="form-group-span-2">
