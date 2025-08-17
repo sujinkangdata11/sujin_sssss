@@ -141,7 +141,7 @@ export const parseContentFile = (fileContent: string, language: Language = 'en')
 };
 
 export const loadArticleFromFile = async (pageNumber: number, articleId: number, language: Language = 'en'): Promise<Article | null> => {
-  // First check localStorage for published articles
+  // Only check localStorage for published articles
   try {
     const articleKey = `article_${pageNumber}_${articleId}_${language}`;
     const storedArticle = localStorage.getItem(articleKey);
@@ -161,73 +161,15 @@ export const loadArticleFromFile = async (pageNumber: number, articleId: number,
     console.error('Error loading from localStorage:', error);
   }
 
-  // Fallback to file system
-  try {
-    const paddedPageNumber = pageNumber.toString().padStart(2, '0');
-    const paddedArticleId = articleId.toString().padStart(2, '0');
-    const filePath = `/contents/${paddedPageNumber}/${paddedArticleId}.txt`;
-    
-    const response = await fetch(filePath);
-    if (!response.ok) {
-      console.warn(`Article file not found: ${filePath}`);
-      return null;
-    }
-    
-    const fileContent = await response.text();
-    const parsed = parseContentFile(fileContent, language);
-    
-    return {
-      id: articleId,
-      title: parsed.title,
-      excerpt: parsed.excerpt,
-      date: parsed.date,
-      content: parsed.content,
-      category: parsed.category
-    };
-  } catch (error) {
-    console.error('Error loading article:', error);
-    return null;
-  }
+  // No file system fallback - only use admin-created content
+  return null;
 };
 
 export const loadArticlesForPage = async (pageNumber: number, language: Language = 'en'): Promise<Article[]> => {
-  const paddedPageNumber = pageNumber.toString().padStart(2, '0');
-  const articles: Article[] = [];
-  
-  // Load articles from file system first
-  const articlePromises: Promise<Article | null>[] = [];
-  
-  // Only try to load articles that we know exist (01.txt to 05.txt)
-  const knownArticleIds = [1, 2, 3, 4, 5]; // Add more as needed
-  
-  for (const i of knownArticleIds) {
-    articlePromises.push(loadArticleFromFile(pageNumber, i, language));
-  }
-  
-  // Wait for all articles to load in parallel
-  const results = await Promise.all(articlePromises);
-  
-  // Filter out null results and add to articles array
-  const fileArticles = results.filter((article): article is Article => article !== null);
-  articles.push(...fileArticles);
-  
-  // Load from localStorage (published articles)
+  // Only load from localStorage (admin-created articles)
   const publishedArticles = getPublishedArticles(pageNumber, language);
-  articles.push(...publishedArticles);
   
-  // Remove duplicates (prioritize localStorage over file system)
-  const uniqueArticles = articles.reduce((acc: Article[], current) => {
-    const existingIndex = acc.findIndex(article => article.id === current.id);
-    if (existingIndex >= 0) {
-      // If article exists, keep the one from localStorage (published articles come later)
-      acc[existingIndex] = current;
-    } else {
-      acc.push(current);
-    }
-    return acc;
-  }, []);
-  
-  return uniqueArticles.sort((a, b) => a.id - b.id);
+  return publishedArticles.sort((a, b) => a.id - b.id);
 };
 
 // Helper function to get published articles from localStorage
