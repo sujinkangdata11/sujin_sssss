@@ -1203,7 +1203,8 @@ select.form-input {
   /* First line: YouTube */
   .youtube-api-label .youtube-part {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 0px;
+    line-height: 1.2;
   }
   
   /* Second line: Data API Key + Button */

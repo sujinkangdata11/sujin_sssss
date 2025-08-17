@@ -395,7 +395,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                     <span className="youtube-part">YouTube </span>
                     <span className="data-api-part">
                       Data API Key
-                      <Link to="/news/article/3" className="free-badge inline-badge">
+                      <Link to="/news/article/2" className="free-badge inline-badge">
                         {t('getFreeKey')}
                         <svg className="free-badge-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -417,7 +417,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
               <label htmlFor="geminiApiKey" className="form-label">
                 <div className="label-with-badge">
                   <span>{t('geminiApiKeyLabel')}</span>
-                  <Link to="/news/article/4" className="free-badge">
+                  <Link to="/news/article/3" className="free-badge">
                     {t('getFreeKey')}
                     <svg className="free-badge-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
