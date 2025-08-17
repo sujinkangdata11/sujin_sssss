@@ -391,13 +391,18 @@ const Home: React.FC<HomeProps> = ({ language }) => {
             <div className="form-group-span-2">
               <label htmlFor="youtubeApiKey" className="form-label">
                 <div className="label-with-badge">
-                  <span>{t('youtubeApiKeyLabel')}</span>
-                  <Link to="/news/article/3" className="free-badge">
-                    {t('getFreeKey')}
-                    <svg className="free-badge-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
-                  </Link>
+                  <span className="youtube-api-label">
+                    <span className="youtube-part">YouTube </span>
+                    <span className="data-api-part">
+                      Data API Key
+                      <Link to="/news/article/3" className="free-badge inline-badge">
+                        {t('getFreeKey')}
+                        <svg className="free-badge-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                      </Link>
+                    </span>
+                  </span>
                 </div>
               </label>
               <input id="youtubeApiKey" type="password" value={youtubeApiKey} onChange={(e) => setYoutubeApiKey(e.target.value)} placeholder={t('youtubeApiKeyPlaceholder')} className="form-input" />

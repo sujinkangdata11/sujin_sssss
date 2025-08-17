@@ -712,6 +712,7 @@ select.form-input {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 52px; /* 고정 높이로 로딩 시에도 버튼 높이 유지 */
 }
 
 .btn-primary:hover {
@@ -1181,7 +1182,46 @@ select.form-input {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+/* YouTube desktop: gap between "Data API Key" text and button */
+.youtube-api-label .data-api-part .inline-badge {
+  margin-left: 10px;
+}
+
+/* Mobile: YouTube label special layout */
+@media (max-width: 768px) {
+  .label-with-badge {
+    display: block;
+  }
+  
+  .youtube-api-label {
+    display: block;
+  }
+  
+  /* First line: YouTube */
+  .youtube-api-label .youtube-part {
+    display: block;
+    margin-bottom: 6px;
+  }
+  
+  /* Second line: Data API Key + Button */
+  .youtube-api-label .data-api-part {
+    display: block;
+  }
+  
+  .youtube-api-label .data-api-part .inline-badge {
+    display: inline-flex;
+    margin-left: 10px;
+    vertical-align: baseline;
+  }
+  
+  /* Gemini mobile: gap between text and button */
+  .label-with-badge .free-badge:not(.inline-badge) {
+    margin-left: 10px;
+    display: inline-flex;
+  }
 }
 
 /* Free Badge */
@@ -1196,6 +1236,7 @@ select.form-input {
   padding: 6px 12px; /* more padding for chubby look */
   border-radius: 12px; /* more rounded for chubby look */
   text-transform: none; /* remove uppercase */
+  transform: translateY(-2px); /* 2px 위로 이동 */
   letter-spacing: 0.025em;
   cursor: pointer;
   transition: background-color var(--transition-fast), transform var(--transition-fast);
