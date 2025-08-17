@@ -167,7 +167,7 @@ export const getChannelSubscriberCounts = async (apiKey: string, channelIds: str
     return subscriberCounts;
   } catch (error) {
     console.error('Error fetching channel subscriber counts:', error);
-    return {};
+    throw error; // Re-throw error so enhanceVideosWithSubscriberData can catch it
   }
 };
 
@@ -175,9 +175,9 @@ export const getChannelSubscriberCounts = async (apiKey: string, channelIds: str
 export const enhanceVideosWithSubscriberData = async (
   apiKey: string, 
   videos: YouTubeShort[]
-): Promise<YouTubeShort[]> => {
+): Promise<{ videos: YouTubeShort[], hasSubscriberDataError: boolean }> => {
   try {
-    if (videos.length === 0) return videos;
+    if (videos.length === 0) return { videos, hasSubscriberDataError: false };
     
     // Get unique channel IDs
     const uniqueChannelIds = [...new Set(videos.map(video => video.channelId).filter(Boolean))] as string[];
@@ -186,7 +186,7 @@ export const enhanceVideosWithSubscriberData = async (
     const subscriberCounts = await getChannelSubscriberCounts(apiKey, uniqueChannelIds);
     
     // Enhance videos with subscriber data
-    return videos.map(video => {
+    const enhancedVideos = videos.map(video => {
       const subscriberCount = video.channelId ? subscriberCounts[video.channelId] : undefined;
       
       let viewsPerSubscriber: number | undefined;
@@ -200,9 +200,11 @@ export const enhanceVideosWithSubscriberData = async (
         viewsPerSubscriber,
       };
     });
+    
+    return { videos: enhancedVideos, hasSubscriberDataError: false };
   } catch (error) {
     console.error('Error enhancing videos with subscriber data:', error);
-    return videos; // Return original videos if enhancement fails
+    return { videos, hasSubscriberDataError: true }; // Return original videos if enhancement fails
   }
 };
 
