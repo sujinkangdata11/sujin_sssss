@@ -214,6 +214,7 @@ const App: React.FC = () => {
                 <button 
                   onClick={() => window.location.href = '/admin'}
                   title="Admin Access"
+                  className="footer-admin-btn"
                   style={{
                     background: '#f3f4f6',
                     border: '1px solid #d1d5db',

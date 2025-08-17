@@ -1434,8 +1434,9 @@ select.form-input {
   font-weight: 400; /* regular weight - same as hero-subtitle */
   color: #323545; /* dark grey text - same as hero-subtitle */
   line-height: 35px; /* 35px line height - same as hero-subtitle */
-  margin: calc(2rem - 30px) 0 0 0; /* 32px - 30px = 2px top margin */
+  margin: calc(2rem - 30px + 5px) 0 0 0; /* 32px - 30px + 5px = 7px top margin */
   letter-spacing: -0.3px; /* default letter spacing - same as hero-subtitle */
+  opacity: 0.5; /* 50% 투명도로 낮춤 */
 }
 
 /* Featured Article */
@@ -1646,6 +1647,7 @@ select.form-input {
   display: flex;
   justify-content: center;
   gap: var(--spacing-1);
+  margin-top: 50px; /* 50px 위쪽 여백으로 스몰피드와 적절한 간격 확보 */
 }
 
 .pagination-btn {
@@ -2226,6 +2228,10 @@ select.form-input {
     text-align: left; /* left align the contact description */
   }
   
+  .footer-admin-btn {
+    float: left !important; /* 모바일에서 왼쪽 정렬 */
+  }
+  
   .app-footer {
     padding-bottom: 100px; /* add bottom spacing for mobile */
   }
@@ -2284,4 +2290,13 @@ select.form-input {
 
 .admin-access-btn:hover {
   opacity: 0.8;
+}
+
+/* Mobile: Admin button left align */
+@media (max-width: 768px) {
+  .admin-access-btn {
+    margin-left: 0;
+    margin-right: auto;
+    display: block;
+  }
 }

@@ -328,7 +328,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
             </button>
-            <Link to="/news/article/2" className="hero-guide-button">
+            <Link to="/news/article/8" className="hero-guide-button">
               {t('viewGuideButton')}
               <svg className="hero-guide-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
