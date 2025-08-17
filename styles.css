@@ -1999,6 +1999,71 @@ select.form-input {
   color: white;
 }
 
+.share-btn.try-now {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  background-color: #7c3aed;
+  border-color: #7c3aed;
+  color: white;
+  text-decoration: none;
+}
+
+.share-btn.try-now:hover {
+  background-color: #6d28d9;
+  border-color: #6d28d9;
+  color: white;
+}
+
+/* Related Articles Section */
+.related-articles {
+  margin-top: var(--spacing-8);
+  padding-top: var(--spacing-6);
+  border-top: 1px solid #e5e7eb;
+}
+
+.related-articles h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: var(--spacing-4);
+  text-align: center;
+}
+
+.related-articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.related-article-card {
+  padding: var(--spacing-4);
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: white;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  display: block;
+}
+
+.related-article-card:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.related-article-card h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.related-article-card:hover h4 {
+  color: #7c3aed;
+}
+
 .article-not-found {
   text-align: center;
   padding: var(--spacing-8);

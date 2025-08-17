@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Language, Article } from '../types';
 import { translations } from '../i18n/translations';
-import { loadArticleFromFile, processContentWithImages, getThumbnailPath } from '../services/contentService';
+import { loadArticleFromFile, processContentWithImages, getThumbnailPath, loadArticlesForPage } from '../services/contentService';
 import SEOHead from '../components/SEOHead';
 
 interface ArticleDetailProps {
@@ -14,6 +14,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
 
   // Scroll to top when component mounts or ID changes
@@ -42,6 +43,14 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
           // Preload article images for better UX
           const img = new Image();
           img.src = getThumbnailPath(1, loadedArticle.id);
+          
+          // Load related articles (exclude current article)
+          const allArticles = await loadArticlesForPage(1, language);
+          const filteredArticles = allArticles.filter(a => a.id !== loadedArticle.id);
+          
+          // Randomly select 2 articles
+          const shuffled = filteredArticles.sort(() => 0.5 - Math.random());
+          setRelatedArticles(shuffled.slice(0, 2));
         } else {
           setError('Article not found');
         }
@@ -398,7 +407,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
 
       <div className="article-footer">
         <div className="article-share">
-          <h3>Share this article</h3>
+          <h3>{t('shareOrTryTitle')}</h3>
           <div className="share-buttons">
             <button 
               className="share-btn copy-link" 
@@ -411,10 +420,38 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
               </svg>
-              Copy Link
+              {t('copyLinkButton')}
             </button>
+            <Link 
+              to="/" 
+              className="share-btn try-now"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+              </svg>
+              {t('tryNowButton')}
+            </Link>
           </div>
         </div>
+        
+        {/* Related Articles Section */}
+        {relatedArticles.length > 0 && (
+          <div className="related-articles">
+            <h3>{t('relatedArticlesTitle')}</h3>
+            <div className="related-articles-grid">
+              {relatedArticles.map((relatedArticle) => (
+                <Link 
+                  key={relatedArticle.id} 
+                  to={`/news/article/${relatedArticle.id}`} 
+                  className="related-article-card"
+                >
+                  <h4>{relatedArticle.title}</h4>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
