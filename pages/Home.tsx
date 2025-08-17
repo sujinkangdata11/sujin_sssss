@@ -7,6 +7,7 @@ import { searchYouTubeShorts, resolveChannelUrlsToIds, enhanceVideosWithSubscrib
 import { translations } from '../i18n/translations';
 import CountrySelector from '../components/CountrySelector';
 import ShortsCard from '../components/ShortsCard';
+import ApiKeyUpload from '../components/ApiKeyUpload';
 
 interface HomeProps {
   language: Language;
@@ -14,6 +15,9 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ language }) => {
   const [youtubeApiKey, setYoutubeApiKey] = useState<string>('');
+  const [youtubeApiKeys, setYoutubeApiKeys] = useState<string[]>([]);
+  const [currentKeyIndex, setCurrentKeyIndex] = useState<number>(0);
+  const [isApiKeyUploadOpen, setIsApiKeyUploadOpen] = useState<boolean>(false);
   const [geminiApiKey, setGeminiApiKey] = useState<string>('');
   const [keyword, setKeyword] = useState<string>('');
   const [selectedCountries, setSelectedCountries] = useState<string[]>(['US']);
@@ -172,8 +176,55 @@ const Home: React.FC<HomeProps> = ({ language }) => {
 
   const nonEmptyFavoriteChannels = useMemo(() => favoriteChannels.filter(c => c.trim() !== ''), [favoriteChannels]);
   
+  // Get the current active API key (either single key or from array)
+  const getCurrentApiKey = useCallback(() => {
+    if (youtubeApiKeys.length > 0) {
+      return youtubeApiKeys[currentKeyIndex] || youtubeApiKeys[0];
+    }
+    return youtubeApiKey;
+  }, [youtubeApiKey, youtubeApiKeys, currentKeyIndex]);
+
+  // Handle API key upload
+  const handleApiKeysUpload = useCallback((keys: string[]) => {
+    setYoutubeApiKeys(keys);
+    setCurrentKeyIndex(0);
+    // Save to localStorage for persistence
+    localStorage.setItem('youtube_api_keys', JSON.stringify(keys));
+    localStorage.setItem('current_key_index', '0');
+  }, []);
+
+  // Switch to next API key when quota is exceeded
+  const switchToNextApiKey = useCallback(() => {
+    if (youtubeApiKeys.length > 1 && currentKeyIndex < youtubeApiKeys.length - 1) {
+      const nextIndex = currentKeyIndex + 1;
+      setCurrentKeyIndex(nextIndex);
+      localStorage.setItem('current_key_index', nextIndex.toString());
+      return true;
+    }
+    return false;
+  }, [youtubeApiKeys, currentKeyIndex]);
+
+  // Load saved API keys on component mount
+  useEffect(() => {
+    const savedKeys = localStorage.getItem('youtube_api_keys');
+    const savedIndex = localStorage.getItem('current_key_index');
+    
+    if (savedKeys) {
+      try {
+        const keys = JSON.parse(savedKeys);
+        if (Array.isArray(keys) && keys.length > 0) {
+          setYoutubeApiKeys(keys);
+          setCurrentKeyIndex(savedIndex ? parseInt(savedIndex, 10) : 0);
+        }
+      } catch (error) {
+        console.error('Error loading saved API keys:', error);
+      }
+    }
+  }, []);
+  
   const handleSearch = useCallback(async () => {
-    if (!youtubeApiKey) {
+    const currentApiKey = getCurrentApiKey();
+    if (!currentApiKey) {
       setError(t('errorYoutubeKey'));
       return;
     }
@@ -209,14 +260,14 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         
         if (hasFavoriteChannels) {
             // Logic for favorite channels search
-            const channelIds = await resolveChannelUrlsToIds(youtubeApiKey, nonEmptyFavoriteChannels);
+            const channelIds = await resolveChannelUrlsToIds(currentApiKey, nonEmptyFavoriteChannels);
             if(channelIds.length === 0) {
                 setError(t('errorChannelNotFound'));
                 setIsLoading(false);
                 return;
             }
 
-            const promises = channelIds.map(id => searchYouTubeShorts(youtubeApiKey, keyword, { channelId: id, publishedAfter }));
+            const promises = channelIds.map(id => searchYouTubeShorts(currentApiKey, keyword, { channelId: id, publishedAfter }));
             const results = await Promise.allSettled(promises);
 
             for (const result of results) {
@@ -226,6 +277,12 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                     console.error(`Error searching in a favorite channel:`, result.reason);
                      const reasonString = result.reason instanceof Error ? result.reason.message : String(result.reason);
                      if (reasonString.toLowerCase().includes('quota')) {
+                        // Try to switch to next API key
+                        if (switchToNextApiKey()) {
+                          // Retry with next key - recursive call
+                          setTimeout(() => handleSearch(), 1000);
+                          return;
+                        }
                         searchError = t('errorQuotaExceeded');
                         break;
                      } else if (reasonString.toLowerCase().includes('has not been used') || reasonString.toLowerCase().includes('is disabled')) {
@@ -242,7 +299,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
             const translatedKeywords = await translateKeywordForCountries(keyword, targetCountries, geminiApiKey);
             const promises = targetCountries.map(country => {
                 const query = translatedKeywords[country.code] || keyword;
-                return searchYouTubeShorts(youtubeApiKey, query, { regionCode: country.code, publishedAfter });
+                return searchYouTubeShorts(currentApiKey, query, { regionCode: country.code, publishedAfter });
             });
             
             const results = await Promise.allSettled(promises);
@@ -255,6 +312,12 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                     console.error(`Error searching in ${targetCountries[index].name}:`, result.reason);
 
                     if (reasonString.toLowerCase().includes('quota')) {
+                        // Try to switch to next API key
+                        if (switchToNextApiKey()) {
+                          // Retry with next key - recursive call
+                          setTimeout(() => handleSearch(), 1000);
+                          return;
+                        }
                         searchError = t('errorQuotaExceeded');
                         break; 
                     } else if (reasonString.toLowerCase().includes('has not been used') || reasonString.toLowerCase().includes('is disabled')) {
@@ -272,7 +335,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         const uniqueShorts = Array.from(new Map(allShorts.map(short => [short.id, short])).values());
         
         // Enhance videos with subscriber data
-        const enhancedShorts = await enhanceVideosWithSubscriberData(youtubeApiKey, uniqueShorts);
+        const enhancedShorts = await enhanceVideosWithSubscriberData(currentApiKey, uniqueShorts);
         setShorts(enhancedShorts);
         
     } catch (e: any) {
@@ -287,7 +350,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
     } finally {
         setIsLoading(false);
     }
-  }, [youtubeApiKey, geminiApiKey, keyword, selectedCountries, dateRange, language, nonEmptyFavoriteChannels]);
+  }, [getCurrentApiKey, geminiApiKey, keyword, selectedCountries, dateRange, language, nonEmptyFavoriteChannels, switchToNextApiKey]);
 
   const sortedShorts = useMemo(() => {
     return [...shorts].sort((a, b) => {
@@ -405,12 +468,68 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                   </span>
                 </div>
               </label>
-              <input id="youtubeApiKey" type="password" value={youtubeApiKey} onChange={(e) => setYoutubeApiKey(e.target.value)} placeholder={t('youtubeApiKeyPlaceholder')} className="form-input" />
+              <input 
+                id="youtubeApiKey" 
+                type="password" 
+                value={youtubeApiKey} 
+                onChange={(e) => setYoutubeApiKey(e.target.value)} 
+                placeholder={t('youtubeApiKeyPlaceholder')} 
+                className={`form-input ${youtubeApiKeys.length > 0 ? 'opacity-disabled' : ''}`}
+              />
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px' }}>
+                <button 
+                  className="api-key-upload-btn"
+                  onClick={() => setIsApiKeyUploadOpen(true)}
+                >
+                  📁 .txt 파일 업로드
+                </button>
+                
+                {youtubeApiKeys.length > 0 && (
+                  <span style={{ fontSize: '16px', color: '#166534', transform: 'translateY(3px)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#166534" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20,6 9,17 4,12"></polyline>
+                    </svg>
+                    {youtubeApiKeys.length} API Loaded
+                    <button 
+                      onClick={() => {
+                        setYoutubeApiKeys([]);
+                        setCurrentKeyIndex(0);
+                        localStorage.removeItem('youtube_api_keys');
+                        localStorage.removeItem('current_key_index');
+                      }}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#dc2626',
+                        padding: '2px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      title="Remove API keys"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </span>
+                )}
+              </div>
+              
               <p className="form-notice-success">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                </svg>
-                {t('youtubeApiNotice')}
+                {youtubeApiKeys.length > 0 ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="inline mr-2" width="19" height="19" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+                {youtubeApiKeys.length > 0 ? t('youtubeApiNoticeMultiple') : t('youtubeApiNotice')}
               </p>
             </div>
             <div className="form-group-span-2">
@@ -571,6 +690,21 @@ const Home: React.FC<HomeProps> = ({ language }) => {
           </div>
         )}
       </main>
+
+      {/* API Key Upload Modal */}
+      <ApiKeyUpload
+        language={language}
+        isOpen={isApiKeyUploadOpen}
+        onClose={() => setIsApiKeyUploadOpen(false)}
+        onUpload={handleApiKeysUpload}
+      />
+
+      {/* Current API Key Status (show during search) */}
+      {isLoading && youtubeApiKeys.length > 0 && (
+        <div className="current-key-indicator">
+          Using YouTube API Key #{currentKeyIndex + 1} of {youtubeApiKeys.length}
+        </div>
+      )}
     </>
   );
 };

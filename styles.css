@@ -2366,3 +2366,224 @@ select.form-input {
     display: block;
   }
 }
+
+/* Modal Base Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 1.25rem;
+  padding: 0;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-5) var(--spacing-8);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: #323545;
+  line-height: 1.4;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  transition: background-color var(--transition-fast);
+}
+
+.modal-close:hover {
+  background-color: #f3f4f6;
+}
+
+.modal-body {
+  padding: var(--spacing-4) var(--spacing-8);
+}
+
+/* API Key Upload Styles */
+.api-key-upload-btn {
+  background-color: #f3f4f6;
+  color: #374151;
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  padding: 0.875rem var(--spacing-4);
+  border-radius: 0.75rem;
+  border: 0.5px solid #d1d5db;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  margin-top: 0;
+}
+
+.api-key-upload-btn:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.api-key-upload-modal {
+  max-width: 480px;
+  width: 85vw;
+}
+
+.file-drop-zone {
+  border: 2px dashed #d1d5db;
+  border-radius: 0.75rem;
+  padding: var(--spacing-4);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  margin-bottom: var(--spacing-4);
+}
+
+.file-drop-zone:hover,
+.file-drop-zone.drag-over {
+  border-color: #7c3aed;
+  background-color: rgba(124, 58, 237, 0.05);
+}
+
+.drop-zone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #6b7280; /* grey text */
+}
+
+.drop-zone-content p {
+  transform: translateY(-5px);
+  margin: 0;
+  opacity: 0.5;
+}
+
+.drop-zone-icon {
+  font-size: 2rem;
+  margin-bottom: 0;
+  transform: translateY(5px);
+}
+
+.drop-zone-subtext {
+  font-size: var(--font-size-sm);
+  color: #6b7280;
+  margin: 0;
+}
+
+.file-format-example {
+  background-color: #f9fafb;
+  padding: var(--spacing-3);
+  border-radius: 0.5rem;
+  margin-bottom: var(--spacing-4);
+}
+
+.file-format-example h4 {
+  margin: 0 0 var(--spacing-2) 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.example-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.example-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6b7280;
+}
+
+.format-example {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: var(--spacing-3);
+  font-size: 15px;
+  color: #6b7280;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.6;
+  margin: 0;
+  font-family: 'Fira Code', 'Courier New', Courier, 'Lucida Console', 'Monaco', monospace;
+}
+
+.upload-status {
+  text-align: center;
+  padding: var(--spacing-3);
+  background-color: #f0fdf4;
+  border-radius: 0.5rem;
+  border: 1px solid #bbf7d0;
+}
+
+.keys-count {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: #166534;
+  margin: 0 0 var(--spacing-3) 0;
+}
+
+.upload-confirm-btn {
+  background-color: #7c3aed;
+  color: #fff;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.upload-confirm-btn:hover {
+  background-color: #6d28d9;
+}
+
+.api-keys-status {
+  margin-top: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 0.5rem;
+  font-size: var(--font-size-sm);
+  color: #166534;
+}
+
+.current-key-indicator {
+  margin-top: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.5rem;
+  font-size: var(--font-size-sm);
+  color: #1e40af;
+}
