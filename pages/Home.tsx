@@ -191,11 +191,17 @@ const Home: React.FC<HomeProps> = ({ language }) => {
 
   // Handle API key upload
   const handleApiKeysUpload = useCallback((keys: string[]) => {
+    // Complete reset when uploading new API keys
     setYoutubeApiKeys(keys);
     setCurrentKeyIndex(0);
-    // Clear all previous failure information
     setKeyFailureReasons({});
-    console.log('🔄 New API keys uploaded, cleared all previous failure data');
+    setIsProcessingKeySwitch(false);
+    setIsHandleSearchRunning(false);
+    setHasProcessedFailure(false);
+    setIsSwitchingKey(false);
+    setError(null);
+    setShorts([]);
+    console.log('🔄 New API keys uploaded, complete reset performed');
   }, []);
 
   // Generate summary message for all failed keys
