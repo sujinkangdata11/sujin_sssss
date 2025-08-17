@@ -18,6 +18,11 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   const [youtubeApiKeys, setYoutubeApiKeys] = useState<string[]>([]);
   const [currentKeyIndex, setCurrentKeyIndex] = useState<number>(0);
   const [isApiKeyUploadOpen, setIsApiKeyUploadOpen] = useState<boolean>(false);
+  const [isSwitchingKey, setIsSwitchingKey] = useState<boolean>(false);
+  const [keyFailureReasons, setKeyFailureReasons] = useState<{[key: number]: string}>({});
+  const [isProcessingKeySwitch, setIsProcessingKeySwitch] = useState<boolean>(false);
+  const [isHandleSearchRunning, setIsHandleSearchRunning] = useState<boolean>(false);
+  const [hasProcessedFailure, setHasProcessedFailure] = useState<boolean>(false);
   const [geminiApiKey, setGeminiApiKey] = useState<string>('');
   const [keyword, setKeyword] = useState<string>('');
   const [selectedCountries, setSelectedCountries] = useState<string[]>(['US']);
@@ -188,44 +193,124 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   const handleApiKeysUpload = useCallback((keys: string[]) => {
     setYoutubeApiKeys(keys);
     setCurrentKeyIndex(0);
-    // Save to localStorage for persistence
-    localStorage.setItem('youtube_api_keys', JSON.stringify(keys));
-    localStorage.setItem('current_key_index', '0');
+    // Clear all previous failure information
+    setKeyFailureReasons({});
+    console.log('🔄 New API keys uploaded, cleared all previous failure data');
   }, []);
 
-  // Switch to next API key when quota is exceeded
-  const switchToNextApiKey = useCallback(() => {
-    if (youtubeApiKeys.length > 1 && currentKeyIndex < youtubeApiKeys.length - 1) {
-      const nextIndex = currentKeyIndex + 1;
-      setCurrentKeyIndex(nextIndex);
-      localStorage.setItem('current_key_index', nextIndex.toString());
-      return true;
-    }
-    return false;
-  }, [youtubeApiKeys, currentKeyIndex]);
-
-  // Load saved API keys on component mount
-  useEffect(() => {
-    const savedKeys = localStorage.getItem('youtube_api_keys');
-    const savedIndex = localStorage.getItem('current_key_index');
+  // Generate summary message for all failed keys
+  const generateFailureSummary = useCallback((currentKeyFailureReason?: string, keyIndex?: number) => {
+    const quotaFailedKeys: number[] = [];
+    const invalidKeys: number[] = [];
     
-    if (savedKeys) {
-      try {
-        const keys = JSON.parse(savedKeys);
-        if (Array.isArray(keys) && keys.length > 0) {
-          setYoutubeApiKeys(keys);
-          setCurrentKeyIndex(savedIndex ? parseInt(savedIndex, 10) : 0);
+    // Include current key failure if provided
+    const allReasons = { ...keyFailureReasons };
+    if (currentKeyFailureReason) {
+      const targetIndex = keyIndex !== undefined ? keyIndex : currentKeyIndex;
+      allReasons[targetIndex] = currentKeyFailureReason;
+    }
+    
+    console.log('🔍 generateFailureSummary - keyFailureReasons:', keyFailureReasons);
+    console.log('🔍 generateFailureSummary - allReasons:', allReasons);
+    
+    // Filter out failure reasons for non-existent keys (from previous uploads)
+    const validReasons: {[key: number]: string} = {};
+    Object.entries(allReasons).forEach(([index, reason]) => {
+      const keyIndex = parseInt(index);
+      if (keyIndex < youtubeApiKeys.length) {
+        validReasons[keyIndex] = reason;
+      }
+    });
+    
+    // Determine the actual current key index (use provided keyIndex if available)
+    const actualCurrentIndex = keyIndex !== undefined ? keyIndex : currentKeyIndex;
+    
+    // If we're at the last key and there are no previous failure records,
+    // assume all previous keys failed due to quota exceeded
+    if (actualCurrentIndex === youtubeApiKeys.length - 1 && Object.keys(validReasons).length <= 1) {
+      console.log(`🔍 Inferring previous key failures based on actual current index: ${actualCurrentIndex}`);
+      // All previous keys must have failed with quota exceeded
+      for (let i = 0; i < actualCurrentIndex; i++) {
+        if (!validReasons[i]) {
+          validReasons[i] = 'quota';
+          console.log(`🔍 Inferred key ${i}: quota exceeded`);
         }
-      } catch (error) {
-        console.error('Error loading saved API keys:', error);
       }
     }
-  }, []);
+    
+    // Use filtered valid reasons instead of allReasons
+    const finalReasons = validReasons;
+    
+    Object.entries(finalReasons).forEach(([index, reason]) => {
+      const keyIndex = parseInt(index);
+      if (reason === 'quota') {
+        quotaFailedKeys.push(keyIndex);
+      } else if (reason === 'invalid') {
+        invalidKeys.push(keyIndex);
+      }
+    });
+    
+    console.log('🔍 Final processed reasons:', finalReasons);
+    console.log('🔍 Quota failed keys:', quotaFailedKeys);
+    console.log('🔍 Invalid keys:', invalidKeys);
+    
+    let summary = "";
+    
+    if (quotaFailedKeys.length > 0) {
+      summary += `${quotaFailedKeys.map(i => i + 1).join(', ')}번째 API 키는 할당량을 초과합니다.\n`;
+    }
+    if (invalidKeys.length > 0) {
+      summary += `${invalidKeys.map(i => i + 1).join(', ')}번째 API 키는 사용할 수 없습니다.\n`;
+    }
+    
+    summary += "\n24시간 후 다시 시도하거나 새로운 API 키를 업로드해주세요.";
+    
+    return summary;
+  }, [keyFailureReasons, currentKeyIndex, youtubeApiKeys]);
+
+  // Switch to next API key - simple sequential progression, no cycling back
+  const switchToNextApiKey = useCallback((failureReason: string, failedKeyIndex?: number) => {
+    const actualFailedIndex = failedKeyIndex !== undefined ? failedKeyIndex : currentKeyIndex;
+    console.log(`🔄 Switching API key: Index ${actualFailedIndex} failed (${failureReason})`);
+    
+    // Record failure reason for the actual failed key
+    const newFailureReasons = {
+      ...keyFailureReasons,
+      [actualFailedIndex]: failureReason
+    };
+    console.log('🔍 Saving failure reasons:', newFailureReasons);
+    setKeyFailureReasons(newFailureReasons);
+    
+    // Simply move to next key sequentially: 1→2→3→end
+    const nextIndex = actualFailedIndex + 1;
+    if (nextIndex < youtubeApiKeys.length) {
+      console.log(`✅ Switching to key index ${nextIndex} (${youtubeApiKeys[nextIndex]?.substring(0, 8)}****)`);
+      setCurrentKeyIndex(nextIndex);
+      return nextIndex;
+    }
+    
+    console.log(`❌ No more keys available. Total keys: ${youtubeApiKeys.length}`);
+    // No more keys available
+    return false;
+  }, [currentKeyIndex, youtubeApiKeys, keyFailureReasons]);
+
   
-  const handleSearch = useCallback(async () => {
-    const currentApiKey = getCurrentApiKey();
+  const handleSearch = useCallback(async (forceKeyIndex?: number) => {
+    // Prevent multiple simultaneous executions
+    if (isHandleSearchRunning) {
+      console.log('handleSearch already running, skipping...');
+      return;
+    }
+    setIsHandleSearchRunning(true);
+    
+    // Use forced key index if provided and is a valid number, otherwise use current
+    const keyIndex = (typeof forceKeyIndex === 'number') ? forceKeyIndex : currentKeyIndex;
+    const currentApiKey = youtubeApiKeys.length > 0 ? youtubeApiKeys[keyIndex] || youtubeApiKeys[0] : youtubeApiKey;
+    console.log(`🔑 Using API key index ${keyIndex}: ${currentApiKey?.substring(0, 8)}****`);
+    
     if (!currentApiKey) {
       setError(t('errorYoutubeKey'));
+      setIsHandleSearchRunning(false);
       return;
     }
 
@@ -234,14 +319,17 @@ const Home: React.FC<HomeProps> = ({ language }) => {
     if (!hasFavoriteChannels) {
         if (!geminiApiKey) {
             setError(t('errorGeminiKey'));
+            setIsHandleSearchRunning(false);
             return;
         }
         if (!keyword) {
             setError(t('errorKeyword'));
+            setIsHandleSearchRunning(false);
             return;
         }
         if (selectedCountries.length === 0) {
             setError(t('errorCountry'));
+            setIsHandleSearchRunning(false);
             return;
         }
     }
@@ -249,6 +337,17 @@ const Home: React.FC<HomeProps> = ({ language }) => {
     setIsLoading(true);
     setError(null);
     setShorts([]);
+    
+    // Reset failure tracking only for truly new search (not forced key index)
+    if (forceKeyIndex === undefined) {
+      // Clear failure data for new search
+      setKeyFailureReasons({});
+      console.log('🔄 Starting new search, cleared all failure data');
+    } else {
+      console.log(`🔄 Retrying with forced key index ${forceKeyIndex}, keeping previous failure data`);
+    }
+    setIsProcessingKeySwitch(false);
+    setHasProcessedFailure(false);
 
     const publishedAfterDate = new Date();
     publishedAfterDate.setDate(publishedAfterDate.getDate() - parseInt(dateRange, 10));
@@ -264,6 +363,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
             if(channelIds.length === 0) {
                 setError(t('errorChannelNotFound'));
                 setIsLoading(false);
+                setIsHandleSearchRunning(false);
                 return;
             }
 
@@ -274,18 +374,69 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                 if (result.status === 'fulfilled') {
                     allShorts.push(...result.value);
                 } else {
+                    // Only process the first failure to avoid multiple retries
+                    if (hasProcessedFailure) continue;
+                    
                     console.error(`Error searching in a favorite channel:`, result.reason);
                      const reasonString = result.reason instanceof Error ? result.reason.message : String(result.reason);
                      if (reasonString.toLowerCase().includes('quota')) {
-                        // Try to switch to next API key
-                        if (switchToNextApiKey()) {
-                          // Retry with next key - recursive call
-                          setTimeout(() => handleSearch(), 1000);
+                        setHasProcessedFailure(true);
+                        
+                        // If this is already a forced key retry, check if there are more keys to try
+                        if (forceKeyIndex !== undefined) {
+                          console.log(`🔄 Forced key ${forceKeyIndex} also failed`);
+                          // Record the forced key failure
+                          const newFailureReasons = {
+                            ...keyFailureReasons,
+                            [forceKeyIndex]: 'quota'
+                          };
+                          setKeyFailureReasons(newFailureReasons);
+                          
+                          // Check if there are more keys to try
+                          const nextIndex = forceKeyIndex + 1;
+                          if (nextIndex < youtubeApiKeys.length) {
+                            console.log(`🔄 Continuing to next key ${nextIndex}`);
+                            setCurrentKeyIndex(nextIndex);
+                            setIsProcessingKeySwitch(false);
+                            setIsHandleSearchRunning(false);
+                            handleSearch(nextIndex);
+                            return;
+                          } else {
+                            console.log(`🔄 No more keys available after forced key ${forceKeyIndex}`);
+                            searchError = youtubeApiKeys.length > 0 ? generateFailureSummary('quota', forceKeyIndex) : t('errorQuotaExceeded');
+                            break;
+                          }
+                        }
+                        
+                        // Prevent multiple simultaneous key switches
+                        if (isProcessingKeySwitch) {
+                            console.log('Key switch already in progress for favorite channels, ignoring duplicate failure');
+                            continue;
+                        }
+                        setIsProcessingKeySwitch(true);
+                        
+                        // Record failure and switch to next key if available  
+                        const nextKeyIndex = switchToNextApiKey('quota');
+                        if (nextKeyIndex !== false) {
+                          // Key switched successfully, retry immediately with new key
+                          setIsProcessingKeySwitch(false);
+                          setIsHandleSearchRunning(false); // Clean up current run before recursive call
+                          console.log(`🔄 Key switched to index: ${nextKeyIndex}. Retrying immediately.`);
+                          handleSearch(nextKeyIndex); // Retry with the new key
                           return;
                         }
-                        searchError = t('errorQuotaExceeded');
+                        // All keys tried, show summary
+                        searchError = youtubeApiKeys.length > 0 ? generateFailureSummary('quota') : t('errorQuotaExceeded');
+                        break;
+                     } else if (reasonString.toLowerCase().includes('api key not valid') || reasonString.toLowerCase().includes('invalid api key')) {
+                        setHasProcessedFailure(true);
+                        // For invalid keys, record failure and immediately show error - NO RETRY
+                        const actualKeyIndex = forceKeyIndex !== undefined ? forceKeyIndex : currentKeyIndex;
+                        switchToNextApiKey('invalid', actualKeyIndex);
+                        searchError = youtubeApiKeys.length > 0 ? generateFailureSummary('invalid', actualKeyIndex) : t('errorInvalidApiKey');
                         break;
                      } else if (reasonString.toLowerCase().includes('has not been used') || reasonString.toLowerCase().includes('is disabled')) {
+                        setHasProcessedFailure(true);
                         searchError = t('errorApiDisabled');
                         break;
                      } else if (!searchError) {
@@ -308,19 +459,70 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                 if (result.status === 'fulfilled') {
                     allShorts.push(...result.value);
                 } else {
+                    // Only process the first failure to avoid multiple retries
+                    if (hasProcessedFailure) continue;
+                    
                     const reasonString = result.reason instanceof Error ? result.reason.message : String(result.reason);
                     console.error(`Error searching in ${targetCountries[index].name}:`, result.reason);
 
                     if (reasonString.toLowerCase().includes('quota')) {
-                        // Try to switch to next API key
-                        if (switchToNextApiKey()) {
-                          // Retry with next key - recursive call
-                          setTimeout(() => handleSearch(), 1000);
+                        setHasProcessedFailure(true);
+                        
+                        // If this is already a forced key retry, check if there are more keys to try
+                        if (forceKeyIndex !== undefined) {
+                          console.log(`🔄 Forced key ${forceKeyIndex} also failed`);
+                          // Record the forced key failure
+                          const newFailureReasons = {
+                            ...keyFailureReasons,
+                            [forceKeyIndex]: 'quota'
+                          };
+                          setKeyFailureReasons(newFailureReasons);
+                          
+                          // Check if there are more keys to try
+                          const nextIndex = forceKeyIndex + 1;
+                          if (nextIndex < youtubeApiKeys.length) {
+                            console.log(`🔄 Continuing to next key ${nextIndex}`);
+                            setCurrentKeyIndex(nextIndex);
+                            setIsProcessingKeySwitch(false);
+                            setIsHandleSearchRunning(false);
+                            handleSearch(nextIndex);
+                            return;
+                          } else {
+                            console.log(`🔄 No more keys available after forced key ${forceKeyIndex}`);
+                            searchError = youtubeApiKeys.length > 0 ? generateFailureSummary('quota', forceKeyIndex) : t('errorQuotaExceeded');
+                            break;
+                          }
+                        }
+                        
+                        // Prevent multiple simultaneous key switches
+                        if (isProcessingKeySwitch) {
+                            console.log('Key switch already in progress for country search, ignoring duplicate failure');
+                            continue;
+                        }
+                        setIsProcessingKeySwitch(true);
+                        
+                        // Record failure and switch to next key if available  
+                        const nextKeyIndex = switchToNextApiKey('quota');
+                        if (nextKeyIndex !== false) {
+                          // Key switched successfully, retry immediately with new key
+                          setIsProcessingKeySwitch(false);
+                          setIsHandleSearchRunning(false); // Clean up current run before recursive call
+                          console.log(`🔄 Key switched to index: ${nextKeyIndex}. Retrying immediately.`);
+                          handleSearch(nextKeyIndex); // Retry with the new key
                           return;
                         }
-                        searchError = t('errorQuotaExceeded');
+                        // All keys tried, show summary
+                        searchError = youtubeApiKeys.length > 0 ? generateFailureSummary('quota') : t('errorQuotaExceeded');
                         break; 
+                    } else if (reasonString.toLowerCase().includes('api key not valid') || reasonString.toLowerCase().includes('invalid api key')) {
+                        setHasProcessedFailure(true);
+                        // For invalid keys, record failure and immediately show error - NO RETRY
+                        const actualKeyIndex = forceKeyIndex !== undefined ? forceKeyIndex : currentKeyIndex;
+                        switchToNextApiKey('invalid', actualKeyIndex);
+                        searchError = youtubeApiKeys.length > 0 ? generateFailureSummary('invalid', actualKeyIndex) : t('errorInvalidApiKey');
+                        break;
                     } else if (reasonString.toLowerCase().includes('has not been used') || reasonString.toLowerCase().includes('is disabled')) {
+                        setHasProcessedFailure(true);
                         searchError = t('errorApiDisabled');
                         break;
                     }
@@ -341,7 +543,11 @@ const Home: React.FC<HomeProps> = ({ language }) => {
     } catch (e: any) {
         const reasonString = e instanceof Error ? e.message : String(e);
         if (reasonString.toLowerCase().includes('quota')) {
-           setError(t('errorQuotaExceeded'));
+           setError(youtubeApiKeys.length > 0 ? t('errorAllKeysQuotaExceeded') : t('errorQuotaExceeded'));
+        } else if (reasonString.toLowerCase().includes('api key not valid') || reasonString.toLowerCase().includes('invalid api key')) {
+           const keyNumber = currentKeyIndex + 1;
+           const keyPreview = youtubeApiKeys.length > 0 ? youtubeApiKeys[currentKeyIndex]?.substring(0, 8) + '****' : 'Unknown';
+           setError(`적용된 ${keyNumber}번째 "${keyPreview}" API 키가 잘못되었습니다. 확인해주세요.`);
         } else if (reasonString.toLowerCase().includes('has not been used') || reasonString.toLowerCase().includes('is disabled')) {
            setError(t('errorApiDisabled'));
         } else {
@@ -349,8 +555,9 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         }
     } finally {
         setIsLoading(false);
+        setIsHandleSearchRunning(false);
     }
-  }, [getCurrentApiKey, geminiApiKey, keyword, selectedCountries, dateRange, language, nonEmptyFavoriteChannels, switchToNextApiKey]);
+  }, [getCurrentApiKey, geminiApiKey, keyword, selectedCountries, dateRange, language, nonEmptyFavoriteChannels, switchToNextApiKey, currentKeyIndex, hasProcessedFailure]);
 
   const sortedShorts = useMemo(() => {
     return [...shorts].sort((a, b) => {
@@ -487,16 +694,12 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                 
                 {youtubeApiKeys.length > 0 && (
                   <span style={{ fontSize: '16px', color: '#166534', transform: 'translateY(3px)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#166534" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20,6 9,17 4,12"></polyline>
-                    </svg>
-                    {youtubeApiKeys.length} API Loaded
+                    API KEY {youtubeApiKeys.length}개
                     <button 
                       onClick={() => {
                         setYoutubeApiKeys([]);
                         setCurrentKeyIndex(0);
-                        localStorage.removeItem('youtube_api_keys');
-                        localStorage.removeItem('current_key_index');
+                        setKeyFailureReasons({});
                       }}
                       style={{
                         background: 'none',
@@ -529,7 +732,10 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                     <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                   </svg>
                 )}
-                {youtubeApiKeys.length > 0 ? t('youtubeApiNoticeMultiple') : t('youtubeApiNotice')}
+{youtubeApiKeys.length > 0 ? (
+                  isSwitchingKey ? `다음 키로 전환 중... | ${currentKeyIndex + 1}번째 → ${currentKeyIndex + 2}번째` 
+                  : `등록된 API 적용 | ${currentKeyIndex + 1}번째 키 사용 중`
+                ) : t('youtubeApiNotice')}
               </p>
             </div>
             <div className="form-group-span-2">
@@ -569,7 +775,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
               <CountrySelector selectedCountries={selectedCountries} onChange={setSelectedCountries} language={language} />
             </div>
             <div className="form-group-span-1 form-group-self-end search-button-container">
-               <button onClick={handleSearch} disabled={isLoading} className="btn-primary">
+               <button onClick={() => handleSearch()} disabled={isLoading} className="btn-primary">
                 {isLoading ? <svg className="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> : t('searchButton')}
               </button>
             </div>
@@ -699,12 +905,6 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         onUpload={handleApiKeysUpload}
       />
 
-      {/* Current API Key Status (show during search) */}
-      {isLoading && youtubeApiKeys.length > 0 && (
-        <div className="current-key-indicator">
-          Using YouTube API Key #{currentKeyIndex + 1} of {youtubeApiKeys.length}
-        </div>
-      )}
     </>
   );
 };

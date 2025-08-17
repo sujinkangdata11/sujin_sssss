@@ -29,7 +29,14 @@ const ApiKeyUpload: React.FC<ApiKeyUploadProps> = ({ language, isOpen, onClose, 
       }
     }
     
-    return keys;
+    // Remove duplicates and return unique keys only
+    const uniqueKeys = [...new Set(keys)];
+    
+    if (keys.length !== uniqueKeys.length) {
+      console.log(`🔍 Removed ${keys.length - uniqueKeys.length} duplicate API keys`);
+    }
+    
+    return uniqueKeys;
   };
 
   const handleFileRead = (file: File) => {
