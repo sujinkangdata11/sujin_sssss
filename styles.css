@@ -696,6 +696,48 @@ select.form-input {
   opacity: 0.8; /* 80% opacity */
   border: 1px solid rgba(16, 185, 129, 0.2); /* slightly more visible green border */
   margin-top: var(--spacing-1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Metallic shine animation for API key status text */
+.form-notice-success [data-api-key-status] {
+  position: relative;
+  color: #2DAB84;
+  display: inline-block;
+}
+
+.form-notice-success [data-api-key-status]::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    -70deg,
+    transparent 0%,
+    transparent 48%,
+    rgba(127, 255, 28, 1) 50%,
+    transparent 52%,
+    transparent 100%
+  );
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-shine-overlay 8s infinite linear;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+}
+
+@keyframes text-shine-overlay {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Button Styles */
