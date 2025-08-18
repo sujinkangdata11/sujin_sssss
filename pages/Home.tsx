@@ -634,6 +634,11 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         const aRatio = a.viewsPerSubscriber || 0;
         const bRatio = b.viewsPerSubscriber || 0;
         return bRatio - aRatio;
+      } else if (sortBy === 'videoCount') {
+        // Sort by video count (fewer videos first - better quality)
+        const aCount = a.videoCount || Number.MAX_SAFE_INTEGER;
+        const bCount = b.videoCount || Number.MAX_SAFE_INTEGER;
+        return aCount - bCount;
       }
       return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     });
@@ -962,6 +967,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                 <button onClick={() => setSortBy('viewCount')} className={`sort-toggle-btn ${sortBy === 'viewCount' ? 'active' : 'inactive'}`}>{t('sortMostViews')}</button>
                 <button onClick={() => setSortBy('date')} className={`sort-toggle-btn ${sortBy === 'date' ? 'active' : 'inactive'}`}>{t('sortNewest')}</button>
                 <button onClick={() => setSortBy('viewsPerSubscriber')} className={`sort-toggle-btn ${sortBy === 'viewsPerSubscriber' ? 'active' : 'inactive'}`}>{t('sortViewsPerSubscriber')}</button>
+                <button onClick={() => setSortBy('videoCount')} className={`sort-toggle-btn ${sortBy === 'videoCount' ? 'active' : 'inactive'}`}>{t('sortFewestVideos')}</button>
               </div>
             </div>
             <div className="results-grid">

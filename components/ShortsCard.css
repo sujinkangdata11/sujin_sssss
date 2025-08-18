@@ -90,12 +90,35 @@
   margin-top: 0;
 }
 
-.shorts-card-stats {
+.shorts-card-videos {
   font-size: var(--font-size-xs);
+  color: #6b7280; /* grey text for video count */
+  margin-bottom: var(--spacing-1);
+  margin-top: 0;
+}
+
+.shorts-card-channel-views {
+  font-size: var(--font-size-xs);
+  color: #6b7280; /* grey text for channel total views */
+  margin-bottom: var(--spacing-1);
+  margin-top: 0;
+}
+
+.shorts-card-average-views {
+  font-size: var(--font-size-xs);
+  color: #059669; /* emerald color for average views (important metric) */
+  margin-bottom: var(--spacing-1);
+  margin-top: 0;
+  font-weight: 600;
+}
+
+.shorts-card-stats {
+  font-size: calc(var(--font-size-xs) + 2px);
   color: #7c3aed; /* purple color for views and date */
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
+  font-weight: 600; /* bold for better visibility */
 }
 
 .shorts-card-stats-separator {

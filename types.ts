@@ -10,6 +10,8 @@ export interface YouTubeShort {
   duration?: string;
   subscriberCount?: number;
   viewsPerSubscriber?: number;
+  videoCount?: number;
+  channelViewCount?: number;
 }
 
 export interface Country {
@@ -23,7 +25,7 @@ export interface DateRangeOption {
   label: string;
 }
 
-export type SortOption = 'viewCount' | 'date' | 'viewsPerSubscriber';
+export type SortOption = 'viewCount' | 'date' | 'viewsPerSubscriber' | 'videoCount';
 
 export type Language = 'en' | 'ko' | 'ja' | 'zh' | 'hi' | 'es' | 'fr' | 'de' | 'nl' | 'pt' | 'ru';
 

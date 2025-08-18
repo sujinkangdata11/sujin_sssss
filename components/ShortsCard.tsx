@@ -76,6 +76,142 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language }) => {
     return `${formattedCount} ${subscriberText}`;
   };
 
+  const formatVideoCount = (count: number): string => {
+    const videoTextMap: Record<Language, string> = {
+      en: 'videos', ko: '동영상', ja: '動画', zh: '视频', hi: 'वीडियो',
+      es: 'videos', fr: 'vidéos', de: 'Videos', nl: 'video\'s', pt: 'vídeos', ru: 'видео'
+    };
+    const videoText = videoTextMap[language] || videoTextMap.en;
+
+    // Korean format with 억/만/천
+    if (language === 'ko') {
+      if (count >= 100000000) return `${videoText} ${(count / 100000000).toFixed(1)}억개`;
+      if (count >= 10000) return `${videoText} ${Math.floor(count / 10000)}만개`;
+      if (count >= 1000) return `${videoText} ${(count / 1000).toFixed(1)}천개`;
+      return `${videoText} ${count.toLocaleString()}개`;
+    }
+
+    // Japanese format with 億/万
+    if (language === 'ja') {
+      if (count >= 100000000) return `${videoText} ${(count / 100000000).toFixed(1)}億本`;
+      if (count >= 10000) return `${videoText} ${Math.floor(count / 10000)}万本`;
+      return `${videoText} ${count.toLocaleString()}本`;
+    }
+
+    // Chinese format with 亿/万
+    if (language === 'zh') {
+      if (count >= 100000000) return `${videoText} ${(count / 100000000).toFixed(1)}亿个`;
+      if (count >= 10000) return `${videoText} ${Math.floor(count / 10000)}万个`;
+      return `${videoText} ${count.toLocaleString()}个`;
+    }
+
+    // Default format for other languages
+    const localeMap: Record<string, string> = {
+      en: 'en-US', hi: 'en-IN', es: 'es-ES', fr: 'fr-FR',
+      de: 'de-DE', nl: 'nl-NL', pt: 'pt-BR', ru: 'ru-RU'
+    };
+    const locale = localeMap[language] || 'en-US';
+    const formattedCount = new Intl.NumberFormat(locale, {
+      notation: 'compact',
+      compactDisplay: 'short',
+      maximumFractionDigits: 1
+    }).format(count);
+
+    return `${formattedCount} ${videoText}`;
+  };
+
+  const formatChannelViewCount = (count: number): string => {
+    const totalViewTextMap: Record<Language, string> = {
+      en: 'total views', ko: '총 조회수', ja: '総再生回数', zh: '总观看次数', hi: 'कुल दृश्य',
+      es: 'vistas totales', fr: 'vues totales', de: 'Gesamtaufrufe', nl: 'totale weergaven', pt: 'visualizações totais', ru: 'всего просмотров'
+    };
+    const totalViewText = totalViewTextMap[language] || totalViewTextMap.en;
+
+    // Korean format with 억/만/천
+    if (language === 'ko') {
+      if (count >= 100000000) return `${totalViewText} ${(count / 100000000).toFixed(1)}억회`;
+      if (count >= 10000) return `${totalViewText} ${Math.floor(count / 10000)}만회`;
+      if (count >= 1000) return `${totalViewText} ${(count / 1000).toFixed(1)}천회`;
+      return `${totalViewText} ${count.toLocaleString()}회`;
+    }
+
+    // Japanese format with 億/万
+    if (language === 'ja') {
+      if (count >= 100000000) return `${totalViewText} ${(count / 100000000).toFixed(1)}億回`;
+      if (count >= 10000) return `${totalViewText} ${Math.floor(count / 10000)}万回`;
+      return `${totalViewText} ${count.toLocaleString()}回`;
+    }
+
+    // Chinese format with 亿/万
+    if (language === 'zh') {
+      if (count >= 100000000) return `${totalViewText} ${(count / 100000000).toFixed(1)}亿次`;
+      if (count >= 10000) return `${totalViewText} ${Math.floor(count / 10000)}万次`;
+      return `${totalViewText} ${count.toLocaleString()}次`;
+    }
+
+    // Default format for other languages
+    const localeMap: Record<string, string> = {
+      en: 'en-US', hi: 'en-IN', es: 'es-ES', fr: 'fr-FR',
+      de: 'de-DE', nl: 'nl-NL', pt: 'pt-BR', ru: 'ru-RU'
+    };
+    const locale = localeMap[language] || 'en-US';
+    const formattedCount = new Intl.NumberFormat(locale, {
+      notation: 'compact',
+      compactDisplay: 'short',
+      maximumFractionDigits: 1
+    }).format(count);
+
+    return `${formattedCount} ${totalViewText}`;
+  };
+
+  const formatAverageViews = (totalViews: number, videoCount: number): string => {
+    if (videoCount === 0) return '';
+    
+    const averageViews = Math.round(totalViews / videoCount);
+    
+    const avgViewTextMap: Record<Language, string> = {
+      en: 'avg views', ko: '평균 조회수', ja: '平均再生回数', zh: '平均观看次数', hi: 'औसत दृश्य',
+      es: 'vistas promedio', fr: 'vues moyennes', de: 'Durchschn. Aufrufe', nl: 'gem. weergaven', pt: 'visualizações médias', ru: 'средн. просмотров'
+    };
+    const avgViewText = avgViewTextMap[language] || avgViewTextMap.en;
+
+    // Korean format with 억/만/천
+    if (language === 'ko') {
+      if (averageViews >= 100000000) return `${avgViewText} ${(averageViews / 100000000).toFixed(1)}억회`;
+      if (averageViews >= 10000) return `${avgViewText} ${Math.floor(averageViews / 10000)}만회`;
+      if (averageViews >= 1000) return `${avgViewText} ${(averageViews / 1000).toFixed(1)}천회`;
+      return `${avgViewText} ${averageViews.toLocaleString()}회`;
+    }
+
+    // Japanese format with 億/万
+    if (language === 'ja') {
+      if (averageViews >= 100000000) return `${avgViewText} ${(averageViews / 100000000).toFixed(1)}億回`;
+      if (averageViews >= 10000) return `${avgViewText} ${Math.floor(averageViews / 10000)}万回`;
+      return `${avgViewText} ${averageViews.toLocaleString()}回`;
+    }
+
+    // Chinese format with 亿/万
+    if (language === 'zh') {
+      if (averageViews >= 100000000) return `${avgViewText} ${(averageViews / 100000000).toFixed(1)}亿次`;
+      if (averageViews >= 10000) return `${avgViewText} ${Math.floor(averageViews / 10000)}万次`;
+      return `${avgViewText} ${averageViews.toLocaleString()}次`;
+    }
+
+    // Default format for other languages
+    const localeMap: Record<string, string> = {
+      en: 'en-US', hi: 'en-IN', es: 'es-ES', fr: 'fr-FR',
+      de: 'de-DE', nl: 'nl-NL', pt: 'pt-BR', ru: 'ru-RU'
+    };
+    const locale = localeMap[language] || 'en-US';
+    const formattedAverage = new Intl.NumberFormat(locale, {
+      notation: 'compact',
+      compactDisplay: 'short',
+      maximumFractionDigits: 1
+    }).format(averageViews);
+
+    return `${formattedAverage} ${avgViewText}`;
+  };
+
   const formatViews = (views: number): string => {
     const viewTextMap: Record<Language, string> = {
       en: 'views', ko: '회', ja: '回視聴', zh: '次观看', hi: 'बार देखा गया',
@@ -199,6 +335,21 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language }) => {
           {short.subscriberCount !== undefined && (
             <p className="shorts-card-subscribers">
               {formatSubscriberCount(short.subscriberCount)}
+            </p>
+          )}
+          {short.videoCount !== undefined && (
+            <p className="shorts-card-videos">
+              {formatVideoCount(short.videoCount)}
+            </p>
+          )}
+          {short.channelViewCount !== undefined && (
+            <p className="shorts-card-channel-views">
+              {formatChannelViewCount(short.channelViewCount)}
+            </p>
+          )}
+          {short.channelViewCount !== undefined && short.videoCount !== undefined && short.videoCount > 0 && (
+            <p className="shorts-card-average-views">
+              {formatAverageViews(short.channelViewCount, short.videoCount)}
             </p>
           )}
           <div className="shorts-card-stats">

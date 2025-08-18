@@ -136,8 +136,8 @@ export const searchYouTubeShorts = async (
   }
 };
 
-// Get channel subscriber counts for multiple channels
-export const getChannelSubscriberCounts = async (apiKey: string, channelIds: string[]): Promise<Record<string, number>> => {
+// Get channel statistics for multiple channels (subscriber count + video count + channel view count)
+export const getChannelStatistics = async (apiKey: string, channelIds: string[]): Promise<Record<string, {subscriberCount: number, videoCount: number, viewCount: number}>> => {
   try {
     if (channelIds.length === 0) return {};
     
@@ -157,16 +157,18 @@ export const getChannelSubscriberCounts = async (apiKey: string, channelIds: str
     }
     
     const data = await response.json();
-    const subscriberCounts: Record<string, number> = {};
+    const channelStats: Record<string, {subscriberCount: number, videoCount: number, viewCount: number}> = {};
     
     data.items?.forEach((channel: any) => {
       const subscriberCount = parseInt(channel.statistics.subscriberCount, 10) || 0;
-      subscriberCounts[channel.id] = subscriberCount;
+      const videoCount = parseInt(channel.statistics.videoCount, 10) || 0;
+      const viewCount = parseInt(channel.statistics.viewCount, 10) || 0;
+      channelStats[channel.id] = { subscriberCount, videoCount, viewCount };
     });
     
-    return subscriberCounts;
+    return channelStats;
   } catch (error) {
-    console.error('Error fetching channel subscriber counts:', error);
+    console.error('Error fetching channel statistics:', error);
     throw error; // Re-throw error so enhanceVideosWithSubscriberData can catch it
   }
 };
@@ -201,7 +203,7 @@ export const enhanceVideosWithSubscriberData = async (
     console.log(`📦 Split into ${channelBatches.length} batches`);
     
     // Process batches sequentially, allowing partial success
-    let allSubscriberCounts: Record<string, number> = {};
+    let allChannelStats: Record<string, {subscriberCount: number, videoCount: number, viewCount: number}> = {};
     let hasAnyError = false;
     
     for (let i = 0; i < channelBatches.length; i++) {
@@ -214,8 +216,8 @@ export const enhanceVideosWithSubscriberData = async (
       }
       
       try {
-        const batchSubscriberCounts = await getChannelSubscriberCounts(apiKey, batch);
-        allSubscriberCounts = { ...allSubscriberCounts, ...batchSubscriberCounts };
+        const batchChannelStats = await getChannelStatistics(apiKey, batch);
+        allChannelStats = { ...allChannelStats, ...batchChannelStats };
         console.log(`✅ Batch ${i + 1} completed successfully`);
       } catch (batchError) {
         console.error(`❌ Batch ${i + 1} failed:`, batchError);
@@ -225,11 +227,14 @@ export const enhanceVideosWithSubscriberData = async (
       }
     }
     
-    console.log(`📊 Successfully collected subscriber data for ${Object.keys(allSubscriberCounts).length}/${uniqueChannelIds.length} channels`);
+    console.log(`📊 Successfully collected channel data for ${Object.keys(allChannelStats).length}/${uniqueChannelIds.length} channels`);
     
-    // Enhance videos with subscriber data (including partial results)
+    // Enhance videos with channel statistics (including partial results)
     const enhancedVideos = videos.map(video => {
-      const subscriberCount = video.channelId ? allSubscriberCounts[video.channelId] : undefined;
+      const channelData = video.channelId ? allChannelStats[video.channelId] : undefined;
+      const subscriberCount = channelData?.subscriberCount;
+      const videoCount = channelData?.videoCount;
+      const channelViewCount = channelData?.viewCount;
       
       let viewsPerSubscriber: number | undefined;
       if (subscriberCount !== undefined && subscriberCount > 0) {
@@ -239,6 +244,8 @@ export const enhanceVideosWithSubscriberData = async (
       return {
         ...video,
         subscriberCount,
+        videoCount,
+        channelViewCount,
         viewsPerSubscriber,
       };
     });
