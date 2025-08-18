@@ -357,8 +357,8 @@
   
   /* Mobile: Stack hero buttons vertically */
   .hero-buttons {
-    flex-direction: column;
-    gap: 0.75rem; /* 12px gap between buttons on mobile */
+    flex-direction: column !important;
+    gap: 1rem; /* 16px gap between buttons on mobile */
     align-items: stretch; /* Make buttons full width */
   }
   
