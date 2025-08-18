@@ -139,7 +139,7 @@ ${data.content}`;
 
 // Download article as text file
 const downloadArticleFile = (data: PublishData, content: string): void => {
-  const filename = `${data.articleId.toString().padStart(2, '0')}.txt`;
+  const filename = `page${data.pageNumber}_article${data.articleId}_${data.language}.txt`;
   const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   
@@ -160,7 +160,7 @@ const downloadArticleFile = (data: PublishData, content: string): void => {
 // Download thumbnail image
 const downloadThumbnailFile = (data: PublishData, thumbnailFile: File): void => {
   const extension = getThumbnailExtension(thumbnailFile);
-  const filename = `${data.articleId.toString().padStart(2, '0')}_thumbnail.${extension}`;
+  const filename = `page${data.pageNumber}_article${data.articleId}_${data.language}_thumbnail.${extension}`;
   
   const url = URL.createObjectURL(thumbnailFile);
   const a = document.createElement('a');
