@@ -1461,7 +1461,7 @@ select.form-input {
 }
 
 .coming-soon-title {
-  font-size: 3rem; /* 48px */
+  font-size: 2.5rem; /* 40px */
   font-weight: 300; /* light weight like body text */
   color: #323545;
   margin-bottom: var(--spacing-4);
@@ -1498,7 +1498,7 @@ select.form-input {
 
 .news-title {
   font-family: 'Newsreader', serif;
-  font-size: 3.75rem; /* 60px - same as hero-title */
+  font-size: 2.5rem; /* 40px */
   font-weight: 400; /* regular weight - same as hero-title */
   color: #323545; /* dark grey text - same as hero-title */
   line-height: 65px; /* 65px line height - same as hero-title */
