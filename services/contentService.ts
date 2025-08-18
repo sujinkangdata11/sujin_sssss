@@ -141,7 +141,7 @@ export const parseContentFile = (fileContent: string, language: Language = 'en')
 };
 
 export const loadArticleFromFile = async (pageNumber: number, articleId: number, language: Language = 'en'): Promise<Article | null> => {
-  // Only check localStorage for published articles
+  // First check localStorage for published articles
   try {
     const articleKey = `article_${pageNumber}_${articleId}_${language}`;
     const storedArticle = localStorage.getItem(articleKey);
@@ -161,15 +161,71 @@ export const loadArticleFromFile = async (pageNumber: number, articleId: number,
     console.error('Error loading from localStorage:', error);
   }
 
-  // No file system fallback - only use admin-created content
+  // Try to load from file system as fallback
+  try {
+    const paddedPageNumber = pageNumber.toString().padStart(2, '0');
+    const filename = `page${pageNumber}_article${articleId}_${language}.txt`;
+    const response = await fetch(`/contents/${paddedPageNumber}/${filename}`);
+    
+    if (response.ok) {
+      const content = await response.text();
+      const parsed = parseContentFile(content, language);
+      
+      return {
+        id: articleId,
+        title: parsed.title,
+        excerpt: parsed.excerpt,
+        date: parsed.date,
+        content: parsed.content,
+        category: parsed.category
+      };
+    }
+  } catch (error) {
+    console.error('Error loading from file system:', error);
+  }
+
   return null;
 };
 
 export const loadArticlesForPage = async (pageNumber: number, language: Language = 'en'): Promise<Article[]> => {
-  // Only load from localStorage (admin-created articles)
+  const articles: Article[] = [];
+
+  // First try to load from localStorage (admin-created articles)
   const publishedArticles = getPublishedArticles(pageNumber, language);
-  
-  return publishedArticles.sort((a, b) => a.id - b.id);
+  articles.push(...publishedArticles);
+
+  // Then try to load from file system (existing text files)
+  try {
+    const paddedPageNumber = pageNumber.toString().padStart(2, '0');
+    
+    // Check for specific language files first
+    const specificFiles = [`page${pageNumber}_article1_${language}.txt`, `page${pageNumber}_article8_${language}.txt`];
+    
+    for (const filename of specificFiles) {
+      const response = await fetch(`/contents/${paddedPageNumber}/${filename}`);
+      if (response.ok) {
+        const content = await response.text();
+        const parsed = parseContentFile(content, language);
+        const articleId = filename.includes('article1') ? 1 : 8;
+        
+        // Only add if not already in localStorage
+        if (!articles.find(a => a.id === articleId)) {
+          articles.push({
+            id: articleId,
+            title: parsed.title,
+            excerpt: parsed.excerpt,
+            content: parsed.content,
+            category: parsed.category,
+            date: parsed.date
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error loading articles from files:', error);
+  }
+
+  return articles.sort((a, b) => a.id - b.id);
 };
 
 // Helper function to get published articles from localStorage
