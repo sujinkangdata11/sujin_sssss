@@ -261,6 +261,7 @@
   max-width: 691.2px; /* 20% larger than 576px (576 * 1.2 = 691.2) */
   height: auto;
   border-radius: 1rem; /* 16px rounded corners */
+  border: 1px solid #d1d5db; /* 1px gray border */
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
