@@ -2668,3 +2668,64 @@ select.form-input {
   font-size: var(--font-size-sm);
   color: #1e40af;
 }
+
+/* YouTube Tutorial Section */
+.youtube-tutorial-card {
+  margin-top: 2rem;
+}
+
+.youtube-tutorial-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.youtube-tutorial-title {
+  font-size: var(--font-size-xl); /* 20px - same as form-label */
+  font-weight: 500; /* same as form-label */
+  color: #1f2937;
+  margin: 0;
+}
+
+.youtube-tutorial-language-select {
+  width: auto;
+  min-width: 150px;
+}
+
+.youtube-tutorial-video {
+  margin-top: 1rem;
+}
+
+.youtube-tutorial-iframe {
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 700px;
+  height: 440px;
+  border: none;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .youtube-tutorial-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .youtube-tutorial-title {
+    font-size: 1.25rem;
+  }
+  
+  .youtube-tutorial-language-select {
+    width: 100%;
+  }
+  
+  .youtube-tutorial-iframe {
+    height: 250px;
+  }
+}

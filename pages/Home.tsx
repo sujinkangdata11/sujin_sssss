@@ -981,6 +981,41 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         )}
       </main>
 
+      {/* YouTube Tutorial Section */}
+      <div className="main-container">
+        <div className="form-card youtube-tutorial-card">
+          <div className="youtube-tutorial-header">
+            <h3 className="youtube-tutorial-title">{t('tutorialTitle')}</h3>
+            <select 
+              className="form-input youtube-tutorial-language-select"
+              value={language}
+              onChange={(e) => {
+                // Language change handler can be implemented here if needed
+                console.log('Selected language:', e.target.value);
+              }}
+            >
+              {SUPPORTED_LANGUAGES.map(lang => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.nativeName}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="youtube-tutorial-video">
+            <iframe
+              width="100%"
+              height="315"
+              src="https://www.youtube.com/embed/jv7Srh4afYY"
+              title={t('tutorialVideoTitle')}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="youtube-tutorial-iframe"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+
       {/* API Key Upload Modal */}
       <ApiKeyUpload
         language={language}
