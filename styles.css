@@ -1483,6 +1483,7 @@ select.form-input {
   color: #374151;
   line-height: 1.6;
   font-family: var(--font-family);
+  opacity: 0.5; /* 50% transparency */
 }
 
 /* News Page Styles */
