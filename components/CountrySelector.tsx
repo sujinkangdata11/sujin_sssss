@@ -28,6 +28,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, on
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [hoveredOption, setHoveredOption] = useState<'topRPM' | 'viral' | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{x: number, y: number}>({x: 0, y: 0});
   const wrapperRef = useRef<HTMLDivElement>(null);
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
 
@@ -40,9 +41,25 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, on
   const topRPMCountryCodes = ['NO', 'CH', 'DK', 'SE', 'FI', 'LU', 'IS', 'US', 'GB', 'AT', 'BE', 'NZ', 'SG', 'HK', 'IE', 'CA', 'AU', 'DE', 'NL', 'FR'];
   const viralPowerhouseCountryCodes = ['US', 'IN', 'BR', 'MX', 'KR', 'JP', 'ID', 'PH', 'TH', 'VN', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'TR', 'RU', 'ZA'];
   
-  // Get country names for tooltip
+  // Get country names for tooltip in grid format
   const getCountryNames = (codes: string[]) => {
-    return codes.map(code => COUNTRIES.find(c => c.code === code)?.name || code).join(', ');
+    const names = codes.map(code => COUNTRIES.find(c => c.code === code)?.name || code);
+    return names;
+  };
+  
+  // Handle mouse enter with position calculation
+  const handleMouseEnter = (option: 'topRPM' | 'viral', event: React.MouseEvent) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const dropdownRect = wrapperRef.current?.getBoundingClientRect();
+    
+    if (dropdownRect) {
+      // Position tooltip to the right of the dropdown
+      setTooltipPosition({
+        x: dropdownRect.right + 10,
+        y: rect.top
+      });
+      setHoveredOption(option);
+    }
   };
   
   const areAllSelected = selectedCountries.length === allCountryCodes.length;
@@ -129,7 +146,7 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, on
             <li
               onClick={handleTopRPMToggle}
               className="country-selector-option country-option-with-tooltip"
-              onMouseEnter={() => setHoveredOption('topRPM')}
+              onMouseEnter={(e) => handleMouseEnter('topRPM', e)}
               onMouseLeave={() => setHoveredOption(null)}
             >
               <div className="country-selector-option-content">
@@ -141,18 +158,11 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, on
                 />
                 <span className="country-selector-option-text top-rpm">{t('topRPM')}</span>
               </div>
-              {hoveredOption === 'topRPM' && (
-                <div className="country-tooltip">
-                  <div className="country-tooltip-content">
-                    {getCountryNames(topRPMCountryCodes)}
-                  </div>
-                </div>
-              )}
             </li>
             <li
               onClick={handleViralPowerhouseToggle}
               className="country-selector-option country-option-with-tooltip"
-              onMouseEnter={() => setHoveredOption('viral')}
+              onMouseEnter={(e) => handleMouseEnter('viral', e)}
               onMouseLeave={() => setHoveredOption(null)}
             >
               <div className="country-selector-option-content">
@@ -164,13 +174,6 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, on
                 />
                 <span className="country-selector-option-text viral-powerhouse">{t('viralPowerhouse')}</span>
               </div>
-              {hoveredOption === 'viral' && (
-                <div className="country-tooltip">
-                  <div className="country-tooltip-content">
-                    {getCountryNames(viralPowerhouseCountryCodes)}
-                  </div>
-                </div>
-              )}
             </li>
             <hr className="country-selector-divider"/>
             {filteredCountries.map(country => (
@@ -191,6 +194,28 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, on
               </li>
             ))}
           </ul>
+        </div>
+      )}
+      
+      {/* Country tooltip popup */}
+      {hoveredOption && (
+        <div 
+          className="country-tooltip"
+          style={{
+            left: `${tooltipPosition.x}px`,
+            top: `${tooltipPosition.y}px`
+          }}
+        >
+          <div className="country-tooltip-content">
+            <div className="country-tooltip-grid">
+              {hoveredOption === 'topRPM' && getCountryNames(topRPMCountryCodes).map((name, index) => (
+                <div key={index} className="country-tooltip-item">{name}</div>
+              ))}
+              {hoveredOption === 'viral' && getCountryNames(viralPowerhouseCountryCodes).map((name, index) => (
+                <div key={index} className="country-tooltip-item">{name}</div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
