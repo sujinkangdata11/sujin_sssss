@@ -171,23 +171,65 @@ export const getChannelSubscriberCounts = async (apiKey: string, channelIds: str
   }
 };
 
+// Helper function to split array into chunks
+const chunkArray = <T>(array: T[], chunkSize: number): T[][] => {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    chunks.push(array.slice(i, i + chunkSize));
+  }
+  return chunks;
+};
+
 // Add subscriber counts and calculate views per subscriber ratio
 export const enhanceVideosWithSubscriberData = async (
   apiKey: string, 
-  videos: YouTubeShort[]
+  videos: YouTubeShort[],
+  onProgress?: (current: number, total: number) => void
 ): Promise<{ videos: YouTubeShort[], hasSubscriberDataError: boolean }> => {
   try {
     if (videos.length === 0) return { videos, hasSubscriberDataError: false };
     
-    // Get unique channel IDs
-    const uniqueChannelIds = [...new Set(videos.map(video => video.channelId).filter(Boolean))] as string[];
+    // Sort videos by view count (highest first) to prioritize high-view channels
+    const sortedVideos = [...videos].sort((a, b) => b.viewCount - a.viewCount);
     
-    // Fetch subscriber counts for all unique channels
-    const subscriberCounts = await getChannelSubscriberCounts(apiKey, uniqueChannelIds);
+    // Get unique channel IDs (preserving order to prioritize high-view videos)
+    const uniqueChannelIds = [...new Set(sortedVideos.map(video => video.channelId).filter(Boolean))] as string[];
+    console.log(`🔄 Processing ${uniqueChannelIds.length} unique channels in batches of 50`);
     
-    // Enhance videos with subscriber data
+    // Split channel IDs into batches of 50 (YouTube API limit)
+    const channelBatches = chunkArray(uniqueChannelIds, 50);
+    console.log(`📦 Split into ${channelBatches.length} batches`);
+    
+    // Process batches sequentially, allowing partial success
+    let allSubscriberCounts: Record<string, number> = {};
+    let hasAnyError = false;
+    
+    for (let i = 0; i < channelBatches.length; i++) {
+      const batch = channelBatches[i];
+      console.log(`🔄 Processing batch ${i + 1}/${channelBatches.length} (${batch.length} channels)`);
+      
+      // Report progress if callback is provided
+      if (onProgress) {
+        onProgress(i + 1, channelBatches.length);
+      }
+      
+      try {
+        const batchSubscriberCounts = await getChannelSubscriberCounts(apiKey, batch);
+        allSubscriberCounts = { ...allSubscriberCounts, ...batchSubscriberCounts };
+        console.log(`✅ Batch ${i + 1} completed successfully`);
+      } catch (batchError) {
+        console.error(`❌ Batch ${i + 1} failed:`, batchError);
+        hasAnyError = true;
+        // Continue with next batch instead of stopping completely
+        continue;
+      }
+    }
+    
+    console.log(`📊 Successfully collected subscriber data for ${Object.keys(allSubscriberCounts).length}/${uniqueChannelIds.length} channels`);
+    
+    // Enhance videos with subscriber data (including partial results)
     const enhancedVideos = videos.map(video => {
-      const subscriberCount = video.channelId ? subscriberCounts[video.channelId] : undefined;
+      const subscriberCount = video.channelId ? allSubscriberCounts[video.channelId] : undefined;
       
       let viewsPerSubscriber: number | undefined;
       if (subscriberCount !== undefined && subscriberCount > 0) {
@@ -201,7 +243,7 @@ export const enhanceVideosWithSubscriberData = async (
       };
     });
     
-    return { videos: enhancedVideos, hasSubscriberDataError: false };
+    return { videos: enhancedVideos, hasSubscriberDataError: hasAnyError };
   } catch (error) {
     console.error('Error enhancing videos with subscriber data:', error);
     return { videos, hasSubscriberDataError: true }; // Return original videos if enhancement fails

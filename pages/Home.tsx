@@ -36,6 +36,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   const [isTyping, setIsTyping] = useState<boolean>(true);
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
   const [videoVisible, setVideoVisible] = useState<boolean>(false);
+  const [batchProgress, setBatchProgress] = useState<{current: number; total: number} | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   
   const exampleRef = useRef<HTMLDivElement>(null);
@@ -261,16 +262,16 @@ const Home: React.FC<HomeProps> = ({ language }) => {
     let summary = "";
     
     if (quotaFailedKeys.length > 0) {
-      summary += `${quotaFailedKeys.map(i => i + 1).join(', ')}번째 API 키는 할당량을 초과합니다.\n`;
+      summary += t('errorMultipleKeysQuotaExceeded').replace('{keys}', quotaFailedKeys.map(i => i + 1).join(', ')) + '\n';
     }
     if (invalidKeys.length > 0) {
-      summary += `${invalidKeys.map(i => i + 1).join(', ')}번째 API 키는 사용할 수 없습니다.\n`;
+      summary += t('errorKeyInvalid').replace('{key}', invalidKeys.map(i => i + 1).join(', ')) + '\n';
     }
     if (disabledKeys.length > 0) {
-      summary += `${disabledKeys.map(i => i + 1).join(', ')}번째 API 키는 비활성화되었습니다.\n`;
+      summary += t('errorKeyDisabled').replace('{key}', disabledKeys.map(i => i + 1).join(', ')) + '\n';
     }
     
-    summary += "\n24시간 후 다시 시도하거나 새로운 API 키를 업로드해주세요.";
+    // The retry message is already included in errorMultipleKeysQuotaExceeded
     
     return summary;
   }, [keyFailureReasons, currentKeyIndex, youtubeApiKeys]);
@@ -394,7 +395,13 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                     const reasonString = result.reason instanceof Error ? result.reason.message : String(result.reason);
                     
                     if (reasonString.toLowerCase().includes('quota')) {
-                        // Record quota failure but continue to next key
+                        // Handle single key mode vs multi-key mode differently
+                        if (youtubeApiKeys.length === 0) {
+                            // Single key mode - throw error to be handled by main catch block
+                            throw result.reason;
+                        }
+                        
+                        // Multi-key mode - record quota failure but continue to next key
                         const actualKeyIndex = forceKeyIndex !== undefined ? forceKeyIndex : currentKeyIndex;
                         recordKeyFailure('quota', actualKeyIndex);
                         
@@ -469,9 +476,9 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                 const geminiErrorString = geminiError instanceof Error ? geminiError.message : String(geminiError);
                 
                 if (geminiErrorString.toLowerCase().includes('quota') || geminiErrorString.toLowerCase().includes('resource_exhausted')) {
-                    setError("Gemini API 할당량을 초과했습니다. 24시간 후 다시 시도하거나 새로운 Gemini API 키를 사용해주세요.");
+                    setError(t('errorGeminiQuotaExceeded'));
                 } else if (geminiErrorString.toLowerCase().includes('api key not valid') || geminiErrorString.toLowerCase().includes('invalid')) {
-                    setError("Gemini API 키가 유효하지 않습니다. 올바른 Gemini API 키를 입력해주세요.");
+                    setError(t('errorGeminiInvalidKey'));
                 } else {
                     setError(`Gemini API 오류: ${geminiErrorString}`);
                 }
@@ -494,7 +501,13 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                     console.error(`Error searching in ${targetCountries[index].name}:`, result.reason);
 
                     if (reasonString.toLowerCase().includes('quota')) {
-                        // Record quota failure but continue to next key
+                        // Handle single key mode vs multi-key mode differently
+                        if (youtubeApiKeys.length === 0) {
+                            // Single key mode - throw error to be handled by main catch block
+                            throw result.reason;
+                        }
+                        
+                        // Multi-key mode - record quota failure but continue to next key
                         const actualKeyIndex = forceKeyIndex !== undefined ? forceKeyIndex : currentKeyIndex;
                         recordKeyFailure('quota', actualKeyIndex);
                         
@@ -575,13 +588,18 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         const uniqueShorts = Array.from(new Map(allShorts.map(short => [short.id, short])).values());
         
         // Enhance videos with subscriber data
-        const enhancementResult = await enhanceVideosWithSubscriberData(currentApiKey, uniqueShorts);
+        const enhancementResult = await enhanceVideosWithSubscriberData(
+          currentApiKey, 
+          uniqueShorts, 
+          (current, total) => setBatchProgress({ current, total })
+        );
+        setBatchProgress(null); // Clear progress when done
         setShorts(enhancementResult.videos);
         
         // Show warning if subscriber data couldn't be fetched
         if (enhancementResult.hasSubscriberDataError && enhancementResult.videos.length > 0) {
           setError((prevError) => {
-            const newWarning = "요청이 많아서 일부 정보를\n불러오지 못했어요. 가끔 이럴 수 있습니다.";
+            const newWarning = t('errorSubscriberDataFailed');
             return prevError ? `${prevError}\n\n${newWarning}` : newWarning;
           });
         }
@@ -590,6 +608,8 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         const reasonString = e instanceof Error ? e.message : String(e);
         if (reasonString.toLowerCase().includes('quota')) {
            setError(youtubeApiKeys.length > 0 ? t('errorAllKeysQuotaExceeded') : t('errorQuotaExceeded'));
+        } else if (reasonString.toLowerCase().includes('api key not found') || reasonString.toLowerCase().includes('pass a valid api key')) {
+           setError(t('errorApiKeyInvalid'));
         } else if (reasonString.toLowerCase().includes('api key not valid') || reasonString.toLowerCase().includes('invalid api key')) {
            const keyNumber = currentKeyIndex + 1;
            const keyPreview = youtubeApiKeys.length > 0 ? youtubeApiKeys[currentKeyIndex]?.substring(0, 8) + '****' : 'Unknown';
@@ -735,12 +755,12 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                   className="api-key-upload-btn"
                   onClick={() => setIsApiKeyUploadOpen(true)}
                 >
-                  📁 .txt 파일 업로드
+                  📁 {t('uploadTxtButton')}
                 </button>
                 
                 {youtubeApiKeys.length > 0 && (
                   <span style={{ fontSize: '16px', color: '#166534', transform: 'translateY(3px)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    API KEY {youtubeApiKeys.length}개
+                    {t('apiKeyCount')} {youtubeApiKeys.length}{t('apiKeyCountSuffix')}
                     <button 
                       onClick={() => {
                         setYoutubeApiKeys([]);
@@ -781,11 +801,11 @@ const Home: React.FC<HomeProps> = ({ language }) => {
                 <span 
                   data-api-key-status={youtubeApiKeys.length > 0 ? "true" : undefined}
                   data-text={youtubeApiKeys.length > 0 ? 
-                    `등록된 API 적용 | ${currentKeyIndex + 1}번째 키 사용 중`
+                    `${t('apiKeyApplied')} | ${t('apiKeyInUse')}${t('apiKeyInUse') ? ' ' : ''}${currentKeyIndex + 1}${t('apiKeyInUseSuffix') ? ' ' : ''}${t('apiKeyInUseSuffix')}`
                     : t('youtubeApiNotice')}
                 >
                   {youtubeApiKeys.length > 0 ? 
-                    `등록된 API 적용 | ${currentKeyIndex + 1}번째 키 사용 중`
+                    `${t('apiKeyApplied')} | ${t('apiKeyInUse')}${t('apiKeyInUse') ? ' ' : ''}${currentKeyIndex + 1}${t('apiKeyInUseSuffix') ? ' ' : ''}${t('apiKeyInUseSuffix')}`
                     : t('youtubeApiNotice')}
                 </span>
               </p>
@@ -922,7 +942,13 @@ const Home: React.FC<HomeProps> = ({ language }) => {
         {isLoading ? (
           <div className="loading-container">
             <svg className="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <p className="loading-text">{t('loadingMessage')}</p>
+            <p className="loading-text">
+              {batchProgress ? (
+                `${t('loadingMessage')} (${batchProgress.current}/${batchProgress.total} 배치)`
+              ) : (
+                t('loadingMessage')
+              )}
+            </p>
           </div>
         ) : sortedShorts.length > 0 ? (
           <>

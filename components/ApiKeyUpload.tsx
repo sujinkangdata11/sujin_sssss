@@ -85,7 +85,12 @@ const ApiKeyUpload: React.FC<ApiKeyUploadProps> = ({ language, isOpen, onClose, 
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content api-key-upload-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>API Key를<br/>한 번에 많이 업로드해서<br/>검색 횟수를 늘리세요.</h3>
+          <h3>{t('apiKeyUploadTitle').split('\n').map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              {index < t('apiKeyUploadTitle').split('\n').length - 1 && <br />}
+            </React.Fragment>
+          ))}</h3>
           <button className="modal-close" onClick={onClose}>
             <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -121,7 +126,7 @@ const ApiKeyUpload: React.FC<ApiKeyUploadProps> = ({ language, isOpen, onClose, 
               <svg xmlns="http://www.w3.org/2000/svg" className="example-icon" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
               </svg>
-              example.txt
+              {t('txtExampleTitle')}
             </h4>
             <div className="format-example">
 "AIzaSyABCDEFGH123456",<br/>
