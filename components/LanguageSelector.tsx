@@ -51,7 +51,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ isOpen, onClose, on
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             className="language-selector-search"
-            autoFocus
           />
         </div>
         <ul className="language-selector-list custom-scrollbar">
