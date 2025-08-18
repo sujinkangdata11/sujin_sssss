@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emergency localStorage Backup</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        textarea { width: 100%; height: 300px; font-family: monospace; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🚨 Emergency localStorage Backup</h1>
+    <p>이 페이지는 localStorage에 있는 모든 뉴스 데이터를 백업하고 복원하는 용도입니다.</p>
+    
+    <div>
+        <button onclick="backupLocalStorage()">📥 localStorage 백업</button>
+        <button onclick="downloadBackup()">💾 백업 파일 다운로드</button>
+        <button onclick="clearDisplay()">🗑️ 화면 지우기</button>
+    </div>
+    
+    <div id="status"></div>
+    <textarea id="backupData" placeholder="백업된 데이터가 여기에 표시됩니다..."></textarea>
+    
+    <div>
+        <input type="file" id="restoreFile" accept=".json" style="margin: 10px 0;">
+        <button onclick="restoreFromFile()">📤 파일에서 복원</button>
+    </div>
+
+    <script>
+        let backupData = null;
+        
+        function showStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            status.innerHTML = `<p class="${isError ? 'error' : 'success'}">${message}</p>`;
+            setTimeout(() => status.innerHTML = '', 3000);
+        }
+        
+        function backupLocalStorage() {
+            try {
+                const backup = {};
+                const articles = [];
+                const thumbnails = {};
+                
+                // Get all localStorage data
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    
+                    if (key.startsWith('article_') || key === 'published_articles' || key.startsWith('thumbnail_')) {
+                        backup[key] = value;
+                        
+                        if (key.startsWith('article_')) {
+                            try {
+                                articles.push(JSON.parse(value));
+                            } catch (e) {
+                                console.error('Error parsing article:', key, e);
+                            }
+                        }
+                    }
+                }
+                
+                backupData = {
+                    timestamp: new Date().toISOString(),
+                    localStorage: backup,
+                    summary: {
+                        totalKeys: Object.keys(backup).length,
+                        articleCount: articles.length,
+                        thumbnailCount: Object.keys(backup).filter(k => k.startsWith('thumbnail_')).length
+                    }
+                };
+                
+                document.getElementById('backupData').value = JSON.stringify(backupData, null, 2);
+                showStatus(`✅ 백업 완료! ${backupData.summary.articleCount}개 기사, ${backupData.summary.thumbnailCount}개 썸네일`);
+                
+            } catch (error) {
+                showStatus(`❌ 백업 실패: ${error.message}`, true);
+            }
+        }
+        
+        function downloadBackup() {
+            if (!backupData) {
+                showStatus('❌ 먼저 백업을 실행해주세요!', true);
+                return;
+            }
+            
+            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `vidhunt-news-backup-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus('✅ 백업 파일이 다운로드되었습니다!');
+        }
+        
+        function restoreFromFile() {
+            const file = document.getElementById('restoreFile').files[0];
+            if (!file) {
+                showStatus('❌ 파일을 선택해주세요!', true);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (data.localStorage) {
+                        Object.keys(data.localStorage).forEach(key => {
+                            localStorage.setItem(key, data.localStorage[key]);
+                        });
+                        
+                        showStatus(`✅ 복원 완료! ${Object.keys(data.localStorage).length}개 항목 복원됨`);
+                    } else {
+                        showStatus('❌ 올바른 백업 파일이 아닙니다!', true);
+                    }
+                } catch (error) {
+                    showStatus(`❌ 복원 실패: ${error.message}`, true);
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function clearDisplay() {
+            document.getElementById('backupData').value = '';
+            document.getElementById('status').innerHTML = '';
+        }
+        
+        // 페이지 로드 시 자동으로 현재 상태 확인
+        window.onload = function() {
+            const articleCount = Object.keys(localStorage).filter(k => k.startsWith('article_')).length;
+            const thumbnailCount = Object.keys(localStorage).filter(k => k.startsWith('thumbnail_')).length;
+            
+            if (articleCount > 0) {
+                showStatus(`📊 현재 localStorage: ${articleCount}개 기사, ${thumbnailCount}개 썸네일 발견`);
+            } else {
+                showStatus('⚠️ localStorage에 뉴스 데이터가 없습니다.', true);
+            }
+        };
+    </script>
+</body>
+</html>

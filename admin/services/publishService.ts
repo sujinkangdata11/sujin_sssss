@@ -13,7 +13,7 @@ interface PublishData {
 
 export const publishArticle = async (data: PublishData, thumbnailFile?: File): Promise<void> => {
   try {
-    // Save content images to localStorage
+    // Save content images to localStorage (for immediate use)
     const imageFiles = JSON.parse(sessionStorage.getItem('tempImageFiles') || '{}');
     console.log('Found temp image files:', Object.keys(imageFiles));
     
@@ -39,6 +39,12 @@ export const publishArticle = async (data: PublishData, thumbnailFile?: File): P
 
     // Wait for all images to be processed
     await Promise.all(imagePromises);
+
+    // Create article content in text file format
+    const articleContent = createArticleTextContent(data);
+    
+    // Create file download
+    downloadArticleFile(data, articleContent);
 
     // For now, save to localStorage as a demo
     const articleKey = `article_${data.pageNumber}_${data.articleId}_${data.language}`;
@@ -78,7 +84,10 @@ export const publishArticle = async (data: PublishData, thumbnailFile?: File): P
     localStorage.setItem(publishedArticlesKey, JSON.stringify(filteredArticles));
     
     if (thumbnailFile) {
-      // Convert thumbnail to base64 and save
+      // Download thumbnail file
+      downloadThumbnailFile(data, thumbnailFile);
+      
+      // Convert thumbnail to base64 and save to localStorage (for immediate use)
       const reader = new FileReader();
       reader.onload = () => {
         const thumbnailKey = `thumbnail_${data.pageNumber}_${data.articleId}`;
@@ -114,4 +123,56 @@ const getThumbnailExtension = (file: File): string => {
     default:
       return 'jpg';
   }
+};
+
+// Create article text content in the format expected by contentService
+const createArticleTextContent = (data: PublishData): string => {
+  const content = `title: ${data.title}
+excerpt: ${data.excerpt}
+category: ${data.category}
+date: ${data.date}
+
+${data.content}`;
+  
+  return content;
+};
+
+// Download article as text file
+const downloadArticleFile = (data: PublishData, content: string): void => {
+  const filename = `${data.articleId.toString().padStart(2, '0')}.txt`;
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.style.display = 'none';
+  
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  
+  URL.revokeObjectURL(url);
+  
+  console.log(`📥 Downloaded article file: ${filename}`);
+};
+
+// Download thumbnail image
+const downloadThumbnailFile = (data: PublishData, thumbnailFile: File): void => {
+  const extension = getThumbnailExtension(thumbnailFile);
+  const filename = `${data.articleId.toString().padStart(2, '0')}_thumbnail.${extension}`;
+  
+  const url = URL.createObjectURL(thumbnailFile);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.style.display = 'none';
+  
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  
+  URL.revokeObjectURL(url);
+  
+  console.log(`📥 Downloaded thumbnail file: ${filename}`);
 };

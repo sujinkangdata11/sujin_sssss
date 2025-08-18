@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🔍 localStorage Recovery Check</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; cursor: pointer; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; }
+        textarea { width: 100%; height: 200px; font-family: monospace; margin: 10px 0; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 localStorage Recovery Check</h1>
+        
+        <div class="section">
+            <h3>🔍 현재 localStorage 상태 확인</h3>
+            <button onclick="checkCurrentState()">현재 상태 확인</button>
+            <div id="currentStatus"></div>
+        </div>
+        
+        <div class="section">
+            <h3>📊 브라우저 저장소 전체 검색</h3>
+            <p>SessionStorage, IndexedDB, WebSQL 등에서 데이터를 찾아봅니다.</p>
+            <button onclick="searchAllStorages()">모든 저장소 검색</button>
+            <div id="storageResults"></div>
+        </div>
+        
+        <div class="section">
+            <h3>🕰️ 브라우저 백업 확인 가이드</h3>
+            <div id="backupGuide">
+                <p><strong>Chrome의 경우:</strong></p>
+                <ol>
+                    <li>Chrome 설정 → 고급 → 시스템 → "하드웨어 가속 사용(가능한 경우)" 해제</li>
+                    <li>Chrome://version/ 에서 프로필 경로 확인</li>
+                    <li>해당 경로의 Local Storage 폴더 확인</li>
+                </ol>
+                
+                <p><strong>수동 확인 경로:</strong></p>
+                <code>/Users/sujin/Library/Application Support/Google/Chrome/Default/Local Storage/leveldb/</code>
+                
+                <p><strong>Time Machine 백업이 있다면:</strong></p>
+                <ol>
+                    <li>Time Machine 열기</li>
+                    <li>위 경로로 이동</li>
+                    <li>어제/최근 백업에서 localStorage 파일 복구</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>💾 수동 데이터 입력</h3>
+            <p>혹시 기억나는 기사 제목이나 내용이 있다면 여기에 입력해서 복구해보세요.</p>
+            <textarea id="manualData" placeholder="기억나는 기사 데이터를 JSON 형태로 입력..."></textarea>
+            <button onclick="restoreManualData()">수동 데이터 복구</button>
+        </div>
+        
+        <div class="section">
+            <h3>🔄 자동 복구 시도</h3>
+            <p>브라우저의 temporary storage, cache API 등에서 데이터를 찾아봅니다.</p>
+            <button onclick="attemptAutoRecovery()">자동 복구 시도</button>
+            <div id="recoveryResults"></div>
+        </div>
+    </div>
+
+    <script>
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<p class="${type}">${message}</p>`;
+        }
+        
+        function checkCurrentState() {
+            let found = 0;
+            const results = [];
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.startsWith('article_') || key.startsWith('published_') || key.startsWith('thumbnail_'))) {
+                    found++;
+                    results.push(`${key}: ${localStorage.getItem(key)?.substring(0, 50)}...`);
+                }
+            }
+            
+            if (found > 0) {
+                showResult('currentStatus', `✅ 발견! ${found}개의 관련 항목 발견:\n${results.join('\n')}`, 'success');
+            } else {
+                showResult('currentStatus', `❌ localStorage에서 뉴스 관련 데이터를 찾을 수 없습니다.`, 'error');
+            }
+        }
+        
+        function searchAllStorages() {
+            const results = [];
+            
+            // SessionStorage 확인
+            let sessionFound = 0;
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                if (key && (key.includes('article') || key.includes('news'))) {
+                    sessionFound++;
+                    results.push(`SessionStorage: ${key}`);
+                }
+            }
+            
+            // IndexedDB 확인 (비동기)
+            if ('indexedDB' in window) {
+                indexedDB.databases().then(databases => {
+                    results.push(`IndexedDB 데이터베이스: ${databases.length}개`);
+                    databases.forEach(db => {
+                        results.push(`- ${db.name} (버전: ${db.version})`);
+                    });
+                    
+                    showResult('storageResults', results.join('\n') + `\nSessionStorage 항목: ${sessionFound}개`);
+                }).catch(e => {
+                    showResult('storageResults', results.join('\n') + `\nSessionStorage 항목: ${sessionFound}개\nIndexedDB 확인 실패: ${e.message}`);
+                });
+            }
+        }
+        
+        function restoreManualData() {
+            const data = document.getElementById('manualData').value;
+            try {
+                const parsedData = JSON.parse(data);
+                // 데이터 복구 시도
+                if (Array.isArray(parsedData)) {
+                    parsedData.forEach((article, index) => {
+                        const key = `article_1_${article.id || index + 1}_ko`;
+                        localStorage.setItem(key, JSON.stringify(article));
+                    });
+                    localStorage.setItem('published_articles', JSON.stringify(parsedData));
+                    showResult('manualData', '✅ 수동 데이터 복구 완료!', 'success');
+                } else {
+                    showResult('manualData', '❌ 올바른 JSON 배열 형태가 아닙니다.', 'error');
+                }
+            } catch (e) {
+                showResult('manualData', `❌ JSON 파싱 오류: ${e.message}`, 'error');
+            }
+        }
+        
+        function attemptAutoRecovery() {
+            showResult('recoveryResults', '🔄 복구를 시도하고 있습니다...');
+            
+            // 캐시 API 확인
+            if ('caches' in window) {
+                caches.keys().then(cacheNames => {
+                    const results = [`캐시 발견: ${cacheNames.length}개`];
+                    cacheNames.forEach(name => results.push(`- ${name}`));
+                    
+                    return Promise.all(cacheNames.map(name => 
+                        caches.open(name).then(cache => 
+                            cache.keys().then(keys => ({name, keyCount: keys.length}))
+                        )
+                    ));
+                }).then(cacheInfo => {
+                    const info = cacheInfo.map(c => `${c.name}: ${c.keyCount}개 항목`).join('\n');
+                    showResult('recoveryResults', `캐시 정보:\n${info}`, 'info');
+                }).catch(e => {
+                    showResult('recoveryResults', `❌ 캐시 확인 실패: ${e.message}`, 'error');
+                });
+            } else {
+                showResult('recoveryResults', '❌ 이 브라우저는 Cache API를 지원하지 않습니다.', 'error');
+            }
+        }
+        
+        // 페이지 로드시 자동 확인
+        window.onload = function() {
+            checkCurrentState();
+        };
+    </script>
+</body>
+</html>
