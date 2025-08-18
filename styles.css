@@ -2326,7 +2326,7 @@ select.form-input {
   .hero-video {
     position: absolute;
     top: auto;
-    bottom: calc(var(--spacing-6) + 80px); /* 영상을 80px 위로 올림 */
+    bottom: calc(var(--spacing-6) + 40px); /* 영상을 40px 위로 올림 (80px에서 40px로 변경하여 아래로 40px 이동) */
     left: 50%;
     right: auto;
     transform: translateX(-50%);
