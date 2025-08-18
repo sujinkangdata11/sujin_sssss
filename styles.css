@@ -353,7 +353,7 @@
 /* Mobile: Reduce top margin for main container */
 @media (max-width: 768px) {
   .main-container {
-    margin-top: -120px; /* 폼을 더 위로 올려서 영상과 간격 줄임 */
+    margin-top: -80px; /* 폼을 위로 올림 (40px 아래로 이동하여 영상과 조화) */
   }
   
   /* Mobile: Stack hero buttons vertically */
