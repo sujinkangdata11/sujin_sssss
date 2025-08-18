@@ -392,6 +392,18 @@
     font-size: 1.75rem !important; /* 28px */
     line-height: 1.2 !important; /* Adjust line height proportionally */
   }
+  
+  /* Mobile: News title font size */
+  .news-title {
+    font-size: 1.75rem !important; /* 28px */
+    line-height: 1.2 !important; /* Adjust line height proportionally */
+  }
+  
+  /* Mobile: Coming soon title font size */
+  .coming-soon-title {
+    font-size: 1.75rem !important; /* 28px */
+    line-height: 1.2 !important; /* Adjust line height proportionally */
+  }
 }
 
 @media (min-width: 768px) {
