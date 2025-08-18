@@ -358,16 +358,39 @@
   /* Mobile: Stack hero buttons vertically */
   .hero-buttons {
     flex-direction: column !important;
-    gap: 6px; /* 6px gap between buttons on mobile */
+    gap: 10px !important; /* 10px gap between buttons on mobile */
     align-items: stretch; /* Make buttons full width */
+    margin-top: var(--spacing-4) !important; /* 16px - reduce top margin on mobile */
   }
   
   .hero-quick-start-button,
   .hero-guide-button {
-    width: 100%; /* Full width on mobile */
-    justify-content: center; /* Center content */
-    max-width: 280px; /* Limit maximum width */
-    margin: 0 auto; /* Center the buttons */
+    width: 100% !important; /* Full width on mobile */
+    justify-content: center !important; /* Center content */
+    max-width: 280px !important; /* Limit maximum width */
+    margin: 0 auto !important; /* Center the buttons, override any other margins */
+    padding: 0.75rem 1.5rem !important; /* Same as PC: 12px top/bottom, 24px left/right */
+    box-sizing: border-box !important;
+    font-size: var(--font-size-base) !important; /* 16px - same as PC */
+    border-radius: 0.75rem !important; /* 12px - same as PC */
+  }
+  
+  /* Extra specific override for hero-guide-button on mobile */
+  .hero-buttons .hero-guide-button {
+    padding: 0.75rem 1.5rem !important; /* Same as PC: 12px top/bottom, 24px left/right */
+    margin-top: 0 !important; /* Keep tight spacing - remove top margin */
+    margin-bottom: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-size: var(--font-size-base) !important; /* 16px - same as PC */
+    border-radius: 0.75rem !important; /* 12px - same as PC */
+    height: auto !important; /* Let height adjust naturally */
+  }
+  
+  /* Mobile: Form section title font size */
+  .form-section-title {
+    font-size: 1.75rem !important; /* 28px */
+    line-height: 1.2 !important; /* Adjust line height proportionally */
   }
 }
 
@@ -2306,8 +2329,8 @@ select.form-input {
   }
   
   .hero-title {
-    font-size: 2.375rem; /* 38px */
-    line-height: 44px; /* proportional line height for 38px */
+    font-size: 1.75rem; /* 28px */
+    line-height: 34px; /* proportional line height for 28px */
     max-width: 85vw; /* even more constrained width */
     word-break: keep-all; /* prevent awkward word breaking */
     letter-spacing: -0.5px; /* tighter letter spacing to save space */
