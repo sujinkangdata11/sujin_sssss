@@ -1466,6 +1466,7 @@ select.form-input {
   color: #323545;
   margin-bottom: var(--spacing-4);
   font-family: var(--font-family);
+  opacity: 0.5; /* 50% transparency */
 }
 
 .coming-soon-subtitle {
@@ -1474,6 +1475,7 @@ select.form-input {
   color: #6b7280;
   margin-bottom: var(--spacing-6);
   font-family: var(--font-family);
+  opacity: 0.5; /* 50% transparency */
 }
 
 .coming-soon-description {
