@@ -1,0 +1,26 @@
+title: Ein Nutzer, der diesen Service gut nutzt – Herr/Frau A.
+excerpt: In nur 3 Tagen einen Short mit 100 Mio. Aufrufen erstellen.
+
+category: General
+date: 2025-08-19
+
+Wie nutzen unsere Power-User den Service?
+
+---
+
+Wer unseren Service maximal ausschöpft, hat eine Gemeinsamkeit:
+systematische Vorbereitung.
+
+## Vorbereitung für eine effiziente Nutzung
+
+📁 Bereite nur 2 notwendige Dateien vor
+[[purple: 1. api_schluessel.txt ]]
+ㄴ* Gemini-API-Schlüssel
+ㄴ* YouTube Data API-Schlüssel (10+ empfohlen)
+
+ 
+[[purple:  2. favoriten_kanaele.txt ]]
+* Liste der Konkurrenzkanäle (Format @Kanalname)
+
+[IMAGE:08_image_1.png]
+---

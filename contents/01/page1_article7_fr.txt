@@ -1,0 +1,35 @@
+title: Votre clé API est en sécurité
+excerpt: Avis concernant la sécurité des clés API
+category: General
+date: 2025-08-19
+
+##Avis concernant la sécurité des clés API
+Votre clé API est en sécurité
+
+Beaucoup nous interrogent sur la sécurité des clés API,
+nous allons donc clarifier la politique de sécurité de notre service.
+
+##🔒 Principes de sécurité de notre service
+
+[[purple:Politique de non-stockage des clés API]]
+* Nous ne stockons pas votre clé API sur nos serveurs
+* Toutes les données sont effacées à la fin de la session
+* Service sans inscription, aucune collecte de données personnelles.
+
+[[purple: Politique de non-utilisation du cache]]
+* Aucun cache côté serveur n’est conservé
+* Seule l’utilisation temporaire basée sur la session du navigateur est autorisée
+
+[[purple: 💡 À propos de l’auto-remplissage du navigateur ]]
+Si votre clé API semble s’auto-remplir ou paraître enregistrée,
+cela provient de la fonction d’enregistrement automatique de votre navigateur Chrome.
+
+[[purple: Comment résoudre ]]
+1. Paramètres du navigateur : désactivez l’auto-remplissage
+2. Videz le cache : supprimez le cache et les cookies du navigateur
+3. Mode navigation privée : utilisez le service en mode privé
+
+Nous protégeons vos informations précieuses avec des politiques de sécurité robustes.
+Les clés API ne sont utilisées que pour traiter les requêtes et jamais à d’autres fins.
+
+La sécurité est notre priorité absolue.

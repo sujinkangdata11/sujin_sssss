@@ -1,0 +1,97 @@
+title: Chave da API do Google Gemini 
+Obtenha gratuitamente em 10 segundos!
+excerpt: A poderosa IA do Google nas suas mãos!
+É grátis.
+category: General
+date: 2025-08-19
+
+##O que é a Google Gemini API v3?
+
+Google API? O que é isso? Muitos podem estar ouvindo pela primeira vez, mas não se preocupe! 
+
+“Preciso pagar?” → Não, [[purple:é totalmente gratuito.]]
+“Preciso de cartão de crédito?” → [[purple:de jeito nenhum.]]
+“É difícil?” → [[purple:até uma criança de 10 anos consegue.]]
+
+A Google Gemini API é um serviço gratuito fornecido pelo Google.
+
+Por exemplo, se você criar uma conta `ABC @gmail.com`, 
+o Google oferece a essa conta “recursos de IA gratuitos”.
+[[purple:Em outras palavras, é um dos serviços de IA gratuitos do Google!]]
+
+[IMAGE:03_image_1.png]
+
+
+É muito simples — 6 cliques e pronto!
+Eu mesmo emiti uma nova API,
+e com apenas 6 cliques você consegue a chave rapidamente.
+Siga comigo!
+
+##📹 Quer ver em vídeo?
+
+[YOUTUBE:https://youtu.be/JmQe-AIYh3w]
+ㅤ
+---
+ㅤ
+##📝 Guia passo a passo
+Para quem não puder assistir ao vídeo, explicarei tudo em detalhes com imagens.
+ㅤ
+ㅤ
+##Etapa 1: Acessar o Google AI Studio
+
+Pesquise [[purple:"ai studio"]] no Google.
+Clique no site oficial do Google AI Studio que aparece primeiro.
+
+[IMAGE:03_image_3.png]
+ㅤ
+ㅤ
+##Etapa 2: Começar
+
+Clique no botão “Get started” no canto superior direito.
+
+[IMAGE:03_image_4.png]
+ㅤ
+ㅤ
+## Etapa 3: Concordar com os termos
+
+Quando aparecer a tela de consentimento, marque a caixa e pressione “Confirm”.
+
+[IMAGE:03_image_5.png]
+ㅤ
+ㅤ
+##Etapa 4: Começar a criar a chave de API
+
+Clique no botão azul “Get API key” na parte superior da tela.
+
+[IMAGE:03_image_6.png]
+ㅤ
+ㅤ
+##Etapa 5: Criar a chave de API
+
+A janela de configuração da chave de API aparecerá.
+É claro que você ainda não tem uma chave. Clique em “Create new API key”.
+
+[IMAGE:03_image_7.png]
+ㅤ
+ㅤ
+## Etapa 6: Concluído!
+
+Clique em “Generate API key” e pronto!
+Parabéns! Sua chave de API foi criada com sucesso.
+
+[IMAGE:03_image_8.png]
+ㅤ
+ㅤ
+## 💡 Dicas úteis!
+[[purple:* Perdeu a chave? Sem problema.]]
+Você pode clicar em “View API key” para vê-la novamente a qualquer momento.
+[[purple:* Quer excluir uma chave? ]]
+Você pode apagar a chave existente e criar uma nova. A nova chave será totalmente diferente e exclusiva em relação à anterior.
+ㅤ
+Parabéns!
+Agora, por meio da Google Gemini API, você pode aproveitar ao máximo os recursos de IA de ponta do Google.
+Experimente gratuitamente geração de texto, análise de imagens, ajuda para programação e muito mais! 
+ㅤ
+ㅤ
+---
+Se quiser mais detalhes de uso ou tiver dúvidas, deixe um comentário a qualquer momento. Responderei rapidamente!

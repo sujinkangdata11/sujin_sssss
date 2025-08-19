@@ -1,0 +1,67 @@
+title: Quand vous tombez soudain sur un message d’erreur !
+
+excerpt: La solution ? C’est très simple.
+
+category: General
+date: 2025-08-19
+
+Après avoir tout lu, vous pourrez résoudre le problème très facilement.
+
+[IMAGE:04_image_1.png]
+ㅤ
+## Solution à l’erreur « Quota dépassé »
+ㅤ
+En utilisant l’API, avez-vous soudain vu le message d’erreur [[purple:"Quota dépassé"]] ?
+Ne paniquez pas.
+C’est un problème très fréquent, et il existe une solution parfaite.
+ㅤ
+## Évaluer la situation actuelle
+Votre clé API est actuellement en attente de 24 heures. Mais vous n’êtes pas obligé d’attendre sans rien faire !   
+ㅤ
+[IMAGE:04_image_2.png]
+
+## Solution 1.
+ㅤ
+C’est la méthode la plus simple et la plus efficace.
+Google impose peu de restrictions à l’inscription.
+Ainsi, vous pouvez [[purple:créer plusieurs comptes Google et émettre une clé API pour chacun]].
+ㅤ
+## Mise en pratique
+1. [[purple:Préparez à l’avance des clés API avec 3 à 5 comptes Google]]
+2. [[purple:Quand la première clé atteint sa limite, passez à la deuxième]]
+3. Utilisez-les en rotation avec un système de roulement
+ㅤ
+## Commencez par sécuriser autant de clés API que possible.
+ㅤ
+Clé API 1 (main.account@gmail.com) - ABCDEFG...
+Clé API 2 (backup.account@gmail.com) - ABCDEFG...
+Clé API 3 (extra.account@gmail.com) - ABCDEFG...
+Enregistrez les clés ainsi et faites-les tourner.
+
+[IMAGE:04_image_3.png]
+
+De cette façon, vous pouvez l’utiliser sans limite.
+Notez-les dans un mémo comme sur l’image ci-dessous et faites une rotation.
+Plus vous avez de clés, mieux c’est.
+
+[IMAGE:04_image_4.png]
+ㅤ
+---
+ㅤ
+## Solution 2.
+
+Ajuster l’utilisation du quota de l’API est également une stratégie importante.
+En réduisant simplement le périmètre de recherche, vous économisez beaucoup de quota.
+
+[IMAGE:04_image_5.png]
+ㅤ
+[[purple:Approche inefficace (à éviter)]]
+- Rechercher sur tous les pays
+- Définir une portée inutilement large
+- Demander trop de données d’un seul coup
+ㅤ
+[[purple:Approche efficace (recommandée)]]
+- Sélectionner uniquement les pays nécessaires (seulement les pays cibles comme Corée, États-Unis, Japon)
+- Rechercher séquentiellement par région
+- Ne demander que les données réellement nécessaires
+ㅤ

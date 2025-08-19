@@ -1,0 +1,101 @@
+title: YouTube Data
+Binnen 10 seconden gratis aanvragen.
+excerpt: Alle YouTube-gegevens
+gratis gebruiken!
+category: General
+date: 2025-08-19
+
+##Wat is YouTube Data API v3?
+
+Data-API? Wat is dat? Voor velen waarschijnlijk nieuw, maar maak je geen zorgen! 
+
+“Moet ik betalen?” → Nee, [[purple:het is volledig gratis.]]
+“Heb ik een creditcard nodig?” → [[purple:helemaal niet.]]
+“Is het moeilijk?” → [[purple:zelfs een kind van 10 kan het.]]
+
+YouTube Data API v3 is een gratis dienst van Google.
+
+Maak je bijvoorbeeld een `ABC @gmail.com`-account aan, 
+dan geeft Google dat account “toegang om YouTube-gegevens te raadplegen”.
+[[purple:Eenvoudig gezegd: het is een van de gratis diensten van Google!]]
+
+[IMAGE:02_image_1.png]
+
+ㅤ
+## Het is heel eenvoudig – 7 klikken en klaar!
+Ik heb zelf een nieuwe API aangevraagd; met slechts 7 klikken krijg je echt een gratis API-sleutel.
+Volg gewoon mee!
+
+
+## 📹 Liever als video zien?
+
+[YOUTUBE:https://youtu.be/0ZYlKw4x7W0]
+ㅤ
+ㅤ
+---
+ㅤ
+## 📝 Stapsgewijze tekstgids
+Voor wie de video niet kan bekijken, leg ik alles in detail uit met afbeeldingen.
+
+
+## Stap 1: Ga naar Google Cloud Console
+
+Zoek op Google naar [[purple:"google console"]]. 
+Klik op de eerste officiële Google-website.
+[IMAGE:02_image_2.png]
+ㅤㅤ
+ㅤㅤ
+## Stap 2: Registreren
+
+Wanneer de registratiepop-up verschijnt, vink de voorwaarden aan en ga verder.
+⚠️ **Let op**: dit verschilt per land; soms proberen ze je te verleiden tot een premium-abonnement met $300 krediet.
+Klik dan op “Terug”. [[purple:Wij gebruiken alleen de gratis API]]!
+
+[IMAGE:02_image_3.png]
+ㅤㅤ
+ㅤㅤ
+## Stap 3: Zoek YouTube Data API
+
+Na het registreren typ je [[purple:"youtube"]] in de zoekbalk bovenaan.
+Klik in de resultaten op [[purple:"YouTube Data API v3"]] bovenaan.
+[IMAGE:02_image_4.png]
+ㅤㅤ
+ㅤㅤ
+## Stap 4: API inschakelen
+
+Klik op deze blauwe knop.
+Je gaat dan naar de beheerpagina van de YouTube Data API.
+
+[IMAGE:02_image_5.png]
+ㅤㅤ
+ㅤㅤ
+## Stap 5: API-sleutel maken
+
+Klik op het derde tabblad en druk op de [[purple:"+ plus-knop"]].
+Supereenvoudig, toch?
+
+[IMAGE:02_image_6.png]
+[IMAGE:02_image_7.png]
+ㅤㅤ
+ㅤㅤ
+ㅤㅤ
+## 💡 Handige tip!
+
+Ben je je API-sleutel vergeten? Geen zorgen. 
+Je kunt hem altijd in Google Cloud Console terugvinden, 
+en indien nodig verwijderen en opnieuw laten genereren.
+
+[IMAGE:02_image_8.png]
+ㅤㅤ
+ㅤㅤ
+## Maak nu gebruik van de krachtige Google-diensten!
+
+Gefeliciteerd! 
+Via YouTube Data API v3
+kun je de diverse dataservices van Google optimaal benutten.
+
+[IMAGE:03_image_1.png]
+
+
+Als je meer details wilt of vragen hebt, laat dan gerust een reactie achter. 
+Ik reageer snel!

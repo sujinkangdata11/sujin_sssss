@@ -1,0 +1,19 @@
+title: VIDHUNT 路线图
+excerpt: 为你介绍即将上线的功能。
+category: Technology
+date: 2025-08-19
+
+# VIDHUNT 路线图
+
+下面为你介绍我们的未来路线图。
+虽然可能会因情况而变化，但我们会[[purple:尽最大努力提升免费服务的品质]]。
+
+1. 长视频搜索功能
+2. Shorts 制作功能
+3. YouTube 视频下载功能
+
+
+请再耐心等待一下。
+[[purple: 所有功能都将免费提供。]]
+
+感谢你一直使用 VIDHUNT。 

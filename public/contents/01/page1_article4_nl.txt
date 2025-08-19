@@ -1,0 +1,65 @@
+title: Wanneer je ineens een foutmelding krijgt!
+excerpt: De oplossing? Heel eenvoudig.
+category: General
+date: 2025-08-19
+
+Na het lezen hiervan kun je het probleem heel makkelijk oplossen.
+
+[IMAGE:04_image_1.png]
+ㅤ
+## Oplossing voor de fout “Quota overschreden”
+ㅤ
+Kreeg je tijdens het gebruik van de API plots de foutmelding [[purple:"Quota overschreden"]]?
+Geen paniek.
+Dit komt heel vaak voor en er is een perfecte oplossing.
+ㅤ
+## Huidige situatie inschatten
+Je API-sleutel staat momenteel 24 uur in de wacht. Maar je hoeft niet alleen te wachten!   
+ㅤ
+[IMAGE:04_image_2.png]
+
+## Oplossing 1.
+ㅤ
+Dit is de simpelste en meest effectieve methode.
+Google heeft weinig beperkingen voor registraties.
+Daarom kun je [[purple:meerdere Google-accounts aanmaken en voor elk een API-sleutel]] aanvragen.
+ㅤ
+## Praktische toepassing.
+1. [[purple:Vraag vooraf API-sleutels aan met 3–5 Google-accounts]] en houd ze klaar
+2. [[purple:Schakel over naar de tweede sleutel]] zodra de eerste de limiet bereikt
+3. Gebruik ze afwisselend in een rotatiesysteem
+ㅤ
+## Zorg eerst voor zoveel mogelijk API’s.
+ㅤ
+API-sleutel 1 (main.account@gmail.com) - ABCDEFG...
+API-sleutel 2 (backup.account@gmail.com) - ABCDEFG...
+API-sleutel 3 (extra.account@gmail.com) - ABCDEFG...
+Sla de sleutels zo op en roteer ze.
+
+[IMAGE:04_image_3.png]
+
+Zo kun je het onbeperkt gebruiken.
+Noteer ze, zoals in de onderstaande afbeelding, in een notitie en roteer ze.
+Hoe meer API’s, hoe beter.
+
+[IMAGE:04_image_4.png]
+ㅤ
+---
+ㅤ
+## Oplossing 2.
+
+Het bijsturen van je API-quotagebruik is ook een belangrijke strategie.
+Door het zoekbereik te verkleinen, bespaar je flink quota.
+
+[IMAGE:04_image_5.png]
+ㅤ
+[[purple:Inefficiënte aanpak (vermijden)]]
+- Zoeken over alle landen
+- Een onnodig groot bereik instellen
+- In één keer te veel gegevens opvragen
+ㅤ
+[[purple:Efficiënte aanpak (aanbevolen)]]
+- Alleen de benodigde landen selecteren (alleen doellanden zoals Korea, VS, Japan)
+- Regionaal sequentieel zoeken
+- Alleen echt benodigde data opvragen
+ㅤ

@@ -1,0 +1,45 @@
+title: Il vous reste du quota d’API,
+mais une erreur survient !?
+excerpt: Erreur de quota d’API dépassé ! Comment la résoudre ?
+category: General
+date: 2025-08-19
+
+Mon dieu. Je n’ai fait qu’une seule recherche..?
+
+[IMAGE:05_image_1.png]
+
+Vous n’avez fait qu’une recherche !
+Avez-vous vu le message d’erreur de quota d’API dépassé ?
+Je vais vous expliquer pourquoi.
+
+[[purple:Plus vous recherchez de pays, plus l’API consomme de quota]]. 
+Si vous avez sélectionné « tous les pays » lors de la recherche,
+vous envoyez des requêtes API à un total de 82 pays, ce qui consomme beaucoup de quota.
+
+Par conséquent, essayez de réduire le nombre de pays recherchés.
+
+---
+
+[IMAGE:05_image_2.png]
+
+## Il reste beaucoup de quota dans Google Console, mais une erreur est apparue.
+
+C’est un problème très fréquent.
+Comme l’utilisation du quota n’est pas reflétée en temps réel,
+il est fort probable que [[purple:l’affichage de Google Console ne reflète pas encore l’utilisation la plus récente]].
+
+---
+
+## La méthode la plus fiable
+## est d’utiliser une nouvelle clé API.
+
+Pour trouver efficacement des Shorts viraux,
+[[purple: préparez toujours plusieurs clés API à l’avance.]]
+
+[IMAGE:04_image_4.png]
+
+Google permet de créer un nombre illimité de comptes Gmail,
+et chaque compte Gmail peut recevoir sa propre clé API.
+Autrement dit, vous pouvez [[purple:obtenir autant de clés API que nécessaire]].
+
+Émettez dès maintenant des clés API avec plusieurs comptes Gmail et organisez-les dans un mémo.

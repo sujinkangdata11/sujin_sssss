@@ -1,0 +1,28 @@
+title: Un utilisateur qui utilise bien ce service – M./Mme A.
+
+excerpt: Créer un Short de 100 millions de vues en seulement 3 jours.
+
+category: General
+date: 2025-08-19
+
+
+Comment nos power users utilisent-ils ce service ?
+
+---
+
+Ceux qui tirent le meilleur parti de notre service ont un point commun.
+Une préparation systématique.
+
+## Préparatifs pour une utilisation efficace
+
+📁 Préparez seulement 2 fichiers indispensables
+[[purple: 1. api_cle.txt ]]
+ㄴ* Clé API Gemini
+ㄴ* Clés YouTube Data API (10+ recommandées)
+
+ 
+[[purple:  2. chaines_favorites.txt ]]
+* Liste des chaînes concurrentes (format @nomdechaine)
+
+[IMAGE:08_image_1.png]
+---

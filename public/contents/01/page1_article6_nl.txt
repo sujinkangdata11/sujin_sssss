@@ -1,0 +1,37 @@
+title: Een kans om de viraliteit
+van concurrentkanalen over te nemen!
+excerpt: Gebruik meteen ‘Favoriete kanalen’.
+category: General
+date: 2025-08-19
+
+Heb je in Geavanceerde opties [[purple:'Favoriete kanalen']] gezien?
+
+Als YouTube-maker heb je vast [[purple:een voorbeeldkanaal of een concurrerend kanaal]].
+Hoe zou het zijn om de virale elementen van die kanalen te analyseren?
+
+[IMAGE:06_image_1.png]
+
+## Gebruik ‘Favoriete kanalen’ in Geavanceerde opties.
+
+Als je in ‘Favoriete kanalen’ binnen Geavanceerde opties de kanalen toevoegt die je interesseren,
+krijg je inzichten zoals:
+
+- [[purple:🎯 Analyse van virale Shorts]]: de virale elementen van dat kanaal
+- [[purple: 📊 Prestaties checken]]: kijk-verhouding t.o.v. abonnees en groeipercentage
+- [[purple:📈 Trends in kaart brengen]]: recente contenttrends van concurrentkanalen
+
+---
+
+[IMAGE:06_image_2.png]
+
+## Het is vervelend om elke keer de kanaalnaam te typen.
+
+Als je veel concurrentkanalen hebt en verschillende groepen wilt bekijken,
+gebruik dan een [[purple:tekstbestand]].
+
+1. Orden een lijst met interessante kanalen in een tekstbestand
+2. Upload het bestand.
+
+Na het uploaden worden de kanalen automatisch zoals hier ingevuld.
+Klik nu op Zoeken om de concurrentkanalen te analyseren! 
+[IMAGE:06_image_3.png]

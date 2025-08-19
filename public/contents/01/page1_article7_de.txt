@@ -1,0 +1,36 @@
+title: Dein API-Schlüssel ist sicher
+excerpt: Hinweis zur Sicherheit des API-Schlüssels
+category: General
+date: 2025-08-19
+
+##Hinweis zur Sicherheit des API-Schlüssels
+Dein API-Schlüssel ist sicher
+
+Viele fragen nach der Sicherheit von API-Schlüsseln,
+daher erläutern wir hier klar unsere Sicherheitsrichtlinie.
+
+##🔒 Unsere Sicherheitsprinzipien
+
+[[purple:Nichtspeicherung von API-Schlüsseln]]
+* Wir speichern deinen API-Schlüssel nicht auf unseren Servern
+* Alle Daten werden beim Sitzungsende gelöscht
+* Dienst ohne Registrierung – keine Erhebung personenbezogener Daten.
+
+[[purple: Keine Cache-Nutzung]]
+* Kein serverseitiger Cache
+* Nur temporäre, browsersitzungsbasierte Nutzung erlaubt
+
+[[purple: 💡 Hinweis zur Browser-Autovervollständigung ]]
+Wenn dein API-Schlüssel automatisch ausgefüllt oder gespeichert wirkt,
+liegt das an der Autosave-Funktion deines Chrome-Browsers.
+
+[[purple: Lösungen ]]
+1. Browsereinstellungen: Autovervollständigung deaktivieren
+2. Cache leeren: Browser-Cache und Cookies löschen
+3. Inkognito: Dienst im privaten Modus nutzen
+
+
+Wir schützen deine wertvollen Informationen mit einer robusten Sicherheitsstrategie.
+API-Schlüssel werden ausschließlich zur Bearbeitung von Anfragen verwendet – niemals zu anderen Zwecken.
+
+Sicherheit hat für uns oberste Priorität.

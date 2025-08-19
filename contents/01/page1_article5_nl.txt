@@ -1,0 +1,45 @@
+title: Er is nog API-quota over,
+maar er treedt een fout op!?
+excerpt: API-quotum overschreden! Hoe los ik dit op?
+category: General
+date: 2025-08-19
+
+Mijn hemel. Ik heb maar één keer gezocht..?
+
+[IMAGE:05_image_1.png]
+
+Slechts één keer gezocht!
+Kreeg je de foutmelding dat het API-quotum is overschreden?
+Ik leg je uit waarom.
+
+[[purple:Hoe meer landen je doorzoekt, hoe meer quota de API verbruikt]]. 
+Als je bij het zoeken alle landen hebt geselecteerd,
+verstuur je API-verzoeken naar in totaal 82 landen, wat veel quota kost.
+
+Probeer dus het aantal te doorzoeken landen te verminderen.
+
+---
+
+[IMAGE:05_image_2.png]
+
+## In Google Console is nog veel quota over, maar ik kreeg een fout.
+
+Dit komt heel vaak voor.
+Omdat het verbruik van API-quota niet realtime wordt bijgewerkt,
+is de kans groot dat [[purple:de weergave in Google Console het meest recente gebruik nog niet laat zien]].
+
+---
+
+## De meest betrouwbare oplossing
+## is een nieuwe API-sleutel gebruiken.
+
+Om effectieve virale Shorts te vinden,
+[[purple: bereid altijd meerdere API-sleutels vooraf voor.]]
+
+[IMAGE:04_image_4.png]
+
+Google staat onbeperkt veel Gmail-accounts toe,
+en elk Gmail-account kan een eigen API-sleutel krijgen.
+Met andere woorden, je kunt [[purple:zoveel API-sleutels veiligstellen als nodig]].
+
+Vraag nu meteen API-sleutels aan met meerdere Gmail-accounts en leg ze vast in een notitie.

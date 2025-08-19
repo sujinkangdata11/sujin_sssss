@@ -1,0 +1,97 @@
+title: Google Gemini API-Schlüssel 
+In 10 Sekunden kostenlos erhalten!
+excerpt: Googles leistungsstarke KI in deiner Hand!
+Kostenlos.
+category: General
+date: 2025-08-19
+
+##Was ist die Google Gemini API v3?
+
+Google-API? Was ist das? Für viele ist das vielleicht neu – keine Sorge! 
+
+„Muss ich bezahlen?“ → Nein, [[purple:komplett kostenlos.]]
+„Brauche ich eine Kreditkarte?“ → [[purple:überhaupt nicht erforderlich.]]
+„Ist das schwer?“ → [[purple:Das schafft sogar ein 10-jähriges Kind.]]
+
+Die Google Gemini API ist ein kostenloser Dienst von Google.
+
+Erstellst du zum Beispiel ein `ABC @gmail.com` Konto, 
+stellt Google diesem Konto „kostenlose KI-Funktionen“ bereit.
+[[purple:Kurz gesagt: einer der kostenlosen KI-Dienste von Google!]]
+
+[IMAGE:03_image_1.png]
+
+
+Es ist wirklich einfach – nach 6 Klicks ist alles erledigt!
+Ich habe selbst eine neue API beantragt,
+und mit nur 6 Klicks bekommst du den Schlüssel im Handumdrehen.
+Folge einfach den Schritten!
+
+##📹 Möchtest du es als Video sehen?
+
+[YOUTUBE:https://youtu.be/JmQe-AIYh3w]
+ㅤ
+---
+ㅤ
+##📝 Schritt-für-Schritt-Guide
+Für alle, die das Video nicht ansehen können, erkläre ich alles ausführlich mit Bildern.
+ㅤ
+ㅤ
+##1. Schritt: Google AI Studio aufrufen
+
+Suche bei Google nach [[purple:"ai studio"]].
+Klicke auf die zuerst angezeigte offizielle Website von Google AI Studio.
+
+[IMAGE:03_image_3.png]
+ㅤ
+ㅤ
+##2. Schritt: Starten
+
+Klicke oben rechts auf „Get started“.
+
+[IMAGE:03_image_4.png]
+ㅤ
+ㅤ
+## 3. Schritt: Bedingungen akzeptieren
+
+Wenn der Zustimmungsbildschirm erscheint, markiere das Kästchen und klicke auf „Confirm“.
+
+[IMAGE:03_image_5.png]
+ㅤ
+ㅤ
+##4. Schritt: API-Schlüssel erstellen starten
+
+Klicke oben auf den blauen Button „Get API key“.
+
+[IMAGE:03_image_6.png]
+ㅤ
+ㅤ
+##5. Schritt: API-Schlüssel erstellen
+
+Es erscheint das Fenster zur API-Schlüssel-Einrichtung.
+Natürlich hast du noch keinen Schlüssel. Klicke auf „Create new API key“.
+
+[IMAGE:03_image_7.png]
+ㅤ
+ㅤ
+## 6. Schritt: Fertig!
+
+Klicke auf „Generate API key“ – und fertig!
+Glückwunsch! Dein API-Schlüssel wurde erfolgreich erstellt.
+
+[IMAGE:03_image_8.png]
+ㅤ
+ㅤ
+## 💡 Nützliche Tipps!
+[[purple:* Schlüssel vergessen? Kein Problem.]]
+Mit „View API key“ kannst du ihn jederzeit erneut ansehen.
+[[purple:* Schlüssel löschen? ]]
+Du kannst den vorhandenen Schlüssel löschen und einen neuen erstellen. Der neue Schlüssel ist völlig anders und eindeutig.
+
+Glückwunsch!
+Über die Google Gemini API kannst du nun die modernsten KI-Funktionen von Google voll ausschöpfen:
+Texterzeugung, Bildanalyse, Coding-Hilfe und vieles mehr – kostenlos! 
+ㅤ
+ㅤ
+---
+Wenn du noch detailliertere Tipps möchtest oder Fragen hast, hinterlasse jederzeit einen Kommentar. Ich antworte schnell!

@@ -1,0 +1,20 @@
+title: VIDHUNT-Roadmap
+excerpt: Wir stellen die kommenden Funktionen vor.
+
+category: General
+date: 2025-08-19
+
+# VIDHUNT-Roadmap
+
+Hier ein Überblick über unsere kommende Roadmap.
+Sie kann sich je nach Situation ändern, aber [[purple:wir werden unser Bestes geben, die Qualität des kostenlosen Dienstes zu verbessern]].
+
+1. Longform-Suche
+2. Shorts-Erstellung
+3. YouTube-Video-Download
+
+
+Bitte habe noch ein wenig Geduld.
+[[purple: Alle Funktionen werden kostenlos angeboten.]]
+
+Vielen Dank, dass du VIDHUNT immer nutzt. 

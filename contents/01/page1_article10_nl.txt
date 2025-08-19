@@ -1,0 +1,20 @@
+title: VIDHUNT-routekaart
+excerpt: We vertellen je welke functies eraan komen.
+
+category: General
+date: 2025-08-19
+
+# VIDHUNT-routekaart
+
+Hierbij een overzicht van onze komende routekaart.
+Deze kan afhankelijk van de situatie wijzigen, maar [[purple:we zullen ons uiterste best doen om de kwaliteit van de gratis service te verbeteren]].
+
+1. Longform-zoekfunctie
+2. Shorts-maken-functie
+3. Functie om YouTube-video’s te downloaden
+
+
+Heb nog even geduld.
+[[purple: Alle functies worden gratis aangeboden.]]
+
+Bedankt dat je altijd VIDHUNT gebruikt. 

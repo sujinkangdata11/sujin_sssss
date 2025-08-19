@@ -1,0 +1,21 @@
+title: Feuille de route de VIDHUNT
+
+excerpt: Voici les fonctionnalités à venir.
+
+category: General
+date: 2025-08-19
+
+# Feuille de route de VIDHUNT
+
+Voici un aperçu de notre feuille de route à venir.
+Elle peut évoluer selon les circonstances, mais [[purple:nous ferons de notre mieux pour améliorer la qualité du service gratuit]].
+
+1. Fonction de recherche de long format
+2. Fonction de création de Shorts
+3. Fonction de téléchargement de vidéos YouTube
+
+
+Merci de patienter encore un peu.
+[[purple: Toutes les fonctionnalités seront proposées gratuitement.]]
+
+Merci d’utiliser VIDHUNT au quotidien. 

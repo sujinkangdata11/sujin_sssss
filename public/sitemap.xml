@@ -38,36 +38,71 @@
   
   <!-- News articles -->
   <url>
-    <loc>https://www.vidhunt.me/news/1</loc>
-    <lastmod>2025-08-16</lastmod>
+    <loc>https://www.vidhunt.me/news/article/1</loc>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://www.vidhunt.me/news/2</loc>
-    <lastmod>2025-08-16</lastmod>
+    <loc>https://www.vidhunt.me/news/article/2</loc>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://www.vidhunt.me/news/3</loc>
-    <lastmod>2025-08-16</lastmod>
+    <loc>https://www.vidhunt.me/news/article/3</loc>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://www.vidhunt.me/news/4</loc>
-    <lastmod>2025-08-16</lastmod>
+    <loc>https://www.vidhunt.me/news/article/4</loc>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://www.vidhunt.me/news/5</loc>
-    <lastmod>2025-08-16</lastmod>
+    <loc>https://www.vidhunt.me/news/article/5</loc>
+    <lastmod>2025-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.vidhunt.me/news/article/6</loc>
+    <lastmod>2025-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.vidhunt.me/news/article/7</loc>
+    <lastmod>2025-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.vidhunt.me/news/article/8</loc>
+    <lastmod>2025-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.vidhunt.me/news/article/9</loc>
+    <lastmod>2025-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.vidhunt.me/news/article/10</loc>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

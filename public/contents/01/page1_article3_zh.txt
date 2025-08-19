@@ -1,0 +1,97 @@
+title: Google Gemini API 密钥 
+10秒内免费获取！
+excerpt: 把 Google 的强大 AI 掌握在你手中！
+免费使用。
+category: Technology
+date: 2025-08-19
+
+##Google Gemini API v3 是什么？
+
+Google API？ 这是什么？ 可能很多人是第一次听说，但请不用担心！ 
+
+“需要付费吗？” → 不，[[purple:完全免费。]]
+“需要信用卡吗？” → [[purple:完全不需要。]]
+“难吗？” → [[purple:10 岁小朋友也能做到。]]
+
+Google Gemini API 是 Google 提供的免费服务。
+
+例如，创建一个 `ABC @gmail.com` 账号， 
+Google 会为该账号提供“免费的 AI 功能”。
+[[purple:简单来说，它是 Google 提供的免费 AI 服务之一！]]
+
+[IMAGE:03_image_1.png]
+
+
+非常简单 - 点击 6 次就搞定！
+我亲自新开通过一次 API，
+真的只需 6 次点击就能很快拿到 API 密钥。
+来，跟着一起操作吧！
+
+##📹 想看视频教程？
+
+[YOUTUBE:https://youtu.be/JmQe-AIYh3w]
+ㅤ
+---
+ㅤ
+##📝 分步骤指南
+无法观看视频的朋友，也可结合图片按步骤完成操作。
+ㅤ
+ㅤ
+##第 1 步：进入 Google AI Studio
+
+在 Google 上搜索 [[purple:"ai studio"]]。
+点击最上方显示的 Google AI Studio 官方网站。
+
+[IMAGE:03_image_3.png]
+ㅤ
+ㅤ
+##第 2 步：开始
+
+点击右上角的“开始使用”按钮。
+
+[IMAGE:03_image_4.png]
+ㅤ
+ㅤ
+## 第 3 步：同意条款
+
+出现同意页面时，勾选复选框并点击“确认”。
+
+[IMAGE:03_image_5.png]
+ㅤ
+ㅤ
+##第 4 步：开始创建 API 密钥
+
+点击页面顶部的蓝色“获取 API 密钥”按钮。
+
+[IMAGE:03_image_6.png]
+ㅤ
+ㅤ
+##第 5 步：创建 API 密钥
+
+将出现 API 密钥设置窗口。
+此时你还没有密钥。点击“创建新的 API 密钥”。
+
+[IMAGE:03_image_7.png]
+ㅤ
+ㅤ
+## 第 6 步：完成！
+
+点击“生成 API 密钥”即可完成！
+恭喜！ API 密钥已成功创建。
+
+[IMAGE:03_image_8.png]
+ㅤ
+ㅤ
+## 💡 实用提示！
+[[purple:* 忘记密钥了？别担心。]]
+点击“查看 API 密钥”可以随时再次查看。
+[[purple:* 想删除密钥？ ]]
+可以删除现有密钥并新建一个。新密钥与旧密钥完全不同且唯一。
+ㅤ
+恭喜你！
+现在你可以通过 Google Gemini API 充分使用 Google 提供的尖端 AI 功能。
+文本生成、图像分析、编码辅助等多种 AI 功能都可免费体验！ 
+ㅤ
+ㅤ
+---
+如果还想了解更详细的用法或有任何问题，欢迎随时留言。 我会尽快回复！

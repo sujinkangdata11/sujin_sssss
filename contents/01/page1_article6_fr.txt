@@ -1,0 +1,37 @@
+title: Une occasion de vous approprier
+la viralité de vos chaînes concurrentes !
+excerpt: Utilisez tout de suite « Chaînes favorites ».
+category: General
+date: 2025-08-19
+
+Avez-vous vu [[purple:'Chaînes favorites' dans Options avancées]] ?
+
+Si vous êtes créateur YouTube, vous avez sûrement [[purple:une chaîne modèle ou des chaînes concurrentes]].
+Et si vous pouviez analyser les éléments de viralité de ces chaînes ?
+
+[IMAGE:06_image_1.png]
+
+## Utilisez « Chaînes favorites » dans Options avancées.
+
+Si vous enregistrez les chaînes qui vous intéressent dans « Chaînes favorites » des Options avancées,
+vous obtenez des insights comme :
+
+- [[purple:🎯 Analyse des Shorts viraux]] : éléments de viralité de cette chaîne
+- [[purple: 📊 Vérification des indicateurs de performance]] : ratio vues/abonnés et taux de croissance
+- [[purple:📈 Suivi des tendances]] : tendances des contenus récents des chaînes concurrentes
+
+---
+
+[IMAGE:06_image_2.png]
+
+## C’est pénible de saisir le nom de la chaîne à chaque fois.
+
+Si vous avez beaucoup de chaînes concurrentes et souhaitez voir différents groupes,
+utilisez un [[purple:fichier texte]].
+
+1. Organisez la liste des chaînes qui vous intéressent dans un fichier texte
+2. Téléversez le fichier.
+
+Une fois le fichier téléversé, les chaînes seront renseignées automatiquement ainsi.
+Maintenant, cliquez sur Rechercher pour analyser les chaînes concurrentes ! 
+[IMAGE:06_image_3.png]

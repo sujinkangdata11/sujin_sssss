@@ -1,0 +1,46 @@
+title: Es ist noch API-Kontingent übrig,
+aber es tritt ein Fehler auf!?
+
+excerpt: API-Kontingent überschritten! Wie löse ich das?
+category: General
+date: 2025-08-19
+
+Oh je. Ich habe doch nur einmal gesucht..?
+
+[IMAGE:05_image_1.png]
+
+Nur ein einziges Mal gesucht!
+Und du hast die Fehlermeldung „API-Kontingent überschritten“ gesehen?
+Ich erkläre dir den Grund.
+
+[[purple:Je mehr Länder du suchst, desto mehr Kontingent verbraucht die API]]. 
+Wenn du bei der Suche „alle Länder“ ausgewählt hast,
+werden Anfragen an insgesamt 82 Länder gesendet – das kostet viel Kontingent.
+
+Reduziere daher die Anzahl der Länder in der Suche.
+
+---
+
+[IMAGE:05_image_2.png]
+
+## In der Google Console ist noch viel Kontingent übrig, aber es gab einen Fehler.
+
+Das passiert sehr häufig.
+Da der Kontingentverbrauch nicht in Echtzeit angezeigt wird,
+ist es sehr wahrscheinlich, dass [[purple:die Ansicht in der Google Console die neuesten Nutzungsdaten noch nicht widerspiegelt]].
+
+---
+
+## Der verlässlichste Lösungsweg
+## ist die Verwendung eines neuen API-Schlüssels.
+
+Um wirksame virale Shorts zu finden,
+[[purple: bereite unbedingt mehrere API-Schlüssel im Voraus vor.]]
+
+[IMAGE:04_image_4.png]
+
+Google erlaubt unbegrenzt viele Gmail-Konten,
+und jedes Gmail-Konto kann einen eigenen API-Schlüssel erhalten.
+Das heißt, du kannst [[purple:so viele API-Schlüssel sichern, wie du brauchst]].
+
+Beantrage jetzt gleich mit mehreren Gmail-Konten API-Schlüssel und organisiere sie in einer Notiz.

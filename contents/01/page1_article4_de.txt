@@ -1,0 +1,67 @@
+title: Wenn dir plötzlich eine Fehlermeldung begegnet!
+
+excerpt: Die Lösung? Ganz einfach.
+
+category: General
+date: 2025-08-19
+
+Wenn du diesen Text komplett gelesen hast, kannst du das Problem sehr leicht lösen.
+
+[IMAGE:04_image_1.png]
+ㅤ
+## Lösung für den Fehler „Kontingent überschritten“
+ㅤ
+Hast du bei der API-Nutzung plötzlich die Fehlermeldung [[purple:"Kontingent überschritten"]] gesehen?
+Keine Panik.
+Das ist sehr häufig – und es gibt eine perfekte Lösung.
+ㅤ
+## Aktuelle Situation erfassen
+Dein API-Schlüssel befindet sich derzeit 24 Stunden im Wartezustand. Aber du musst nicht einfach nur warten!   
+ㅤ
+[IMAGE:04_image_2.png]
+
+## Lösung 1.
+ㅤ
+Das ist die einfachste und effektivste Methode.
+Google hat bei der Registrierung kaum Einschränkungen.
+Daher kannst du [[purple:mehrere Google-Konten anlegen und für jedes einen API-Schlüssel]] ausstellen lassen.
+ㅤ
+## Praxis-Einsatz.
+1. [[purple:API-Schlüssel mit 3–5 Google-Konten]] vorab bereitstellen
+2. [[purple:Wenn der erste Schlüssel das Limit erreicht, auf den zweiten wechseln]]
+3. Per Rotationssystem nacheinander nutzen
+ㅤ
+## Sichere dir zuerst so viele APIs wie möglich.
+ㅤ
+API-Schlüssel 1 (main.account@gmail.com) - ABCDEFG...
+API-Schlüssel 2 (backup.account@gmail.com) - ABCDEFG...
+API-Schlüssel 3 (extra.account@gmail.com) - ABCDEFG...
+Speichere die Schlüssel so und rotiere sie.
+
+[IMAGE:04_image_3.png]
+
+So kannst du es unbegrenzt nutzen.
+Notiere sie wie im Bild unten in einem Notizdokument und rotiere sie.
+Je mehr APIs, desto besser.
+
+[IMAGE:04_image_4.png]
+ㅤ
+---
+ㅤ
+## Lösung 2.
+
+Auch die Steuerung des API-Kontingentverbrauchs ist eine wichtige Strategie.
+Allein durch das Eingrenzen des Suchbereichs kannst du viel Kontingent sparen.
+
+[IMAGE:04_image_5.png]
+ㅤ
+[[purple:Ineffizienter Ansatz (vermeiden)]]
+- Suche über alle Länder
+- Unnötig großen Bereich festlegen
+- Zu viele Daten auf einmal anfordern
+ㅤ
+[[purple:Effizienter Ansatz (empfohlen)]]
+- Nur benötigte Länder auswählen (nur Zielländer wie Korea, USA, Japan)
+- Sequenziell nach Regionen suchen
+- Nur wirklich benötigte Daten anfordern
+ㅤ

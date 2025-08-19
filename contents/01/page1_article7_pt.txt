@@ -1,0 +1,38 @@
+title: Sua chave de API está segura
+
+excerpt: Aviso sobre a segurança da chave de API
+
+category: General
+date: 2025-08-19
+
+##Aviso sobre a segurança da chave de API
+Sua chave de API está segura
+
+Muitas pessoas perguntam sobre a segurança das chaves de API,
+então explicaremos claramente a política de segurança do nosso serviço.
+
+##🔒 Princípios de segurança do nosso serviço
+
+[[purple:Política de não armazenamento de chaves de API]]
+* Não armazenamos sua chave de API em nossos servidores
+* Todos os dados são apagados ao final da sessão
+* Serviço sem cadastro; não coletamos dados pessoais.
+
+[[purple: Política de não uso de cache]]
+* Nenhum cache é armazenado no servidor
+* Permitimos apenas uso temporário baseado na sessão do navegador
+
+[[purple: 💡 Sobre o preenchimento automático do navegador ]]
+Se a sua chave de API parecer ser preenchida automaticamente ou salva,
+isso se deve ao recurso de salvamento automático do seu navegador Chrome.
+
+[[purple: Como resolver ]]
+1. Configurações do navegador: desative o preenchimento automático
+2. Limpar cache: apague o cache e os cookies do navegador
+3. Modo anônimo: use o serviço no modo de navegação privada
+
+
+Protegemos suas informações valiosas com políticas de segurança robustas.
+As chaves de API são usadas apenas para processar solicitações e nunca para outros fins.
+
+A segurança é nossa prioridade máxima.

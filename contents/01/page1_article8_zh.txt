@@ -1,0 +1,25 @@
+title: 善于使用本服务的用户——A 先生/女士。
+excerpt: 3 天做出 1 亿播放的 Shorts。
+category: Technology
+date: 2025-08-19
+
+我们的资深用户是如何使用本服务的？
+
+---
+
+能最大化利用本服务的用户有一个共同点：
+就是系统化的准备。
+
+## 高效使用前的准备事项
+
+📁 只需准备 2 个必备文件
+[[purple: 1. api键.txt ]]
+ㄴ* Gemini API 密钥
+ㄴ* YouTube Data API 密钥（建议 10 个以上）
+
+ 
+[[purple:  2. 收藏频道.txt ]]
+* 竞争频道列表（@频道名 格式）
+
+[IMAGE:08_image_1.png]
+---

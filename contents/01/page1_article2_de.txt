@@ -1,0 +1,101 @@
+title: YouTube Data
+In 10 Sekunden kostenlos erhalten.
+excerpt: Alle YouTube-Daten
+kostenlos nutzen!
+category: General
+date: 2025-08-19
+
+##Was ist die YouTube Data API v3?
+
+Daten-API? Was ist das? Für viele ist das vielleicht neu – keine Sorge! 
+
+„Muss ich bezahlen?“ → Nein, [[purple:komplett kostenlos.]]
+„Brauche ich eine Kreditkarte?“ → [[purple:überhaupt nicht erforderlich.]]
+„Ist das schwer?“ → [[purple:Das schafft sogar ein 10-jähriges Kind.]]
+
+Die YouTube Data API v3 ist ein kostenloser Dienst von Google.
+
+Erstellst du zum Beispiel ein `ABC @gmail.com` Konto, 
+erteilt Google diesem Konto die „Berechtigung, YouTube-Daten abzufragen“.
+[[purple:Kurz gesagt: einer der kostenlosen Dienste von Google!]]
+
+[IMAGE:02_image_1.png]
+
+ㅤ
+## Es ist wirklich einfach – nach 7 Klicks ist alles erledigt!
+Ich habe selbst eine neue API beantragt – mit nur 7 Klicks erhältst du einen kostenlosen API-Schlüssel.
+Also, mach Schritt für Schritt mit!
+
+
+## 📹 Möchtest du es als Video sehen?
+
+[YOUTUBE:https://youtu.be/0ZYlKw4x7W0]
+ㅤ
+ㅤ
+---
+ㅤ
+## 📝 Schritt-für-Schritt-Textanleitung
+Für alle, die das Video nicht ansehen können, erkläre ich alles ausführlich mit Bildern.
+
+
+## 1. Schritt: Zugriff auf die Google Cloud Console
+
+Suche bei Google nach [[purple:"google console"]]. 
+Klicke auf die erste offizielle Google-Website.
+[IMAGE:02_image_2.png]
+ㅤㅤ
+ㅤㅤ
+## 2. Schritt: Registrierung
+
+Wenn das Registrierungs-Popup erscheint, setze ein Häkchen bei den Bedingungen und führe die Anmeldung fort.
+⚠️ **Hinweis**: Je nach Land kann dir beim Registrieren ein Premium-Abo mit 300-$-Guthaben angeboten werden.
+Klicke dann auf „Zurück“. [[purple:Wir nutzen nur die kostenlose API]]!
+
+[IMAGE:02_image_3.png]
+ㅤㅤ
+ㅤㅤ
+## 3. Schritt: YouTube Data API suchen
+
+Nach der Registrierung gib oben in der Suche [[purple:"youtube"]] ein.
+Klicke in den Ergebnissen auf [[purple:"YouTube Data API v3"]] ganz oben.
+[IMAGE:02_image_4.png]
+ㅤㅤ
+ㅤㅤ
+## 4. Schritt: API aktivieren
+
+Klicke auf diesen blauen Button.
+Dann gelangst du zur Verwaltungsseite der YouTube Data API.
+
+[IMAGE:02_image_5.png]
+ㅤㅤ
+ㅤㅤ
+## 5. Schritt: API-Schlüssel erstellen
+
+Klicke auf den dritten Tab und dann auf den [[purple:"+ Plus-Button"]].
+Ganz einfach, oder?
+
+[IMAGE:02_image_6.png]
+[IMAGE:02_image_7.png]
+ㅤㅤ
+ㅤㅤ
+ㅤㅤ
+## 💡 Nützlicher Tipp!
+
+Kein Problem, wenn du deinen API-Schlüssel vergisst. 
+Du kannst ihn jederzeit in der Google Cloud Console einsehen 
+und bei Bedarf löschen und neu erstellen.
+
+[IMAGE:02_image_8.png]
+ㅤㅤ
+ㅤㅤ
+## Nutze jetzt die leistungsstarken Google-Dienste!
+
+Glückwunsch! 
+Über die YouTube Data API v3
+kannst du nun die vielfältigen Datendienste von Google ausreizen.
+
+[IMAGE:03_image_1.png]
+
+
+Wenn du noch detailliertere Tipps möchtest oder Fragen hast, hinterlasse jederzeit einen Kommentar. 
+Ich antworte schnell!

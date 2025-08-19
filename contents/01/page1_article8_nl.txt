@@ -1,0 +1,27 @@
+title: Een gebruiker die deze service goed benut – gebruiker A.
+
+excerpt: In slechts 3 dagen een Short met 100 miljoen weergaven maken.
+
+category: General
+date: 2025-08-19
+
+Hoe gebruiken onze power users deze service?
+
+---
+
+Degenen die het meeste uit onze service halen, hebben één gemeenschappelijk kenmerk:
+systematische voorbereiding.
+
+## Voorbereiding voor efficiënt gebruik
+
+📁 Bereid slechts 2 vereiste bestanden voor
+[[purple: 1. api_sleutel.txt ]]
+ㄴ* Gemini API-sleutel
+ㄴ* YouTube Data API-sleutels (10+ aanbevolen)
+
+ 
+[[purple:  2. favoriete_kanalen.txt ]]
+* Lijst met concurrentkanalen (in @kanaalnaam-formaat)
+
+[IMAGE:08_image_1.png]
+---

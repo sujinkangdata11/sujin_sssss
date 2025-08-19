@@ -1,0 +1,101 @@
+title: YouTube Data
+10秒内免费获取。
+excerpt: 将 YouTube 的所有数据
+免费拿下！
+category: Technology
+date: 2025-08-19
+
+##YouTube Data API v3 是什么？
+
+数据 API？ 这是什么？ 可能很多人是第一次听说，但请不用担心！ 
+
+“需要付费吗？” → 不，[[purple:完全免费。]]
+“需要信用卡吗？” → [[purple:完全不需要。]]
+“难吗？” → [[purple:10 岁小朋友也能做到。]]
+
+YouTube Data API v3 是 Google 提供的免费服务。
+
+例如，创建一个 `ABC @gmail.com` 账号， 
+Google 就会为该账号提供“查询 YouTube 数据的权限”。
+[[purple:简单来说，它是 Google 提供的免费服务之一！]]
+
+[IMAGE:02_image_1.png]
+
+ㅤ
+## 非常简单 - 点击 7 次就搞定！
+我亲自新开通过一次 API，真的只需点击 7 次就能拿到免费的 API 密钥。
+来，跟着一起操作吧！
+
+
+## 📹 想看视频教程？
+
+[YOUTUBE:https://youtu.be/0ZYlKw4x7W0]
+ㅤ
+ㅤ
+---
+ㅤ
+## 📝 分步骤文字指南
+无法观看视频的朋友，也可结合图片按步骤完成操作。
+
+
+## 第 1 步：进入 Google Cloud Console
+
+在 Google 上搜索 [[purple:"google console"]]。 
+点击最上面的 Google 官方网站。
+[IMAGE:02_image_2.png]
+ㅤㅤ
+ㅤㅤ
+## 第 2 步：注册
+
+出现注册弹窗后，勾选条款并继续注册。
+⚠️ **注意**：各国情况不同，有时会以提供 300 美元额度为由引导你开通付费计划。
+此时请点击“返回”。[[purple:我们只使用免费 API]]！
+
+[IMAGE:02_image_3.png]
+ㅤㅤ
+ㅤㅤ
+## 第 3 步：搜索 YouTube Data API
+
+注册完成后，在顶部搜索框输入 [[purple:"youtube"]]。
+在搜索结果中点击最上方的 [[purple:"YouTube Data API v3"]]。
+[IMAGE:02_image_4.png]
+ㅤㅤ
+ㅤㅤ
+## 第 4 步：启用 API
+
+点击这个蓝色按钮。
+随后会跳转到 YouTube Data API 管理页面。
+
+[IMAGE:02_image_5.png]
+ㅤㅤ
+ㅤㅤ
+## 第 5 步：创建 API 密钥
+
+点击第三个标签页，然后按下 [[purple:"+ 加号按钮"]]。
+非常简单，对吧？
+
+[IMAGE:02_image_6.png]
+[IMAGE:02_image_7.png]
+ㅤㅤ
+ㅤㅤ
+ㅤㅤ
+## 💡 实用提示！
+
+即使忘记了 API 密钥也不用担心。 
+你可以随时在 Google Cloud Console 中查看， 
+必要时也可以删除后重新申请新密钥。
+
+[IMAGE:02_image_8.png]
+ㅤㅤ
+ㅤㅤ
+## 现在开始使用 Google 的强大服务吧！
+
+恭喜你！ 
+现在通过 YouTube Data API v3，
+可以尽情使用 Google 提供的各种数据服务。
+
+[IMAGE:03_image_1.png]
+
+
+如果还想了解更详细的用法或有任何问题，欢迎随时留言。 
+我会尽快回复！

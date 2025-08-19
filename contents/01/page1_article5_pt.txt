@@ -1,0 +1,45 @@
+title: Ainda há cota de API,
+mas ocorre um erro!?
+excerpt: Erro de cota da API excedida! Como resolver?
+category: General
+date: 2025-08-19
+
+Meu Deus. Eu pesquisei só uma vez..?
+
+[IMAGE:05_image_1.png]
+
+Fez apenas uma única busca!
+Você viu a mensagem de erro de cota da API excedida?
+Vou explicar o porquê.
+
+[[purple:Quanto mais países você pesquisar, mais cota a API consome]]. 
+Se você selecionou todos os países na busca,
+estará enviando solicitações de API para um total de 82 países, o que consome muita cota.
+
+Portanto, tente reduzir a quantidade de países pesquisados.
+
+---
+
+[IMAGE:05_image_2.png]
+
+## No Google Console ainda há muita cota, mas apareceu um erro.
+
+Isso acontece com muita frequência.
+Como o uso da cota de API não é refletido em tempo real,
+é bem provável que [[purple:a tela do Google Console ainda não reflita o uso mais recente]].
+
+---
+
+## A solução mais confiável
+## é usar uma nova chave de API.
+
+Para encontrar Shorts virais de forma eficaz,
+[[purple: prepare sempre várias chaves de API com antecedência.]]
+
+[IMAGE:04_image_4.png]
+
+O Google permite criar contas do Gmail sem limite,
+e cada conta do Gmail pode receber sua própria chave de API.
+Ou seja, você pode [[purple:garantir quantas chaves de API forem necessárias]].
+
+Emita agora mesmo chaves de API com várias contas do Gmail e organize-as em um bloco de notas.

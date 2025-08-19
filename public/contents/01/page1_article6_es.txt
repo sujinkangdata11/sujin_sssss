@@ -1,0 +1,37 @@
+title: ¡Una oportunidad para
+apropiarte de la viralidad de tus rivales!
+excerpt: Usa "Canales favoritos" ahora mismo.
+category: General
+date: 2025-08-19
+
+¿Has visto [[purple:'Canales favoritos' en Opciones avanzadas]]?
+
+Si eres creador de YouTube, seguro que tienes [[purple:un canal referente o algún canal competidor]].
+¿Qué tal si pudieras analizar los elementos virales de esos canales?
+
+[IMAGE:06_image_1.png]
+
+## Usa "Canales favoritos" en Opciones avanzadas.
+
+Si registras los canales que te interesan en "Canales favoritos" dentro de Opciones avanzadas,
+obtendrás insights como:
+
+- [[purple:🎯 Análisis de Shorts virales]]: elementos de viralidad de ese canal
+- [[purple: 📊 Revisión de métricas de rendimiento]]: ratio de vistas respecto a suscriptores y tasa de crecimiento
+- [[purple:📈 Detección de tendencias]]: tendencias de contenido más reciente en canales competidores
+
+---
+
+[IMAGE:06_image_2.png]
+
+## Es tedioso escribir el nombre del canal cada vez.
+
+Si tienes muchos canales competidores y quieres ver distintos grupos,
+usa un [[purple:archivo de texto]].
+
+1. Organiza la lista de canales de interés en un archivo de texto
+2. Sube el archivo.
+
+Al subirlo, los canales se rellenarán automáticamente así.
+¡Ahora pulsa Buscar y analiza los canales competidores! 
+[IMAGE:06_image_3.png]

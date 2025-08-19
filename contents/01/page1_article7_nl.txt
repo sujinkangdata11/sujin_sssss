@@ -1,0 +1,36 @@
+title: Je API-sleutel is veilig
+excerpt: Kennisgeving over de beveiliging van API-sleutels
+category: General
+date: 2025-08-19
+
+##Kennisgeving over de beveiliging van API-sleutels
+Je API-sleutel is veilig
+
+Veel gebruikers informeren naar de beveiliging van API-sleutels,
+dus lichten we ons beveiligingsbeleid graag helder toe.
+
+##🔒 Onze beveiligingsprincipes
+
+[[purple:Beleid: geen opslag van API-sleutels]]
+* We slaan je API-sleutel niet op onze servers op
+* Alle data wordt gewist wanneer de sessie eindigt
+* Geen registratie vereist, dus geen verzameling van persoonsgegevens.
+
+[[purple: Beleid: geen cachegebruik]]
+* Geen server-side caching
+* Alleen tijdelijk gebruik op basis van de browsersessie toegestaan
+
+[[purple: 💡 Over automatisch aanvullen in de browser ]]
+Als je API-sleutel automatisch wordt ingevuld of opgeslagen lijkt,
+komt dat door de autosave-functie van je Chrome-browser.
+
+[[purple: Oplossingen ]]
+1. Browserinstellingen: schakel automatisch aanvullen uit
+2. Cache wissen: verwijder browsercache en cookies
+3. Incognitomodus: gebruik de dienst in de privémodus
+
+
+We beschermen je waardevolle informatie met een robuust beveiligingsbeleid.
+API-sleutels worden uitsluitend gebruikt voor het verwerken van verzoeken en nooit voor andere doeleinden.
+
+Beveiliging is onze hoogste prioriteit.

@@ -1,0 +1,45 @@
+title: ¿Te queda cuota de API
+pero aparece un error?
+excerpt: ¡Error de cuota de API excedida! ¿Cómo lo soluciono?
+category: General
+date: 2025-08-19
+
+Vaya. ¿Si solo busqué una vez…?
+
+[IMAGE:05_image_1.png]
+
+¡Solo hiciste una búsqueda!
+¿Viste el mensaje de error de cuota de API excedida?
+Te explicaré por qué.
+
+[[purple:Cuantos más países busques, más cuota consume la API]]. 
+Si seleccionaste todos los países al buscar,
+estarás enviando solicitudes a un total de 82 países, lo que consume bastante cuota.
+
+Por lo tanto, intenta reducir la cantidad de países a buscar.
+
+---
+
+[IMAGE:05_image_2.png]
+
+## En Google Console queda mucha cuota, pero me salió un error.
+
+Es un problema muy frecuente.
+Como el uso de cuota no se refleja en tiempo real,
+es muy probable que [[purple:la vista de Google Console aún no muestre el uso más reciente]].
+
+---
+
+## La solución más fiable
+## es usar una clave API nueva.
+
+Para encontrar Shorts virales de forma efectiva,
+[[purple: prepara siempre varias claves API con antelación.]]
+
+[IMAGE:04_image_4.png]
+
+Google permite crear cuentas de Gmail sin límite,
+y cada cuenta de Gmail puede recibir su propia clave API.
+Es decir, puedes [[purple:conseguir tantas claves API como necesites]].
+
+Emite ya varias claves API con distintas cuentas de Gmail y organízalas en un bloc de notas.

@@ -1,0 +1,99 @@
+title: YouTube Data
+Obtenez-le gratuitement en 10 secondes.
+excerpt: Toutes les données de YouTube,
+gratuitement !
+category: General
+date: 2025-08-19
+
+##Qu’est-ce que YouTube Data API v3 ?
+
+API de données ? Qu’est-ce que c’est ? Beaucoup d’entre vous l’entendent peut-être pour la première fois, mais pas d’inquiétude ! 
+
+« Faut-il payer ? » → Non, [[purple:c’est entièrement gratuit.]]
+« Faut-il une carte bancaire ? » → [[purple:absolument pas.]]
+« Est-ce difficile ? » → [[purple:même un enfant de 10 ans peut le faire.]]
+
+YouTube Data API v3 est un service gratuit fourni par Google.
+
+Par exemple, si vous créez un compte `ABC @gmail.com`, 
+Google accorde à ce compte « l’autorisation de consulter les données YouTube ».
+[[purple:En bref, c’est l’un des services gratuits proposés par Google !]]
+
+[IMAGE:02_image_1.png]
+
+ㅤ
+## C’est très simple – 7 clics et c’est fini !
+J’ai moi-même émis une nouvelle API, et vous pouvez réellement obtenir une clé API gratuite en seulement 7 clics.
+Alors suivez-moi !
+
+## 📹 Vous préférez en vidéo ?
+
+[YOUTUBE:https://youtu.be/0ZYlKw4x7W0]
+ㅤ
+ㅤ
+---
+ㅤ
+## 📝 Guide texte étape par étape
+Pour celles et ceux qui ne peuvent pas regarder la vidéo, j’explique tout en détail avec des images.
+
+## 1ère étape : Accéder à Google Cloud Console
+
+Recherchez [[purple:"google console"]] sur Google. 
+Cliquez sur le premier site officiel de Google qui apparaît.
+[IMAGE:02_image_2.png]
+ㅤㅤ
+ㅤㅤ
+## 2e étape : Inscription
+
+Lorsque la fenêtre d’inscription apparaît, cochez les conditions puis procédez.
+⚠️ **À noter** : selon les pays, on peut vous proposer 300 $ de crédit pour vous inciter à souscrire une offre premium.
+Dans ce cas, cliquez sur « Retour ». [[purple:Nous n’utiliserons que l’API gratuite]] !
+
+[IMAGE:02_image_3.png]
+ㅤㅤ
+ㅤㅤ
+## 3e étape : Rechercher YouTube Data API
+
+Une fois inscrit, saisissez [[purple:"youtube"]] dans la barre de recherche en haut.
+Dans les résultats, cliquez sur [[purple:"YouTube Data API v3"]] en première position.
+[IMAGE:02_image_4.png]
+ㅤㅤ
+ㅤㅤ
+## 4e étape : Activer l’API
+
+Cliquez sur ce bouton bleu.
+Vous serez dirigé vers la page de gestion de YouTube Data API.
+
+[IMAGE:02_image_5.png]
+ㅤㅤ
+ㅤㅤ
+## 5e étape : Créer une clé API
+
+Cliquez sur le 3e onglet, puis appuyez sur [[purple:"+ bouton plus"]].
+C’est très simple, n’est-ce pas ?
+
+[IMAGE:02_image_6.png]
+[IMAGE:02_image_7.png]
+ㅤㅤ
+ㅤㅤ
+ㅤㅤ
+## 💡 Astuce utile !
+
+Pas de panique si vous oubliez votre clé API. 
+Vous pouvez toujours la consulter dans Google Cloud Console, 
+et au besoin la supprimer puis en générer une nouvelle.
+
+[IMAGE:02_image_8.png]
+ㅤㅤ
+ㅤㅤ
+## Maintenant, profitez des services puissants de Google !
+
+Félicitations ! 
+Désormais, via YouTube Data API v3,
+vous pouvez exploiter pleinement les différents services de données proposés par Google.
+
+[IMAGE:03_image_1.png]
+
+
+Si vous souhaitez des conseils plus détaillés ou avez des questions, laissez un commentaire à tout moment. 
+Je vous répondrai rapidement !
