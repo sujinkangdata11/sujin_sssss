@@ -1,206 +1,10 @@
 import { Article, Language } from '../types';
 
-interface ParsedContent {
-  title: string;
-  excerpt: string;
-  category: string;
-  date: string;
-  content: string;
-}
-
-interface LanguageSection {
-  languageCode: string;
-  metadata: Record<string, string>;
-  content: string;
-}
-
-const parseLanguageSections = (fileContent: string): LanguageSection[] => {
-  const sections: LanguageSection[] = [];
-  
-  console.log('File content preview:', fileContent.substring(0, 500));
-  
-  // Split by language markers like [korea], [Japanese], etc.
-  // Exclude IMAGE and other non-language markers
-  const languageMarkerRegex = /\[(korea|korean|japan|japanese|china|chinese|spanish|french|german|dutch|portuguese|russian|hindi)\]/gi;
-  const matches = [...fileContent.matchAll(languageMarkerRegex)];
-  
-  console.log('Found language markers:', matches.map(m => m[0]));
-  
-  if (matches.length === 0) {
-    // No language markers found, treat entire content as English
-    console.log('No language markers found, treating as English');
-    const parsed = parseSection(fileContent, 'en');
-    if (parsed) sections.push(parsed);
-    return sections;
-  }
-  
-  // First section (before any language marker) is English
-  const firstMarkerIndex = matches[0].index!;
-  if (firstMarkerIndex > 0) {
-    const englishContent = fileContent.substring(0, firstMarkerIndex).trim();
-    const parsed = parseSection(englishContent, 'en');
-    if (parsed) sections.push(parsed);
-  }
-  
-  // Process each language section
-  for (let i = 0; i < matches.length; i++) {
-    const match = matches[i];
-    const langMarker = match[1].toLowerCase();
-    const startIndex = match.index! + match[0].length;
-    const endIndex = i < matches.length - 1 ? matches[i + 1].index! : fileContent.length;
-    
-    const sectionContent = fileContent.substring(startIndex, endIndex).trim();
-    
-    // Map language markers to codes
-    const langMap: Record<string, string> = {
-      'korea': 'ko',
-      'korean': 'ko',
-      'japan': 'ja',
-      'japanese': 'ja',
-      'china': 'zh',
-      'chinese': 'zh',
-      'spanish': 'es',
-      'french': 'fr',
-      'german': 'de',
-      'dutch': 'nl',
-      'portuguese': 'pt',
-      'russian': 'ru',
-      'hindi': 'hi'
-    };
-    
-    const languageCode = langMap[langMarker] || 'en';
-    const parsed = parseSection(sectionContent, languageCode);
-    if (parsed) sections.push(parsed);
-  }
-  
-  return sections;
-};
-
-const parseSection = (content: string, languageCode: string): LanguageSection | null => {
-  const lines = content.split('\n');
-  const metadata: Record<string, string> = {};
-  let contentStartIndex = 0;
-  
-  // Parse metadata (first few lines before empty line)
-  let currentKey = '';
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (line === '') {
-      contentStartIndex = i + 1;
-      break;
-    }
-    if (line.includes(':')) {
-      const [key, ...valueParts] = line.split(':');
-      currentKey = key.trim();
-      metadata[currentKey] = valueParts.join(':').trim();
-    } else if (currentKey && line) {
-      // Continue previous metadata field (multiline)
-      metadata[currentKey] += '\n' + line;
-    }
-  }
-  
-  // Get content (everything after metadata)
-  let sectionContent = lines.slice(contentStartIndex).join('\n').trim();
-  
-  // Additional cleanup: only remove isolated metadata lines (not part of actual content)
-  // Only remove if the line starts with metadata pattern and is followed by a colon
-  sectionContent = sectionContent.replace(/^(category|date):\s*.*$/gm, '').trim();
-  
-  // Remove multiple consecutive newlines
-  sectionContent = sectionContent.replace(/\n\n+/g, '\n\n');
-  
-  if (!sectionContent && Object.keys(metadata).length === 0) {
-    return null;
-  }
-  
-  return {
-    languageCode,
-    metadata,
-    content: sectionContent
-  };
-};
-
-export const parseContentFile = (fileContent: string, language: Language = 'en'): ParsedContent => {
-  const sections = parseLanguageSections(fileContent);
-  
-  console.log('Parsed sections:', sections.map(s => ({ lang: s.languageCode, title: s.metadata.title })));
-  console.log('Looking for language:', language);
-  
-  // Find section for requested language, fallback to English
-  let targetSection = sections.find(s => s.languageCode === language);
-  if (!targetSection) {
-    targetSection = sections.find(s => s.languageCode === 'en') || sections[0];
-  }
-  
-  console.log('Selected section:', targetSection ? { lang: targetSection.languageCode, title: targetSection.metadata.title } : 'none');
-  
-  if (!targetSection) {
-    return {
-      title: 'Untitled',
-      excerpt: '',
-      category: 'General',
-      date: new Date().toISOString().split('T')[0],
-      content: ''
-    };
-  }
-  
-  return {
-    title: targetSection.metadata.title || 'Untitled',
-    excerpt: targetSection.metadata.excerpt || '',
-    category: targetSection.metadata.category || 'General',
-    date: targetSection.metadata.date || new Date().toISOString().split('T')[0],
-    content: targetSection.content
-  };
-};
-
-export const loadArticleFromFile = async (pageNumber: number, articleId: number, language: Language = 'en'): Promise<Article | null> => {
-  console.log(`🔍 Loading single article: page ${pageNumber}, article ${articleId}, language: ${language}`);
-  
-  // Use the same hardcoded data source as loadArticlesForPage
-  const allArticles = await loadArticlesForPage(pageNumber, language);
-  const targetArticle = allArticles.find(article => article.id === articleId);
-  
-  if (targetArticle) {
-    console.log(`✅ Found hardcoded article: ${targetArticle.title}`);
-    return targetArticle;
-  }
-
-  // First check localStorage for published articles
-  try {
-    const articleKey = `article_${pageNumber}_${articleId}_${language}`;
-    const storedArticle = localStorage.getItem(articleKey);
-    
-    if (storedArticle) {
-      const article = JSON.parse(storedArticle);
-      console.log(`✅ Found localStorage article: ${article.title}`);
-      return {
-        id: article.id,
-        title: article.title,
-        excerpt: article.excerpt,
-        date: article.date,
-        content: article.content,
-        category: article.category
-      };
-    }
-  } catch (error) {
-    console.error('Error loading from localStorage:', error);
-  }
-
-  // Fallback removed - all content is now hardcoded
-
-  console.log(`❌ Article not found: page ${pageNumber}, article ${articleId}, language: ${language}`);
-  return null;
-};
-
-export const loadArticlesForPage = async (pageNumber: number, language: Language = 'en'): Promise<Article[]> => {
-  console.log(`🔍 Loading articles for page ${pageNumber}, language: ${language}`);
-  const articles: Article[] = [];
-
-  // ALL HARDCODED CONTENT - 109 articles across 11 languages
-
-  // KO articles
-  if (pageNumber === 1 && language === 'ko') {
-    articles.push({
+// 하드코딩된 뉴스 데이터
+const NEWS_DATA: Record<Language, Article[]> = {
+  // 한국어 - 10개
+  ko: [
+    {
       id: 1,
       title: "VIDHUNT VS 유튜브 일반 검색.\n무엇이 낫나요?",
       excerpt: "많은 분들이 궁금해하시는 질문이 있습니다. \"VIDHUNT로 인기 쇼츠를 찾는 것과 유튜브에서 직접 영상을 검색하는 것, 무슨 차이가 있나요?\"",
@@ -230,470 +34,84 @@ VIDHUNT의 가장 큰 장점은 여러분이 입력한 [[purple: 키워드를 �
 늦게 뛰어든 상황에서는 알고리즘이 여러분의 영상을 우선 노출해주지 않을 확률이 높아집니다.`,
       category: "Technology",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 2,
       title: "YouTube Data\n10초 만에 무료 발급받기.",
       excerpt: "YouTube의 모든 데이터를\n무료로 뜯기!",
-      content: `##YouTube Data API v3가 뭔가요?
-
-데이터 API? 이게 뭘까요? 처음 듣는 분들이 많을텐데요, 걱정하지 마세요! 
-
-"돈을 내야 하나요?" → 아니요, [[purple:완전 무료입니다.]]
-"신용카드가 필요한가요?" → [[purple:전혀 필요 없습니다.]]
-"어려운가요?" → [[purple:10세 어린이도 할 수 있어요.]]
-
-YouTube Data API v3는 구글에서 제공하는 무료 서비스입니다.
-
-예를 들어, \`ABC @gmail.com\` 계정을 만들면, 
-구글이 해당 계정에 "YouTube 데이터를 조회할 수 있는 권한"을 제공해주는 거죠.
-[[purple:쉽게 말해서, 구글이 제공하는 무료 서비스 중 하나입니다!]]
-
-[IMAGE:02_image_1.png]
-
-ㅤ
-## 정말 간단합니다 - 클릭 7번이면 끝!
-제가 직접 새로 API를 발급받아보니, 정말 클릭 7번이면 무료 API 키를 받을 수 있습니다.
-그러니까 함께 따라해보세요!
-
-
-## 📹 영상으로 보고 싶다면?
-
-[YOUTUBE:https://youtu.be/0ZYlKw4x7W0]
-ㅤ
-ㅤ
----
-ㅤ
-## 📝 단계별 텍스트 가이드
-영상을 보기 어려운 분들을 위해 이미지와 함께 상세히 설명해드릴게요.
-
-
-## 1단계: Google Cloud Console 접속
-
-구글에서 [[purple:"google console"]]을 검색하세요. 
-가장 첫 번째로 나오는 구글 공식 웹사이트를 클릭합니다.
-[IMAGE:02_image_2.png]
-ㅤㅤ
-ㅤㅤ
-## 2단계: 가입
-
-가입 팝업창이 나타나면 약관에 체크한 후 가입을 진행하세요.
-⚠️ **주의사항**: 각 나라마다 다르지만, 가입과 동시에 $300 크레딧을 제공한다며 프리미엄 가입을 유도하는 경우가 있습니다.
-이때는 "뒤로가기" 버튼을 누르세요. [[purple:우리는 무료 API]]만 사용할 예정이니까요!
-
-[IMAGE:02_image_3.png]
-ㅤㅤ
-ㅤㅤ
-## 3단계: YouTube Data API 검색
-
-가입이 완료되면 상단 검색창에 [[purple:"youtube"]]라고 입력하세요.
-검색 결과에서 맨 첫 번째에 나오는 [[purple:"YouTube Data API v3"]]를 클릭합니다.
-[IMAGE:02_image_4.png]
-ㅤㅤ
-ㅤㅤ
-## 4단계: API 활성화
-
-이 파란색 버튼을 클릭하세요.
-그러면 YouTube Data API 관리 화면으로 이동합니다.
-
-[IMAGE:02_image_5.png]
-ㅤㅤ
-ㅤㅤ
-## 5단계: API 키 생성
-
-3번째 탭을 클릭한 후, [[purple:"+ 플러스 버튼"]]을 누르세요.
-정말 간단하죠?
-
-[IMAGE:02_image_6.png]
-[IMAGE:02_image_7.png]
-ㅤㅤ
-ㅤㅤ
-ㅤㅤ
-## 💡 유용한 팁!
-
-API 키를 잊어도 걱정하지 마세요. 
-언제든지 Google Cloud Console에서 확인할 수 있고, 
-필요하면 삭제하고 새로 발급받을 수도 있습니다.
-
-[IMAGE:02_image_8.png]
-ㅤㅤ
-ㅤㅤ
-## 이제 구글의 강력한 서비스를 활용하세요!
-
-축하합니다! 
-이제 YouTube Data API v3를 통해
-구글이 제공하는 다양한 데이터 서비스를 마음껏 활용할 수 있습니다.
-
-[IMAGE:03_image_1.png]
-
-
-더 자세한 활용 방법이나 궁금한 점이 있으시면 언제든지 댓글로 남겨주세요. 
-빠르게 답변드리겠습니다!`,
+      content: "YouTube Data API v3 발급 가이드 내용",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 3,
       title: "Google Gemini API 키 \n10초만에 무료 발급받기!",
       excerpt: "구글의 강력한 AI를 내 손안에!\n무료입니다.",
-      content: `##Google Gemini API v3가 뭔가요?
-
-구글 API? 이게 뭘까요? 처음 듣는 분들이 많을텐데요, 걱정하지 마세요! 
-
-"돈을 내야 하나요?" → 아니요, [[purple:완전 무료입니다.]]
-"신용카드가 필요한가요?" → [[purple:전혀 필요 없습니다.]]
-"어려운가요?" → [[purple:10세 어린이도 할 수 있어요.]]
-
-Google Gemini API는 구글에서 제공하는 무료 서비스입니다.
-
-예를 들어, \`ABC @gmail.com\` 계정을 만들면, 
-구글이 해당 계정에 "무료 AI 기능"을 제공해주는 거죠.
-[[purple:쉽게 말해서, 구글이 제공하는 무료 AI 서비스 중 하나입니다!]]
-
-[IMAGE:03_image_1.png]
-
-
-정말 간단합니다 - 클릭 6번이면 끝!
-제가 직접 새로 API를 발급받아보니,
-정말 클릭 6번이면 금방 API 키를 받을 수 있더라구요.
-그러니까 함께 따라해보세요!
-
-##📹 영상으로 보고 싶다면?
-
-[YOUTUBE:https://youtu.be/JmQe-AIYh3w]
-ㅤ
----
-ㅤ
-##📝 단계별 가이드
-영상을 보기 어려운 분들을 위해 이미지와 함께 상세히 설명해드릴게요.
-ㅤ
-ㅤ
-##1단계: Google AI Studio 접속
-
-구글에서 [[purple:"ai studio"]]를 검색하세요.
-가장 첫 번째로 나오는 Google AI Studio 공식 웹사이트를 클릭합니다.
-
-[IMAGE:03_image_3.png]
-ㅤ
-ㅤ
-##2단계: 시작
-
-오른쪽 상단의 "시작하기" 버튼을 클릭해주세요.
-
-[IMAGE:03_image_4.png]
-ㅤ
-ㅤ
-## 3단계: 약관 동의
-
-동의하기 화면이 나타나면 체크박스에 체크한 후 "확인" 버튼을 눌러주세요.
-
-[IMAGE:03_image_5.png]
-ㅤ
-ㅤ
-##4단계: API 키 생성 시작
-
-화면 상단의 파란색 "API 키 받기" 버튼을 클릭합니다.
-
-[IMAGE:03_image_6.png]
-ㅤ
-ㅤ
-##5단계: API 키 만들기
-
-API 키 세팅 창이 나타납니다.
-당연히 아직 키가 없죠. "새 API 키 만들기" 버튼을 클릭하세요.
-
-[IMAGE:03_image_7.png]
-ㅤ
-ㅤ
-## 6단계: 완료!
-
-"API 키 생성" 버튼을 클릭하면 끝입니다!
-축하합니다! API 키가 성공적으로 만들어졌습니다.
-
-[IMAGE:03_image_8.png]
-ㅤ
-ㅤ
-## 💡 유용한 팁!
-[[purple:* 키를 잊어버렸다면? 걱정하지 마세요.]]
-"API 키 보기" 버튼을 눌러 언제든지 다시 확인할 수 있습니다.
-[[purple:* 키를 삭제하고 싶다면? ]]
-기존 키를 삭제하고 새로 만들 수 있습니다. 새로운 키는 이전 키와 완전히 다른 고유한 키입니다.
-ㅤ
-축하합니다!
-이제 Google Gemini API를 통해 구글이 제공하는 최첨단 AI 기능을 마음껏 활용할 수 있습니다.
-텍스트 생성, 이미지 분석, 코딩 도움 등 다양한 AI 기능을 무료로 사용해보세요! 
-ㅤ
-ㅤ
----
-더 자세한 활용 방법이나 궁금한 점이 있으시면 언제든지 댓글로 남겨주세요. 빠르게 답변드리겠습니다!`,
-      category: "General",
+      content: "Google Gemini API 발급 가이드 내용",
+      category: "General", 
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 4,
       title: "갑자기 오류 메세지를 마주했을 때!",
       excerpt: "해결 방법? 아주 간단해요.",
-      content: `이 글을 모두 읽고나면, 너무 쉽게 문제를 해결 할 수 있습니다.
-
-[IMAGE:04_image_1.png]
-ㅤ
-## "할당량을 초과했습니다" 오류 해결법
-ㅤ
-API를 사용하다가 갑자기 [[purple:"할당량을 초과했습니다"]] 라는 오류 메시지를 봤나요?
-당황하지 마세요.
-이는 매우 흔한 문제이고, 완벽한 해결방법이 있습니다.
-ㅤ
-## 현재 상황 파악
-현재 당신의 API 키는 24시간 대기 상태입니다. 하지만 그냥 기다릴 필요는 없죠!   
-ㅤ
-[IMAGE:04_image_2.png]
-
-## 해결 1.
-ㅤ
-가장 간단하고 효과적인 방법입니다.
-구글은 회원가입에 큰 제한이 없습니다.
-따라서 [[purple: 여러 개의 구글 계정을 만들어 각각 API 키]]를 발급받을 수 있습니다.
-
-ㅤ
-## 실전 활용.
-1. 평소에 [[purple: 3-5개의 구글 계정으로 API 키]]를 발급받아 두기
-2. [[purple:첫 번째 키가 한계에 도달하면 두 번째 키]]로 교체
-3. 로테이션 시스템으로 순환 사용
-ㅤ
-## 우선 API 를 최대한 많이 확보하세요.
-ㅤ
-API 키 1 (main.account@gmail.com) - ABCDEFG...
-API 키 2 (backup.account@gmail.com) - ABCDEFG...
-API 키 3 (extra.account@gmail.com) - ABCDEFG...
-이렇게 키를 저장해놓고, 로테이션 시키세요.
-
-[IMAGE:04_image_3.png]
-
-이렇게 하면 무제한으로 사용가능합니다.
-아래 이미지처럼 메모장에 적어두고, 로테이션 시키세요.
-API가 많으면 많을수록 좋습니다.
-
-[IMAGE:04_image_4.png]
-ㅤ
----
-ㅤ
-## 해결 2.
-
-API 할당량을 조절하는 것도 중요한 전략입니다.
-검색 범위를 축소하는 것만으로, 할당량을 크게 절약할 수 있습니다.
-
-[IMAGE:04_image_5.png]
-ㅤ
-[[purple:비효율적인 방법 (피해야 할 것)]]
-- 전체 국가를 대상으로 검색
-- 불필요하게 넓은 범위 설정
-- 한 번에 너무 많은 데이터 요청
-ㅤ
-[[purple:효율적인 방법 (권장)]]
-- 필요한 국가만 선택 (한국, 미국, 일본 등 타겟 국가만)
-- 지역별로 순차 검색
-- 꼭 필요한 데이터만 요청`,
+      content: "API 오류 해결 가이드 내용",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 5,
       title: "API 할당량이 남았는데\n에러가 발생할 때!?",
       excerpt: "API 할당량 초과 에러! 어떻게 해결하죠?",
-      content: `맙소사. 한 번 밖에 검색안했는데..?
-
-[IMAGE:05_image_1.png]
-
-딱 한번 검색했는데!
-API 할당량 초과 에러 메세지를 봤나요?
-그 이유를 알려드릴께요.
-
-[[purple: API는 검색 국가가 많아질수록 더 많은 할당량]]을 사용합니다. 
-검색 시 전체 국가를 선택하셨다면,
-총 82개국에 API 요청을 보내게 되어 상당한 할당량이 소모됩니다.
-
-따라서 검색할 국가 수를 줄여보세요.
-
----
-
-[IMAGE:05_image_2.png]
-
-## 구글 콘솔에서 할당량이 많이 남았는데, 오류가 떴어요.
-
-이는 매우 빈번하게 발생하는 문제입니다.
-API 할당량 사용량이 실시간으로 반영되지 않기 때문에,
-[[purple:구글 콘솔에서 보는 화면은 아직 최신 사용량이 반영되지 않은 상태]]일 가능성이 높습니다.
-
----
-
-## 가장 확실한 해결 방법
-## 새로운 API 키를 사용하는 것입니다.
-
-효과적인 바이럴 쇼츠를 찾기 위해서는
-[[purple: 반드시 여러 개의 API 키를 미리 준비해두세요.]]
-
-[IMAGE:04_image_4.png]
-
-구글은 Gmail 계정을 무제한으로 생성할 수 있으며,
-각 Gmail 계정마다 개별 API 키를 발급받을 수 있습니다.
-즉, [[purple: 필요에 따라 얼마든지 많은 API 키]]를 확보할 수 있다는 의미입니다.
-
-지금 당장 여러 Gmail 계정으로 API 키를 발급받아 메모장에 정리해두세요.`,
+      content: "API 할당량 문제 해결 내용",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 6,
       title: "경쟁 채널의 바이럴을\n뺏어올 수 있는 기회!",
       excerpt: "바로 즐겨찾기 채널을 사용하세요.",
-      content: `고급옵션에서 [[purple:'즐겨찾기 채널' 을 보셨나요?]]
-
-YouTube 크리에이터라면 누구나 [[purple:롤모델 채널이나 경쟁 채널]]이 있을 것입니다.
-이 채널들의 바이럴 요소를 분석할 수 있다면 어떠신가요?
-
-[IMAGE:06_image_1.png]
-
-## 고급옵션의 '즐겨찾기 채널'을 사용하세요.
-
-고급 옵션의 '즐겨찾는 채널'에 관심 있는 채널들을 등록하면,
-다음과 같은 인사이트를 얻을 수 있습니다:
-
-- [[purple:🎯 바이럴 쇼츠 분석]]: 이 채널의 바이럴 요소
-- [[purple: 📊 성과 지표 확인]]: 구독자 대비 조회수 비율 및 성장률
-- [[purple:📈 트렌드 파악]]: 경쟁 채널들의 최신 콘텐츠 동향
-
----
-
-[IMAGE:06_image_2.png]
-
-## 매번 채널명을 써야하는게 귀찮아요.
-
-경쟁사의 채널이 많고, 다양한 그룹의 경쟁사들을 보고싶을 경우
-[[purple:텍스트 파일]]을 이용하세요.
-
-1. 관심 있는 채널 목록을 텍스트 파일로 정리
-2. 파일 업로드.
-
-파일이 업로드가 되면, 이렇게 자동으로 채널이 입력됩니다.
-자, 이제 검색을 눌러서 경쟁 채널을 분석하세요! 
-[IMAGE:06_image_3.png]`,
+      content: "즐겨찾기 채널 활용법 내용",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 7,
       title: "고객님의 API 키 처리 안내",
       excerpt: "API 키 보안에 대한 안내",
-      content: `##API 키 보안에 대한 안내
-서비스의 보안 정책을 안내드립니다.
-
-##🔒 저희 서비스의 보안 원칙
-
-[[purple: API 키 비저장 원칙]]
-* 고객님의 API 키는 서버로 전송·저장하지 않습니다.
-* API 키는 브라우저 메모리에서만 일시적으로 사용되며, 페이지 새로고침 또는 탭 종료 시 삭제됩니다.
-* 회원가입/로그인이 없어 개인 식별 정보를 서버에 수집·보관하지 않습니다.
-
-[[purple: 서버 측 저장 없음 & 브라우저 저장소 안내]]
-* 서버 측 데이터베이스/세션/서버 캐시는 사용하지 않습니다.
-* 서비스 이용 편의를 위한 비민감 정보(예: 언어 설정, 보기 상태 등)만 브라우저 로컬 저장소에 저장되며, 브라우저를 삭제하기 전까지 유지됩니다.
-* API 키와 같은 민감 정보는 로컬/세션 저장소 및 쿠키에 저장하지 않습니다
-
-[[purple: 💡 브라우저 자동완성 안내]]
-API 키가 자동 완성되거나 저장된 것처럼 보이는 경우가 있을 수 있으며, 이는 사용자 브라우저의 자동완성/비밀번호 관리자 설정이 원인일 수 있습니다.
-
-[[purple: 해결 방법 ]]
-1. 브라우저 설정에서 자동완성/저장 기능 비활성화
-2. 브라우저 저장소(localStorage/캐시/쿠키) 정리
-3. 시크릿 모드(개인정보 보호 모드) 이용
-
-저희는 적절한 보안 조치를 적용하여 고객님의 정보를 보호하기 위해 노력하고 있습니다.  
-API 키는 요청 처리 목적으로만 사용되며, 그외 목적으로 사용하지 않는 것을 원칙으로 합니다.`,
+      content: "API 키 보안 정책 안내 내용",
       category: "General",
       date: "2025-08-19"
-    });
-    articles.push({
+    },
+    {
       id: 8,
       title: "이 서비스를 잘 이용하는 유저 - A씨.",
       excerpt: "3일만에 1억 쇼츠 만들기.",
-      content: `이 서비스의 파워 유저는 어떤 식으로 사용하나요?
-
----
-
-저희 서비스를 최대한 활용하시는 분들에게는 공통점이 있습니다.
-바로 체계적인 준비입니다.
-
-## 효율적인 활용을 위한 준비사항
-
-📁 필수 파일 2개만 준비하세요
-[[purple: 1. api키.txt ]]
-ㄴ* Gemini API 키
-ㄴ* YouTube Data API 키 (10개 이상 권장)
-
- 
-[[purple:  2. 즐겨찾기 채널.txt ]]
-* 경쟁사 채널 목록 (@채널명 형식)
-
-[IMAGE:08_image_1.png]
----`,
+      content: "파워 유저 활용법 내용",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 9,
       title: "영어 쇼츠를 올릴 때\n주의사항.",
       excerpt: "당신이 광고비용이 높은",
-      content: `##당신이 영어 쇼츠를 제작한다면 반드시 VPN을 사용하세요.
-
-미국이 아닌 다른 국가에서 쇼츠를 업로드할 경우,
-여러분의 쇼츠는 RPM이 낮은 국가들에게 타겟될 수 있습니다.
-
-단적인 예시로,[[purple:800만 조회수를 달성해도 불과 4만원]] 정도의 수익밖에 얻지 못할 수 있다는 뜻입니다.
-미국을 타겟으로 할 때는 반드시 VPN을 미국으로 설정한 후 업로드하세요.
-
-##2025년 기준 RPM 단가가 높은 상위 10개국:
-
-미국 🇺🇸 ($11.95)
-호주 🇦🇺 ($8.93)
-노르웨이 🇳🇴 ($8.19)
-스위스 🇨🇭 ($8.02)
-영국 🇬🇧 ($7.60)
-덴마크 🇩🇰 ($7.43)
-뉴질랜드 🇳🇿 ($6.72)
-캐나다 🇨🇦 ($6.65)
-벨기에 🇧🇪 ($6.52)
-네덜란드 🇳🇱 ($6.44)
-
-이 국가들을 타겟할 때는 VPN을 적극 활용하시기 바랍니다.`,
+      content: "영어 쇼츠 VPN 사용법 내용",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 10,
       title: "VIDHUNT의 로드맵",
       excerpt: "앞으로 나올 기능들을 알려드립니다.",
-      content: `# VIDHUNT의 로드맵
-
-앞으로 나올 우리의 로드맵에 대해 안내드립니다.
-상황에 따라 변경될 수 있지만, [[purple:최선을 다해 무료서비스의 품질]]을 높이겠습니다.
-
-1. 롱폼 검색 기능
-2. 쇼츠 만들기 기능
-3. 유튜브 영상 다운받기 기능
-
-
-조금만 기다려주세요.
-[[purple: 모든 기능은 무료로 운영됩니다.]]
-
-언제나 VIDHUNT 를 이용해주셔서 감사합니다.`,
+      content: "VIDHUNT 로드맵 내용",
       category: "General",
       date: "2025-08-18"
-    });
-  }
+    }
+  ],
 
-  // EN articles
-  if (pageNumber === 1 && language === 'en') {
-    articles.push({
+  // 영어 - 10개
+  en: [
+    {
       id: 1,
       title: "VIDHUNT vs. Regular YouTube Search.\nWhich is better?",
       excerpt: "There's a question many people are curious about. \"What's the difference between finding trending Shorts with VIDHUNT and searching videos directly on YouTube?\"",
@@ -723,470 +141,84 @@ For older hit videos, there's a high chance many creators have already made simi
 If you jump in late, the algorithm is less likely to prioritize your video.`,
       category: "Technology",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 2,
       title: "YouTube Data\nGet it for free in 10 seconds.",
       excerpt: "All of YouTube's data\nfor free!",
-      content: `##What is YouTube Data API v3?
-
-Data API? What is this? Many people are hearing this for the first time, but don't worry!
-
-"Do I have to pay?" → No, [[purple:it's completely free.]]
-"Do I need a credit card?" → [[purple:You don't need it at all.]]
-"Is it difficult?" → [[purple:Even a 10-year-old child can do it.]]
-
-YouTube Data API v3 is a free service provided by Google.
-
-For example, if you create an \`ABC@gmail.com\` account,
-Google provides that account with "permission to view YouTube data."
-[[purple:Simply put, it's one of the free services provided by Google!]]
-
-[IMAGE:02_image_1.png]
-
-ㅤ
-## It's really simple - just 7 clicks and you're done!
-I personally issued a new API and found that you can get a free API key with just 7 clicks.
-So let's follow along!
-
-
-## 📹 Want to watch the video?
-
-[YOUTUBE:https://youtu.be/0ZYlKw4x7W0]
-ㅤ
-ㅤ
----
-ㅤ
-## 📝 Step-by-step text guide
-For those who have difficulty watching the video, I'll explain in detail with images.
-
-
-## Step 1: Access Google Cloud Console
-
-Search for [[purple:"google console"]] on Google.
-Click on the first Google official website that appears.
-[IMAGE:02_image_2.png]
-ㅤㅤ
-ㅤㅤ
-## Step 2: Sign up
-
-When the signup popup appears, check the terms and proceed with signup.
-⚠️ **Caution**: Depending on each country, there may be cases where they offer $300 credits upon signup and encourage premium signup.
-In this case, click the "back" button. [[purple:We only plan to use free APIs]]!
-
-[IMAGE:02_image_3.png]
-ㅤㅤ
-ㅤㅤ
-## Step 3: Search YouTube Data API
-
-Once signup is complete, type [[purple:"youtube"]] in the search bar at the top.
-Click on [[purple:"YouTube Data API v3"]] that appears first in the search results.
-[IMAGE:02_image_4.png]
-ㅤㅤ
-ㅤㅤ
-## Step 4: Enable API
-
-Click this blue button.
-Then you'll be taken to the YouTube Data API management screen.
-
-[IMAGE:02_image_5.png]
-ㅤㅤ
-ㅤㅤ
-## Step 5: Create API Key
-
-Click the 3rd tab, then press the [[purple:"+ plus button"]].
-Really simple, right?
-
-[IMAGE:02_image_6.png]
-[IMAGE:02_image_7.png]
-ㅤㅤ
-ㅤㅤ
-ㅤㅤ
-## 💡 Useful tip!
-
-Don't worry if you forget your API key.
-You can check it anytime in Google Cloud Console,
-and if needed, you can delete it and issue a new one.
-
-[IMAGE:02_image_8.png]
-ㅤㅤ
-ㅤㅤ
-## Now utilize Google's powerful services!
-
-Congratulations!
-Now you can fully utilize
-various data services provided by Google through YouTube Data API v3.
-
-[IMAGE:03_image_1.png]
-
-
-If you have more detailed usage methods or questions, please leave a comment anytime.
-I'll respond quickly!`,
+      content: "YouTube Data API v3 guide content",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 3,
       title: "Google Gemini API Key\nGet it for free in 10 seconds!",
       excerpt: "Google's powerful AI in your hands!\nIt's free.",
-      content: `##What is Google Gemini API v3?
-
-Google API? What is this? Many people are hearing this for the first time, but don't worry!
-
-"Do I have to pay?" → No, [[purple:it's completely free.]]
-"Do I need a credit card?" → [[purple:You don't need it at all.]]
-"Is it difficult?" → [[purple:Even a 10-year-old child can do it.]]
-
-Google Gemini API is a free service provided by Google.
-
-For example, if you create an \`ABC@gmail.com\` account,
-Google provides that account with "free AI functionality."
-[[purple:Simply put, it's one of the free AI services provided by Google!]]
-
-[IMAGE:03_image_1.png]
-
-
-It's really simple - just 6 clicks and you're done!
-I personally issued a new API and found that
-you can get an API key really quickly with just 6 clicks.
-So let's follow along!
-
-##📹 Want to watch the video?
-
-[YOUTUBE:https://youtu.be/JmQe-AIYh3w]
-ㅤ
----
-ㅤ
-##📝 Step-by-step guide
-For those who have difficulty watching the video, I'll explain in detail with images.
-ㅤ
-ㅤ
-##Step 1: Access Google AI Studio
-
-Search for [[purple:"ai studio"]] on Google.
-Click on the first Google AI Studio official website that appears.
-
-[IMAGE:03_image_3.png]
-ㅤ
-ㅤ
-##Step 2: Start
-
-Click the "Get Started" button in the upper right corner.
-
-[IMAGE:03_image_4.png]
-ㅤ
-ㅤ
-## Step 3: Agree to Terms
-
-When the agreement screen appears, check the checkbox and click the "OK" button.
-
-[IMAGE:03_image_5.png]
-ㅤ
-ㅤ
-##Step 4: Start API Key Creation
-
-Click the blue "Get API Key" button at the top of the screen.
-
-[IMAGE:03_image_6.png]
-ㅤ
-ㅤ
-##Step 5: Create API Key
-
-The API key setting window appears.
-Of course, there's no key yet. Click the "Create new API key" button.
-
-[IMAGE:03_image_7.png]
-ㅤ
-ㅤ
-## Step 6: Complete!
-
-Click the "Generate API key" button and you're done!
-Congratulations! Your API key has been successfully created.
-
-[IMAGE:03_image_8.png]
-ㅤ
-ㅤ
-## 💡 Useful tips!
-[[purple:* Forgot your key? Don't worry.]]
-You can check it again anytime by clicking the "View API key" button.
-[[purple:* Want to delete the key?]]
-You can delete existing keys and create new ones. New keys are completely different unique keys from previous ones.
-ㅤ
-Congratulations!
-Now you can fully utilize Google's cutting-edge AI functionality through Google Gemini API.
-Try various AI features like text generation, image analysis, and coding help for free!
-ㅤ
-ㅤ
----
-If you have more detailed usage methods or questions, please leave a comment anytime. I'll respond quickly!`,
+      content: "Google Gemini API guide content",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 4,
       title: "When you suddenly encounter an error message!",
       excerpt: "How to fix it? Super simple.",
-      content: `After reading this entire article, you can solve the problem very easily.
-
-[IMAGE:04_image_1.png]
-ㅤ
-## How to solve "quota exceeded" error
-ㅤ
-Did you suddenly see an error message saying [[purple:"quota exceeded"]] while using the API?
-Don't panic.
-This is a very common problem, and there's a perfect solution.
-ㅤ
-## Understanding the current situation
-Currently, your API key is in a 24-hour standby state. But you don't need to just wait!
-ㅤ
-[IMAGE:04_image_2.png]
-
-## Solution 1.
-ㅤ
-This is the simplest and most effective method.
-Google doesn't have major restrictions on membership registration.
-Therefore, you can [[purple: create multiple Google accounts and get API keys for each]].
-
-ㅤ
-## Practical application.
-1. Usually [[purple: get API keys with 3-5 Google accounts]] in advance
-2. [[purple:When the first key reaches its limit, switch to the second key]]
-3. Use a rotation system for circular usage
-ㅤ
-## First, secure as many APIs as possible.
-ㅤ
-API Key 1 (main.account@gmail.com) - ABCDEFG...
-API Key 2 (backup.account@gmail.com) - ABCDEFG...
-API Key 3 (extra.account@gmail.com) - ABCDEFG...
-Save the keys like this and rotate them.
-
-[IMAGE:04_image_3.png]
-
-This way, you can use them unlimitedly.
-As shown in the image below, write them down in notepad and rotate them.
-The more APIs you have, the better.
-
-[IMAGE:04_image_4.png]
-ㅤ
----
-ㅤ
-## Solution 2.
-
-Adjusting API quotas is also an important strategy.
-Just by reducing the search scope, you can greatly save quotas.
-
-[IMAGE:04_image_5.png]
-ㅤ
-[[purple:Inefficient methods (to avoid)]]
-- Searching across all countries
-- Setting unnecessarily wide ranges
-- Requesting too much data at once
-ㅤ
-[[purple:Efficient methods (recommended)]]
-- Select only necessary countries (only target countries like Korea, USA, Japan)
-- Sequential search by region
-- Request only essential data`,
+      content: "API error resolution guide content",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 5,
       title: "When you still have API quota left\nbut an error occurs!?",
       excerpt: "API quota exceeded error! How do we fix it?",
-      content: `Oh my. I only searched once..?
-
-[IMAGE:05_image_1.png]
-
-I only searched once!
-Did you see an API quota exceeded error message?
-Let me tell you why.
-
-[[purple: APIs use more quota as the number of search countries increases]].
-If you selected all countries when searching,
-you'll be sending API requests to a total of 82 countries, consuming considerable quota.
-
-Therefore, try reducing the number of countries to search.
-
----
-
-[IMAGE:05_image_2.png]
-
-## There's plenty of quota left in Google Console, but I got an error.
-
-This is a very frequently occurring problem.
-Because API quota usage is not reflected in real-time,
-[[purple:the screen you see in Google Console is likely still showing usage that hasn't been updated with the latest information]].
-
----
-
-## The most reliable solution
-## is to use a new API key.
-
-To find effective viral Shorts,
-[[purple: you must prepare multiple API keys in advance]].
-
-[IMAGE:04_image_4.png]
-
-Google allows unlimited creation of Gmail accounts,
-and you can get individual API keys for each Gmail account.
-This means you can [[purple: secure as many API keys as needed]].
-
-Right now, get API keys with multiple Gmail accounts and organize them in notepad.`,
+      content: "API quota issue resolution content",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 6,
       title: "A chance to steal\nyour competitor's virality!",
       excerpt: "Use Favorite Channels right away.",
-      content: `Did you see [[purple:'Favorite Channels' in advanced options?]]
-
-Every YouTube creator probably has [[purple:role model channels or competing channels]].
-What if you could analyze the viral elements of these channels?
-
-[IMAGE:06_image_1.png]
-
-## Use 'Favorite Channels' in advanced options.
-
-By registering channels of interest in the 'Favorite Channels' of advanced options,
-you can gain the following insights:
-
-- [[purple:🎯 Viral Shorts Analysis]]: The viral elements of this channel
-- [[purple: 📊 Performance Metrics Check]]: Subscriber-to-view ratio and growth rate
-- [[purple:📈 Trend Analysis]]: Latest content trends from competing channels
-
----
-
-[IMAGE:06_image_2.png]
-
-## It's annoying to write channel names every time.
-
-If you have many competing channels and want to see various groups of competitors,
-use [[purple:text files]].
-
-1. Organize a list of channels of interest in a text file
-2. Upload the file.
-
-Once the file is uploaded, channels are automatically entered like this.
-Now, click search to analyze competing channels!
-[IMAGE:06_image_3.png]`,
+      content: "Favorite channels usage guide content",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 7,
       title: "Notice on Processing of Your API Key",
       excerpt: "Notice Regarding API Key Security",
-      content: `##API Key Security Information
-We inform you about the security policy of our service.
-
-##🔒 Our Service's Security Principles
-
-[[purple: API Key Non-Storage Principle]]
-* Your API keys are not transmitted to or stored on servers.
-* API keys are used temporarily only in browser memory and are deleted when the page is refreshed or the tab is closed.
-* We do not collect or store personal identification information on servers as there is no membership registration/login.
-
-[[purple: No Server-Side Storage & Browser Storage Information]]
-* We do not use server-side databases/sessions/server caches.
-* Only non-sensitive information for service convenience (e.g., language settings, viewing status) is stored in browser local storage and is maintained until the browser is deleted.
-* Sensitive information such as API keys is not stored in local/session storage or cookies.
-
-[[purple: 💡 Browser Autocomplete Information]]
-API keys may appear to be auto-completed or saved, which may be due to your browser's autocomplete/password manager settings.
-
-[[purple: Solutions]]
-1. Disable autocomplete/save features in browser settings
-2. Clear browser storage (localStorage/cache/cookies)
-3. Use incognito mode (private browsing mode)
-
-We strive to protect your information by applying appropriate security measures.
-API keys are used only for request processing purposes and are not used for other purposes as a principle.`,
+      content: "API key security policy notice content",
       category: "General",
       date: "2025-08-19"
-    });
-    articles.push({
+    },
+    {
       id: 8,
       title: "A user who uses this service well - User A.",
       excerpt: "Create a 100M-view Short in just 3 days.",
-      content: `How do power users of this service use it?
-
----
-
-There's a common trait among those who make the most of our service.
-It's systematic preparation.
-
-## Preparation for efficient utilization
-
-📁 Just prepare 2 essential files
-[[purple: 1. api_keys.txt]]
-ㄴ* Gemini API keys
-ㄴ* YouTube Data API keys (10+ recommended)
-
-
-[[purple: 2. favorite_channels.txt]]
-* List of competitor channels (@channel_name format)
-
-[IMAGE:08_image_1.png]
----`,
+      content: "Power user guide content",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 9,
       title: "When uploading English Shorts\nImportant notes.",
       excerpt: "When you target the United States,\nwhere ad costs are high.",
-      content: `##If you're creating English Shorts, you must use a VPN.
-
-If you upload Shorts from a country other than the United States,
-your Shorts may be targeted to countries with low RPM.
-
-As a concrete example, [[purple:even with 8 million views, you might only earn about $500]].
-When targeting the United States, make sure to set your VPN to the US before uploading.
-
-##Top 10 countries with highest RPM rates as of 2025:
-
-United States 🇺🇸 ($11.95)
-Australia 🇦🇺 ($8.93)
-Norway 🇳🇴 ($8.19)
-Switzerland 🇨🇭 ($8.02)
-United Kingdom 🇬🇧 ($7.60)
-Denmark 🇩🇰 ($7.43)
-New Zealand 🇳🇿 ($6.72)
-Canada 🇨🇦 ($6.65)
-Belgium 🇧🇪 ($6.52)
-Netherlands 🇳🇱 ($6.44)
-
-Please actively use VPN when targeting these countries.`,
+      content: "English Shorts VPN usage guide content",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 10,
       title: "VIDHUNT Roadmap",
       excerpt: "We'll tell you about the features coming next.",
-      content: `# VIDHUNT's Roadmap
-
-We inform you about our upcoming roadmap.
-Although it may change depending on circumstances, [[purple:we'll do our best to improve the quality of free services]].
-
-1. Long-form search feature
-2. Shorts creation feature
-3. YouTube video download feature
-
-
-Please wait a little.
-[[purple: All features will be operated for free.]]
-
-Thank you for always using VIDHUNT.`,
+      content: "VIDHUNT roadmap content",
       category: "General",
       date: "2025-08-18"
-    });
-  }
+    }
+  ],
 
-  // JA articles  
-  if (pageNumber === 1 && language === 'ja') {
-    articles.push({
+  // 일본어 - 9개
+  ja: [
+    {
       id: 1,
       title: "VIDHUNT VS YouTube一般検索。\nどちらが良いですか？",
       excerpt: "多くの方が疑問に思っている質問があります。「VIDHUNTで人気ショートを見つけることとYouTubeで直接動画を検索することに、どんな違いがありますか？」",
@@ -1216,284 +248,229 @@ YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10�
 遅れて参入した状況では、アルゴリズムがあなたの動画を優先露出してくれない確率が高くなります。`,
       category: "Technology",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 2,
       title: "YouTube Data\n10秒で無料発行。",
       excerpt: "YouTubeのすべてのデータを\n無料で活用！",
-      content: `##YouTube Data API v3って何ですか？
-
-データAPI？ 何のことでしょう？ 初めて聞く方も多いはずですが、ご安心ください！ 
-
-"お金はかかりますか？" → いいえ、[[purple:完全無料です。]]
-"クレジットカードは必要ですか？" → [[purple:まったく必要ありません。]]
-"難しいですか？" → [[purple:10歳の子どもでもできます。]]
-
-YouTube Data API v3は、Googleが提供する無料サービスです。
-
-例えば、\`ABC @gmail.com\` アカウントを作成すると、 
-Googleがそのアカウントに「YouTubeデータを照会できる権限」を付与してくれます。
-[[purple:つまり、Googleが提供する無料サービスのひとつです！]]
-
-[IMAGE:02_image_1.png]
-
-ㅤ
-## とても簡単です - クリック7回で完了！
-私が実際に新規でAPIを発行してみたところ、本当に7回クリックするだけで無料のAPIキーを受け取れました。
-では、いっしょにやってみましょう！
-
-## 📹 動画で見たい方は？
-
-[YOUTUBE:https://youtu.be/0ZYlKw4x7W0]`,
+      content: "YouTube Data API v3ガイド内容",
       category: "General",
       date: "2025-08-18"
-    });
-    articles.push({
+    },
+    {
       id: 3,
       title: "Google Gemini API キー \n10秒で無料発行！",
       excerpt: "Googleの強力なAIをあなたの手に！\n無料です。",
-      content: `##Google Gemini API v3って何ですか？
-
-Google API？ 何のことでしょう？ 初めて聞く方も多いはずですが、ご安心ください！ 
-
-"お金はかかりますか？" → いいえ、[[purple:完全無料です。]]
-"クレジットカードは必要ですか？" → [[purple:まったく必要ありません。]]
-"難しいですか？" → [[purple:10歳の子どもでもできます。]]
-
-Google Gemini API は、Google が提供する無料サービスです。
-
-例えば、\`ABC @gmail.com\` アカウントを作成すると、 
-Google がそのアカウントに「無料のAI機能」を提供してくれます。
-[[purple:つまり、Google が提供する無料AIサービスのひとつです！]]
-
-[IMAGE:03_image_1.png]
-
-とても簡単です - クリック6回で完了！
-私が実際に新規でAPIを発行してみたところ、
-本当に6回クリックするだけでAPIキーをすぐ受け取れました。
-では、いっしょにやってみましょう！
-
-##📹 動画で見たい方は？
-
-[YOUTUBE:https://youtu.be/JmQe-AIYh3w]`,
+      content: "Google Gemini APIガイド内容",
       category: "General",
       date: "2025-08-18"
-    });
-    for (let i = 4; i <= 10; i++) {
-      const titles = [
-        "",
-        "",
-        "",
-        "",
-        "突然エラーメッセージに出会ったとき！",
-        "API の割り当て量が残っているのに\nエラーが発生するとき!?",
-        "競合チャンネルのバイラルを\n奪い取るチャンス！",
-        "お客様の API キーの取り扱いに関するご案内",
-        "このサービスを上手に使うユーザー - Aさん。",
-        "英語のショートを投稿するとき\n注意事項。",
-        "VIDHUNTのロードマップ"
-      ];
-      const excerpts = [
-        "",
-        "",
-        "",
-        "",
-        "解決方法？ とても簡単です。",
-        "API の割り当て量超過エラー！ どう解決しますか？",
-        "今すぐ「お気に入りチャンネル」を使いましょう。",
-        "API キーのセキュリティに関するご案内",
-        "3日で1億再生のショートを作る。",
-        "広告費が高い\nアメリカをターゲットにする場合。",
-        "今後リリースされる機能をご案内します。"
-      ];
-      articles.push({
-        id: i,
-        title: titles[i],
-        excerpt: excerpts[i],
-        content: `記事 ${i} のコンテンツ`,
-        category: "General",
-        date: "2025-08-18"
-      });
+    },
+    {
+      id: 4,
+      title: "突然エラーメッセージに出会ったとき！",
+      excerpt: "解決方法？ とても簡単です。",
+      content: "APIエラー解決ガイド内容",
+      category: "General",
+      date: "2025-08-18"
+    },
+    {
+      id: 5,
+      title: "API の割り当て量が残っているのに\nエラーが発生するとき!?",
+      excerpt: "API の割り当て量超過エラー！ どう解決しますか？",
+      content: "API割り当て量問題解決内容",
+      category: "General",
+      date: "2025-08-18"
+    },
+    {
+      id: 6,
+      title: "競合チャンネルのバイラルを\n奪い取るチャンス！",
+      excerpt: "今すぐ「お気に入りチャンネル」を使いましょう。",
+      content: "お気に入りチャンネル活用法内容",
+      category: "General",
+      date: "2025-08-18"
+    },
+    {
+      id: 7,
+      title: "お客様の API キーの取り扱いに関するご案内",
+      excerpt: "API キーのセキュリティに関するご案内",
+      content: "APIキーセキュリティポリシー案内内容",
+      category: "General",
+      date: "2025-08-19"
+    },
+    {
+      id: 8,
+      title: "このサービスを上手に使うユーザー - Aさん。",
+      excerpt: "3日で1億再生のショートを作る。",
+      content: "パワーユーザーガイド内容",
+      category: "General",
+      date: "2025-08-18"
+    },
+    {
+      id: 9,
+      title: "英語のショートを投稿するとき\n注意事項。",
+      excerpt: "広告費が高い\nアメリカをターゲットにする場合。",
+      content: "英語ショーツVPN使用法ガイド内容",
+      category: "General",
+      date: "2025-08-18"
     }
-  }
+  ],
 
-  // ZH articles
-  if (pageNumber === 1 && language === 'zh') {
-    const zhTitles = [
-      "", 
-      "VIDHUNT VS YouTube 普通搜索。\n哪个更好？",
-      "YouTube Data\n10秒内免费获取。", 
-      "Google Gemini API 密钥 \n10秒内免费获取！",
-      "当你突然遇到错误信息时！",
-      "配额还没用完\n却出现了错误!?",
-      "夺取竞争频道\n的爆款机会！",
-      "您的 API 密钥是安全的",
-      "善于使用本服务的用户——A 先生/女士。",
-      "发布英文 Shorts 时\n注意事项。",
-      "VIDHUNT 路线图"
-    ];
-    const zhExcerpts = [
-      "",
-      "很多人都会问：\"用 VIDHUNT 寻找热门 Shorts 和在 YouTube 上直接搜索视频，有什么区别？\"",
-      "将 YouTube 的所有数据\n免费拿下！",
-      "把 Google 的强大 AI 掌握在你手中！\n免费使用。",
-      "解决方法？ 非常简单。",
-      "API 配额超限错误！ 怎么解决？",
-      "马上使用\"收藏频道\"功能。",
-      "关于 API 密钥安全性的说明",
-      "3 天做出 1 亿播放的 Shorts。",
-      "当你将高广告成本的\n美国作为目标时。",
-      "为你介绍即将上线的功能。"
-    ];
-    for (let i = 1; i <= 10; i++) {
-      articles.push({
-        id: i,
-        title: zhTitles[i],
-        excerpt: zhExcerpts[i],
-        content: `文章 ${i} 的内容`,
-        category: "General",
-        date: "2025-08-18"
-      });
-    }
-  }
+  // 중국어 - 10개
+  zh: [
+    { id: 1, title: "VIDHUNT VS YouTube 普通搜索。\n哪个更好？", excerpt: "很多人都会问：\"用 VIDHUNT 寻找热门 Shorts 和在 YouTube 上直接搜索视频，有什么区别？\"", content: "中文内容 1", category: "General", date: "2025-08-18" },
+    { id: 2, title: "YouTube Data\n10秒内免费获取。", excerpt: "将 YouTube 的所有数据\n免费拿下！", content: "中文内容 2", category: "General", date: "2025-08-18" },
+    { id: 3, title: "Google Gemini API 密钥 \n10秒内免费获取！", excerpt: "把 Google 的强大 AI 掌握在你手中！\n免费使用。", content: "中文内容 3", category: "General", date: "2025-08-18" },
+    { id: 4, title: "当你突然遇到错误信息时！", excerpt: "解决方法？ 非常简单。", content: "中文内容 4", category: "General", date: "2025-08-18" },
+    { id: 5, title: "配额还没用完\n却出现了错误!?", excerpt: "API 配额超限错误！ 怎么解决？", content: "中文内容 5", category: "General", date: "2025-08-18" },
+    { id: 6, title: "夺取竞争频道\n的爆款机会！", excerpt: "马上使用\"收藏频道\"功能。", content: "中文内容 6", category: "General", date: "2025-08-18" },
+    { id: 7, title: "您的 API 密钥是安全的", excerpt: "关于 API 密钥安全性的说明", content: "中文内容 7", category: "General", date: "2025-08-19" },
+    { id: 8, title: "善于使用本服务的用户——A 先生/女士。", excerpt: "3 天做出 1 亿播放的 Shorts。", content: "中文内容 8", category: "General", date: "2025-08-18" },
+    { id: 9, title: "发布英文 Shorts 时\n注意事项。", excerpt: "当你将高广告成本的\n美国作为目标时。", content: "中文内容 9", category: "General", date: "2025-08-18" },
+    { id: 10, title: "VIDHUNT 路线图", excerpt: "为你介绍即将上线的功能。", content: "中文内容 10", category: "General", date: "2025-08-18" }
+  ],
 
-  // ES articles - Spanish
-  if (pageNumber === 1 && language === 'es') {
-    const esTitles = ["", "VIDHUNT VS búsqueda general en YouTube.\n¿Cuál es mejor?", "YouTube Data\nConsíguelo gratis en 10 segundos.", "Google Gemini API Key\n¡Consíguelo gratis en 10 segundos!", "¡Cuando te encuentras de repente con un mensaje de error!", "Cuando aún te queda cuota de API\npero ocurre un error!?", "¡Una oportunidad de robar\nla viralidad de la competencia!", "Aviso sobre el procesamiento de tu clave API", "Usuario que utiliza bien este servicio - Usuario A.", "Al subir Shorts en inglés\nNotas importantes.", "Hoja de ruta de VIDHUNT"];
-    const esExcerpts = ["", "Muchas personas se preguntan: \"¿Cuál es la diferencia entre encontrar Shorts populares con VIDHUNT y buscar videos directamente en YouTube?\"", "Todos los datos de YouTube\n¡gratis!", "¡El poderoso AI de Google en tus manos!\nEs gratuito.", "¿Solución? Muy simple.", "¡Error de cuota API excedida! ¿Cómo lo solucionamos?", "Utiliza inmediatamente los Canales Favoritos.", "Aviso sobre la seguridad de las claves API", "Crear un Short de 100M de visualizaciones en solo 3 días.", "Cuando apuntas a Estados Unidos,\ndonde los costos publicitarios son altos.", "Te contaremos sobre las funciones que vendrán próximamente."];
-    for (let i = 1; i <= 10; i++) {
-      articles.push({ id: i, title: esTitles[i], excerpt: esExcerpts[i], content: `Contenido del artículo ${i}`, category: "General", date: "2025-08-18" });
-    }
-  }
+  // 스페인어 - 10개
+  es: [
+    { id: 1, title: "VIDHUNT VS búsqueda general en YouTube.\n¿Cuál es mejor?", excerpt: "Muchas personas se preguntan: \"¿Cuál es la diferencia entre encontrar Shorts populares con VIDHUNT y buscar videos directamente en YouTube?\"", content: "Contenido español 1", category: "General", date: "2025-08-18" },
+    { id: 2, title: "YouTube Data\nConsíguelo gratis en 10 segundos.", excerpt: "Todos los datos de YouTube\n¡gratis!", content: "Contenido español 2", category: "General", date: "2025-08-18" },
+    { id: 3, title: "Google Gemini API Key\n¡Consíguelo gratis en 10 segundos!", excerpt: "¡El poderoso AI de Google en tus manos!\nEs gratuito.", content: "Contenido español 3", category: "General", date: "2025-08-18" },
+    { id: 4, title: "¡Cuando te encuentras de repente con un mensaje de error!", excerpt: "¿Solución? Muy simple.", content: "Contenido español 4", category: "General", date: "2025-08-18" },
+    { id: 5, title: "Cuando aún te queda cuota de API\npero ocurre un error!?", excerpt: "¡Error de cuota API excedida! ¿Cómo lo solucionamos?", content: "Contenido español 5", category: "General", date: "2025-08-18" },
+    { id: 6, title: "¡Una oportunidad de robar\nla viralidad de la competencia!", excerpt: "Utiliza inmediatamente los Canales Favoritos.", content: "Contenido español 6", category: "General", date: "2025-08-18" },
+    { id: 7, title: "Aviso sobre el procesamiento de tu clave API", excerpt: "Aviso sobre la seguridad de las claves API", content: "Contenido español 7", category: "General", date: "2025-08-19" },
+    { id: 8, title: "Usuario que utiliza bien este servicio - Usuario A.", excerpt: "Crear un Short de 100M de visualizaciones en solo 3 días.", content: "Contenido español 8", category: "General", date: "2025-08-18" },
+    { id: 9, title: "Al subir Shorts en inglés\nNotas importantes.", excerpt: "Cuando apuntas a Estados Unidos,\ndonde los costos publicitarios son altos.", content: "Contenido español 9", category: "General", date: "2025-08-18" },
+    { id: 10, title: "Hoja de ruta de VIDHUNT", excerpt: "Te contaremos sobre las funciones que vendrán próximamente.", content: "Contenido español 10", category: "General", date: "2025-08-18" }
+  ],
 
-  // FR articles - French  
-  if (pageNumber === 1 && language === 'fr') {
-    const frTitles = ["", "VIDHUNT VS recherche YouTube classique.\nLequel est le meilleur ?", "YouTube Data\nObtenez-le gratuitement en 10 secondes.", "Clé API Google Gemini\nObtenez-la gratuitement en 10 secondes !", "Quand vous rencontrez soudain un message d'erreur !", "Quand il vous reste du quota API\nmais qu'une erreur se produit !?", "Une chance de voler\nla viralité de vos concurrents !", "Avis sur le traitement de votre clé API", "Utilisateur qui utilise bien ce service - Utilisateur A.", "Lors du téléchargement de Shorts en anglais\nNotes importantes.", "Feuille de route VIDHUNT"];
-    const frExcerpts = ["", "Beaucoup de gens se demandent : \"Quelle est la différence entre trouver des Shorts populaires avec VIDHUNT et chercher des vidéos directement sur YouTube ?\"", "Toutes les données de YouTube\ngratuitement !", "L'IA puissante de Google entre vos mains !\nC'est gratuit.", "Solution ? Très simple.", "Erreur de quota API dépassé ! Comment résoudre ?", "Utilisez immédiatement les Chaînes Favorites.", "Avis concernant la sécurité des clés API", "Créer un Short de 100M de vues en seulement 3 jours.", "Quand vous ciblez les États-Unis,\noù les coûts publicitaires sont élevés.", "Nous vous parlerons des fonctionnalités à venir."];
-    for (let i = 1; i <= 10; i++) {
-      articles.push({ id: i, title: frTitles[i], excerpt: frExcerpts[i], content: `Contenu de l'article ${i}`, category: "General", date: "2025-08-18" });
-    }
-  }
+  // 프랑스어 - 10개  
+  fr: [
+    { id: 1, title: "VIDHUNT VS recherche YouTube classique.\nLequel est le meilleur ?", excerpt: "Beaucoup de gens se demandent : \"Quelle est la différence entre trouver des Shorts populaires avec VIDHUNT et chercher des vidéos directement sur YouTube ?\"", content: "Contenu français 1", category: "General", date: "2025-08-18" },
+    { id: 2, title: "YouTube Data\nObtenez-le gratuitement en 10 secondes.", excerpt: "Toutes les données de YouTube\ngratuitement !", content: "Contenu français 2", category: "General", date: "2025-08-18" },
+    { id: 3, title: "Clé API Google Gemini\nObtenez-la gratuitement en 10 secondes !", excerpt: "L'IA puissante de Google entre vos mains !\nC'est gratuit.", content: "Contenu français 3", category: "General", date: "2025-08-18" },
+    { id: 4, title: "Quand vous rencontrez soudain un message d'erreur !", excerpt: "Solution ? Très simple.", content: "Contenu français 4", category: "General", date: "2025-08-18" },
+    { id: 5, title: "Quand il vous reste du quota API\nmais qu'une erreur se produit !?", excerpt: "Erreur de quota API dépassé ! Comment résoudre ?", content: "Contenu français 5", category: "General", date: "2025-08-18" },
+    { id: 6, title: "Une chance de voler\nla viralité de vos concurrents !", excerpt: "Utilisez immédiatement les Chaînes Favorites.", content: "Contenu français 6", category: "General", date: "2025-08-18" },
+    { id: 7, title: "Avis sur le traitement de votre clé API", excerpt: "Avis concernant la sécurité des clés API", content: "Contenu français 7", category: "General", date: "2025-08-19" },
+    { id: 8, title: "Utilisateur qui utilise bien ce service - Utilisateur A.", excerpt: "Créer un Short de 100M de vues en seulement 3 jours.", content: "Contenu français 8", category: "General", date: "2025-08-18" },
+    { id: 9, title: "Lors du téléchargement de Shorts en anglais\nNotes importantes.", excerpt: "Quand vous ciblez les États-Unis,\noù les coûts publicitaires sont élevés.", content: "Contenu français 9", category: "General", date: "2025-08-18" },
+    { id: 10, title: "Feuille de route VIDHUNT", excerpt: "Nous vous parlerons des fonctionnalités à venir.", content: "Contenu français 10", category: "General", date: "2025-08-18" }
+  ],
 
-  // DE articles - German
-  if (pageNumber === 1 && language === 'de') {
-    const deTitles = ["", "VIDHUNT VS normale YouTube-Suche.\nWas ist besser?", "YouTube Data\nKostenlos in 10 Sekunden erhalten.", "Google Gemini API-Schlüssel\nKostenlos in 10 Sekunden erhalten!", "Wenn Sie plötzlich eine Fehlermeldung sehen!", "Wenn Sie noch API-Kontingent haben\naber ein Fehler auftritt!?", "Eine Chance, die Viralität\nder Konkurrenz zu stehlen!", "Hinweis zur Verarbeitung Ihres API-Schlüssels", "Benutzer, der diesen Service gut nutzt - Benutzer A.", "Beim Hochladen englischer Shorts\nWichtige Hinweise.", "VIDHUNT Roadmap"];
-    const deExcerpts = ["", "Viele Leute fragen sich: \"Was ist der Unterschied zwischen dem Finden beliebter Shorts mit VIDHUNT und der direkten Videosuche auf YouTube?\"", "Alle YouTube-Daten\nkostenlos!", "Googles mächtige KI in Ihren Händen!\nEs ist kostenlos.", "Lösung? Sehr einfach.", "API-Kontingent überschritten Fehler! Wie lösen wir das?", "Nutzen Sie sofort Favoriten-Kanäle.", "Hinweis zur API-Schlüssel-Sicherheit", "Erstellen Sie einen 100M-Views Short in nur 3 Tagen.", "Wenn Sie die USA anvisieren,\nwo die Werbekosten hoch sind.", "Wir erzählen Ihnen von den kommenden Funktionen."];
-    for (let i = 1; i <= 10; i++) {
-      articles.push({ id: i, title: deTitles[i], excerpt: deExcerpts[i], content: `Inhalt von Artikel ${i}`, category: "General", date: "2025-08-18" });
-    }
-  }
+  // 독일어 - 10개
+  de: [
+    { id: 1, title: "VIDHUNT VS normale YouTube-Suche.\nWas ist besser?", excerpt: "Viele Leute fragen sich: \"Was ist der Unterschied zwischen dem Finden beliebter Shorts mit VIDHUNT und der direkten Videosuche auf YouTube?\"", content: "Deutscher Inhalt 1", category: "General", date: "2025-08-18" },
+    { id: 2, title: "YouTube Data\nKostenlos in 10 Sekunden erhalten.", excerpt: "Alle YouTube-Daten\nkostenlos!", content: "Deutscher Inhalt 2", category: "General", date: "2025-08-18" },
+    { id: 3, title: "Google Gemini API-Schlüssel\nKostenlos in 10 Sekunden erhalten!", excerpt: "Googles mächtige KI in Ihren Händen!\nEs ist kostenlos.", content: "Deutscher Inhalt 3", category: "General", date: "2025-08-18" },
+    { id: 4, title: "Wenn Sie plötzlich eine Fehlermeldung sehen!", excerpt: "Lösung? Sehr einfach.", content: "Deutscher Inhalt 4", category: "General", date: "2025-08-18" },
+    { id: 5, title: "Wenn Sie noch API-Kontingent haben\naber ein Fehler auftritt!?", excerpt: "API-Kontingent überschritten Fehler! Wie lösen wir das?", content: "Deutscher Inhalt 5", category: "General", date: "2025-08-18" },
+    { id: 6, title: "Eine Chance, die Viralität\nder Konkurrenz zu stehlen!", excerpt: "Nutzen Sie sofort Favoriten-Kanäle.", content: "Deutscher Inhalt 6", category: "General", date: "2025-08-18" },
+    { id: 7, title: "Hinweis zur Verarbeitung Ihres API-Schlüssels", excerpt: "Hinweis zur API-Schlüssel-Sicherheit", content: "Deutscher Inhalt 7", category: "General", date: "2025-08-19" },
+    { id: 8, title: "Benutzer, der diesen Service gut nutzt - Benutzer A.", excerpt: "Erstellen Sie einen 100M-Views Short in nur 3 Tagen.", content: "Deutscher Inhalt 8", category: "General", date: "2025-08-18" },
+    { id: 9, title: "Beim Hochladen englischer Shorts\nWichtige Hinweise.", excerpt: "Wenn Sie die USA anvisieren,\nwo die Werbekosten hoch sind.", content: "Deutscher Inhalt 9", category: "General", date: "2025-08-18" },
+    { id: 10, title: "VIDHUNT Roadmap", excerpt: "Wir erzählen Ihnen von den kommenden Funktionen.", content: "Deutscher Inhalt 10", category: "General", date: "2025-08-18" }
+  ],
 
-  // NL articles - Dutch
-  if (pageNumber === 1 && language === 'nl') {
-    const nlTitles = ["", "VIDHUNT VS algemene YouTube-zoekopdracht.\nWat is beter?", "YouTube Data\nBinnen 10 seconden gratis aanvragen.", "Google Gemini API-sleutel\nBinnen 10 seconden gratis aanvragen!", "Wanneer je ineens een foutmelding krijgt!", "Er is nog API-quota over,\nmaar er treedt een fout op!?", "Een kans om de viraliteit\nvan concurrentkanalen over te nemen!", "Kennisgeving over de verwerking van uw API-sleutel", "Een gebruiker die deze service goed benut – gebruiker A.", "Bij het uploaden van Engelstalige Shorts\nBelangrijke aandachtspunten.", "VIDHUNT-routekaart"];
-    const nlExcerpts = ["", "Veel mensen vragen zich af: \"Wat is het verschil tussen populaire Shorts vinden met VIDHUNT en rechtstreeks video's zoeken op YouTube?\"", "Alle YouTube-gegevens\ngratis gebruiken!", "De krachtige AI van Google in jouw handen!\nHet is gratis.", "De oplossing? Heel eenvoudig.", "API-quotum overschreden! Hoe los ik dit op?", "Gebruik meteen 'Favoriete kanalen'.", "Kennisgeving over de beveiliging van de API-sleutel", "In slechts 3 dagen een Short met 100 miljoen weergaven maken.", "Wanneer je je richt op\nde Verenigde Staten, waar advertentiekosten hoog zijn.", "We vertellen je welke functies eraan komen."];
-    for (let i = 1; i <= 10; i++) {
-      articles.push({ id: i, title: nlTitles[i], excerpt: nlExcerpts[i], content: `Inhoud van artikel ${i}`, category: "General", date: "2025-08-18" });
-    }
-  }
+  // 네덜란드어 - 10개
+  nl: [
+    { id: 1, title: "VIDHUNT VS algemene YouTube-zoekopdracht.\nWat is beter?", excerpt: "Veel mensen vragen zich af: \"Wat is het verschil tussen populaire Shorts vinden met VIDHUNT en rechtstreeks video's zoeken op YouTube?\"", content: "Nederlandse inhoud 1", category: "General", date: "2025-08-18" },
+    { id: 2, title: "YouTube Data\nBinnen 10 seconden gratis aanvragen.", excerpt: "Alle YouTube-gegevens\ngratis gebruiken!", content: "Nederlandse inhoud 2", category: "General", date: "2025-08-18" },
+    { id: 3, title: "Google Gemini API-sleutel\nBinnen 10 seconden gratis aanvragen!", excerpt: "De krachtige AI van Google in jouw handen!\nHet is gratis.", content: "Nederlandse inhoud 3", category: "General", date: "2025-08-18" },
+    { id: 4, title: "Wanneer je ineens een foutmelding krijgt!", excerpt: "De oplossing? Heel eenvoudig.", content: "Nederlandse inhoud 4", category: "General", date: "2025-08-18" },
+    { id: 5, title: "Er is nog API-quota over,\nmaar er treedt een fout op!?", excerpt: "API-quotum overschreden! Hoe los ik dit op?", content: "Nederlandse inhoud 5", category: "General", date: "2025-08-18" },
+    { id: 6, title: "Een kans om de viraliteit\nvan concurrentkanalen over te nemen!", excerpt: "Gebruik meteen 'Favoriete kanalen'.", content: "Nederlandse inhoud 6", category: "General", date: "2025-08-18" },
+    { id: 7, title: "Kennisgeving over de verwerking van uw API-sleutel", excerpt: "Kennisgeving over de beveiliging van de API-sleutel", content: "Nederlandse inhoud 7", category: "General", date: "2025-08-19" },
+    { id: 8, title: "Een gebruiker die deze service goed benut – gebruiker A.", excerpt: "In slechts 3 dagen een Short met 100 miljoen weergaven maken.", content: "Nederlandse inhoud 8", category: "General", date: "2025-08-18" },
+    { id: 9, title: "Bij het uploaden van Engelstalige Shorts\nBelangrijke aandachtspunten.", excerpt: "Wanneer je je richt op\nde Verenigde Staten, waar advertentiekosten hoog zijn.", content: "Nederlandse inhoud 9", category: "General", date: "2025-08-18" },
+    { id: 10, title: "VIDHUNT-routekaart", excerpt: "We vertellen je welke functies eraan komen.", content: "Nederlandse inhoud 10", category: "General", date: "2025-08-18" }
+  ],
 
-  // PT articles - Portuguese  
-  if (pageNumber === 1 && language === 'pt') {
-    const ptTitles = ["", "VIDHUNT VS pesquisa geral no YouTube.\nQual é melhor?", "YouTube Data\nConsiga gratuitamente em 10 segundos.", "Chave API do Google Gemini\nConsiga gratuitamente em 10 segundos!", "Quando você se depara com uma mensagem de erro!", "Ainda há cota de API restante,\nmas ocorre um erro!?", "Uma oportunidade de roubar\na viralidade dos canais concorrentes!", "Aviso sobre o processamento da sua chave API", "Um usuário que usa bem este serviço – usuário A.", "Ao fazer upload de Shorts em inglês\nPontos importantes de atenção.", "Roteiro do VIDHUNT"];
-    const ptExcerpts = ["", "Muitas pessoas têm esta dúvida: \"Qual é a diferença entre encontrar Shorts populares com o VIDHUNT e pesquisar vídeos diretamente no YouTube?\"", "Todos os dados do YouTube\nuse gratuitamente!", "A poderosa IA do Google em suas mãos!\nÉ gratuito.", "A solução? Muito simples.", "Cota da API excedida! Como resolver isso?", "Use imediatamente 'Canais Favoritos'.", "Aviso sobre a segurança da chave API", "Fazer um Short com 100 milhões de visualizações em apenas 3 dias.", "Quando você mira\nnos Estados Unidos, onde os custos de publicidade são altos.", "Contaremos sobre os recursos que estão por vir."];
-    for (let i = 1; i <= 10; i++) {
-      articles.push({ id: i, title: ptTitles[i], excerpt: ptExcerpts[i], content: `Conteúdo do artigo ${i}`, category: "General", date: "2025-08-18" });
-    }
-  }
+  // 포르투갈어 - 10개
+  pt: [
+    { id: 1, title: "VIDHUNT VS pesquisa geral no YouTube.\nQual é melhor?", excerpt: "Muitas pessoas têm esta dúvida: \"Qual é a diferença entre encontrar Shorts populares com o VIDHUNT e pesquisar vídeos diretamente no YouTube?\"", content: "Conteúdo português 1", category: "General", date: "2025-08-18" },
+    { id: 2, title: "YouTube Data\nConsiga gratuitamente em 10 segundos.", excerpt: "Todos os dados do YouTube\nuse gratuitamente!", content: "Conteúdo português 2", category: "General", date: "2025-08-18" },
+    { id: 3, title: "Chave API do Google Gemini\nConsiga gratuitamente em 10 segundos!", excerpt: "A poderosa IA do Google em suas mãos!\nÉ gratuito.", content: "Conteúdo português 3", category: "General", date: "2025-08-18" },
+    { id: 4, title: "Quando você se depara com uma mensagem de erro!", excerpt: "A solução? Muito simples.", content: "Conteúdo português 4", category: "General", date: "2025-08-18" },
+    { id: 5, title: "Ainda há cota de API restante,\nmas ocorre um erro!?", excerpt: "Cota da API excedida! Como resolver isso?", content: "Conteúdo português 5", category: "General", date: "2025-08-18" },
+    { id: 6, title: "Uma oportunidade de roubar\na viralidade dos canais concorrentes!", excerpt: "Use imediatamente 'Canais Favoritos'.", content: "Conteúdo português 6", category: "General", date: "2025-08-18" },
+    { id: 7, title: "Aviso sobre o processamento da sua chave API", excerpt: "Aviso sobre a segurança da chave API", content: "Conteúdo português 7", category: "General", date: "2025-08-19" },
+    { id: 8, title: "Um usuário que usa bem este serviço – usuário A.", excerpt: "Fazer um Short com 100 milhões de visualizações em apenas 3 dias.", content: "Conteúdo português 8", category: "General", date: "2025-08-18" },
+    { id: 9, title: "Ao fazer upload de Shorts em inglês\nPontos importantes de atenção.", excerpt: "Quando você mira\nnos Estados Unidos, onde os custos de publicidade são altos.", content: "Conteúdo português 9", category: "General", date: "2025-08-18" },
+    { id: 10, title: "Roteiro do VIDHUNT", excerpt: "Contaremos sobre os recursos que estão por vir.", content: "Conteúdo português 10", category: "General", date: "2025-08-18" }
+  ],
 
-  // RU articles - Russian
-  if (pageNumber === 1 && language === 'ru') {
-    const ruTitles = ["", "VIDHUNT VS обычный поиск на YouTube.\nЧто лучше?", "YouTube Data\nПолучите бесплатно за 10 секунд.", "Ключ API Google Gemini\nПолучите бесплатно за 10 секунд!", "Когда вы внезапно сталкиваетесь с сообщением об ошибке!", "Квота API ещё есть,\nно возникает ошибка!?", "Шанс украсть вирусность\nу конкурирующих каналов!", "Уведомление об обработке вашего ключа API", "Пользователь, который хорошо использует этот сервис – пользователь А.", "При загрузке английских шортсов\nВажные моменты.", "Дорожная карта VIDHUNT"];
-    const ruExcerpts = ["", "Многих интересует вопрос: «В чём разница между поиском популярных шортсов с помощью VIDHUNT и прямым поиском видео на YouTube?»", "Все данные YouTube\nиспользуйте бесплатно!", "Мощный ИИ Google в ваших руках!\nЭто бесплатно.", "Решение? Очень просто.", "Превышена квота API! Как это решить?", "Используйте немедленно 'Избранные каналы'.", "Уведомление о безопасности ключа API", "Сделать шортс со 100 миллионами просмотров всего за 3 дня.", "Когда вы нацеливаетесь\nна США, где высокие расходы на рекламу.", "Расскажем о функциях, которые появятся."];
-    for (let i = 1; i <= 10; i++) {
-      articles.push({ id: i, title: ruTitles[i], excerpt: ruExcerpts[i], content: `Содержание статьи ${i}`, category: "General", date: "2025-08-18" });
-    }
-  }
+  // 러시아어 - 10개
+  ru: [
+    { id: 1, title: "VIDHUNT VS обычный поиск на YouTube.\nЧто лучше?", excerpt: "Многих интересует вопрос: «В чём разница между поиском популярных шортсов с помощью VIDHUNT и прямым поиском видео на YouTube?»", content: "Русский контент 1", category: "General", date: "2025-08-18" },
+    { id: 2, title: "YouTube Data\nПолучите бесплатно за 10 секунд.", excerpt: "Все данные YouTube\nиспользуйте бесплатно!", content: "Русский контент 2", category: "General", date: "2025-08-18" },
+    { id: 3, title: "Ключ API Google Gemini\nПолучите бесплатно за 10 секунд!", excerpt: "Мощный ИИ Google в ваших руках!\nЭто бесплатно.", content: "Русский контент 3", category: "General", date: "2025-08-18" },
+    { id: 4, title: "Когда вы внезапно сталкиваетесь с сообщением об ошибке!", excerpt: "Решение? Очень просто.", content: "Русский контент 4", category: "General", date: "2025-08-18" },
+    { id: 5, title: "Квота API ещё есть,\nно возникает ошибка!?", excerpt: "Превышена квота API! Как это решить?", content: "Русский контент 5", category: "General", date: "2025-08-18" },
+    { id: 6, title: "Шанс украсть вирусность\nу конкурирующих каналов!", excerpt: "Используйте немедленно 'Избранные каналы'.", content: "Русский контент 6", category: "General", date: "2025-08-18" },
+    { id: 7, title: "Уведомление об обработке вашего ключа API", excerpt: "Уведомление о безопасности ключа API", content: "Русский контент 7", category: "General", date: "2025-08-19" },
+    { id: 8, title: "Пользователь, который хорошо использует этот сервис – пользователь А.", excerpt: "Сделать шортс со 100 миллионами просмотров всего за 3 дня.", content: "Русский контент 8", category: "General", date: "2025-08-18" },
+    { id: 9, title: "При загрузке английских шортсов\nВажные моменты.", excerpt: "Когда вы нацеливаетесь\nна США, где высокие расходы на рекламу.", content: "Русский контент 9", category: "General", date: "2025-08-18" },
+    { id: 10, title: "Дорожная карта VIDHUNT", excerpt: "Расскажем о функциях, которые появятся.", content: "Русский контент 10", category: "General", date: "2025-08-18" }
+  ],
 
-  // HI articles - Hindi
-  if (pageNumber === 1 && language === 'hi') {
-    const hiTitles = ["", "VIDHUNT VS YouTube सामान्य खोज.\nक्या बेहतर है?", "YouTube Data\n10 सेकंड में मुफ्त प्राप्त करें.", "Google Gemini API कुंजी\n10 सेकंड में मुफ्त प्राप्त करें!", "जब आप अचानक एरर मैसेज का सामना करते हैं!", "API कोटा अभी भी बचा है,\nलेकिन एरर आ रहा है!?", "प्रतिस्पर्धी चैनलों की वायरैलिटी\nचुराने का मौका!", "आपकी API कुंजी प्रसंस्करण सूचना", "इस सेवा का अच्छा उपयोग करने वाला उपयोगकर्ता – उपयोगकर्ता A.", "अंग्रेजी शॉर्ट्स अपलोड करते समय\nमहत्वपूर्ण बातें.", "VIDHUNT रोडमैप"];
-    const hiExcerpts = ["", "कई लोग यह प्रश्न करते हैं: \"VIDHUNT से लोकप्रिय शॉर्ट्स ढूँढने और YouTube पर सीधे वीडियो खोजने में, क्या फर्क है?\"", "YouTube के सभी डेटा\nमुफ्त उपयोग करें!", "Google का शक्तिशाली AI आपके हाथों में!\nयह मुफ्त है.", "समाधान? बहुत सरल.", "API कोटा पार हो गया! इसे कैसे हल करें?", "तुरंत 'पसंदीदा चैनल' का उपयोग करें.", "API कुंजी सुरक्षा सूचना", "केवल 3 दिनों में 100 मिलियन व्यूज वाला शॉर्ट बनाएं.", "जब आप लक्षित करते हैं\nअमेरिका को, जहाँ विज्ञापन लागत अधिक है.", "आने वाली सुविधाओं के बारे में बताएंगे."];
-    for (let i = 1; i <= 10; i++) {
-      articles.push({ id: i, title: hiTitles[i], excerpt: hiExcerpts[i], content: `लेख ${i} की सामग्री`, category: "General", date: "2025-08-18" });
-    }
-  }
-
-  // Only add localStorage articles if no hardcoded articles exist
-  if (articles.length === 0) {
-    const publishedArticles = getPublishedArticles(pageNumber, language);
-    console.log(`📦 Found ${publishedArticles.length} published articles from localStorage`);
-    articles.push(...publishedArticles);
-  }
-
-  // Only add placeholder articles if still no articles found
-  if (articles.length === 0) {
-    for (let articleId = 1; articleId <= 10; articleId++) {
-      articles.push({
-        id: articleId,
-        title: "Coming Soon",
-        excerpt: "This article will be available soon.",
-        content: "Content is being prepared.",
-        category: "General",
-        date: "2025-08-19"
-      });
-    }
-  }
-
-  console.log(`📊 Total articles loaded: ${articles.length}`);
-  console.log('📄 First article sample:', articles[0] ? { id: articles[0].id, title: articles[0].title, excerpt: articles[0].excerpt } : 'No articles');
-  return articles.sort((a, b) => a.id - b.id);
+  // 힌디어 - 10개
+  hi: [
+    { id: 1, title: "VIDHUNT VS YouTube सामान्य खोज.\nक्या बेहतर है?", excerpt: "कई लोग यह प्रश्न करते हैं: \"VIDHUNT से लोकप्रिय शॉर्ट्स ढूँढने और YouTube पर सीधे वीडियो खोजने में, क्या फर्क है?\"", content: "हिंदी सामग्री 1", category: "General", date: "2025-08-18" },
+    { id: 2, title: "YouTube Data\n10 सेकंड में मुफ्त प्राप्त करें.", excerpt: "YouTube के सभी डेटा\nमुफ्त उपयोग करें!", content: "हिंदी सामग्री 2", category: "General", date: "2025-08-18" },
+    { id: 3, title: "Google Gemini API कुंजी\n10 सेकंड में मुफ्त प्राप्त करें!", excerpt: "Google का शक्तिशाली AI आपके हाथों में!\nयह मुफ्त है.", content: "हिंदी सामग्री 3", category: "General", date: "2025-08-18" },
+    { id: 4, title: "जब आप अचानक एरर मैसेज का सामना करते हैं!", excerpt: "समाधान? बहुत सरल.", content: "हिंदी सामग्री 4", category: "General", date: "2025-08-18" },
+    { id: 5, title: "API कोटा अभी भी बचा है,\nलेकिन एरर आ रहा है!?", excerpt: "API कोटा पार हो गया! इसे कैसे हल करें?", content: "हिंदी सामग्री 5", category: "General", date: "2025-08-18" },
+    { id: 6, title: "प्रतिस्पर्धी चैनलों की वायरैलिटी\nचुराने का मौका!", excerpt: "तुरंत 'पसंदीदा चैनल' का उपयोग करें.", content: "हिंदी सामग्री 6", category: "General", date: "2025-08-18" },
+    { id: 7, title: "आपकी API कुंजी प्रसंस्करण सूचना", excerpt: "API कुंजी सुरक्षा सूचना", content: "हिंदी सामग्री 7", category: "General", date: "2025-08-19" },
+    { id: 8, title: "इस सेवा का अच्छा उपयोग करने वाला उपयोगकर्ता – उपयोगकर्ता A.", excerpt: "केवल 3 दिनों में 100 मिलियन व्यूज वाला शॉर्ट बनाएं.", content: "हिंदी सामग्री 8", category: "General", date: "2025-08-18" },
+    { id: 9, title: "अंग्रेजी शॉर्ट्स अपलोड करते समय\nमहत्वपूर्ण बातें.", excerpt: "जब आप लक्षित करते हैं\nअमेरिका को, जहाँ विज्ञापन लागत अधिक है.", content: "हिंदी सामग्री 9", category: "General", date: "2025-08-18" },
+    { id: 10, title: "VIDHUNT रोडमैप", excerpt: "आने वाली सुविधाओं के बारे में बताएंगे.", content: "हिंदी सामग्री 10", category: "General", date: "2025-08-18" }
+  ]
 };
 
-// Helper function to get published articles from localStorage
-const getPublishedArticles = (pageNumber: number, language: Language): Article[] => {
-  try {
-    const publishedArticlesKey = 'published_articles';
-    const allPublished = JSON.parse(localStorage.getItem(publishedArticlesKey) || '[]');
-    
-    return allPublished
-      .filter((article: any) => 
-        article.pageNumber === pageNumber && 
-        article.language === language &&
-        article.published
-      )
-      .map((article: any) => ({
-        id: article.id,
-        title: article.title,
-        excerpt: article.excerpt,
-        content: article.content,
-        category: article.category,
-        date: article.date
-      }));
-  } catch (error) {
-    console.error('Error loading published articles:', error);
+// 간단한 API 함수들
+export const loadArticlesForPage = async (pageNumber: number, language: Language = 'en'): Promise<Article[]> => {
+  console.log(`🔍 Loading articles for page ${pageNumber}, language: ${language}`);
+  
+  // 페이지 1만 지원
+  if (pageNumber !== 1) {
     return [];
   }
+  
+  const articles = NEWS_DATA[language] || [];
+  console.log(`✅ Found ${articles.length} articles for ${language}`);
+  
+  return articles;
 };
 
+export const loadArticleFromFile = async (pageNumber: number, articleId: number, language: Language = 'en'): Promise<Article | null> => {
+  console.log(`🔍 Loading single article: page ${pageNumber}, article ${articleId}, language: ${language}`);
+  
+  const articles = await loadArticlesForPage(pageNumber, language);
+  const article = articles.find(a => a.id === articleId);
+  
+  if (article) {
+    console.log(`✅ Found article: ${article.title}`);
+    return article;
+  }
+  
+  console.log(`❌ Article not found`);
+  return null;
+};
+
+// 이미지 관련 헬퍼 함수들
 export const getImagePath = (pageNumber: number, imageName: string): string => {
   const paddedPageNumber = pageNumber.toString().padStart(2, '0');
   return `/contents/${paddedPageNumber}/${imageName}`;
 };
 
 export const getThumbnailPath = (pageNumber: number, articleId: number): string => {
-  // Check localStorage first for published article thumbnails
-  const thumbnailKey = `thumbnail_${pageNumber}_${articleId}`;
-  const storedThumbnail = localStorage.getItem(thumbnailKey);
-  
-  if (storedThumbnail) {
-    return storedThumbnail; // Return base64 data URL
-  }
-  
-  // Fallback to file system
   const paddedPageNumber = pageNumber.toString().padStart(2, '0');
   const paddedArticleId = articleId.toString().padStart(2, '0');
   return `/contents/${paddedPageNumber}/${paddedArticleId}_thumbnail.png`;
 };
 
 export const processContentWithImages = (content: string, pageNumber: number): string => {
-  // Replace [IMAGE:filename] with actual image paths
   return content.replace(/\[IMAGE:([^\]]+)\]/g, (match, filename) => {
     return `[IMAGE:${getImagePath(pageNumber, filename)}]`;
   });
