@@ -244,15 +244,13 @@ YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10�
     console.error('Error loading from localStorage:', error);
   }
 
-  // Try to load from file system as fallback
+  // Try to load from bundled content data as fallback
   try {
-    const paddedPageNumber = pageNumber.toString().padStart(2, '0');
-    const filename = `page${pageNumber}_article${articleId}_${language}.txt`;
-    const response = await fetch(`/contents/${paddedPageNumber}/${filename}`);
+    const { contentData } = await import('../src/data/contentData.js');
+    const filename = `page${pageNumber}_article${articleId}_${language}`;
     
-    if (response.ok) {
-      const content = await response.text();
-      const parsed = parseContentFile(content, language);
+    if (contentData[filename]) {
+      const parsed = parseContentFile(contentData[filename], language);
       
       return {
         id: articleId,
@@ -264,7 +262,7 @@ YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10�
       };
     }
   } catch (error) {
-    console.error('Error loading from file system:', error);
+    console.error('Error loading from bundled content:', error);
   }
 
   return null;
@@ -349,21 +347,17 @@ YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10�
   console.log(`📦 Found ${publishedArticles.length} published articles from localStorage`);
   articles.push(...publishedArticles);
 
-  // Then try to load from file system (existing text files)
+  // Then try to load from bundled content data (existing text files)
   try {
-    const paddedPageNumber = pageNumber.toString().padStart(2, '0');
-    console.log(`📁 Looking for files in /contents/${paddedPageNumber}/`);
+    const { contentData } = await import('../src/data/contentData.js');
+    console.log(`📁 Loading from bundled content data`);
     
     // Check for all available article files (1-10)
     for (let articleId = 1; articleId <= 10; articleId++) {
-      const filename = `page${pageNumber}_article${articleId}_${language}.txt`;
-      const url = `/contents/${paddedPageNumber}/${filename}`;
-      console.log(`🔗 Trying to fetch: ${url}`);
-      const response = await fetch(url);
+      const filename = `page${pageNumber}_article${articleId}_${language}`;
       
-      if (response.ok) {
-        const content = await response.text();
-        const parsed = parseContentFile(content, language);
+      if (contentData[filename]) {
+        const parsed = parseContentFile(contentData[filename], language);
         console.log(`✅ Successfully loaded article ${articleId}: "${parsed.title}" (excerpt: "${parsed.excerpt.substring(0, 50)}...")`);
         
         // Only add if not already in localStorage
@@ -378,11 +372,11 @@ YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10�
           });
         }
       } else {
-        console.log(`❌ Failed to load ${url}: ${response.status} ${response.statusText}`);
+        console.log(`❌ Content not found for: ${filename}`);
       }
     }
   } catch (error) {
-    console.error('Error loading articles from files:', error);
+    console.error('Error loading articles from bundled content:', error);
   }
 
   console.log(`📊 Total articles loaded: ${articles.length}`);
