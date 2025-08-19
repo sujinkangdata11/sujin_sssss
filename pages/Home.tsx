@@ -816,8 +816,8 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 6 16 0z" clipRule="evenodd" />
+                  <svg className="inline mr-2" width="20" height="16" viewBox="0 0 24 24" fill="#10b981" style={{ transform: 'translateY(-1px)' }}>
+                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z" transform="scale(1.2, 1) translate(0, -1)"/>
                   </svg>
                 )}
                 <span 
@@ -826,9 +826,11 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
                     `${t('apiKeyApplied')} | ${t('apiKeyInUse')}${t('apiKeyInUse') ? ' ' : ''}${currentKeyIndex + 1}${t('apiKeyInUseSuffix') ? ' ' : ''}${t('apiKeyInUseSuffix')}`
                     : t('youtubeApiNotice')}
                 >
-                  {youtubeApiKeys.length > 0 ? 
+                  {youtubeApiKeys.length > 0 ? (
                     `${t('apiKeyApplied')} | ${t('apiKeyInUse')}${t('apiKeyInUse') ? ' ' : ''}${currentKeyIndex + 1}${t('apiKeyInUseSuffix') ? ' ' : ''}${t('apiKeyInUseSuffix')}`
-                    : t('youtubeApiNotice')}
+                  ) : (
+                    t('youtubeApiNotice')
+                  )}
                 </span>
               </p>
             </div>
@@ -846,8 +848,8 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
               </label>
               <input id="geminiApiKey" type="password" value={geminiApiKey} onChange={(e) => setGeminiApiKey(e.target.value)} placeholder={t('geminiApiKeyPlaceholder')} className="form-input" />
                <p className="form-notice-success">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                <svg className="inline mr-2" width="20" height="16" viewBox="0 0 24 24" fill="#10b981" style={{ transform: 'translateY(-1px)' }}>
+                  <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z" transform="scale(1.2, 1) translate(0, -1)"/>
                 </svg>
                 {t('geminiApiNotice')}
               </p>
