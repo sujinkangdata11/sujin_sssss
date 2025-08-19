@@ -9,6 +9,10 @@ interface ShortsmaKerProps {
 const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
 
+  console.log('🔧 SHORTSMAKER TEST - Vercel deployment check');
+  console.log('Current language:', language);
+  console.log('Timestamp:', new Date().toISOString());
+
   return (
     <main className="main-container">
       <div className="coming-soon-container">
