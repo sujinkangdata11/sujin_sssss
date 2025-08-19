@@ -198,15 +198,14 @@ export const loadArticlesForPage = async (pageNumber: number, language: Language
   try {
     const paddedPageNumber = pageNumber.toString().padStart(2, '0');
     
-    // Check for specific language files first
-    const specificFiles = [`page${pageNumber}_article1_${language}.txt`, `page${pageNumber}_article8_${language}.txt`];
-    
-    for (const filename of specificFiles) {
+    // Check for all available article files (1-10)
+    for (let articleId = 1; articleId <= 10; articleId++) {
+      const filename = `page${pageNumber}_article${articleId}_${language}.txt`;
       const response = await fetch(`/contents/${paddedPageNumber}/${filename}`);
+      
       if (response.ok) {
         const content = await response.text();
         const parsed = parseContentFile(content, language);
-        const articleId = filename.includes('article1') ? 1 : 8;
         
         // Only add if not already in localStorage
         if (!articles.find(a => a.id === articleId)) {
