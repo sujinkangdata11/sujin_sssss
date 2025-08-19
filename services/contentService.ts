@@ -310,7 +310,7 @@ VIDHUNT의 가장 큰 장점은 여러분이 입력한 [[purple: 키워드를 �
     articles.push({
       id: 2,
       title: "YouTube Data\n10초 만에 무료 발급받기.",
-      excerpt: "YouTube의 모든 데이터를",
+      excerpt: "YouTube의 모든 데이터를\n무료로 뜯기!",
       content: `##YouTube Data API v3가 뭔가요?
 
 데이터 API? 이게 뭘까요? 처음 듣는 분들이 많을텐데요, 걱정하지 마세요! 
@@ -411,7 +411,7 @@ API 키를 잊어도 걱정하지 마세요.
     articles.push({
       id: 3,
       title: "Google Gemini API 키 \n10초만에 무료 발급받기!",
-      excerpt: "구글의 강력한 AI를 내 손안에!",
+      excerpt: "구글의 강력한 AI를 내 손안에!\n무료입니다.",
       content: `##Google Gemini API v3가 뭔가요?
 
 구글 API? 이게 뭘까요? 처음 듣는 분들이 많을텐데요, 걱정하지 마세요! 
@@ -803,7 +803,7 @@ If you jump in late, the algorithm is less likely to prioritize your video.`,
     articles.push({
       id: 2,
       title: "YouTube Data\nGet it for free in 10 seconds.",
-      excerpt: "All of YouTube's data",
+      excerpt: "All of YouTube's data\nfor free!",
       content: `##What is YouTube Data API v3?
 
 Data API? What is this? Many people are hearing this for the first time, but don't worry!
@@ -904,7 +904,7 @@ I'll respond quickly!`,
     articles.push({
       id: 3,
       title: "Google Gemini API Key\nGet it for free in 10 seconds!",
-      excerpt: "Google's powerful AI in my hands!",
+      excerpt: "Google's powerful AI in your hands!\nIt's free.",
       content: `##What is Google Gemini API v3?
 
 Google API? What is this? Many people are hearing this for the first time, but don't worry!
@@ -1001,7 +1001,7 @@ If you have more detailed usage methods or questions, please leave a comment any
     articles.push({
       id: 4,
       title: "When you suddenly encounter an error message!",
-      excerpt: "The solution? It's very simple.",
+      excerpt: "How to fix it? Super simple.",
       content: `After reading this entire article, you can solve the problem very easily.
 
 [IMAGE:04_image_1.png]
@@ -1067,8 +1067,8 @@ Just by reducing the search scope, you can greatly save quotas.
     });
     articles.push({
       id: 5,
-      title: "When errors occur despite having API quota left!?",
-      excerpt: "API quota exceeded error! How to solve it?",
+      title: "When you still have API quota left\nbut an error occurs!?",
+      excerpt: "API quota exceeded error! How do we fix it?",
       content: `Oh my. I only searched once..?
 
 [IMAGE:05_image_1.png]
@@ -1113,8 +1113,8 @@ Right now, get API keys with multiple Gmail accounts and organize them in notepa
     });
     articles.push({
       id: 6,
-      title: "A chance to steal viral content from competing channels!",
-      excerpt: "Just use favorite channels.",
+      title: "A chance to steal\nyour competitor's virality!",
+      excerpt: "Use Favorite Channels right away.",
       content: `Did you see [[purple:'Favorite Channels' in advanced options?]]
 
 Every YouTube creator probably has [[purple:role model channels or competing channels]].
@@ -1151,8 +1151,8 @@ Now, click search to analyze competing channels!
     });
     articles.push({
       id: 7,
-      title: "Customer API Key Processing Information",
-      excerpt: "Information about API key security",
+      title: "Notice on Processing of Your API Key",
+      excerpt: "Notice Regarding API Key Security",
       content: `##API Key Security Information
 We inform you about the security policy of our service.
 
@@ -1183,8 +1183,8 @@ API keys are used only for request processing purposes and are not used for othe
     });
     articles.push({
       id: 8,
-      title: "User who uses this service well - Mr. A.",
-      excerpt: "Making 100 million Shorts in 3 days.",
+      title: "A user who uses this service well - User A.",
+      excerpt: "Create a 100M-view Short in just 3 days.",
       content: `How do power users of this service use it?
 
 ---
@@ -1210,8 +1210,8 @@ It's systematic preparation.
     });
     articles.push({
       id: 9,
-      title: "Precautions when uploading English Shorts.",
-      excerpt: "You have high advertising costs",
+      title: "When uploading English Shorts\nImportant notes.",
+      excerpt: "When you target the United States,\nwhere ad costs are high.",
       content: `##If you're creating English Shorts, you must use a VPN.
 
 If you upload Shorts from a country other than the United States,
@@ -1239,8 +1239,8 @@ Please actively use VPN when targeting these countries.`,
     });
     articles.push({
       id: 10,
-      title: "VIDHUNT's Roadmap",
-      excerpt: "We'll tell you about the features to come.",
+      title: "VIDHUNT Roadmap",
+      excerpt: "We'll tell you about the features coming next.",
       content: `# VIDHUNT's Roadmap
 
 We inform you about our upcoming roadmap.
@@ -1293,11 +1293,99 @@ YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10�
       category: "Technology",
       date: "2025-08-18"
     });
-    for (let i = 2; i <= 10; i++) {
+    articles.push({
+      id: 2,
+      title: "YouTube Data\n10秒で無料発行。",
+      excerpt: "YouTubeのすべてのデータを\n無料で活用！",
+      content: `##YouTube Data API v3って何ですか？
+
+データAPI？ 何のことでしょう？ 初めて聞く方も多いはずですが、ご安心ください！ 
+
+"お金はかかりますか？" → いいえ、[[purple:完全無料です。]]
+"クレジットカードは必要ですか？" → [[purple:まったく必要ありません。]]
+"難しいですか？" → [[purple:10歳の子どもでもできます。]]
+
+YouTube Data API v3は、Googleが提供する無料サービスです。
+
+例えば、\`ABC @gmail.com\` アカウントを作成すると、 
+Googleがそのアカウントに「YouTubeデータを照会できる権限」を付与してくれます。
+[[purple:つまり、Googleが提供する無料サービスのひとつです！]]
+
+[IMAGE:02_image_1.png]
+
+ㅤ
+## とても簡単です - クリック7回で完了！
+私が実際に新規でAPIを発行してみたところ、本当に7回クリックするだけで無料のAPIキーを受け取れました。
+では、いっしょにやってみましょう！
+
+## 📹 動画で見たい方は？
+
+[YOUTUBE:https://youtu.be/0ZYlKw4x7W0]`,
+      category: "General",
+      date: "2025-08-18"
+    });
+    articles.push({
+      id: 3,
+      title: "Google Gemini API キー \n10秒で無料発行！",
+      excerpt: "Googleの強力なAIをあなたの手に！\n無料です。",
+      content: `##Google Gemini API v3って何ですか？
+
+Google API？ 何のことでしょう？ 初めて聞く方も多いはずですが、ご安心ください！ 
+
+"お金はかかりますか？" → いいえ、[[purple:完全無料です。]]
+"クレジットカードは必要ですか？" → [[purple:まったく必要ありません。]]
+"難しいですか？" → [[purple:10歳の子どもでもできます。]]
+
+Google Gemini API は、Google が提供する無料サービスです。
+
+例えば、\`ABC @gmail.com\` アカウントを作成すると、 
+Google がそのアカウントに「無料のAI機能」を提供してくれます。
+[[purple:つまり、Google が提供する無料AIサービスのひとつです！]]
+
+[IMAGE:03_image_1.png]
+
+とても簡単です - クリック6回で完了！
+私が実際に新規でAPIを発行してみたところ、
+本当に6回クリックするだけでAPIキーをすぐ受け取れました。
+では、いっしょにやってみましょう！
+
+##📹 動画で見たい方は？
+
+[YOUTUBE:https://youtu.be/JmQe-AIYh3w]`,
+      category: "General",
+      date: "2025-08-18"
+    });
+    for (let i = 4; i <= 10; i++) {
+      const titles = [
+        "",
+        "",
+        "",
+        "",
+        "突然エラーメッセージに出会ったとき！",
+        "API の割り当て量が残っているのに\nエラーが発生するとき!?",
+        "競合チャンネルのバイラルを\n奪い取るチャンス！",
+        "お客様の API キーの取り扱いに関するご案内",
+        "このサービスを上手に使うユーザー - Aさん。",
+        "英語のショートを投稿するとき\n注意事項。",
+        "VIDHUNTのロードマップ"
+      ];
+      const excerpts = [
+        "",
+        "",
+        "",
+        "",
+        "解決方法？ とても簡単です。",
+        "API の割り当て量超過エラー！ どう解決しますか？",
+        "今すぐ「お気に入りチャンネル」を使いましょう。",
+        "API キーのセキュリティに関するご案内",
+        "3日で1億再生のショートを作る。",
+        "広告費が高い\nアメリカをターゲットにする場合。",
+        "今後リリースされる機能をご案内します。"
+      ];
       articles.push({
         id: i,
-        title: `記事 ${i}`,
-        excerpt: `記事 ${i} の抜粋`,
+        title: titles[i],
+        excerpt: excerpts[i],
         content: `記事 ${i} のコンテンツ`,
         category: "General",
         date: "2025-08-18"
@@ -1307,125 +1395,106 @@ YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10�
 
   // ZH articles
   if (pageNumber === 1 && language === 'zh') {
+    const zhTitles = [
+      "", 
+      "VIDHUNT VS YouTube 普通搜索。\n哪个更好？",
+      "YouTube Data\n10秒内免费获取。", 
+      "Google Gemini API 密钥 \n10秒内免费获取！",
+      "当你突然遇到错误信息时！",
+      "配额还没用完\n却出现了错误!?",
+      "夺取竞争频道\n的爆款机会！",
+      "您的 API 密钥是安全的",
+      "善于使用本服务的用户——A 先生/女士。",
+      "发布英文 Shorts 时\n注意事项。",
+      "VIDHUNT 路线图"
+    ];
+    const zhExcerpts = [
+      "",
+      "很多人都会问："用 VIDHUNT 寻找热门 Shorts 和在 YouTube 上直接搜索视频，有什么区别？"",
+      "将 YouTube 的所有数据\n免费拿下！",
+      "把 Google 的强大 AI 掌握在你手中！\n免费使用。",
+      "解决方法？ 非常简单。",
+      "API 配额超限错误！ 怎么解决？",
+      "马上使用"收藏频道"功能。",
+      "关于 API 密钥安全性的说明",
+      "3 天做出 1 亿播放的 Shorts。",
+      "当你将高广告成本的\n美国作为目标时。",
+      "为你介绍即将上线的功能。"
+    ];
     for (let i = 1; i <= 10; i++) {
       articles.push({
         id: i,
-        title: `文章 ${i}`,
-        excerpt: `文章 ${i} 的摘要`,
+        title: zhTitles[i],
+        excerpt: zhExcerpts[i],
         content: `文章 ${i} 的内容`,
-        category: "General", 
+        category: "General",
         date: "2025-08-18"
       });
     }
   }
 
-  // ES articles
+  // ES articles - Spanish
   if (pageNumber === 1 && language === 'es') {
+    const esTitles = ["", "VIDHUNT VS búsqueda general en YouTube.\n¿Cuál es mejor?", "YouTube Data\nConsíguelo gratis en 10 segundos.", "Google Gemini API Key\n¡Consíguelo gratis en 10 segundos!", "¡Cuando te encuentras de repente con un mensaje de error!", "Cuando aún te queda cuota de API\npero ocurre un error!?", "¡Una oportunidad de robar\nla viralidad de la competencia!", "Aviso sobre el procesamiento de tu clave API", "Usuario que utiliza bien este servicio - Usuario A.", "Al subir Shorts en inglés\nNotas importantes.", "Hoja de ruta de VIDHUNT"];
+    const esExcerpts = ["", "Muchas personas se preguntan: "¿Cuál es la diferencia entre encontrar Shorts populares con VIDHUNT y buscar videos directamente en YouTube?"", "Todos los datos de YouTube\n¡gratis!", "¡El poderoso AI de Google en tus manos!\nEs gratuito.", "¿Solución? Muy simple.", "¡Error de cuota API excedida! ¿Cómo lo solucionamos?", "Utiliza inmediatamente los Canales Favoritos.", "Aviso sobre la seguridad de las claves API", "Crear un Short de 100M de visualizaciones en solo 3 días.", "Cuando apuntas a Estados Unidos,\ndonde los costos publicitarios son altos.", "Te contaremos sobre las funciones que vendrán próximamente."];
     for (let i = 1; i <= 10; i++) {
-      articles.push({
-        id: i,
-        title: `Artículo ${i}`,
-        excerpt: `Resumen del artículo ${i}`,
-        content: `Contenido del artículo ${i}`,
-        category: "General",
-        date: "2025-08-18"
-      });
+      articles.push({ id: i, title: esTitles[i], excerpt: esExcerpts[i], content: `Contenido del artículo ${i}`, category: "General", date: "2025-08-18" });
     }
   }
 
-  // FR articles
+  // FR articles - French  
   if (pageNumber === 1 && language === 'fr') {
+    const frTitles = ["", "VIDHUNT VS recherche YouTube classique.\nLequel est le meilleur ?", "YouTube Data\nObtenez-le gratuitement en 10 secondes.", "Clé API Google Gemini\nObtenez-la gratuitement en 10 secondes !", "Quand vous rencontrez soudain un message d'erreur !", "Quand il vous reste du quota API\nmais qu'une erreur se produit !?", "Une chance de voler\nla viralité de vos concurrents !", "Avis sur le traitement de votre clé API", "Utilisateur qui utilise bien ce service - Utilisateur A.", "Lors du téléchargement de Shorts en anglais\nNotes importantes.", "Feuille de route VIDHUNT"];
+    const frExcerpts = ["", "Beaucoup de gens se demandent : \"Quelle est la différence entre trouver des Shorts populaires avec VIDHUNT et chercher des vidéos directement sur YouTube ?\"", "Toutes les données de YouTube\ngratuitement !", "L'IA puissante de Google entre vos mains !\nC'est gratuit.", "Solution ? Très simple.", "Erreur de quota API dépassé ! Comment résoudre ?", "Utilisez immédiatement les Chaînes Favorites.", "Avis concernant la sécurité des clés API", "Créer un Short de 100M de vues en seulement 3 jours.", "Quand vous ciblez les États-Unis,\noù les coûts publicitaires sont élevés.", "Nous vous parlerons des fonctionnalités à venir."];
     for (let i = 1; i <= 10; i++) {
-      articles.push({
-        id: i,
-        title: `Article ${i}`,
-        excerpt: `Résumé de l'article ${i}`,
-        content: `Contenu de l'article ${i}`,
-        category: "General",
-        date: "2025-08-18"
-      });
+      articles.push({ id: i, title: frTitles[i], excerpt: frExcerpts[i], content: `Contenu de l'article ${i}`, category: "General", date: "2025-08-18" });
     }
   }
 
-  // DE articles
+  // DE articles - German
   if (pageNumber === 1 && language === 'de') {
+    const deTitles = ["", "VIDHUNT VS normale YouTube-Suche.\nWas ist besser?", "YouTube Data\nKostenlos in 10 Sekunden erhalten.", "Google Gemini API-Schlüssel\nKostenlos in 10 Sekunden erhalten!", "Wenn Sie plötzlich eine Fehlermeldung sehen!", "Wenn Sie noch API-Kontingent haben\naber ein Fehler auftritt!?", "Eine Chance, die Viralität\nder Konkurrenz zu stehlen!", "Hinweis zur Verarbeitung Ihres API-Schlüssels", "Benutzer, der diesen Service gut nutzt - Benutzer A.", "Beim Hochladen englischer Shorts\nWichtige Hinweise.", "VIDHUNT Roadmap"];
+    const deExcerpts = ["", "Viele Leute fragen sich: \"Was ist der Unterschied zwischen dem Finden beliebter Shorts mit VIDHUNT und der direkten Videosuche auf YouTube?\"", "Alle YouTube-Daten\nkostenlos!", "Googles mächtige KI in Ihren Händen!\nEs ist kostenlos.", "Lösung? Sehr einfach.", "API-Kontingent überschritten Fehler! Wie lösen wir das?", "Nutzen Sie sofort Favoriten-Kanäle.", "Hinweis zur API-Schlüssel-Sicherheit", "Erstellen Sie einen 100M-Views Short in nur 3 Tagen.", "Wenn Sie die USA anvisieren,\nwo die Werbekosten hoch sind.", "Wir erzählen Ihnen von den kommenden Funktionen."];
     for (let i = 1; i <= 10; i++) {
-      articles.push({
-        id: i,
-        title: `Artikel ${i}`,
-        excerpt: `Zusammenfassung von Artikel ${i}`,
-        content: `Inhalt von Artikel ${i}`,
-        category: "General",
-        date: "2025-08-18"
-      });
+      articles.push({ id: i, title: deTitles[i], excerpt: deExcerpts[i], content: `Inhalt von Artikel ${i}`, category: "General", date: "2025-08-18" });
     }
   }
 
-  // NL articles  
+  // NL, PT, RU, HI articles with basic templates
   if (pageNumber === 1 && language === 'nl') {
     for (let i = 1; i <= 10; i++) {
-      articles.push({
-        id: i,
-        title: `Artikel ${i}`,
-        excerpt: `Samenvatting van artikel ${i}`,
-        content: `Inhoud van artikel ${i}`,
-        category: "General",
-        date: "2025-08-18"
-      });
+      articles.push({ id: i, title: `Artikel ${i}`, excerpt: `Samenvatting van artikel ${i}`, content: `Inhoud van artikel ${i}`, category: "General", date: "2025-08-18" });
     }
   }
 
-  // PT articles
   if (pageNumber === 1 && language === 'pt') {
     for (let i = 1; i <= 10; i++) {
-      articles.push({
-        id: i,
-        title: `Artigo ${i}`,
-        excerpt: `Resumo do artigo ${i}`,
-        content: `Conteúdo do artigo ${i}`,
-        category: "General",
-        date: "2025-08-18"
-      });
+      articles.push({ id: i, title: `Artigo ${i}`, excerpt: `Resumo do artigo ${i}`, content: `Conteúdo do artigo ${i}`, category: "General", date: "2025-08-18" });
     }
   }
 
-  // RU articles
   if (pageNumber === 1 && language === 'ru') {
     for (let i = 1; i <= 10; i++) {
-      articles.push({
-        id: i,
-        title: `Статья ${i}`,
-        excerpt: `Краткое содержание статьи ${i}`,
-        content: `Содержание статьи ${i}`,
-        category: "General", 
-        date: "2025-08-18"
-      });
+      articles.push({ id: i, title: `Статья ${i}`, excerpt: `Краткое содержание статьи ${i}`, content: `Содержание статьи ${i}`, category: "General", date: "2025-08-18" });
     }
   }
 
-  // HI articles
   if (pageNumber === 1 && language === 'hi') {
     for (let i = 1; i <= 10; i++) {
-      articles.push({
-        id: i,
-        title: `लेख ${i}`,
-        excerpt: `लेख ${i} का सारांश`,
-        content: `लेख ${i} की सामग्री`,
-        category: "General",
-        date: "2025-08-18"
-      });
+      articles.push({ id: i, title: `लेख ${i}`, excerpt: `लेख ${i} का सारांश`, content: `लेख ${i} की सामग्री`, category: "General", date: "2025-08-18" });
     }
   }
 
-  // First try to load from localStorage (admin-created articles)
-  const publishedArticles = getPublishedArticles(pageNumber, language);
-  console.log(`📦 Found ${publishedArticles.length} published articles from localStorage`);
-  articles.push(...publishedArticles);
+  // Only add localStorage articles if no hardcoded articles exist
+  if (articles.length === 0) {
+    const publishedArticles = getPublishedArticles(pageNumber, language);
+    console.log(`📦 Found ${publishedArticles.length} published articles from localStorage`);
+    articles.push(...publishedArticles);
+  }
 
-  // Fallback: add empty placeholder articles if not found
-  // This ensures we always have the right number of articles for pagination
-  for (let articleId = 1; articleId <= 10; articleId++) {
-    if (!articles.find(a => a.id === articleId)) {
+  // Only add placeholder articles if still no articles found
+  if (articles.length === 0) {
+    for (let articleId = 1; articleId <= 10; articleId++) {
       articles.push({
         id: articleId,
         title: "Coming Soon",
