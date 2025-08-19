@@ -182,7 +182,7 @@ const App: React.FC = () => {
         <Header language={language} onLanguageSelect={setLanguage} />
         
         <Routes>
-          <Route path="/" element={<Home language={language} />} />
+          <Route path="/" element={<Home language={language} onLanguageSelect={setLanguage} />} />
           <Route path="/shortsmaker" element={<ShortsmaKer language={language} />} />
           <Route path="/news" element={<News language={language} />} />
           <Route path="/news/article/:id" element={<ArticleDetail language={language} />} />

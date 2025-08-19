@@ -11,9 +11,10 @@ import ApiKeyUpload from '../components/ApiKeyUpload';
 
 interface HomeProps {
   language: Language;
+  onLanguageSelect: (language: Language) => void;
 }
 
-const Home: React.FC<HomeProps> = ({ language }) => {
+const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   const [youtubeApiKey, setYoutubeApiKey] = useState<string>('');
   const [youtubeApiKeys, setYoutubeApiKeys] = useState<string[]>([]);
   const [currentKeyIndex, setCurrentKeyIndex] = useState<number>(0);
@@ -37,11 +38,27 @@ const Home: React.FC<HomeProps> = ({ language }) => {
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
   const [videoVisible, setVideoVisible] = useState<boolean>(false);
   const [batchProgress, setBatchProgress] = useState<{current: number; total: number} | null>(null);
+  // Tutorial language syncs with global language
   const videoRef = useRef<HTMLVideoElement>(null);
   
   const exampleRef = useRef<HTMLDivElement>(null);
 
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
+  
+  // Tutorial video mapping by language
+  const tutorialVideos: Record<Language, string> = {
+    en: 'tKlYb7j1W5M',
+    ko: 'jv7Srh4afYY', 
+    ja: 'FUtBT1fM5V8',
+    hi: 'uVGQWOTAupw',
+    zh: 'HqHXp3-ke8g',
+    es: 'tKlYb7j1W5M', // fallback to English
+    fr: 'tKlYb7j1W5M', // fallback to English
+    de: 'tKlYb7j1W5M', // fallback to English
+    nl: 'tKlYb7j1W5M', // fallback to English
+    pt: 'tKlYb7j1W5M', // fallback to English
+    ru: 'tKlYb7j1W5M'  // fallback to English
+  };
   
   // Scroll to top when component mounts
   useEffect(() => {
@@ -990,8 +1007,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
               className="form-input youtube-tutorial-language-select"
               value={language}
               onChange={(e) => {
-                // Language change handler can be implemented here if needed
-                console.log('Selected language:', e.target.value);
+                onLanguageSelect(e.target.value as Language);
               }}
             >
               {SUPPORTED_LANGUAGES.map(lang => (
@@ -1005,7 +1021,7 @@ const Home: React.FC<HomeProps> = ({ language }) => {
             <iframe
               width="100%"
               height="315"
-              src="https://www.youtube.com/embed/jv7Srh4afYY"
+              src={`https://www.youtube.com/embed/${tutorialVideos[language]}`}
               title={t('tutorialVideoTitle')}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
