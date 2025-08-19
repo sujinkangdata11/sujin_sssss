@@ -1,10 +1,7 @@
 title: VIDHUNT의 로드맵
 excerpt: 앞으로 나올 기능들을 알려드립니다.
-
 category: General
 date: 2025-08-18
-
-# VIDHUNT의 로드맵
 
 앞으로 나올 우리의 로드맵에 대해 안내드립니다.
 상황에 따라 변경될 수 있지만, [[purple:최선을 다해 무료서비스의 품질]]을 높이겠습니다.

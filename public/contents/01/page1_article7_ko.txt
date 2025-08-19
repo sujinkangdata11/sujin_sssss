@@ -3,9 +3,6 @@ excerpt: API 키 보안에 대한 안내
 category: General
 date: 2025-08-19
 
-##API 키 보안에 대한 안내
-서비스의 보안 정책을 안내드립니다.
-
 ##🔒 저희 서비스의 보안 원칙
 
 [[purple: API 키 비저장 원칙]]

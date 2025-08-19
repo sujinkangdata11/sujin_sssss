@@ -1,12 +1,7 @@
-title: Ao enviar Shorts em inglês
-Pontos de atenção.
-
-excerpt: Quando você mira
-os Estados Unidos, onde o custo de anúncios é alto.
+title: Ao enviar Shorts em inglês Pontos de atenção.
+excerpt: Quando você mira os Estados Unidos, onde o custo de anúncios é alto.
 category: General
 date: 2025-08-19
-
-##Se você produzir Shorts em inglês, use obrigatoriamente uma VPN.
 
 Se você enviar Shorts a partir de um país que não seja os Estados Unidos,
 seus Shorts podem ser direcionados a países com RPM mais baixo.

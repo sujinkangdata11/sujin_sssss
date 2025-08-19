@@ -1,11 +1,7 @@
-title: 发布英文 Shorts 时
-注意事项。
-excerpt: 当你将高广告成本的
-美国作为目标时。
+title: 发布英文 Shorts 时 注意事项。
+excerpt: 当你将高广告成本的 美国作为目标时。
 category: Technology
 date: 2025-08-19
-
-##如果你要制作英文 Shorts，请务必使用 VPN。
 
 如果不是在美国上传 Shorts，
 你的作品可能会被投放到 RPM 较低的国家。

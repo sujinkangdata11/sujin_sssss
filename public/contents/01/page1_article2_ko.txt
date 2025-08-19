@@ -1,11 +1,7 @@
-title: YouTube Data
-10초 만에 무료 발급받기.
-excerpt: YouTube의 모든 데이터를
-무료로 뜯기!
+title: YouTube Data 10초 만에 무료 발급받기.
+excerpt: YouTube의 모든 데이터를 무료로 뜯기!
 category: General
 date: 2025-08-18
-
-##YouTube Data API v3가 뭔가요?
 
 데이터 API? 이게 뭘까요? 처음 듣는 분들이 많을텐데요, 걱정하지 마세요! 
 

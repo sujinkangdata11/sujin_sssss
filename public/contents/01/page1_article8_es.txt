@@ -1,5 +1,4 @@
 title: Un usuario que usa bien este servicio: el Sr./Sra. A.
-
 excerpt: Crear un Short de 100 millones de vistas en solo 3 días.
 
 category: General

@@ -3,8 +3,6 @@ excerpt: 3 天做出 1 亿播放的 Shorts。
 category: Technology
 date: 2025-08-19
 
-我们的资深用户是如何使用本服务的？
-
 ---
 
 能最大化利用本服务的用户有一个共同点：

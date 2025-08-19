@@ -1,11 +1,7 @@
-title: Clave de la API de Google Gemini 
-¡Consíguela gratis en 10 segundos!
-excerpt: ¡La potente IA de Google en tus manos!
-Es gratis.
+title: Clave de la API de Google Gemini  ¡Consíguela gratis en 10 segundos!
+excerpt: ¡La potente IA de Google en tus manos! Es gratis.
 category: General
 date: 2025-08-19
-
-##¿Qué es Google Gemini API v3?
 
 ¿Google API? ¿Qué es eso? Puede que muchos lo oigan por primera vez, ¡pero no te preocupes! 
 

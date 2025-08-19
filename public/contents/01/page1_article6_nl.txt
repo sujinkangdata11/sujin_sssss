@@ -1,13 +1,7 @@
-title: Een kans om de viraliteit
-van concurrentkanalen over te nemen!
+title: Een kans om de viraliteit van concurrentkanalen over te nemen!
 excerpt: Gebruik meteen ‘Favoriete kanalen’.
 category: General
 date: 2025-08-19
-
-Heb je in Geavanceerde opties [[purple:'Favoriete kanalen']] gezien?
-
-Als YouTube-maker heb je vast [[purple:een voorbeeldkanaal of een concurrerend kanaal]].
-Hoe zou het zijn om de virale elementen van die kanalen te analyseren?
 
 [IMAGE:06_image_1.png]
 

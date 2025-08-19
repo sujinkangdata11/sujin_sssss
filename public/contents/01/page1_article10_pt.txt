@@ -1,10 +1,7 @@
 title: Roteiro do VIDHUNT
 excerpt: Apresentamos os recursos que virão a seguir.
-
 category: General
 date: 2025-08-19
-
-# Roteiro do VIDHUNT
 
 Aqui está uma visão geral do nosso roteiro futuro.
 Ele pode mudar conforme a situação, mas [[purple:faremos o máximo para melhorar a qualidade do serviço gratuito]].

@@ -1,11 +1,7 @@
-title: Ключ API Google Gemini 
-Получите бесплатно за 10 секунд!
-excerpt: Мощный ИИ Google — у вас в руках!
-Это бесплатно.
+title: Ключ API Google Gemini  Получите бесплатно за 10 секунд!
+excerpt: Мощный ИИ Google — у вас в руках! Это бесплатно.
 category: General
 date: 2025-08-19
-
-##Что такое Google Gemini API v3?
 
 Google API? Что это такое? Для многих это, возможно, впервые, но не волнуйтесь! 
 

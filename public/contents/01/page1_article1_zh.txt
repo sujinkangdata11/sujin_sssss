@@ -1,11 +1,7 @@
-title: VIDHUNT VS YouTube 普通搜索。
-哪个更好？
-excerpt: 很多人都会问：“用 VIDHUNT 寻找热门 Shorts 和在 YouTube 上直接搜索视频，有什么区别？” 
-
+title: VIDHUNT VS YouTube 普通搜索。 哪个更好？
+excerpt: 很多人都会问：“用 VIDHUNT 寻找热门 Shorts 和在 YouTube 上直接搜索视频，有什么区别？”
 category: General
 date: 2025-08-19
-
-答案就在 [关键词搜索的范围]。
 
 [IMAGE:01_image_1.png]
 

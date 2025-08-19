@@ -3,9 +3,6 @@ excerpt: Notice Regarding API Key Security
 category: General
 date: 2025-08-19
 
-##Notice Regarding API Key Security
-We provide guidance on our service’s security policy.
-
 ##🔒 Our Service’s Security Principles
 
 [[purple: API Key Non-Storage Principle]]

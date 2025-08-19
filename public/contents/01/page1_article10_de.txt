@@ -1,10 +1,7 @@
 title: VIDHUNT-Roadmap
 excerpt: Wir stellen die kommenden Funktionen vor.
-
 category: General
 date: 2025-08-19
-
-# VIDHUNT-Roadmap
 
 Hier ein Überblick über unsere kommende Roadmap.
 Sie kann sich je nach Situation ändern, aber [[purple:wir werden unser Bestes geben, die Qualität des kostenlosen Dienstes zu verbessern]].

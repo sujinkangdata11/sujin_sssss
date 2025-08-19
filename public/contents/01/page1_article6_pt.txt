@@ -1,13 +1,7 @@
-title: Uma chance de capturar
-a viralidade dos canais concorrentes!
+title: Uma chance de capturar a viralidade dos canais concorrentes!
 excerpt: Use “Canais favoritos” agora mesmo.
 category: General
 date: 2025-08-19
-
-Você viu [[purple:'Canais favoritos' em Opções avançadas]]?
-
-Se você é criador no YouTube, certamente tem [[purple:um canal de referência ou canais concorrentes]].
-Que tal analisar os elementos virais desses canais?
 
 [IMAGE:06_image_1.png]
 

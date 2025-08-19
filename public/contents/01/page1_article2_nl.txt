@@ -1,11 +1,7 @@
-title: YouTube Data
-Binnen 10 seconden gratis aanvragen.
-excerpt: Alle YouTube-gegevens
-gratis gebruiken!
+title: YouTube Data Binnen 10 seconden gratis aanvragen.
+excerpt: Alle YouTube-gegevens gratis gebruiken!
 category: General
 date: 2025-08-19
-
-##Wat is YouTube Data API v3?
 
 Data-API? Wat is dat? Voor velen waarschijnlijk nieuw, maar maak je geen zorgen! 
 

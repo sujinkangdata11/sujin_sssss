@@ -1,13 +1,7 @@
-title: 夺取竞争频道
-的爆款机会！
+title: 夺取竞争频道 的爆款机会！
 excerpt: 马上使用“收藏频道”功能。
 category: Technology
 date: 2025-08-19
-
-你在高级选项里看到过 [[purple:'收藏频道']] 吗？
-
-如果你是 YouTube 创作者，应该都会有[[purple:标杆频道或竞争频道]]。
-如果能分析这些频道的爆款要素，会怎么样呢？
 
 [IMAGE:06_image_1.png]
 

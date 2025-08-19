@@ -1,10 +1,7 @@
-title: When you still have API quota left
-but an error occurs!?
+title: When you still have API quota left but an error occurs!?
 excerpt: API quota exceeded error! How do we fix it?
 category: Technology
 date: 2025-08-18
-
-Oh no. I only searched once..?
 
 [IMAGE:05_image_1.png]
 

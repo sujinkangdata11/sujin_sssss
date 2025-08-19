@@ -1,11 +1,7 @@
-title: Google Gemini API कुंजी 
-10 सेकंड में मुफ्त में प्राप्त करें!
-excerpt: Google की शक्तिशाली AI अब आपके हाथों में!
-यह मुफ्त है।
+title: Google Gemini API कुंजी  10 सेकंड में मुफ्त में प्राप्त करें!
+excerpt: Google की शक्तिशाली AI अब आपके हाथों में! यह मुफ्त है।
 category: General
 date: 2025-08-19
-
-##Google Gemini API v3 क्या है?
 
 Google API? यह क्या होता है? बहुतों के लिए यह पहली बार होगा, लेकिन चिंता न करें! 
 

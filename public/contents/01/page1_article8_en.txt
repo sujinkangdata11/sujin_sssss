@@ -1,10 +1,7 @@
 title: A user who uses this service well - User A.
 excerpt: Create a 100M-view Short in just 3 days.
-
 category: General
 date: 2025-08-18
-
-How do power users of this service use it?
 
 ---
 

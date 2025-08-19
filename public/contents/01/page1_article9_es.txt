@@ -1,11 +1,7 @@
-title: Al subir Shorts en inglés
-Cosas a tener en cuenta.
-excerpt: Cuando tu objetivo sea
-Estados Unidos, donde el coste publicitario es alto.
+title: Al subir Shorts en inglés Cosas a tener en cuenta.
+excerpt: Cuando tu objetivo sea Estados Unidos, donde el coste publicitario es alto.
 category: General
 date: 2025-08-19
-
-##Si produces Shorts en inglés, asegúrate de usar una VPN.
 
 Si subes Shorts desde un país distinto a Estados Unidos,
 tus Shorts podrían dirigirse a países con RPM más baja.

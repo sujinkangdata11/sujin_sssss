@@ -1,11 +1,7 @@
-title: Google Gemini API Key 
-Get it for free in 10 seconds!
-excerpt: Google’s powerful AI in your hands!
-It’s free.
+title: Google Gemini API Key  Get it for free in 10 seconds!
+excerpt: Google’s powerful AI in your hands! It’s free.
 category: General
 date: 2025-08-18
-
-##What is Google Gemini API v3?
 
 Google API? What is that? Many of you are probably hearing this for the first time, but don’t worry! 
 

@@ -1,11 +1,7 @@
-title: YouTube Data
-10秒で無料発行。
-excerpt: YouTubeのすべてのデータを
-無料で活用！
+title: YouTube Data 10秒で無料発行。
+excerpt: YouTubeのすべてのデータを 無料で活用！
 category: General
 date: 2025-08-19
-
-##YouTube Data API v3って何ですか？
 
 データAPI？ 何のことでしょう？ 初めて聞く方も多いはずですが、ご安心ください！ 
 

@@ -3,9 +3,6 @@ excerpt: Kennisgeving over de beveiliging van de API-sleutel
 category: General
 date: 2025-08-19
 
-##Kennisgeving over de beveiliging van de API-sleutel
-Wij geven toelichting op het beveiligingsbeleid van onze dienst.
-
 ##🔒 Beveiligingsprincipes van onze dienst
 
 [[purple: Principe van niet-opslag van API-sleutels]]

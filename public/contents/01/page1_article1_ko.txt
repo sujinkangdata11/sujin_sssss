@@ -1,10 +1,7 @@
-title: VIDHUNT VS 유튜브 일반 검색.
-무엇이 낫나요?
-excerpt: 많은 분들이 궁금해하시는 질문이 있습니다. "VIDHUNT로 인기 쇼츠를 찾는 것과 유튜브에서 직접 영상을 검색하는 것, 무슨 차이가 있나요?" 
+title: VIDHUNT VS 유튜브 일반 검색. 무엇이 낫나요?
+excerpt: 많은 분들이 궁금해하시는 질문이 있습니다. "VIDHUNT로 인기 쇼츠를 찾는 것과 유튜브에서 직접 영상을 검색하는 것, 무슨 차이가 있나요?"
 category: Technology
 date: 2025-08-18
-
-답은 바로 [키워드 검색의 범위]에 있습니다.
 
 [IMAGE:01_image_1.png]
 

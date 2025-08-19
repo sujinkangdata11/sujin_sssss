@@ -1,5 +1,4 @@
 title: Quando você se depara de repente com uma mensagem de erro!
-
 excerpt: A solução? É bem simples.
 
 category: General

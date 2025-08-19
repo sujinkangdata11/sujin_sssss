@@ -1,11 +1,7 @@
-title: API 할당량이 남았는데
-에러가 발생할 때!?
+title: API 할당량이 남았는데 에러가 발생할 때!?
 excerpt: API 할당량 초과 에러! 어떻게 해결하죠?
-
 category: General
 date: 2025-08-18
-
-맙소사. 한 번 밖에 검색안했는데..?
 
 [IMAGE:05_image_1.png]
 

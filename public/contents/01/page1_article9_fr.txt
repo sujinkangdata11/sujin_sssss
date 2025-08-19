@@ -1,11 +1,7 @@
-title: Lors du téléversement de Shorts en anglais
-Points importants.
-excerpt: Quand vous ciblez
-les États-Unis, où le coût publicitaire est élevé.
+title: Lors du téléversement de Shorts en anglais Points importants.
+excerpt: Quand vous ciblez les États-Unis, où le coût publicitaire est élevé.
 category: General
 date: 2025-08-19
-
-##Si vous produisez des Shorts en anglais, utilisez impérativement un VPN.
 
 Si vous téléversez des Shorts depuis un pays autre que les États-Unis,
 vos Shorts risquent d’être ciblés vers des pays au RPM plus faible.

@@ -1,11 +1,7 @@
-title: Google Gemini API 密钥 
-10秒内免费获取！
-excerpt: 把 Google 的强大 AI 掌握在你手中！
-免费使用。
+title: Google Gemini API 密钥  10秒内免费获取！
+excerpt: 把 Google 的强大 AI 掌握在你手中！ 免费使用。
 category: Technology
 date: 2025-08-19
-
-##Google Gemini API v3 是什么？
 
 Google API？ 这是什么？ 可能很多人是第一次听说，但请不用担心！ 
 

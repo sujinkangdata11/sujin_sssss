@@ -1,10 +1,7 @@
-title: ¿Te queda cuota de API
-pero aparece un error?
+title: ¿Te queda cuota de API pero aparece un error?
 excerpt: ¡Error de cuota de API excedida! ¿Cómo lo soluciono?
 category: General
 date: 2025-08-19
-
-Vaya. ¿Si solo busqué una vez…?
 
 [IMAGE:05_image_1.png]
 

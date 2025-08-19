@@ -1,11 +1,7 @@
-title: Beim Hochladen englischer Shorts
-Wichtige Hinweise.
-excerpt: Wenn du die
-USA mit hohen Werbekosten anvisierst.
+title: Beim Hochladen englischer Shorts Wichtige Hinweise.
+excerpt: Wenn du die USA mit hohen Werbekosten anvisierst.
 category: General
 date: 2025-08-19
-
-##Wenn du englische Shorts produzierst, verwende unbedingt ein VPN.
 
 Wenn du Shorts aus einem anderen Land als den USA hochlädst,
 können deine Shorts auf Länder mit niedrigerem RPM ausgerichtet werden.

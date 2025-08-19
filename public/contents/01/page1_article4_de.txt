@@ -1,5 +1,4 @@
 title: Wenn dir plötzlich eine Fehlermeldung begegnet!
-
 excerpt: Die Lösung? Ganz einfach.
 
 category: General

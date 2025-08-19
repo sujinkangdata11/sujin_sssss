@@ -1,11 +1,7 @@
-title: Google Gemini API キー 
-10秒で無料発行！
-excerpt: Googleの強力なAIをあなたの手に！
-無料です。
+title: Google Gemini API キー  10秒で無料発行！
+excerpt: Googleの強力なAIをあなたの手に！ 無料です。
 category: General
 date: 2025-08-19
-
-##Google Gemini API v3って何ですか？
 
 Google API？ 何のことでしょう？ 初めて聞く方も多いはずですが、ご安心ください！ 
 

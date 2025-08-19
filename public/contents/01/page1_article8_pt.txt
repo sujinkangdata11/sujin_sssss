@@ -1,10 +1,7 @@
 title: Um usuário que utiliza bem este serviço — Sr./Sra. A.
 excerpt: Criar um Short de 100 milhões de visualizações em apenas 3 dias.
-
 category: General
 date: 2025-08-19
-
-Como nossos power users usam este serviço?
 
 ---
 

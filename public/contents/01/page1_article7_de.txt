@@ -1,5 +1,4 @@
 title: Hinweis zur Verarbeitung Ihres API-Schlüssels
-
 excerpt: Hinweis zur Sicherheit des API-Schlüssels
 
 category: General

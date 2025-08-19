@@ -3,8 +3,6 @@ excerpt: De oplossing? Heel eenvoudig.
 category: General
 date: 2025-08-19
 
-Na het lezen hiervan kun je het probleem heel makkelijk oplossen.
-
 [IMAGE:04_image_1.png]
 ㅤ
 ## Oplossing voor de fout “Quota overschreden”

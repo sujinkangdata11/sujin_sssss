@@ -3,9 +3,6 @@ excerpt: Aviso sobre la seguridad de la clave API
 category: General
 date: 2025-08-19
 
-##Aviso sobre la seguridad de la clave API
-Ofrecemos información sobre la política de seguridad de nuestro servicio.
-
 ##🔒 Principios de seguridad de nuestro servicio
 
 [[purple: Principio de no almacenamiento de claves API]]

@@ -1,11 +1,7 @@
-title: YouTube Data
-10秒内免费获取。
-excerpt: 将 YouTube 的所有数据
-免费拿下！
+title: YouTube Data 10秒内免费获取。
+excerpt: 将 YouTube 的所有数据 免费拿下！
 category: Technology
 date: 2025-08-19
-
-##YouTube Data API v3 是什么？
 
 数据 API？ 这是什么？ 可能很多人是第一次听说，但请不用担心！ 
 

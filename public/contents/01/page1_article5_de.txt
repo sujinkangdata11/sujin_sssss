@@ -1,11 +1,7 @@
-title: Es ist noch API-Kontingent übrig,
-aber es tritt ein Fehler auf!?
-
+title: Es ist noch API-Kontingent übrig, aber es tritt ein Fehler auf!?
 excerpt: API-Kontingent überschritten! Wie löse ich das?
 category: General
 date: 2025-08-19
-
-Oh je. Ich habe doch nur einmal gesucht..?
 
 [IMAGE:05_image_1.png]
 

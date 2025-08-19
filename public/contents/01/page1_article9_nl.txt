@@ -1,11 +1,7 @@
-title: Bij het uploaden van Engelstalige Shorts
-Belangrijke aandachtspunten.
-excerpt: Wanneer je je richt op
-de Verenigde Staten, waar advertentiekosten hoog zijn.
+title: Bij het uploaden van Engelstalige Shorts - Belangrijke aandachtspunten.
+excerpt: Wanneer je je richt op de Verenigde Staten, waar advertentiekosten hoog zijn.
 category: General
 date: 2025-08-19
-
-##Als je Engelstalige Shorts maakt, gebruik dan beslist een VPN.
 
 Als je Shorts uploadt vanuit een ander land dan de Verenigde Staten,
 kunnen je Shorts worden getarget op landen met een lagere RPM.

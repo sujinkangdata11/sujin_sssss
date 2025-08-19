@@ -1,10 +1,7 @@
 title: Hoja de ruta de VIDHUNT
 excerpt: Te contamos las funciones que llegarán próximamente.
-
 category: General
 date: 2025-08-19
-
-# Hoja de ruta de VIDHUNT
 
 A continuación, nuestra hoja de ruta futura.
 Puede cambiar según la situación, pero [[purple:haremos todo lo posible por mejorar la calidad del servicio gratuito]].

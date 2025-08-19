@@ -3,8 +3,6 @@ excerpt: We’ll tell you about the features coming next.
 category: General
 date: 2025-08-18
 
-# VIDHUNT Roadmap
-
 Here’s an overview of our upcoming roadmap.
 While this may change depending on circumstances, [[purple:we will do our best to improve the quality of the free service]].
 

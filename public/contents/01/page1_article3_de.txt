@@ -1,11 +1,7 @@
-title: Google Gemini API-Schlüssel 
-In 10 Sekunden kostenlos erhalten!
-excerpt: Googles leistungsstarke KI in deiner Hand!
-Kostenlos.
+title: Google Gemini API-Schlüssel  In 10 Sekunden kostenlos erhalten!
+excerpt: Googles leistungsstarke KI in deiner Hand! Kostenlos.
 category: General
 date: 2025-08-19
-
-##Was ist die Google Gemini API v3?
 
 Google-API? Was ist das? Für viele ist das vielleicht neu – keine Sorge! 
 

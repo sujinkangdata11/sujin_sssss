@@ -1,13 +1,7 @@
-title: ¡Una oportunidad para
-apropiarte de la viralidad de tus rivales!
+title: ¡Una oportunidad para apropiarte de la viralidad de tus rivales!
 excerpt: Usa "Canales favoritos" ahora mismo.
 category: General
 date: 2025-08-19
-
-¿Has visto [[purple:'Canales favoritos' en Opciones avanzadas]]?
-
-Si eres creador de YouTube, seguro que tienes [[purple:un canal referente o algún canal competidor]].
-¿Qué tal si pudieras analizar los elementos virales de esos canales?
 
 [IMAGE:06_image_1.png]
 

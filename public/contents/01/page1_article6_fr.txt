@@ -1,13 +1,7 @@
-title: Une occasion de vous approprier
-la viralité de vos chaînes concurrentes !
+title: Une occasion de vous approprier la viralité de vos chaînes concurrentes !
 excerpt: Utilisez tout de suite « Chaînes favorites ».
 category: General
 date: 2025-08-19
-
-Avez-vous vu [[purple:'Chaînes favorites' dans Options avancées]] ?
-
-Si vous êtes créateur YouTube, vous avez sûrement [[purple:une chaîne modèle ou des chaînes concurrentes]].
-Et si vous pouviez analyser les éléments de viralité de ces chaînes ?
 
 [IMAGE:06_image_1.png]
 

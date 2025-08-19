@@ -3,9 +3,6 @@ excerpt: Aviso sobre a segurança da chave de API
 category: General
 date: 2025-08-19
 
-##Aviso sobre a segurança da chave de API
-Apresentamos a política de segurança do nosso serviço.
-
 ##🔒 Princípios de segurança do nosso serviço
 
 [[purple: API Key Non-Storage Principle]]

@@ -1,11 +1,7 @@
-title: Google Gemini API-sleutel 
-Binnen 10 seconden gratis aanvragen!
-excerpt: De krachtige AI van Google in jouw handen!
-Het is gratis.
+title: Google Gemini API-sleutel  Binnen 10 seconden gratis aanvragen!
+excerpt: De krachtige AI van Google in jouw handen! Het is gratis.
 category: General
 date: 2025-08-19
-
-##Wat is Google Gemini API v3?
 
 Google API? Wat is dat? Voor velen waarschijnlijk nieuw, maar maak je geen zorgen! 
 

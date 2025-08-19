@@ -1,5 +1,4 @@
 title: このサービスを上手に使うユーザー - Aさん。
-
 excerpt: 3日で1億再生のショートを作る。
 
 category: General

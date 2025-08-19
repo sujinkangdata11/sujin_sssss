@@ -1,11 +1,7 @@
-title: When uploading English Shorts
-Important notes.
-excerpt: When you target the United States,
-where ad costs are high.
+title: When uploading English Shorts Important notes.
+excerpt: When you target the United States, where ad costs are high.
 category: General
 date: 2025-08-18
-
-##If you produce English Shorts, be sure to use a VPN.
 
 If you upload Shorts from a country other than the United States,
 your Shorts may be targeted to countries with lower RPM.

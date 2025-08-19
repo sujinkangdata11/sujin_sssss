@@ -1,12 +1,7 @@
-title: Google Gemini API 키 
-10초만에 무료 발급받기!
-excerpt: 구글의 강력한 AI를 내 손안에!
-무료입니다.
-
+title: Google Gemini API 키  10초만에 무료 발급받기!
+excerpt: 구글의 강력한 AI를 내 손안에! 무료입니다.
 category: General
 date: 2025-08-18
-
-##Google Gemini API v3가 뭔가요?
 
 구글 API? 이게 뭘까요? 처음 듣는 분들이 많을텐데요, 걱정하지 마세요! 
 

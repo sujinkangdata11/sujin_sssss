@@ -1,11 +1,7 @@
-title: YouTube Data
-In 10 Sekunden kostenlos erhalten.
-excerpt: Alle YouTube-Daten
-kostenlos nutzen!
+title: YouTube Data In 10 Sekunden kostenlos erhalten.
+excerpt: Alle YouTube-Daten kostenlos nutzen!
 category: General
 date: 2025-08-19
-
-##Was ist die YouTube Data API v3?
 
 Daten-API? Was ist das? Für viele ist das vielleicht neu – keine Sorge! 
 

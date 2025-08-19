@@ -1,11 +1,7 @@
 title: Avis concernant le traitement de votre clé API
 excerpt: Avis concernant la sécurité de la clé API
-
 category: General
 date: 2025-08-19
-
-##Avis concernant la sécurité de la clé API
-Nous présentons la politique de sécurité de notre service.
 
 ##🔒 Principes de sécurité de notre service
 
