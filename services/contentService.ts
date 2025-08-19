@@ -1,4 +1,5 @@
 import { Article, Language } from '../types';
+import { CACHE_BUSTER } from '../src/cacheBuster';
 
 // 하드코딩된 뉴스 데이터 - v1.0.0
 const NEWS_DATA: Record<Language, Article[]> = {
@@ -430,7 +431,7 @@ YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10�
 
 // 간단한 API 함수들
 export const loadArticlesForPage = async (pageNumber: number, language: Language = 'en'): Promise<Article[]> => {
-  console.log(`🔍 Loading articles for page ${pageNumber}, language: ${language}`);
+  console.log(`🔍 Loading articles for page ${pageNumber}, language: ${language} [${CACHE_BUSTER}]`);
   
   // 페이지 1만 지원
   if (pageNumber !== 1) {
