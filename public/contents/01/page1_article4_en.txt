@@ -1,0 +1,66 @@
+title: When you suddenly encounter an error message!
+excerpt: How to fix it? Super simple.
+
+category: General
+date: 2025-08-18
+
+After reading this, you’ll be able to solve the problem very easily.
+
+[IMAGE:04_image_1.png]
+ㅤ
+## "Quota exceeded" error fix
+ㅤ
+While using the API, did you suddenly see the [[purple:"Quota exceeded"]] error message?
+Don’t panic.
+It’s a very common issue, and there’s a perfect fix.
+ㅤ
+## Assess the current situation
+Your API key is currently in a 24-hour cooldown. But you don’t have to just wait!   
+ㅤ
+[IMAGE:04_image_2.png]
+
+## Solution 1.
+ㅤ
+This is the simplest and most effective method.
+Google places few restrictions on sign-ups.
+So you can [[purple: create multiple Google accounts and issue an API key for each]].
+ㅤ
+## Practical use.
+1. [[purple: Issue API keys with 3–5 Google accounts]] in advance and keep them ready
+2. [[purple: When the first key hits its limit, switch to the second key]]
+3. Rotate them using a rotation system
+ㅤ
+## First, secure as many API keys as possible.
+ㅤ
+API Key 1 (main.account@gmail.com) - ABCDEFG...
+API Key 2 (backup.account@gmail.com) - ABCDEFG...
+API Key 3 (extra.account@gmail.com) - ABCDEFG...
+Store the keys like this and rotate them.
+
+[IMAGE:04_image_3.png]
+
+This way you can use it without limits.
+Write them down in a note like the image below and rotate them.
+The more keys you have, the better.
+
+[IMAGE:04_image_4.png]
+ㅤ
+---
+ㅤ
+## Solution 2.
+
+Adjusting your API quota usage is also an important strategy.
+Simply narrowing your search scope can save a lot of quota.
+
+[IMAGE:04_image_5.png]
+ㅤ
+[[purple:Inefficient approach (avoid)]]
+- Search across all countries
+- Set an unnecessarily wide range
+- Request too much data at once
+ㅤ
+[[purple:Efficient approach (recommended)]]
+- Select only the needed countries (only target countries like Korea, US, Japan)
+- Search sequentially by region
+- Request only the data you truly need
+ㅤ

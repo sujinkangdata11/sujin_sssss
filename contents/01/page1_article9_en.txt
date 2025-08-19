@@ -1,0 +1,28 @@
+title: When uploading English Shorts
+Important notes.
+excerpt: When you target the United States,
+where ad costs are high.
+category: General
+date: 2025-08-18
+
+##If you produce English Shorts, be sure to use a VPN.
+
+If you upload Shorts from a country other than the United States,
+your Shorts may be targeted to countries with lower RPM.
+
+For example, [[purple:even with 8 million views, you might earn only about 40,000 KRW]]. When targeting the United States, be sure to set your VPN to the U.S. before uploading.
+
+##Top 10 countries with high RPM rates as of 2025:
+
+United States 🇺🇸 ($11.95)
+Australia 🇦🇺 ($8.93)
+Norway 🇳🇴 ($8.19)
+Switzerland 🇨🇭 ($8.02)
+United Kingdom 🇬🇧 ($7.60)
+Denmark 🇩🇰 ($7.43)
+New Zealand 🇳🇿 ($6.72)
+Canada 🇨🇦 ($6.65)
+Belgium 🇧🇪 ($6.52)
+Netherlands 🇳🇱 ($6.44)
+
+We recommend actively using a VPN when targeting these countries.

@@ -1,0 +1,39 @@
+title: A chance to steal
+your competitor’s virality!
+
+excerpt: Use Favorite Channels right away.
+
+category: General
+date: 2025-08-18
+
+Have you seen [[purple:'Favorite Channels' in Advanced Options]]?
+
+If you’re a YouTube creator, you probably have [[purple:a role-model channel or competitor channel]].
+How about analyzing the viral elements of those channels?
+
+[IMAGE:06_image_1.png]
+
+## Use 'Favorite Channels' in Advanced Options.
+
+If you register the channels you’re interested in under 'Favorite Channels' in Advanced Options,
+you can gain insights like:
+
+- [[purple:🎯 Viral Shorts analysis]]: this channel’s viral elements
+- [[purple: 📊 Performance metrics check]]: views-to-subscribers ratio and growth rate
+- [[purple:📈 Trend tracking]]: latest content trends across competitor channels
+
+---
+
+[IMAGE:06_image_2.png]
+
+## It’s annoying to type the channel name every time.
+
+If you have many competitor channels and want to view various groups of competitors,
+use a [[purple:text file]].
+
+1. Organize a list of channels of interest in a text file
+2. Upload the file.
+
+Once the file is uploaded, the channels will be entered automatically like this.
+Now click Search to analyze the competitor channels!
+[IMAGE:06_image_3.png]

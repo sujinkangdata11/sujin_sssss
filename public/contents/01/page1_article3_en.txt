@@ -1,0 +1,97 @@
+title: Google Gemini API Key 
+Get it for free in 10 seconds!
+excerpt: Google’s powerful AI in your hands!
+It’s free.
+category: General
+date: 2025-08-18
+
+##What is Google Gemini API v3?
+
+Google API? What is that? Many of you are probably hearing this for the first time, but don’t worry! 
+
+"Do I have to pay?" → No, [[purple:it’s completely free.]]
+"Do I need a credit card?" → [[purple:Not at all.]]
+"Is it hard?" → [[purple:Even a 10-year-old can do it.]]
+
+Google Gemini API is a free service provided by Google.
+
+For example, if you create an `ABC @gmail.com` account,
+Google provides that account with "free AI features."
+[[purple:Simply put, it’s one of Google’s free AI services!]]
+
+[IMAGE:03_image_1.png]
+
+
+It’s really simple - 6 clicks and you’re done!
+I tried issuing a brand-new API myself,
+and you can really get an API key in no time with just 6 clicks.
+So follow along with me!
+
+##📹 Want to watch it as a video?
+
+[YOUTUBE:https://youtu.be/JmQe-AIYh3w]
+ㅤ
+---
+ㅤ
+##📝 Step-by-step guide
+For those who can’t watch the video, I’ll explain everything in detail with images.
+ㅤ
+ㅤ
+##Step 1: Access Google AI Studio
+
+Search for [[purple:"ai studio"]] on Google.
+Click the first official Google AI Studio website that appears.
+
+[IMAGE:03_image_3.png]
+ㅤ
+ㅤ
+##Step 2: Get started
+
+Click the "Get started" button in the top right.
+
+[IMAGE:03_image_4.png]
+ㅤ
+ㅤ
+## Step 3: Agree to terms
+
+When the consent screen appears, check the box and click "Confirm."
+
+[IMAGE:03_image_5.png]
+ㅤ
+ㅤ
+##Step 4: Start creating an API key
+
+Click the blue "Get API key" button at the top of the screen.
+
+[IMAGE:03_image_6.png]
+ㅤ
+ㅤ
+##Step 5: Create an API key
+
+The API key setup window appears.
+Of course, you don’t have a key yet. Click "Create new API key."
+
+[IMAGE:03_image_7.png]
+ㅤ
+ㅤ
+## Step 6: Done!
+
+Click "Generate API key" and you’re done!
+Congratulations! Your API key has been created successfully.
+
+[IMAGE:03_image_8.png]
+ㅤ
+ㅤ
+## 💡 Helpful tips!
+[[purple:* Lost your key? Don’t worry.]]
+You can always click "View API key" to check it again.
+[[purple:* Want to delete a key? ]]
+You can delete the existing key and create a new one. The new key is completely different and unique from the previous one.
+ㅤ
+Congratulations!
+Now you can fully leverage Google’s cutting-edge AI features through the Google Gemini API.
+Use a variety of AI features for free, including text generation, image analysis, and coding assistance!
+ㅤ
+ㅤ
+---
+If you’d like more detailed usage tips or have any questions, leave a comment anytime. I’ll reply quickly!

@@ -1,0 +1,45 @@
+title: When you still have API quota left
+but an error occurs!?
+excerpt: API quota exceeded error! How do we fix it?
+category: Technology
+date: 2025-08-18
+
+Oh no. I only searched once..?
+
+[IMAGE:05_image_1.png]
+
+I searched just once!
+Did you see the API quota exceeded error message?
+I’ll tell you why.
+
+[[purple: The more countries you search, the more quota the API uses]].
+If you selected all countries when searching,
+you’re sending API requests to a total of 82 countries, which consumes a significant amount of quota.
+
+So try reducing the number of countries you search.
+
+---
+
+[IMAGE:05_image_2.png]
+
+## There’s plenty of quota left in Google Console, but I got an error.
+
+This happens very frequently.
+Because API quota usage isn’t reflected in real time,
+it’s highly likely that [[purple:The Google Console view may not yet reflect the latest usage]].
+
+---
+
+## The most reliable solution
+## is to use a new API key.
+
+To find effective viral Shorts,
+[[purple: always prepare multiple API keys in advance.]]
+
+[IMAGE:04_image_4.png]
+
+Google allows you to create unlimited Gmail accounts,
+and each Gmail account can receive its own API key.
+In other words, you can secure [[purple: as many API keys as you need]].
+
+Go ahead and issue API keys with multiple Gmail accounts right now and organize them in a note.

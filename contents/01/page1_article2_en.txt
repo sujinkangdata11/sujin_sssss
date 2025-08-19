@@ -1,0 +1,101 @@
+title: YouTube Data
+Get it for free in 10 seconds.
+excerpt: All of YouTube’s data
+for free!
+category: Technology
+date: 2025-08-18
+
+##What is YouTube Data API v3?
+
+Data API? What is that? Many of you are probably hearing this for the first time, but don’t worry! 
+
+“Do I have to pay?” → No, [[purple:it’s completely free.]]
+“Do I need a credit card?” → [[purple:Not at all.]]
+“Is it hard?" → [[purple:Even a 10-year-old can do it.]]
+
+YouTube Data API v3 is a free service provided by Google.
+
+For example, if you create an `ABC @gmail.com` account, 
+Google grants that account “permission to query YouTube data.”
+[[purple:Simply put, it’s one of Google’s free services!]]
+
+[IMAGE:02_image_1.png]
+
+ㅤ
+## It’s really simple - 7 clicks and you’re done!
+I tried issuing a brand-new API myself, and you can truly get a free API key in just 7 clicks.
+So follow along with me!
+
+
+## 📹 Want to watch it as a video?
+
+[YOUTUBE:https://youtu.be/0ZYlKw4x7W0]
+ㅤ
+ㅤ
+---
+ㅤ
+## 📝 Step-by-step text guide
+For those who can’t watch the video, I’ll explain everything in detail with images.
+
+
+## Step 1: Access Google Cloud Console
+
+Search for [[purple:"google console"]] on Google. 
+Click the first official Google website that appears.
+[IMAGE:02_image_2.png]
+ㅤㅤ
+ㅤㅤ
+## Step 2: Sign up
+
+When the sign-up pop-up appears, check the terms and proceed with the sign-up.
+⚠️ **Note**: This may vary by country, but sometimes you’ll be prompted to join a premium plan by offering a $300 credit.
+In that case, click the “Back” button. [[purple:We only need the free API]]!
+
+[IMAGE:02_image_3.png]
+ㅤㅤ
+ㅤㅤ
+## Step 3: Search for YouTube Data API
+
+Once sign-up is complete, type [[purple:"youtube"]] in the top search bar.
+From the search results, click [[purple:"YouTube Data API v3"]] at the very top.
+[IMAGE:02_image_4.png]
+ㅤㅤ
+ㅤㅤ
+## Step 4: Enable the API
+
+Click this blue button.
+You’ll then be taken to the YouTube Data API management page.
+
+[IMAGE:02_image_5.png]
+ㅤㅤ
+ㅤㅤ
+## Step 5: Create an API key
+
+Click the 3rd tab, then press the [[purple:"+ plus button"]].
+It’s really simple, right?
+
+[IMAGE:02_image_6.png]
+[IMAGE:02_image_7.png]
+ㅤㅤ
+ㅤㅤ
+ㅤㅤ
+## 💡 Helpful tip!
+
+Don’t worry if you forget your API key. 
+You can always check it in Google Cloud Console, 
+and if needed, you can delete it and issue a new one.
+
+[IMAGE:02_image_8.png]
+ㅤㅤ
+ㅤㅤ
+## Now harness Google’s powerful services!
+
+Congratulations! 
+Now, through YouTube Data API v3,
+you can make full use of the various data services that Google provides.
+
+[IMAGE:03_image_1.png]
+
+
+If you’d like more detailed usage tips or have any questions, leave a comment anytime. 
+I’ll reply quickly!

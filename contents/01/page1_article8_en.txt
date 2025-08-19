@@ -1,0 +1,26 @@
+title: A user who uses this service well - User A.
+excerpt: Create a 100M-view Short in just 3 days.
+
+category: General
+date: 2025-08-18
+
+How do power users of this service use it?
+
+---
+
+Those who make the most of our service share a common trait.
+Systematic preparation.
+
+## Efficient preparation for effective use
+
+📁 Prepare just 2 required files
+[[purple: 1. api key.txt ]]
+ㄴ* Gemini API key
+ㄴ* YouTube Data API keys (10+ recommended)
+
+ 
+[[purple:  2. favorite_channels.txt ]]
+* List of competitor channels (in @channelname format)
+
+[IMAGE:08_image_1.png]
+---
