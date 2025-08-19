@@ -56,8 +56,33 @@ export const translateKeywordForCountries = async (
     return countryToTranslationMap;
   } catch (error) {
     console.error("Error translating keywords with Gemini:", error);
-    // Try to provide a more specific error message if available
+    
+    // Check for specific error types
     const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to translate keywords. Please check the Gemini API key and configuration. Details: ${errorMessage}`);
+    
+    // Check for API disabled/permission denied errors
+    if (errorMessage.includes('PERMISSION_DENIED') || 
+        errorMessage.includes('SERVICE_DISABLED') || 
+        errorMessage.includes('has not been used in project') ||
+        errorMessage.includes('is disabled')) {
+      throw new Error('이 Gemini Key는 비활성화되었습니다');
+    }
+    
+    // Check for invalid API key errors
+    if (errorMessage.includes('API_KEY_INVALID') || 
+        errorMessage.includes('Invalid API key') ||
+        errorMessage.includes('403') && errorMessage.includes('Forbidden')) {
+      throw new Error('Gemini API 키가 유효하지 않습니다');
+    }
+    
+    // Check for quota exceeded errors
+    if (errorMessage.includes('QUOTA_EXCEEDED') || 
+        errorMessage.includes('quota') ||
+        errorMessage.includes('429')) {
+      throw new Error('Gemini API 할당량을 초과했습니다');
+    }
+    
+    // Generic error message for other cases
+    throw new Error(`Gemini API 오류: Failed to translate keywords. Please check the Gemini API key and configuration. Details: ${errorMessage}`);
   }
 };
