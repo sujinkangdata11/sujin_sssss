@@ -102,8 +102,9 @@ const parseSection = (content: string, languageCode: string): LanguageSection | 
   // Get content (everything after metadata)
   let sectionContent = lines.slice(contentStartIndex).join('\n').trim();
   
-  // Additional cleanup: remove any remaining metadata patterns from content
-  sectionContent = sectionContent.replace(/^(title|excerpt|category|date):\s*.*$/gm, '').trim();
+  // Additional cleanup: only remove isolated metadata lines (not part of actual content)
+  // Only remove if the line starts with metadata pattern and is followed by a colon
+  sectionContent = sectionContent.replace(/^(category|date):\s*.*$/gm, '').trim();
   
   // Remove multiple consecutive newlines
   sectionContent = sectionContent.replace(/\n\n+/g, '\n\n');
