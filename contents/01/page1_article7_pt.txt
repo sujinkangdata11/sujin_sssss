@@ -1,38 +1,30 @@
-title: Sua chave de API está segura
-
+title: Aviso sobre o tratamento da sua chave de API
 excerpt: Aviso sobre a segurança da chave de API
-
 category: General
 date: 2025-08-19
 
 ##Aviso sobre a segurança da chave de API
-Sua chave de API está segura
-
-Muitas pessoas perguntam sobre a segurança das chaves de API,
-então explicaremos claramente a política de segurança do nosso serviço.
+Apresentamos a política de segurança do nosso serviço.
 
 ##🔒 Princípios de segurança do nosso serviço
 
-[[purple:Política de não armazenamento de chaves de API]]
-* Não armazenamos sua chave de API em nossos servidores
-* Todos os dados são apagados ao final da sessão
-* Serviço sem cadastro; não coletamos dados pessoais.
+[[purple: API Key Non-Storage Principle]]
+* A sua chave de API não é transmitida nem armazenada nos nossos servidores.
+* A chave de API é utilizada apenas temporariamente na memória do navegador e é apagada ao atualizar a página ou fechar a guia.
+* Como não há cadastro/login, não coletamos nem armazenamos informações de identificação pessoal nos nossos servidores.
 
-[[purple: Política de não uso de cache]]
-* Nenhum cache é armazenado no servidor
-* Permitimos apenas uso temporário baseado na sessão do navegador
+[[purple: Sem armazenamento no servidor & aviso sobre armazenamento no navegador]]
+* Não utilizamos bases de dados/sessões/cache do lado do servidor.
+* Apenas informações não sensíveis para conveniência do serviço (ex.: configuração de idioma, estado de visualização etc.) são guardadas no armazenamento local do navegador e permanecem até que o navegador as elimine.
+* Informações sensíveis como chaves de API não são armazenadas no armazenamento local/de sessão nem em cookies
 
-[[purple: 💡 Sobre o preenchimento automático do navegador ]]
-Se a sua chave de API parecer ser preenchida automaticamente ou salva,
-isso se deve ao recurso de salvamento automático do seu navegador Chrome.
+[[purple: 💡 Aviso sobre o preenchimento automático do navegador]]
+Pode parecer que a chave de API é preenchida automaticamente ou que ficou salva; isso pode ocorrer devido às configurações de preenchimento automático/gerenciador de senhas do seu navegador.
 
 [[purple: Como resolver ]]
-1. Configurações do navegador: desative o preenchimento automático
-2. Limpar cache: apague o cache e os cookies do navegador
-3. Modo anônimo: use o serviço no modo de navegação privada
+1. Desative nas configurações do navegador os recursos de preenchimento automático/salvamento
+2. Limpe o armazenamento do navegador (localStorage/cache/cookies)
+3. Use o modo anônimo (modo de navegação privada)
 
-
-Protegemos suas informações valiosas com políticas de segurança robustas.
-As chaves de API são usadas apenas para processar solicitações e nunca para outros fins.
-
-A segurança é nossa prioridade máxima.
+Empregamos medidas de segurança adequadas para proteger as suas informações.  
+As chaves de API são usadas exclusivamente para o processamento de solicitações e, por princípio, não são utilizadas para quaisquer outros fins.

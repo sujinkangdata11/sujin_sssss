@@ -1,36 +1,32 @@
-title: Dein API-Schlüssel ist sicher
+title: Hinweis zur Verarbeitung Ihres API-Schlüssels
+
 excerpt: Hinweis zur Sicherheit des API-Schlüssels
+
 category: General
 date: 2025-08-19
 
 ##Hinweis zur Sicherheit des API-Schlüssels
-Dein API-Schlüssel ist sicher
+Wir informieren über die Sicherheitsrichtlinie unseres Dienstes.
 
-Viele fragen nach der Sicherheit von API-Schlüsseln,
-daher erläutern wir hier klar unsere Sicherheitsrichtlinie.
+##🔒 Sicherheitsgrundsätze unseres Dienstes
 
-##🔒 Unsere Sicherheitsprinzipien
+[[purple: Grundsatz der Nichtspeicherung von API-Schlüsseln]]
+* Ihr API-Schlüssel wird weder an unsere Server übertragen noch dort gespeichert.
+* Der API-Schlüssel wird nur vorübergehend im Browserspeicher verwendet und beim Aktualisieren der Seite oder Schließen des Tabs gelöscht.
+* Da es keine Registrierung/Anmeldung gibt, erfassen oder speichern wir auf unseren Servern keine personenbezogenen Identifikationsdaten.
 
-[[purple:Nichtspeicherung von API-Schlüsseln]]
-* Wir speichern deinen API-Schlüssel nicht auf unseren Servern
-* Alle Daten werden beim Sitzungsende gelöscht
-* Dienst ohne Registrierung – keine Erhebung personenbezogener Daten.
+[[purple: Kein serverseitiges Speichern & Hinweis zur Browser-Speicherung]]
+* Wir verwenden keine serverseitigen Datenbanken/Sitzungen/Server-Caches.
+* Zur Verbesserung der Nutzungskomforts werden nur nicht sensible Informationen (z. B. Spracheinstellungen, Ansichtsstatus etc.) im lokalen Speicher des Browsers abgelegt und bleiben erhalten, bis sie vom Browser gelöscht werden.
+* Sensible Informationen wie API-Schlüssel werden nicht im lokalen/Session-Speicher oder in Cookies gespeichert
 
-[[purple: Keine Cache-Nutzung]]
-* Kein serverseitiger Cache
-* Nur temporäre, browsersitzungsbasierte Nutzung erlaubt
+[[purple: 💡 Hinweis zur Browser-Autoausfüllung]]
+In einigen Fällen kann der Eindruck entstehen, dass ein API-Schlüssel automatisch ausgefüllt oder gespeichert wurde; dies kann an den Autoausfüllen-/Passwortmanager-Einstellungen Ihres Browsers liegen.
 
-[[purple: 💡 Hinweis zur Browser-Autovervollständigung ]]
-Wenn dein API-Schlüssel automatisch ausgefüllt oder gespeichert wirkt,
-liegt das an der Autosave-Funktion deines Chrome-Browsers.
+[[purple: So beheben Sie es ]]
+1. In den Browsereinstellungen Autoausfüllen/Speichern deaktivieren
+2. Browserspeicher (localStorage/Cache/Cookies) löschen
+3. Inkognito-/Privatmodus verwenden
 
-[[purple: Lösungen ]]
-1. Browsereinstellungen: Autovervollständigung deaktivieren
-2. Cache leeren: Browser-Cache und Cookies löschen
-3. Inkognito: Dienst im privaten Modus nutzen
-
-
-Wir schützen deine wertvollen Informationen mit einer robusten Sicherheitsstrategie.
-API-Schlüssel werden ausschließlich zur Bearbeitung von Anfragen verwendet – niemals zu anderen Zwecken.
-
-Sicherheit hat für uns oberste Priorität.
+Wir bemühen uns, Ihre Informationen durch geeignete Sicherheitsmaßnahmen zu schützen.  
+API-Schlüssel werden ausschließlich zum Bearbeiten von Anfragen verwendet und werden grundsätzlich nicht für andere Zwecke genutzt.

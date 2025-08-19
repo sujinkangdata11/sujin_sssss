@@ -1,36 +1,30 @@
-title: Your API key is safe
-excerpt: API key security notice
+title: Notice on Processing of Your API Key
+excerpt: Notice Regarding API Key Security
 category: General
-date: 2025-08-18
+date: 2025-08-19
 
-##API key security notice
-Your API key is safe
+##Notice Regarding API Key Security
+We provide guidance on our service’s security policy.
 
-Many people ask about API key security,
-so we’d like to clearly explain our service’s security policy.
+##🔒 Our Service’s Security Principles
 
-##🔒 Our service’s security principles
+[[purple: API Key Non-Storage Principle]]
+* Your API key is neither transmitted to nor stored on our servers.
+* The API key is used only temporarily in browser memory and is deleted upon page refresh or tab closure.
+* Because there is no sign-up/login, we do not collect or retain personally identifying information on our servers.
 
-[[purple:API key non-storage policy]]
-* We do not store your API key on our servers
-* All data is cleared when the session ends
-* No personal data collection due to no sign-up.
+[[purple: No Server-Side Storage & Browser Storage Notice]]
+* We do not use server-side databases/sessions/server caches.
+* Only non-sensitive information for service convenience (e.g., language settings, view state) is stored in the browser’s local storage and remains until cleared by the browser.
+* Sensitive information such as API keys is not stored in local/session storage or cookies
 
-[[purple: Cache not used policy]]
-* No server-side cache storage
-* Only temporary, browser-session-based usage is allowed
+[[purple: 💡 Browser Auto-fill Notice]]
+In some cases, an API key may appear to be auto-filled or seem saved; this may be due to the auto-fill/password manager settings of the user’s browser.
 
-[[purple: 💡 About browser auto-fill ]]
-If your API key appears to auto-fill or seem saved,
-this is due to your Chrome browser’s autosave feature.
+[[purple: How to Resolve ]]
+1. Disable auto-fill/save features in your browser settings
+2. Clear browser storage (localStorage/cache/cookies)
+3. Use Incognito/Private Browsing mode
 
-[[purple: Solutions ]]
-1. Browser settings: disable auto-fill
-2. Clear cache: delete browser cache and cookies
-3. Incognito mode: use the service in private mode
-
-
-We protect your valuable information with robust security policies.
-API keys are used only to process requests and are never used for any other purpose.
-
-Security is our top priority.
+We strive to protect your information by implementing appropriate security measures.  
+API keys are used solely for the purpose of processing requests, and as a matter of principle are not used for any other purpose.

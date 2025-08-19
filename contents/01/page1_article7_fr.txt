@@ -1,35 +1,31 @@
-title: Votre clé API est en sécurité
-excerpt: Avis concernant la sécurité des clés API
+title: Avis concernant le traitement de votre clé API
+excerpt: Avis concernant la sécurité de la clé API
+
 category: General
 date: 2025-08-19
 
-##Avis concernant la sécurité des clés API
-Votre clé API est en sécurité
-
-Beaucoup nous interrogent sur la sécurité des clés API,
-nous allons donc clarifier la politique de sécurité de notre service.
+##Avis concernant la sécurité de la clé API
+Nous présentons la politique de sécurité de notre service.
 
 ##🔒 Principes de sécurité de notre service
 
-[[purple:Politique de non-stockage des clés API]]
-* Nous ne stockons pas votre clé API sur nos serveurs
-* Toutes les données sont effacées à la fin de la session
-* Service sans inscription, aucune collecte de données personnelles.
+[[purple: Principe de non-stockage de la clé API]]
+* Votre clé API n’est ni transmise ni stockée sur nos serveurs.
+* La clé API n’est utilisée que temporairement en mémoire du navigateur et est supprimée lors de l’actualisation de la page ou de la fermeture de l’onglet.
+* En l’absence d’inscription/connexion, nous ne collectons ni ne conservons d’informations d’identification personnelle sur nos serveurs.
 
-[[purple: Politique de non-utilisation du cache]]
-* Aucun cache côté serveur n’est conservé
-* Seule l’utilisation temporaire basée sur la session du navigateur est autorisée
+[[purple: Absence de stockage côté serveur & informations sur le stockage du navigateur]]
+* Nous n’utilisons pas de bases de données/sessions/caches côté serveur.
+* Seules des informations non sensibles destinées au confort d’utilisation (p. ex. réglages de langue, état d’affichage, etc.) sont enregistrées dans le stockage local du navigateur et y demeurent jusqu’à leur suppression par le navigateur.
+* Les informations sensibles telles que les clés API ne sont pas enregistrées dans le stockage local/session ni dans les cookies
 
-[[purple: 💡 À propos de l’auto-remplissage du navigateur ]]
-Si votre clé API semble s’auto-remplir ou paraître enregistrée,
-cela provient de la fonction d’enregistrement automatique de votre navigateur Chrome.
+[[purple: 💡 Informations sur l’auto-remplissage du navigateur ]]
+Il peut arriver que la clé API semble être auto-remplie ou enregistrée ; cela peut provenir des paramètres d’auto-remplissage/gestionnaire de mots de passe de votre navigateur.
 
-[[purple: Comment résoudre ]]
-1. Paramètres du navigateur : désactivez l’auto-remplissage
-2. Videz le cache : supprimez le cache et les cookies du navigateur
-3. Mode navigation privée : utilisez le service en mode privé
+[[purple: Solutions ]]
+1. Désactiver les fonctions d’auto-remplissage/enregistrement dans les paramètres du navigateur
+2. Nettoyer le stockage du navigateur (localStorage/cache/cookies)
+3. Utiliser le mode navigation privée (mode confidentiel)
 
-Nous protégeons vos informations précieuses avec des politiques de sécurité robustes.
-Les clés API ne sont utilisées que pour traiter les requêtes et jamais à d’autres fins.
-
-La sécurité est notre priorité absolue.
+Nous mettons en œuvre des mesures de sécurité appropriées afin de protéger vos informations.  
+Les clés API sont utilisées uniquement aux fins de traitement des requêtes et, par principe, ne sont pas utilisées à d’autres fins.

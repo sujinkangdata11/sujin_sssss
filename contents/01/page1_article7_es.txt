@@ -1,37 +1,30 @@
-title: Tu clave API está segura
-
+title: Aviso sobre el tratamiento de su clave API
 excerpt: Aviso sobre la seguridad de la clave API
 category: General
 date: 2025-08-19
 
 ##Aviso sobre la seguridad de la clave API
-Tu clave API está segura
-
-Muchas personas preguntan por la seguridad de las claves API,
-así que explicaremos con claridad la política de seguridad de nuestro servicio.
+Ofrecemos información sobre la política de seguridad de nuestro servicio.
 
 ##🔒 Principios de seguridad de nuestro servicio
 
-[[purple:Política de no almacenamiento de claves API]]
-* No almacenamos tu clave API en nuestros servidores
-* Todos los datos se borran al terminar la sesión
-* Servicio sin registro: no recopilamos datos personales.
+[[purple: Principio de no almacenamiento de claves API]]
+* Su clave API no se transmite ni se almacena en nuestros servidores.
+* La clave API se utiliza únicamente de forma temporal en la memoria del navegador y se elimina al actualizar la página o cerrar la pestaña.
+* Al no haber registro/inicio de sesión, no recopilamos ni conservamos información de identificación personal en nuestros servidores.
 
-[[purple: Política de no uso de caché]]
-* No guardamos caché del lado del servidor
-* Solo permitimos uso temporal basado en la sesión del navegador
+[[purple: Sin almacenamiento del lado del servidor & aviso sobre almacenamiento del navegador]]
+* No utilizamos bases de datos/sesiones/caché del lado del servidor.
+* Solo se almacena en el almacenamiento local del navegador información no sensible para la comodidad del servicio (p. ej., configuración de idioma, estado de vista, etc.), y permanece hasta que el navegador la elimine.
+* La información sensible como las claves API no se guarda en el almacenamiento local/de sesión ni en cookies
 
-[[purple: 💡 Sobre el autocompletado del navegador ]]
-Si parece que tu clave API se autocompleta o queda guardada,
-se debe a la función de guardado automático de tu navegador Chrome.
+[[purple: 💡 Aviso sobre el autocompletado del navegador]]
+En algunos casos, puede parecer que una clave API se autocompleta o queda guardada; esto puede deberse a la configuración de autocompletado/gestor de contraseñas de su navegador.
 
 [[purple: Cómo solucionarlo ]]
-1. Ajustes del navegador: desactiva el autocompletado
-2. Borra caché: elimina la caché y las cookies del navegador
-3. Modo incógnito: usa el servicio en modo de navegación privada
+1. Desactive en la configuración del navegador las funciones de autocompletar/guardar
+2. Limpie el almacenamiento del navegador (localStorage/caché/cookies)
+3. Use el modo incógnito/navegación privada
 
-
-Protegemos tu valiosa información con una política de seguridad sólida.
-Las claves API solo se usan para procesar solicitudes y nunca para otros fines.
-
-La seguridad es nuestra máxima prioridad.
+Nos esforzamos por proteger su información implementando medidas de seguridad adecuadas.  
+Las claves API se utilizan únicamente para procesar solicitudes y, por principio, no se emplean para ningún otro propósito.
