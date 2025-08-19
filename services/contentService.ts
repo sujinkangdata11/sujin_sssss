@@ -1410,12 +1410,12 @@ Google がそのアカウントに「無料のAI機能」を提供してくれ�
     ];
     const zhExcerpts = [
       "",
-      "很多人都会问："用 VIDHUNT 寻找热门 Shorts 和在 YouTube 上直接搜索视频，有什么区别？"",
+      "很多人都会问：\"用 VIDHUNT 寻找热门 Shorts 和在 YouTube 上直接搜索视频，有什么区别？\"",
       "将 YouTube 的所有数据\n免费拿下！",
       "把 Google 的强大 AI 掌握在你手中！\n免费使用。",
       "解决方法？ 非常简单。",
       "API 配额超限错误！ 怎么解决？",
-      "马上使用"收藏频道"功能。",
+      "马上使用\"收藏频道\"功能。",
       "关于 API 密钥安全性的说明",
       "3 天做出 1 亿播放的 Shorts。",
       "当你将高广告成本的\n美国作为目标时。",
@@ -1436,7 +1436,7 @@ Google がそのアカウントに「無料のAI機能」を提供してくれ�
   // ES articles - Spanish
   if (pageNumber === 1 && language === 'es') {
     const esTitles = ["", "VIDHUNT VS búsqueda general en YouTube.\n¿Cuál es mejor?", "YouTube Data\nConsíguelo gratis en 10 segundos.", "Google Gemini API Key\n¡Consíguelo gratis en 10 segundos!", "¡Cuando te encuentras de repente con un mensaje de error!", "Cuando aún te queda cuota de API\npero ocurre un error!?", "¡Una oportunidad de robar\nla viralidad de la competencia!", "Aviso sobre el procesamiento de tu clave API", "Usuario que utiliza bien este servicio - Usuario A.", "Al subir Shorts en inglés\nNotas importantes.", "Hoja de ruta de VIDHUNT"];
-    const esExcerpts = ["", "Muchas personas se preguntan: "¿Cuál es la diferencia entre encontrar Shorts populares con VIDHUNT y buscar videos directamente en YouTube?"", "Todos los datos de YouTube\n¡gratis!", "¡El poderoso AI de Google en tus manos!\nEs gratuito.", "¿Solución? Muy simple.", "¡Error de cuota API excedida! ¿Cómo lo solucionamos?", "Utiliza inmediatamente los Canales Favoritos.", "Aviso sobre la seguridad de las claves API", "Crear un Short de 100M de visualizaciones en solo 3 días.", "Cuando apuntas a Estados Unidos,\ndonde los costos publicitarios son altos.", "Te contaremos sobre las funciones que vendrán próximamente."];
+    const esExcerpts = ["", "Muchas personas se preguntan: \"¿Cuál es la diferencia entre encontrar Shorts populares con VIDHUNT y buscar videos directamente en YouTube?\"", "Todos los datos de YouTube\n¡gratis!", "¡El poderoso AI de Google en tus manos!\nEs gratuito.", "¿Solución? Muy simple.", "¡Error de cuota API excedida! ¿Cómo lo solucionamos?", "Utiliza inmediatamente los Canales Favoritos.", "Aviso sobre la seguridad de las claves API", "Crear un Short de 100M de visualizaciones en solo 3 días.", "Cuando apuntas a Estados Unidos,\ndonde los costos publicitarios son altos.", "Te contaremos sobre las funciones que vendrán próximamente."];
     for (let i = 1; i <= 10; i++) {
       articles.push({ id: i, title: esTitles[i], excerpt: esExcerpts[i], content: `Contenido del artículo ${i}`, category: "General", date: "2025-08-18" });
     }
