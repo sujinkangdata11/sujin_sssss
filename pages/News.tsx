@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import { Language, Article } from '../types';
 import { translations } from '../i18n/translations';
 import { loadArticlesForPage, getThumbnailPath } from '../services/contentService';
@@ -129,14 +130,14 @@ const News: React.FC<NewsProps> = ({ language }) => {
           <p 
             className="featured-excerpt"
             dangerouslySetInnerHTML={{ 
-              __html: featuredArticle.excerpt
+              __html: DOMPurify.sanitize(featuredArticle.excerpt
                 .replace(/\r\n/g, '\n') // normalize line endings
                 .replace(/\r/g, '\n') // normalize line endings
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **text** -> <strong>text</strong>
                 .replace(/\*(.*?)\*/g, '<em>$1</em>') // *text* -> <em>text</em>
                 .replace(/##(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // ##text -> larger text
                 .replace(/#(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // #text -> larger text
-                .replace(/\n/g, '<br>') 
+                .replace(/\n/g, '<br>'))
             }}
           />
           <button className="read-more-btn">Read More</button>
@@ -166,14 +167,14 @@ const News: React.FC<NewsProps> = ({ language }) => {
                 className="article-excerpt"
                 style={{ textAlign: 'left' }}
                 dangerouslySetInnerHTML={{ 
-                  __html: article.excerpt
+                  __html: DOMPurify.sanitize(article.excerpt
                     .replace(/\r\n/g, '\n') // normalize line endings
                     .replace(/\r/g, '\n') // normalize line endings
                     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **text** -> <strong>text</strong>
                     .replace(/\*(.*?)\*/g, '<em>$1</em>') // *text* -> <em>text</em>
                     .replace(/##(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // ##text -> larger text
                     .replace(/#(.+?)(?=\n|$)/g, '<span style="font-size: 1.2em; font-weight: 600;">$1</span>') // #text -> larger text
-                    .replace(/\n/g, '<br>') 
+                    .replace(/\n/g, '<br>'))
                 }}
               />
             </div>
