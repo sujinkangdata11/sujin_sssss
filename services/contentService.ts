@@ -20,7 +20,8 @@ const parseLanguageSections = (fileContent: string): LanguageSection[] => {
   console.log('File content preview:', fileContent.substring(0, 500));
   
   // Split by language markers like [korea], [Japanese], etc.
-  const languageMarkerRegex = /\[(\w+)\]/g;
+  // Exclude IMAGE and other non-language markers
+  const languageMarkerRegex = /\[(korea|korean|japan|japanese|china|chinese|spanish|french|german|dutch|portuguese|russian|hindi)\]/gi;
   const matches = [...fileContent.matchAll(languageMarkerRegex)];
   
   console.log('Found language markers:', matches.map(m => m[0]));
@@ -146,6 +147,76 @@ export const parseContentFile = (fileContent: string, language: Language = 'en')
 };
 
 export const loadArticleFromFile = async (pageNumber: number, articleId: number, language: Language = 'en'): Promise<Article | null> => {
+  // Hardcoded English article 1 for page 1
+  if (pageNumber === 1 && articleId === 1 && language === 'en') {
+    return {
+      id: 1,
+      title: "VIDHUNT vs. Regular YouTube Search.\nWhich is better?",
+      excerpt: "There's a question many people are curious about. \"What's the difference between finding trending Shorts with VIDHUNT and searching videos directly on YouTube?\"",
+      content: `The answer lies in the [scope of keyword search].
+
+[IMAGE:01_image_1.png]
+
+##See global trends at a glance
+
+The biggest advantage of VIDHUNT is that it shows you [[purple: global Shorts by automatically converting your keyword into each country's language]] all at once.
+For example, if you search 'cat,' it aggregates results in various languages like 'cat,' 'gato,' '고양이,' and '猫' and shows them together.
+This way, you won't miss overseas viral content that hasn't been discovered domestically yet.
+
+##Leverage the traits of the YouTube algorithm
+
+YouTube's algorithm gives priority exposure to [[purple: videos on similar topics to content that is "currently" trending]].
+Therefore, when producing a video or choosing a topic, it's important to identify the core elements that are most popular right now within your channel's category.
+
+[IMAGE:01_image_2.png]
+
+##Timing is the key to success
+
+Here's an important tip.
+YouTube values [[purple: a 100K-view video uploaded yesterday more than a 1M-view video from three months ago]].
+So set your search window as short as possible. We recommend narrowing it to 7 days, or even 3 days, and producing Shorts in a planned way.
+For older hit videos, there's a high chance many creators have already made similar content.
+If you jump in late, the algorithm is less likely to prioritize your video.`,
+      category: "Technology",
+      date: "2025-08-18"
+    };
+  }
+
+  // Hardcoded Japanese article 1 for page 1
+  if (pageNumber === 1 && articleId === 1 && language === 'ja') {
+    return {
+      id: 1,
+      title: "VIDHUNT VS YouTube一般検索。\nどちらが良いですか？",
+      excerpt: "多くの方が疑問に思っている質問があります。「VIDHUNTで人気ショートを見つけることとYouTubeで直接動画を検索することに、どんな違いがありますか？」",
+      content: `答えは[キーワード検索の範囲]にあります。
+
+[IMAGE:01_image_1.png]
+
+##世界のトレンドを一目で
+
+VIDHUNTの最大の利点は、入力された[[purple: キーワードを各国の言語に自動変換して世界中のショートを]]一度に表示することです。
+例えば「cat」と検索すると、「cat」「gato」「고양이」「猫」など様々な言語で検索された結果を統合して表示します。
+これにより、国内ではまだ発見されていない海外のバイラルコンテンツも見逃すことなく見つけることができます。
+
+##YouTubeアルゴリズムの特性を活用しましょう
+
+YouTubeアルゴリズムは[[purple:「現在」トレンドになっているコンテンツと類似した主題]]の動画に優先的に露出させます。
+したがって動画を制作したり主題を選定する際は、あなたのチャンネルカテゴリで今最も人気のある核心要素を把握することが重要です。
+
+[IMAGE:01_image_2.png]
+
+##タイミングこそ成功の鍵
+
+ここで重要なヒントを一つお教えします。
+YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10万再生の動画]]をより高く評価します。
+したがって検索期間を可能な限り短く設定してください。**7日、さらには3日**程度に期間を絞って計画的にショートを制作することをお勧めします。
+古い人気動画の場合、すでに他のクリエイターが類似したコンテンツを多く制作している可能性が高いです。
+遅れて参入した状況では、アルゴリズムがあなたの動画を優先露出してくれない確率が高くなります。`,
+      category: "Technology",
+      date: "2025-08-18"
+    };
+  }
+
   // First check localStorage for published articles
   try {
     const articleKey = `article_${pageNumber}_${articleId}_${language}`;
@@ -193,24 +264,100 @@ export const loadArticleFromFile = async (pageNumber: number, articleId: number,
 };
 
 export const loadArticlesForPage = async (pageNumber: number, language: Language = 'en'): Promise<Article[]> => {
+  console.log(`🔍 Loading articles for page ${pageNumber}, language: ${language}`);
   const articles: Article[] = [];
+
+  // Hardcoded English article 1 for page 1
+  if (pageNumber === 1 && language === 'en') {
+    articles.push({
+      id: 1,
+      title: "VIDHUNT vs. Regular YouTube Search.\nWhich is better?",
+      excerpt: "There's a question many people are curious about. \"What's the difference between finding trending Shorts with VIDHUNT and searching videos directly on YouTube?\"",
+      content: `The answer lies in the [scope of keyword search].
+
+[IMAGE:01_image_1.png]
+
+##See global trends at a glance
+
+The biggest advantage of VIDHUNT is that it shows you [[purple: global Shorts by automatically converting your keyword into each country's language]] all at once.
+For example, if you search 'cat,' it aggregates results in various languages like 'cat,' 'gato,' '고양이,' and '猫' and shows them together.
+This way, you won't miss overseas viral content that hasn't been discovered domestically yet.
+
+##Leverage the traits of the YouTube algorithm
+
+YouTube's algorithm gives priority exposure to [[purple: videos on similar topics to content that is "currently" trending]].
+Therefore, when producing a video or choosing a topic, it's important to identify the core elements that are most popular right now within your channel's category.
+
+[IMAGE:01_image_2.png]
+
+##Timing is the key to success
+
+Here's an important tip.
+YouTube values [[purple: a 100K-view video uploaded yesterday more than a 1M-view video from three months ago]].
+So set your search window as short as possible. We recommend narrowing it to 7 days, or even 3 days, and producing Shorts in a planned way.
+For older hit videos, there's a high chance many creators have already made similar content.
+If you jump in late, the algorithm is less likely to prioritize your video.`,
+      category: "Technology",
+      date: "2025-08-18"
+    });
+  }
+
+  // Hardcoded Japanese article 1 for page 1
+  if (pageNumber === 1 && language === 'ja') {
+    articles.push({
+      id: 1,
+      title: "VIDHUNT VS YouTube一般検索。\nどちらが良いですか？",
+      excerpt: "多くの方が疑問に思っている質問があります。「VIDHUNTで人気ショートを見つけることとYouTubeで直接動画を検索することに、どんな違いがありますか？」",
+      content: `答えは[キーワード検索の範囲]にあります。
+
+[IMAGE:01_image_1.png]
+
+##世界のトレンドを一目で
+
+VIDHUNTの最大の利点は、入力された[[purple: キーワードを各国の言語に自動変換して世界中のショートを]]一度に表示することです。
+例えば「cat」と検索すると、「cat」「gato」「고양이」「猫」など様々な言語で検索された結果を統合して表示します。
+これにより、国内ではまだ発見されていない海外のバイラルコンテンツも見逃すことなく見つけることができます。
+
+##YouTubeアルゴリズムの特性を活用しましょう
+
+YouTubeアルゴリズムは[[purple:「現在」トレンドになっているコンテンツと類似した主題]]の動画に優先的に露出させます。
+したがって動画を制作したり主題を選定する際は、あなたのチャンネルカテゴリで今最も人気のある核心要素を把握することが重要です。
+
+[IMAGE:01_image_2.png]
+
+##タイミングこそ成功の鍵
+
+ここで重要なヒントを一つお教えします。
+YouTubeは[[purple:3か月前の100万再生よりも昨日アップされた10万再生の動画]]をより高く評価します。
+したがって検索期間を可能な限り短く設定してください。**7日、さらには3日**程度に期間を絞って計画的にショートを制作することをお勧めします。
+古い人気動画の場合、すでに他のクリエイターが類似したコンテンツを多く制作している可能性が高いです。
+遅れて参入した状況では、アルゴリズムがあなたの動画を優先露出してくれない確率が高くなります。`,
+      category: "Technology",
+      date: "2025-08-18"
+    });
+  }
 
   // First try to load from localStorage (admin-created articles)
   const publishedArticles = getPublishedArticles(pageNumber, language);
+  console.log(`📦 Found ${publishedArticles.length} published articles from localStorage`);
   articles.push(...publishedArticles);
 
   // Then try to load from file system (existing text files)
   try {
     const paddedPageNumber = pageNumber.toString().padStart(2, '0');
+    console.log(`📁 Looking for files in /contents/${paddedPageNumber}/`);
     
     // Check for all available article files (1-10)
     for (let articleId = 1; articleId <= 10; articleId++) {
       const filename = `page${pageNumber}_article${articleId}_${language}.txt`;
-      const response = await fetch(`/contents/${paddedPageNumber}/${filename}`);
+      const url = `/contents/${paddedPageNumber}/${filename}`;
+      console.log(`🔗 Trying to fetch: ${url}`);
+      const response = await fetch(url);
       
       if (response.ok) {
         const content = await response.text();
         const parsed = parseContentFile(content, language);
+        console.log(`✅ Successfully loaded article ${articleId}: "${parsed.title}" (excerpt: "${parsed.excerpt.substring(0, 50)}...")`);
         
         // Only add if not already in localStorage
         if (!articles.find(a => a.id === articleId)) {
@@ -223,12 +370,15 @@ export const loadArticlesForPage = async (pageNumber: number, language: Language
             date: parsed.date
           });
         }
+      } else {
+        console.log(`❌ Failed to load ${url}: ${response.status} ${response.statusText}`);
       }
     }
   } catch (error) {
     console.error('Error loading articles from files:', error);
   }
 
+  console.log(`📊 Total articles loaded: ${articles.length}`);
   return articles.sort((a, b) => a.id - b.id);
 };
 
