@@ -5,9 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generateContentModule.js && vite build",
-    "preview": "vite preview",
-    "generate-content": "node scripts/generateContentModule.js"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@google/genai": "^1.14.0",

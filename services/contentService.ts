@@ -186,27 +186,7 @@ export const loadArticleFromFile = async (pageNumber: number, articleId: number,
     console.error('Error loading from localStorage:', error);
   }
 
-  // Try to load from bundled content data as fallback
-  try {
-    const { contentData } = await import('../src/data/contentData.js');
-    const filename = `page${pageNumber}_article${articleId}_${language}`;
-    
-    if (contentData[filename]) {
-      const parsed = parseContentFile(contentData[filename], language);
-      console.log(`✅ Found bundled content article: ${parsed.title}`);
-      
-      return {
-        id: articleId,
-        title: parsed.title,
-        excerpt: parsed.excerpt,
-        date: parsed.date,
-        content: parsed.content,
-        category: parsed.category
-      };
-    }
-  } catch (error) {
-    console.error('Error loading from bundled content:', error);
-  }
+  // Fallback removed - all content is now hardcoded
 
   console.log(`❌ Article not found: page ${pageNumber}, article ${articleId}, language: ${language}`);
   return null;
