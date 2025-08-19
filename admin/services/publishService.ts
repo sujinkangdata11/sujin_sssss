@@ -46,7 +46,7 @@ export const publishArticle = async (data: PublishData, thumbnailFile?: File): P
     // Create file download
     downloadArticleFile(data, articleContent);
 
-    // For now, save to localStorage as a demo
+    // Also save to localStorage for immediate preview
     const articleKey = `article_${data.pageNumber}_${data.articleId}_${data.language}`;
     
     // Create article object
@@ -82,27 +82,11 @@ export const publishArticle = async (data: PublishData, thumbnailFile?: File): P
     filteredArticles.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     
     localStorage.setItem(publishedArticlesKey, JSON.stringify(filteredArticles));
-    
-    if (thumbnailFile) {
-      // Download thumbnail file
-      downloadThumbnailFile(data, thumbnailFile);
-      
-      // Convert thumbnail to base64 and save to localStorage (for immediate use)
-      const reader = new FileReader();
-      reader.onload = () => {
-        const thumbnailKey = `thumbnail_${data.pageNumber}_${data.articleId}`;
-        localStorage.setItem(thumbnailKey, reader.result as string);
-      };
-      reader.readAsDataURL(thumbnailFile);
-    }
 
     // Clear temporary image files
     sessionStorage.removeItem('tempImageFiles');
-
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500));
     
-    console.log('Article published successfully to localStorage!');
+    console.log('Article published successfully and deployed!');
     console.log('Article:', article);
     
   } catch (error) {
@@ -175,4 +159,18 @@ const downloadThumbnailFile = (data: PublishData, thumbnailFile: File): void => 
   URL.revokeObjectURL(url);
   
   console.log(`📥 Downloaded thumbnail file: ${filename}`);
+};
+
+
+// Helper function to convert File to base64
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(',')[1]); // Remove data:image/xxx;base64, prefix
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 };

@@ -194,6 +194,51 @@ const ContentEditor: React.FC = () => {
 
   return (
     <div className="admin-editor">
+      {/* GitHub Token Setup */}
+      {showTokenInput && (
+        <div className="admin-section" style={{ border: '2px solid #ffc107', backgroundColor: '#fff3cd' }}>
+          <h2 className="admin-section-title">🔑 GitHub 자동 배포 설정</h2>
+          <div style={{ marginBottom: '1rem', color: '#856404' }}>
+            <p>자동 배포를 위해 GitHub Personal Access Token이 필요합니다.</p>
+            <p>GitHub Settings → Developer settings → Personal access tokens → Generate new token</p>
+            <p>권한: repo (Full control of private repositories) 체크</p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <input
+              type="password"
+              placeholder="GitHub Personal Access Token"
+              value={githubToken}
+              onChange={(e) => setGithubToken(e.target.value)}
+              style={{ flex: 1, padding: '0.5rem', fontSize: '1rem' }}
+            />
+            <button 
+              onClick={handleSaveGithubToken}
+              style={{ padding: '0.5rem 1rem', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px' }}
+            >
+              저장
+            </button>
+            <button 
+              onClick={() => setShowTokenInput(false)}
+              style={{ padding: '0.5rem 1rem', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px' }}
+            >
+              나중에
+            </button>
+          </div>
+        </div>
+      )}
+      
+      {!showTokenInput && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div style={{ color: '#28a745' }}>✅ GitHub 자동 배포 활성화됨</div>
+          <button 
+            onClick={() => setShowTokenInput(true)}
+            style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', backgroundColor: '#ffc107', border: 'none', borderRadius: '4px' }}
+          >
+            토큰 변경
+          </button>
+        </div>
+      )}
+
       {/* File Loader Section */}
       <div className="admin-section">
         <h2 className="admin-section-title">📁 파일 불러오기</h2>
