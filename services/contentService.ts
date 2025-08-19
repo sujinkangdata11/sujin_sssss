@@ -1,6 +1,6 @@
 import { Article, Language } from '../types';
 
-// 하드코딩된 뉴스 데이터
+// 하드코딩된 뉴스 데이터 - v1.0.0
 const NEWS_DATA: Record<Language, Article[]> = {
   // 한국어 - 10개
   ko: [
