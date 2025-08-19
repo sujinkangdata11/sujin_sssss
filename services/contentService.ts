@@ -81,6 +81,7 @@ const parseSection = (content: string, languageCode: string): LanguageSection | 
   let contentStartIndex = 0;
   
   // Parse metadata (first few lines before empty line)
+  let currentKey = '';
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     if (line === '') {
@@ -89,7 +90,11 @@ const parseSection = (content: string, languageCode: string): LanguageSection | 
     }
     if (line.includes(':')) {
       const [key, ...valueParts] = line.split(':');
-      metadata[key.trim()] = valueParts.join(':').trim();
+      currentKey = key.trim();
+      metadata[currentKey] = valueParts.join(':').trim();
+    } else if (currentKey && line) {
+      // Continue previous metadata field (multiline)
+      metadata[currentKey] += '\n' + line;
     }
   }
   
