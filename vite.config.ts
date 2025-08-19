@@ -22,3 +22,4 @@ export default defineConfig(({ mode }) => {
       assetsInclude: ['**/*.txt']
     };
 });
+// Force rebuild Tue Aug 19 20:10:59 KST 2025
