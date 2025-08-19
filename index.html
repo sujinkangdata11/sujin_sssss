@@ -10,7 +10,10 @@
     <meta name="description" content="VIDHUNT helps you discover trending YouTube Shorts and viral videos from around the world. Find popular short-form content, analyze global trends, and boost your channel growth with our powerful video discovery tool." />
     <meta name="keywords" content="VIDHUNT, VidHunt, YouTube Shorts finder, viral videos, trending shorts, short video discovery, YouTube analytics, viral content finder, global video trends, TikTok videos, social media trends, content creator tools, video marketing, YouTube growth, 비드헌트, 쇼츠파인더, 쇼츠 검색, 바이럴 영상, 인기 쇼츠, ビッドハント, ショート動画ファインダー, バイラル動画, 维德亨特, 短视频搜索器, 病毒视频, विदहंट, शॉर्ट्स फाइंडर, वायरल वीडियो, Vidjunt, buscador de shorts, videos virales, Vidonte, chercheur de shorts, vidéos virales, VidHunt, Shorts-Finder, virale Videos, Shorts Zoeker, virale video's, Vidunte, localizador de shorts, vídeos virais, Видхант, поиск Shorts, вирусные видео" />
     <meta name="author" content="VIDHUNT" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, noarchive, nosnippet, noimageindex" />
+    <meta name="copyright" content="© 2025 VIDHUNT. All rights reserved." />
+    <meta name="anti-scraping" content="prohibited" />
+    <meta name="protection" content="This content is protected by copyright law" />
     <meta name="language" content="English" />
     <meta name="revisit-after" content="7 days" />
     
@@ -138,5 +141,38 @@
   <body class="bg-slate-900">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
+    
+    <!-- Anti-Scraping Console Warning -->
+    <script>
+      // Multi-language console warning
+      console.clear();
+      console.log('%c🚨 WARNING: Unauthorized copying prohibited', 'color: red; font-size: 20px; font-weight: bold;');
+      console.log('%c경고: 무단 복제 금지', 'color: red; font-size: 16px; font-weight: bold;');
+      console.log('%c警告: 無断複製禁止', 'color: red; font-size: 16px; font-weight: bold;');
+      console.log('%c警告: 禁止未经授权的复制', 'color: red; font-size: 16px; font-weight: bold;');
+      console.log('%cचेतावनी: अनधिकृत कॉपी करना निषिद्ध', 'color: red; font-size: 16px; font-weight: bold;');
+      console.log('%c\nThis website\'s code and content are protected by copyright law.\nUnauthorized copying, scraping, or distribution may result in legal action.\n\nFor licensing inquiries: https://vidhunt.me/terms.html', 'color: red; font-size: 14px;');
+      console.log('%c\n본 웹사이트의 코드와 콘텐츠는 저작권법의 보호를 받습니다.\n무단 복제, 스크래핑, 배포시 법적 조치를 받을 수 있습니다.', 'color: red; font-size: 12px;');
+      console.log('%c\n© 2025 VIDHUNT. All rights reserved.', 'color: #10b981; font-size: 12px; font-weight: bold;');
+      
+      // Disable common scraping methods
+      Object.defineProperty(console, 'clear', { value: () => {}, writable: false });
+      
+      // Basic developer tools detection warning
+      let devtools = { open: false, orientation: null };
+      const threshold = 160;
+      
+      setInterval(() => {
+        if (window.outerHeight - window.innerHeight > threshold || 
+            window.outerWidth - window.innerWidth > threshold) {
+          if (!devtools.open) {
+            devtools.open = true;
+            console.log('%c⚠️ Developer tools detected. Please respect our terms of service.', 'color: orange; font-size: 16px; font-weight: bold;');
+          }
+        } else {
+          devtools.open = false;
+        }
+      }, 500);
+    </script>
   </body>
 </html>

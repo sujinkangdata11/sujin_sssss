@@ -26,6 +26,19 @@
           "value": "default-src 'self' https:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; font-src 'self' https:; img-src 'self' data: https:; connect-src 'self' https:; frame-src https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
         }
       ]
+    },
+    {
+      "source": "/(.*\\.(js|css|tsx?|ts|json|map))$",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noarchive, nosnippet, noimageindex"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "private, no-cache, no-store"
+        }
+      ]
     }
   ]
 }
