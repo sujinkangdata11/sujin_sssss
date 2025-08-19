@@ -27,6 +27,8 @@ const News: React.FC<NewsProps> = ({ language }) => {
     const loadArticles = async () => {
       try {
         setLoading(true);
+        console.log('🚨 EMERGENCY TEST - Direct hardcode check');
+        console.log('Language:', language);
         const loadedArticles = await loadArticlesForPage(currentPage, language);
         
         if (loadedArticles.length > 0) {
