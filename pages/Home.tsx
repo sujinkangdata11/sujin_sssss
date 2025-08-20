@@ -846,6 +846,9 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
             // Clear error messages when switching modes
             setError(null);
             setRandomSearchError(null);
+            // Clear search results to show initial homepage content
+            setShorts([]);
+            setRandomSearchResults([]);
           }}
           title={isRandomSearchOpen ? t('normalSearchTooltip') : t('luckySearchTooltip')}
           style={{ 
