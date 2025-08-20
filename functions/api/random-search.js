@@ -306,7 +306,7 @@ export async function onRequestPost(context) {
     }
 
     // Get Gemini API key from environment
-    const geminiApiKey = env.GEMINI_API_KEY;
+    const geminiApiKey = env.GEMINI_API_KEYS;
     if (!geminiApiKey) {
       return new Response(JSON.stringify({ error: 'Gemini API 키가 설정되지 않았습니다.' }), {
         status: 500,
