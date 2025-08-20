@@ -186,6 +186,8 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
 
         if (channels.length > 0) {
           setFavoriteChannels(channels);
+          // 즐겨찾는 채널이 업로드되면 키워드 텍스트 자동 초기화
+          setKeyword('');
         } else {
           setFavoriteChannels(['']); // Reset if file is empty
         }
