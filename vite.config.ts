@@ -22,6 +22,9 @@ export default defineConfig(({ mode }) => {
         },
         middlewareMode: false
       },
+      define: {
+        __XML_CONTENT_TYPE__: '"application/xml"'
+      },
       assetsInclude: ['**/*.txt', '**/*.xml'],
       publicDir: 'public'
     };
