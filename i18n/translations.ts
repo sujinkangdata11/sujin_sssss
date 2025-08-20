@@ -93,7 +93,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 Lucky Search ㅣ Search if quota is available",
     luckySearchButton: "Lucky Search",
-    luckySearchLoading: "Free searching...",
+    luckySearchLoading: "🎲 If you're lucky, results will come..",
     luckySearchTooltip: "Free random search mode",
     normalSearchTooltip: "Back to normal search mode",
     relatedArticlesTitle: "Read Other Articles",
@@ -190,7 +190,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 럭키 서치 ㅣ 남은 할당량이 있다면 검색할 수 있어요",
     luckySearchButton: "럭키 서치",
-    luckySearchLoading: "무료 검색 중...",
+    luckySearchLoading: "🎲 운이 있다면 결과가 나온다..",
     luckySearchTooltip: "무료 랜덤 검색 모드",
     normalSearchTooltip: "일반 검색 모드로 돌아가기",
     relatedArticlesTitle: "다른 아티클 보기",
@@ -283,7 +283,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 ラッキーサーチ ㅣ 残りクォータがあれば検索できます",
     luckySearchButton: "ラッキーサーチ",
-    luckySearchLoading: "無料検索中...",
+    luckySearchLoading: "🎲 運が良ければ結果が出てくる..",
     luckySearchTooltip: "無料ランダム検索モード",
     normalSearchTooltip: "通常検索モードに戻る",
     relatedArticlesTitle: "他の記事を読む",
@@ -376,7 +376,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 幸运搜索 ㅣ 如果有剩余配额就可以搜索",
     luckySearchButton: "幸运搜索",
-    luckySearchLoading: "免费搜索中...",
+    luckySearchLoading: "🎲 如果运气好，结果就会出现..",
     luckySearchTooltip: "免费随机搜索模式",
     normalSearchTooltip: "返回正常搜索模式",
     relatedArticlesTitle: "阅读其他文章",
@@ -469,7 +469,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 लकी सर्च ㅣ यदि कोटा शेष है तो खोज सकते हैं",
     luckySearchButton: "लकी सर्च",
-    luckySearchLoading: "मुफ्त खोज रहा है...",
+    luckySearchLoading: "🎲 अगर किस्मत है तो परिणाम आएंगे..",
     luckySearchTooltip: "मुफ्त रैंडम खोज मोड",
     normalSearchTooltip: "सामान्य खोज मोड पर वापस जाएं",
     relatedArticlesTitle: "अन्य लेख पढ़ें",
@@ -566,7 +566,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 Búsqueda de la Suerte ㅣ Buscar si hay cuota disponible",
     luckySearchButton: "Búsqueda de la Suerte",
-    luckySearchLoading: "Búsqueda gratuita...",
+    luckySearchLoading: "🎲 Si tienes suerte, aparecerán resultados..",
     luckySearchTooltip: "Modo de búsqueda aleatoria gratuita",
     normalSearchTooltip: "Volver al modo de búsqueda normal",
     relatedArticlesTitle: "Leer otros artículos",
@@ -663,7 +663,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 Recherche Chanceuse ㅣ Rechercher si quota disponible",
     luckySearchButton: "Recherche Chanceuse",
-    luckySearchLoading: "Recherche gratuite...",
+    luckySearchLoading: "🎲 Si vous avez de la chance, les résultats apparaîtront..",
     luckySearchTooltip: "Mode de recherche aléatoire gratuite",
     normalSearchTooltip: "Retour au mode de recherche normal",
     relatedArticlesTitle: "Lire d'autres articles",
@@ -760,7 +760,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 Glückssuche ㅣ Suchen wenn Kontingent verfügbar",
     luckySearchButton: "Glückssuche",
-    luckySearchLoading: "Kostenlose Suche...",
+    luckySearchLoading: "🎲 Wenn Sie Glück haben, werden Ergebnisse angezeigt..",
     luckySearchTooltip: "Kostenloser zufälliger Suchmodus",
     normalSearchTooltip: "Zurück zum normalen Suchmodus",
     relatedArticlesTitle: "Andere Artikel lesen",
@@ -857,7 +857,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 Gelukszoekopdracht ㅣ Zoeken als quota beschikbaar",
     luckySearchButton: "Gelukszoekopdracht",
-    luckySearchLoading: "Gratis zoeken...",
+    luckySearchLoading: "🎲 Als je geluk hebt, komen er resultaten..",
     luckySearchTooltip: "Gratis willekeurige zoekmodus",
     normalSearchTooltip: "Terug naar normale zoekmodus",
     relatedArticlesTitle: "Andere artikelen lezen",
@@ -954,7 +954,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 Busca da Sorte ㅣ Buscar se cota disponível",
     luckySearchButton: "Busca da Sorte",
-    luckySearchLoading: "Busca gratuita...",
+    luckySearchLoading: "🎲 Se você tiver sorte, os resultados aparecerão..",
     luckySearchTooltip: "Modo de busca aleatória gratuita",
     normalSearchTooltip: "Voltar ao modo de busca normal",
     relatedArticlesTitle: "Ler outros artigos",
@@ -1051,7 +1051,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Lucky Search
     luckySearchTitle: "🎲 Удачный Поиск ㅣ Поиск при наличии квоты",
     luckySearchButton: "Удачный Поиск",
-    luckySearchLoading: "Бесплатный поиск...",
+    luckySearchLoading: "🎲 Если повезет, результаты появятся..",
     luckySearchTooltip: "Режим бесплатного случайного поиска",
     normalSearchTooltip: "Вернуться к обычному режиму поиска",
     relatedArticlesTitle: "Читать другие статьи",
