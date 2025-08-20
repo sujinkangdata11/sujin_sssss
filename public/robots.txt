@@ -26,7 +26,22 @@ Disallow: /
 
 # Default
 User-agent: *
-Disallow: /api/        # 혹시 생기면 크롤 금지(없으면 유지해도 무해)
+# Main category pages - Allow crawling
+Allow: /
+Allow: /news
+Allow: /shortsmaker
+Allow: /news/article/
+
+# Assets
+Allow: /favicon.png
+Allow: /favicon.svg
+Allow: /favicon.ico
+Allow: /vidhunt_logo.svg
+Allow: /contents/
+
+# Disallow API and admin routes
+Disallow: /api/
+Disallow: /admin/
 
 # Sitemap
 Sitemap: https://www.vidhunt.me/sitemap.xml

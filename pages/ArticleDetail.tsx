@@ -215,6 +215,74 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
         modifiedTime={new Date().toISOString()}
         keywords={`${article.title}, VIDHUNT news, YouTube Shorts, viral videos, trending content, ${language === 'ko' ? '비드헌트 뉴스, 쇼츠 뉴스, 바이럴 영상' : language === 'ja' ? 'ビッドハントニュース, ショート動画ニュース, バイラル動画' : language === 'zh' ? '维德亨特新闻, 短视频新闻, 病毒视频' : 'VidHunt news, shorts news, viral video news'}`}
       />
+      
+      {/* Article Structured Data */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "NewsArticle",
+          "headline": article.title,
+          "description": article.excerpt,
+          "url": `https://www.vidhunt.me/news/article/${id}`,
+          "datePublished": article.date ? new Date(article.date).toISOString() : new Date().toISOString(),
+          "dateModified": new Date().toISOString(),
+          "author": {
+            "@type": "Organization",
+            "name": "VIDHUNT"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "VIDHUNT",
+            "url": "https://www.vidhunt.me"
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": `https://www.vidhunt.me/news/article/${id}`
+          },
+          "image": `https://www.vidhunt.me${getThumbnailPath(1, article.id)}`,
+          "articleSection": "Technology",
+          "keywords": `${article.title}, VIDHUNT, YouTube Shorts, viral videos`,
+          "inLanguage": language
+        })
+      }} />
+      
+      {/* Breadcrumb Structured Data */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.vidhunt.me"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "News",
+              "item": "https://www.vidhunt.me/news"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": article.title.substring(0, 50) + (article.title.length > 50 ? '...' : ''),
+              "item": `https://www.vidhunt.me/news/article/${id}`
+            }
+          ]
+        })
+      }} />
+      
+      {/* Breadcrumb Navigation */}
+      <nav className="breadcrumb" style={{ padding: '1rem 0', fontSize: '0.9rem', color: '#64748b' }}>
+        <Link to="/" style={{ color: '#64748b', textDecoration: 'none' }}>Home</Link>
+        <span style={{ margin: '0 0.5rem' }}>&gt;</span>
+        <Link to="/news" style={{ color: '#64748b', textDecoration: 'none' }}>News</Link>
+        <span style={{ margin: '0 0.5rem' }}>&gt;</span>
+        <span style={{ color: '#4f46e5', fontWeight: '600' }}>{article.title.substring(0, 50)}{article.title.length > 50 ? '...' : ''}</span>
+      </nav>
+      
       <div className="article-detail-header">
         <Link to="/news" className="back-to-news-btn">
           ← Back to News

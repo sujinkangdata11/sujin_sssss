@@ -101,12 +101,63 @@ const News: React.FC<NewsProps> = ({ language }) => {
   return (
     <main className="news-container">
       <SEOHead
-        title={`${t('navNews')} | VIDHUNT - Discover Trending YouTube Shorts News`}
-        description={`${t('newsSubtitle')} - Stay updated with the latest trends in YouTube Shorts and viral video content worldwide.`}
+        title={`Latest YouTube Shorts News & Trends | ${t('navNews')} - VIDHUNT`}
+        description={`Discover the latest YouTube Shorts trends, viral content strategies, and algorithm insights. Get expert news and tips to boost your short-form video performance across 11 languages.`}
         url="https://www.vidhunt.me/news"
         keywords={`VIDHUNT news, YouTube Shorts news, viral video trends, trending content news, ${language === 'ko' ? '비드헌트 뉴스, 쇼츠 뉴스, 바이럴 영상 뉴스' : language === 'ja' ? 'ビッドハントニュース, ショート動画ニュース, バイラル動画ニュース' : language === 'zh' ? '维德亨特新闻, 短视频新闻, 病毒视频新闻' : 'shorts news, viral video news, trending shorts news'}`}
         language={language}
       />
+      
+      {/* Structured Data for News Page */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          "name": "VIDHUNT News",
+          "description": "Latest YouTube Shorts trends, viral content strategies, and algorithm insights",
+          "url": "https://www.vidhunt.me/news",
+          "publisher": {
+            "@type": "Organization",
+            "name": "VIDHUNT",
+            "url": "https://www.vidhunt.me"
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://www.vidhunt.me/news"
+          },
+          "inLanguage": ["en", "ko", "ja", "zh", "hi", "es", "fr", "de", "nl", "pt", "ru"]
+        })
+      }} />
+      
+      {/* Breadcrumb Structured Data */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.vidhunt.me"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "News",
+              "item": "https://www.vidhunt.me/news"
+            }
+          ]
+        })
+      }} />
+
+      {/* Breadcrumb Navigation */}
+      <nav className="breadcrumb" style={{ padding: '1rem 0', fontSize: '0.9rem', color: '#64748b' }}>
+        <Link to="/" style={{ color: '#64748b', textDecoration: 'none' }}>Home</Link>
+        <span style={{ margin: '0 0.5rem' }}>&gt;</span>
+        <span style={{ color: '#4f46e5', fontWeight: '600' }}>{t('navNews')}</span>
+      </nav>
+
       <div className="news-header">
         <h1 className="news-title" lang={language}>{t('navNews')}</h1>
         <p className="news-subtitle" lang={language}>{t('newsSubtitle')}</p>

@@ -6,7 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "data:backup": "node data/scripts/dataManager.js backup",
+    "data:restore": "node data/scripts/dataManager.js restore",
+    "data:validate": "node data/scripts/dataManager.js validate",
+    "data:check-files": "node data/scripts/dataManager.js check-files",
+    "data:sync": "node data/scripts/dataManager.js sync",
+    "data:stats": "node data/scripts/dataManager.js stats",
+    "data:extract": "node data/scripts/extractFullNewsData.js",
+    "data:export": "node data/scripts/createJsonExport.js",
+    "data:help": "node data/scripts/dataManager.js help"
   },
   "dependencies": {
     "@google/genai": "^1.14.0",

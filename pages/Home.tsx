@@ -8,6 +8,7 @@ import { translations } from '../i18n/translations';
 import CountrySelector from '../components/CountrySelector';
 import ShortsCard from '../components/ShortsCard';
 import ApiKeyUpload from '../components/ApiKeyUpload';
+import SEOHead from '../components/SEOHead';
 
 interface HomeProps {
   language: Language;
@@ -47,17 +48,17 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   
   // Tutorial video mapping by language
   const tutorialVideos: Record<Language, string> = {
-    en: 'tKlYb7j1W5M',
-    ko: 'jv7Srh4afYY', 
-    ja: 'FUtBT1fM5V8',
-    hi: 'uVGQWOTAupw',
-    zh: 'HqHXp3-ke8g',
-    es: 'tKlYb7j1W5M', // fallback to English
-    fr: 'tKlYb7j1W5M', // fallback to English
-    de: 'tKlYb7j1W5M', // fallback to English
-    nl: 'tKlYb7j1W5M', // fallback to English
-    pt: 'tKlYb7j1W5M', // fallback to English
-    ru: 'tKlYb7j1W5M'  // fallback to English
+    en: 'tKlYb7j1W5M',        // 미국/영어
+    ko: 'jv7Srh4afYY',        // 한국어
+    ja: 'FUtBT1fM5V8',        // 일본어
+    hi: 'uVGQWOTAupw',        // 힌디어
+    zh: 'HqHXp3-ke8g',        // 중국어
+    es: '6hVPAiebYpo',        // 스페인어
+    fr: 'aRRM7y-6P0g',        // 프랑스어
+    de: 'HIDYokH0AAc',        // 독일어
+    nl: 'uIS5usGlw7A',        // 네덜란드어
+    pt: 'BNBU9GG7B4w',        // 포르투갈어
+    ru: 'a1ypC0nz80I'         // 러시아어
   };
   
   // Scroll to top when component mounts
@@ -663,6 +664,45 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
 
   return (
     <>
+      <SEOHead
+        title="VIDHUNT - Find Trending YouTube Shorts Worldwide | Free Global Shorts Finder"
+        description="Discover viral YouTube Shorts across 11 countries and languages with VIDHUNT's advanced search engine. Find trending content, analyze global video performance, and boost your channel growth with data-driven insights. Free tool for content creators."
+        url="https://www.vidhunt.me/"
+        keywords="YouTube Shorts finder tool, viral videos discovery, global shorts search engine, trending content worldwide, YouTube algorithm analysis, multilingual video search, shorts performance metrics, content creator tools, viral video trends 2025, YouTube growth hacking, 쇼츠파인더, 바이럴영상검색, ショート動画ファインダー, 短视频搜索器, videos virales buscador"
+        language={language}
+      />
+      
+      {/* Structured Data for Home Page */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "VIDHUNT",
+          "alternateName": ["VidHunt", "Shorts Finder"],
+          "url": "https://www.vidhunt.me",
+          "description": "Global YouTube Shorts finder and viral video discovery platform",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Web Browser",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "creator": {
+            "@type": "Organization",
+            "name": "VIDHUNT",
+            "url": "https://www.vidhunt.me"
+          },
+          "featureList": [
+            "Global YouTube Shorts search",
+            "Viral video discovery",
+            "Multi-language content search",
+            "Performance analytics",
+            "Trending content analysis"
+          ],
+          "inLanguage": ["en", "ko", "ja", "zh", "hi", "es", "fr", "de", "nl", "pt", "ru"]
+        })
+      }} />
       <div className="hero-section">
         <div className="hero-content">
           <img src="/vidhunt_logo.svg" alt="VidHunt Logo" className="hero-logo" />
@@ -686,12 +726,20 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
             </button>
-            <Link to="/news/article/8" className="hero-guide-button">
+            <button 
+              onClick={() => {
+                const tutorialSection = document.querySelector('.youtube-tutorial-card');
+                if (tutorialSection) {
+                  tutorialSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+              className="hero-guide-button"
+            >
               {t('viewGuideButton')}
-              <svg className="hero-guide-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              <svg className="hero-quick-start-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
-            </Link>
+            </button>
           </div>
         </div>
         <div className="hero-video">
