@@ -1100,6 +1100,22 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
               className="youtube-tutorial-iframe"
             ></iframe>
           </div>
+          
+          {/* API Key Buttons */}
+          <div className="api-key-buttons">
+            <button 
+              className="api-key-button"
+              onClick={() => window.location.href = '/news/article/2'}
+            >
+              YouTube API 키 발급받기
+            </button>
+            <button 
+              className="api-key-button"
+              onClick={() => window.location.href = '/news/article/3'}
+            >
+              Gemini API 키 발급받기
+            </button>
+          </div>
         </div>
       </div>
 
