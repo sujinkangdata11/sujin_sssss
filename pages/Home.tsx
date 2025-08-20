@@ -841,7 +841,12 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
         </div>
         {/* Random Search Mode Toggle - Outside form */}
         <div 
-          onClick={() => setIsRandomSearchOpen(!isRandomSearchOpen)}
+          onClick={() => {
+            setIsRandomSearchOpen(!isRandomSearchOpen);
+            // Clear error messages when switching modes
+            setError(null);
+            setRandomSearchError(null);
+          }}
           title={isRandomSearchOpen ? t('normalSearchTooltip') : t('luckySearchTooltip')}
           style={{ 
             position: 'absolute', 
