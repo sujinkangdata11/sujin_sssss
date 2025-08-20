@@ -78,7 +78,7 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
   return (
     <div className="form-card">
       <div className="random-search-header">
-        <h2 className="random-search-title">🎲 럭키 서치 ㅣ 남은 할당량이 있다면 검색할 수 있어요</h2>
+        <h2 className="random-search-title">{t('luckySearchTitle')}</h2>
       </div>
       
       <div className="random-search-form">
@@ -127,7 +127,7 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
               disabled={isLoading} 
               className="btn-primary"
             >
-              {isLoading ? '검색 중...' : '럭키 서치'}
+              {isLoading ? t('loadingMessage') : t('luckySearchButton')}
             </button>
           </div>
         </div>
@@ -142,7 +142,7 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
       {isLoading && (
         <div className="loading-container" style={{ padding: '2rem', textAlign: 'center' }}>
           <div className="loading-spinner"></div>
-          <p style={{ marginTop: '1rem', color: '#6b7280' }}>무료 검색 중...</p>
+          <p style={{ marginTop: '1rem', color: '#6b7280' }}>{t('luckySearchLoading')}</p>
         </div>
       )}
       

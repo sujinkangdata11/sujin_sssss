@@ -89,6 +89,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "Share or try it now.",
     copyLinkButton: "Copy Link",
     tryNowButton: "Try Now",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 Lucky Search ㅣ Search if quota is available",
+    luckySearchButton: "Lucky Search",
+    luckySearchLoading: "Free searching...",
+    luckySearchTooltip: "Free random search mode",
+    normalSearchTooltip: "Back to normal search mode",
     relatedArticlesTitle: "Read Other Articles",
   },
   ko: {
@@ -179,6 +186,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "공유하거나, 지금 시작해보세요.",
     copyLinkButton: "링크 복사",
     tryNowButton: "지금 사용하기",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 럭키 서치 ㅣ 남은 할당량이 있다면 검색할 수 있어요",
+    luckySearchButton: "럭키 서치",
+    luckySearchLoading: "무료 검색 중...",
+    luckySearchTooltip: "무료 랜덤 검색 모드",
+    normalSearchTooltip: "일반 검색 모드로 돌아가기",
     relatedArticlesTitle: "다른 아티클 보기",
   },
   ja: {
@@ -265,6 +279,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "共有するか、今すぐ試してみてください。",
     copyLinkButton: "リンクをコピー",
     tryNowButton: "今すぐ試す",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 ラッキーサーチ ㅣ 残りクォータがあれば検索できます",
+    luckySearchButton: "ラッキーサーチ",
+    luckySearchLoading: "無料検索中...",
+    luckySearchTooltip: "無料ランダム検索モード",
+    normalSearchTooltip: "通常検索モードに戻る",
     relatedArticlesTitle: "他の記事を読む",
   },
   zh: {
@@ -351,6 +372,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "分享或立即尝试。",
     copyLinkButton: "复制链接",
     tryNowButton: "立即尝试",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 幸运搜索 ㅣ 如果有剩余配额就可以搜索",
+    luckySearchButton: "幸运搜索",
+    luckySearchLoading: "免费搜索中...",
+    luckySearchTooltip: "免费随机搜索模式",
+    normalSearchTooltip: "返回正常搜索模式",
     relatedArticlesTitle: "阅读其他文章",
   },
   hi: {
@@ -437,6 +465,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "साझा करें या अभी आज़माएं।",
     copyLinkButton: "लिंक कॉपी करें",
     tryNowButton: "अभी आज़माएं",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 लकी सर्च ㅣ यदि कोटा शेष है तो खोज सकते हैं",
+    luckySearchButton: "लकी सर्च",
+    luckySearchLoading: "मुफ्त खोज रहा है...",
+    luckySearchTooltip: "मुफ्त रैंडम खोज मोड",
+    normalSearchTooltip: "सामान्य खोज मोड पर वापस जाएं",
     relatedArticlesTitle: "अन्य लेख पढ़ें",
   },
   es: {
@@ -527,6 +562,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "Comparte o pruébalo ahora.",
     copyLinkButton: "Copiar enlace",
     tryNowButton: "Probar ahora",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 Búsqueda de la Suerte ㅣ Buscar si hay cuota disponible",
+    luckySearchButton: "Búsqueda de la Suerte",
+    luckySearchLoading: "Búsqueda gratuita...",
+    luckySearchTooltip: "Modo de búsqueda aleatoria gratuita",
+    normalSearchTooltip: "Volver al modo de búsqueda normal",
     relatedArticlesTitle: "Leer otros artículos",
   },
   fr: {
@@ -617,6 +659,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "Partagez ou essayez maintenant.",
     copyLinkButton: "Copier le lien",
     tryNowButton: "Essayer maintenant",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 Recherche Chanceuse ㅣ Rechercher si quota disponible",
+    luckySearchButton: "Recherche Chanceuse",
+    luckySearchLoading: "Recherche gratuite...",
+    luckySearchTooltip: "Mode de recherche aléatoire gratuite",
+    normalSearchTooltip: "Retour au mode de recherche normal",
     relatedArticlesTitle: "Lire d'autres articles",
   },
   de: {
@@ -707,6 +756,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "Teilen oder jetzt ausprobieren.",
     copyLinkButton: "Link kopieren",
     tryNowButton: "Jetzt ausprobieren",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 Glückssuche ㅣ Suchen wenn Kontingent verfügbar",
+    luckySearchButton: "Glückssuche",
+    luckySearchLoading: "Kostenlose Suche...",
+    luckySearchTooltip: "Kostenloser zufälliger Suchmodus",
+    normalSearchTooltip: "Zurück zum normalen Suchmodus",
     relatedArticlesTitle: "Andere Artikel lesen",
   },
   nl: {
@@ -797,6 +853,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "Deel of probeer het nu.",
     copyLinkButton: "Link kopiëren",
     tryNowButton: "Nu proberen",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 Gelukszoekopdracht ㅣ Zoeken als quota beschikbaar",
+    luckySearchButton: "Gelukszoekopdracht",
+    luckySearchLoading: "Gratis zoeken...",
+    luckySearchTooltip: "Gratis willekeurige zoekmodus",
+    normalSearchTooltip: "Terug naar normale zoekmodus",
     relatedArticlesTitle: "Andere artikelen lezen",
   },
   pt: {
@@ -887,6 +950,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "Compartilhe ou experimente agora.",
     copyLinkButton: "Copiar link",
     tryNowButton: "Experimentar agora",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 Busca da Sorte ㅣ Buscar se cota disponível",
+    luckySearchButton: "Busca da Sorte",
+    luckySearchLoading: "Busca gratuita...",
+    luckySearchTooltip: "Modo de busca aleatória gratuita",
+    normalSearchTooltip: "Voltar ao modo de busca normal",
     relatedArticlesTitle: "Ler outros artigos",
   },
   ru: {
@@ -977,6 +1047,13 @@ export const translations: Record<Language, Record<string, string>> = {
     shareOrTryTitle: "Поделитесь или попробуйте сейчас.",
     copyLinkButton: "Копировать ссылку",
     tryNowButton: "Попробовать сейчас",
+    
+    // Lucky Search
+    luckySearchTitle: "🎲 Удачный Поиск ㅣ Поиск при наличии квоты",
+    luckySearchButton: "Удачный Поиск",
+    luckySearchLoading: "Бесплатный поиск...",
+    luckySearchTooltip: "Режим бесплатного случайного поиска",
+    normalSearchTooltip: "Вернуться к обычному режиму поиска",
     relatedArticlesTitle: "Читать другие статьи",
   },
 };

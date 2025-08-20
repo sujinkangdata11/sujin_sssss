@@ -843,7 +843,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
         {/* Random Search Mode Toggle - Outside form */}
         <div 
           onClick={() => setIsRandomSearchOpen(!isRandomSearchOpen)}
-          title={isRandomSearchOpen ? "일반 검색 모드로 돌아가기" : "무료 랜덤 검색 모드"}
+          title={isRandomSearchOpen ? t('normalSearchTooltip') : t('luckySearchTooltip')}
           style={{ position: 'absolute', top: '140px', right: '50px', cursor: 'pointer' }}
         >
           <LuckyIcon size={40} />
