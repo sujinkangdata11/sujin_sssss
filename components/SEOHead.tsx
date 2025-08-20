@@ -61,8 +61,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     updateProperty('og:description', description);
     updateProperty('og:url', url);
     updateProperty('og:image', image);
-    updateProperty('og:image:width', '1200');
-    updateProperty('og:image:height', '630');
+    updateProperty('og:image:width', '600');
+    updateProperty('og:image:height', '315');
     updateProperty('og:type', type);
     
     // Update Twitter tags
