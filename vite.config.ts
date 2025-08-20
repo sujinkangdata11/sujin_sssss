@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
         },
         middlewareMode: false
       },
-      assetsInclude: ['**/*.txt']
+      assetsInclude: ['**/*.txt', '**/*.xml']
     };
 });
 // Force rebuild Tue Aug 19 20:10:59 KST 2025
