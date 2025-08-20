@@ -19,7 +19,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   description = "VIDHUNT helps you discover trending YouTube Shorts and viral videos from around the world. Find popular short-form content, analyze global trends, and boost your channel growth with our powerful video discovery tool.",
   keywords = "VIDHUNT, VidHunt, YouTube Shorts finder, viral videos, trending shorts, short video discovery, YouTube analytics, viral content finder, global video trends, TikTok videos, social media trends, content creator tools, video marketing, YouTube growth, 비드헌트, 쇼츠파인더, 쇼츠 검색, 바이럴 영상, 인기 쇼츠, ビッドハント, ショート動画ファインダー, バイラル動画, 维德亨特, 短视频搜索器, 病毒视频, विदहंट, शॉर्ट्स फाइंडर, वायरल वीडियो",
   url = "https://www.vidhunt.me/",
-  image = "https://www.vidhunt.me/preview.png",
+  image = "https://www.vidhunt.me/og-image.png?v=2025082020",
   type = "website",
   language = 'en',
   publishedTime,
