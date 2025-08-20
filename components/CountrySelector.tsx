@@ -8,6 +8,7 @@ interface CountrySelectorProps {
   selectedCountries: string[];
   onChange: (selected: string[]) => void;
   language: Language;
+  hideSelectAll?: boolean;
 }
 
 const translations: Record<Language, Record<string, string>> = {
@@ -24,7 +25,7 @@ const translations: Record<Language, Record<string, string>> = {
     ru: { select: "Выберите страны", selected: "стран выбрано", search: "Поиск стран...", worldwide: "Весь мир (Выбрать все)", topRPM: "Высокий RPM Топ 20", viralPowerhouse: "Вирусные Державы 20" },
 };
 
-const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, onChange, language }) => {
+const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, onChange, language, hideSelectAll = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [hoveredOption, setHoveredOption] = useState<'topRPM' | 'viral' | null>(null);
@@ -129,20 +130,22 @@ const CountrySelector: React.FC<CountrySelectorProps> = ({ selectedCountries, on
             />
           </div>
           <ul>
-            <li
-              onClick={handleSelectAllToggle}
-              className="country-selector-option"
-            >
-              <div className="country-selector-option-content">
-                <input
-                  type="checkbox"
-                  checked={areAllSelected}
-                  readOnly
-                  className="country-selector-checkbox"
-                />
-                <span className="country-selector-option-text worldwide">{t('worldwide')}</span>
-              </div>
-            </li>
+            {!hideSelectAll && (
+              <li
+                onClick={handleSelectAllToggle}
+                className="country-selector-option"
+              >
+                <div className="country-selector-option-content">
+                  <input
+                    type="checkbox"
+                    checked={areAllSelected}
+                    readOnly
+                    className="country-selector-checkbox"
+                  />
+                  <span className="country-selector-option-text worldwide">{t('worldwide')}</span>
+                </div>
+              </li>
+            )}
             <li
               onClick={handleTopRPMToggle}
               className="country-selector-option country-option-with-tooltip"

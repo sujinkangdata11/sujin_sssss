@@ -8,6 +8,8 @@ import { translations } from '../i18n/translations';
 import CountrySelector from '../components/CountrySelector';
 import ShortsCard from '../components/ShortsCard';
 import ApiKeyUpload from '../components/ApiKeyUpload';
+import LuckyIcon from '../components/LuckyIcon';
+import RandomSearchModal from '../components/RandomSearchModal';
 import SEOHead from '../components/SEOHead';
 
 interface HomeProps {
@@ -39,6 +41,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false);
   const [videoVisible, setVideoVisible] = useState<boolean>(false);
   const [batchProgress, setBatchProgress] = useState<{current: number; total: number} | null>(null);
+  const [isRandomSearchOpen, setIsRandomSearchOpen] = useState<boolean>(false);
   // Tutorial language syncs with global language
   const videoRef = useRef<HTMLVideoElement>(null);
   
@@ -815,8 +818,18 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
         <div className="form-section-header">
           <h2 className="form-section-title" lang={language} style={{whiteSpace: 'pre-line'}}>{t('formSectionTitle')}</h2>
         </div>
-        <div className="form-card">
-          <div className="form-grid">
+        {/* Random Search Mode Toggle - Outside form */}
+        <div 
+          onClick={() => setIsRandomSearchOpen(!isRandomSearchOpen)}
+          title={isRandomSearchOpen ? "일반 검색 모드로 돌아가기" : "무료 랜덤 검색 모드"}
+          style={{ position: 'absolute', top: '140px', right: '50px', cursor: 'pointer' }}
+        >
+          <LuckyIcon size={40} />
+        </div>
+        
+        {!isRandomSearchOpen ? (
+          <div className="form-card">
+            <div className="form-grid">
             <div className="form-group-span-2">
               <label htmlFor="youtubeApiKey" className="form-label">
                 <div className="label-with-badge">
@@ -1032,7 +1045,14 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
             </Link>
           </div>
         )}
-        </div>
+          </div>
+        ) : (
+          <RandomSearchModal
+            language={language}
+            isOpen={isRandomSearchOpen}
+            onClose={() => setIsRandomSearchOpen(false)}
+          />
+        )}
 
         {isLoading ? (
           <div className="loading-container">
@@ -1128,6 +1148,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
         onClose={() => setIsApiKeyUploadOpen(false)}
         onUpload={handleApiKeysUpload}
       />
+
 
     </>
   );

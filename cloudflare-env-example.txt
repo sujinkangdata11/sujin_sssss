@@ -1,0 +1,49 @@
+==============================================================
+Cloudflare Environment Variables 설정 예시
+==============================================================
+
+1. YOUTUBE API KEYS 설정
+==============================================================
+Variable Name: YOUTUBE_API_KEYS
+Value: 
+AIzaSyBxzTPuUOJusrTGv8qwXTGtayzNcWYMBG8,AIzaSyC5Mv3sttRmN8mFGjlhakuxbtuKSrkPaks
+
+주의: 실제로는 진짜 YouTube Data API 키들로 교체하세요!
+
+2. GEMINI API KEYS 설정
+==============================================================
+Variable Name: GEMINI_API_KEYS
+Value: 
+AIzaSyCshIksn7RWd-I3ViCI1wXBeRJTdttw3CE,
+
+주의: 실제로는 진짜 Gemini API 키들로 교체하세요!
+
+3. KV NAMESPACE 설정
+==============================================================
+1단계: KV Namespace 생성
+- Cloudflare Dashboard → Workers & Pages → KV
+- "Create a namespace" 클릭
+- Namespace name: API_KEY_STATUS
+
+2단계: KV Binding 설정
+- Workers & Pages → 해당 사이트 선택 → Settings → Variables
+- "KV namespace bindings" 섹션에서 "Add binding" 클릭
+- Variable name: API_KEY_STATUS
+- KV namespace: API_KEY_STATUS 선택
+
+4. 설정 순서
+==============================================================
+1. Cloudflare Dashboard 접속
+2. Workers & Pages → 해당 사이트 선택
+3. Settings → Environment variables
+4. "Add variable" 클릭하여 위의 값들 입력
+5. KV Namespace 생성 및 바인딩
+6. Deploy 실행
+
+5. 중요 주의사항
+==============================================================
+- 모든 API 키는 한 줄로 쭉 이어서 입력 (줄바꿈 금지)
+- 콤마로만 구분, 공백 없이
+- 실제 운영시 예시 키들을 진짜 API 키로 교체
+- KV Namespace는 별도 생성 후 바인딩 필요
+- 환경변수 변경 후 반드시 재배포 필요
