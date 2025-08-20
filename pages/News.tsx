@@ -151,8 +151,8 @@ const News: React.FC<NewsProps> = ({ language }) => {
         })
       }} />
 
-      {/* Breadcrumb Navigation */}
-      <nav className="breadcrumb" style={{ padding: '1rem 0', fontSize: '0.9rem', color: '#64748b' }}>
+      {/* Breadcrumb Navigation - Hidden from UI, kept for SEO */}
+      <nav className="breadcrumb" style={{ display: 'none' }}>
         <Link to="/" style={{ color: '#64748b', textDecoration: 'none' }}>Home</Link>
         <span style={{ margin: '0 0.5rem' }}>&gt;</span>
         <span style={{ color: '#4f46e5', fontWeight: '600' }}>{t('navNews')}</span>
