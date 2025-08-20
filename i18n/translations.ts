@@ -107,7 +107,7 @@ export const translations: Record<Language, Record<string, string>> = {
     heroTitle: "전세계 쇼츠를\n검색하고\n트렌드를 확인하세요",
     heroTitleAlt: "지난 하루동안\n2억뷰를 찍은\n고양이 쇼츠는?",
     heroTitleAlt2: "지금 1억뷰를\n찍은 AI ASMR\n트렌드는?",
-    heroSubtitle: "신용카드 불필요.\n회원가입 불필요.\n제한 없음.\n창작자에게 영원히 무료.",
+    heroSubtitle: "신용카드 불필요.\n회원가입 불필요.\n무제한.\n창작자에게 영원히 무료.",
     quickStartButton: "바로 시작",
     viewGuideButton: "사용 방법 보기",
     formSectionTitle: "키워드를 전세계 언어로\n검색해서 바이럴 쇼츠찾기",
