@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "createdAt": "2025-08-20T03:15:05.032Z",
+    "version": "1.0.0",
+    "lastUpdated": "2025-08-20"
+  },
+  "statistics": {
+    "totalArticles": 109,
+    "languageCount": 11,
+    "languages": [
+      "ko"
+    ],
+    "articlesPerLanguage": {
+      "ko": 1
+    }
+  },
+  "structure": {
+    "dataFiles": [
+      "newsData.json",
+      "articles-by-language.json",
+      "full-backup.json"
+    ],
+    "sourceFiles": {
+      "textFiles": "public/contents/01/page1_article[1-10]_[language].txt",
+      "images": "public/contents/01/[articleId]_image_[number].png",
+      "thumbnails": "public/contents/01/[articleId]_thumbnail.png"
+    }
+  },
+  "validation": {
+    "requiredFields": [
+      "id",
+      "title",
+      "date",
+      "excerpt",
+      "content",
+      "category"
+    ],
+    "optionalFields": [
+      "sourceFile"
+    ],
+    "supportedLanguages": [
+      "ko",
+      "en",
+      "ja",
+      "zh",
+      "hi",
+      "es",
+      "fr",
+      "de",
+      "nl",
+      "pt",
+      "ru"
+    ]
+  }
+}

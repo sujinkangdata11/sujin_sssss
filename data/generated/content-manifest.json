@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "createdAt": "2025-08-20T03:15:05.032Z",
+    "version": "1.0.0",
+    "description": "Manifest of all content files and their relationships"
+  },
+  "articles": {
+    "1": {
+      "id": 1,
+      "category": "Technology",
+      "date": "2025-08-18",
+      "languages": {
+        "ko": {
+          "title": "VIDHUNT VS 유튜브 일반 검색.\n무엇이 낫나요?",
+          "excerpt": "많은 분들이 궁금해하시는 질문이 있습니다. \"VIDHUNT로 인기 쇼츠를 찾는 것과 유튜브에서 직접 영상을 검색하는 것, 무슨 차이가 있나요?\"",
+          "sourceFile": "page1_article1_ko.txt",
+          "hasSourceFile": true
+        }
+      }
+    }
+  },
+  "assets": {
+    "images": {
+      "01_image_1.png": {
+        "path": "public/contents/01/01_image_1.png",
+        "exists": true,
+        "referencedIn": [
+          {
+            "articleId": 1,
+            "language": "ko"
+          }
+        ]
+      },
+      "01_image_2.png": {
+        "path": "public/contents/01/01_image_2.png",
+        "exists": true,
+        "referencedIn": [
+          {
+            "articleId": 1,
+            "language": "ko"
+          }
+        ]
+      }
+    },
+    "thumbnails": {
+      "1": {
+        "path": "public/contents/01/1_thumbnail.png",
+        "exists": false
+      }
+    }
+  },
+  "missingFiles": []
+}

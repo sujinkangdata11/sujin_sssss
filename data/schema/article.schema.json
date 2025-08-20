@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VIDHUNT News Article",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "date",
+    "excerpt",
+    "content",
+    "category"
+  ],
+  "properties": {
+    "id": {
+      "type": "number",
+      "description": "Unique identifier for the article"
+    },
+    "title": {
+      "type": "string",
+      "description": "Article title (may contain newlines)"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Publication date in YYYY-MM-DD format"
+    },
+    "excerpt": {
+      "type": "string",
+      "description": "Brief excerpt or summary"
+    },
+    "content": {
+      "type": "string",
+      "description": "Full article content with markdown formatting"
+    },
+    "category": {
+      "type": "string",
+      "description": "Article category"
+    },
+    "sourceFile": {
+      "type": "string",
+      "description": "Optional: source file reference"
+    }
+  }
+}

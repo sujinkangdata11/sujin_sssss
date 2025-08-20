@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "generatedAt": "2025-08-20T03:16:59.022Z",
+    "version": "1.0.0"
+  },
+  "overview": {
+    "totalArticles": 109,
+    "totalLanguages": 11,
+    "averageArticlesPerLanguage": 10
+  },
+  "languages": {
+    "ko": {
+      "articleCount": 10,
+      "totalCharacters": 8025,
+      "averageLength": 803,
+      "categories": {
+        "Technology": 10
+      }
+    },
+    "en": {
+      "articleCount": 10,
+      "totalCharacters": 13150,
+      "averageLength": 1315,
+      "categories": {
+        "Technology": 10
+      }
+    },
+    "ja": {
+      "articleCount": 9,
+      "totalCharacters": 7243,
+      "averageLength": 805,
+      "categories": {
+        "Technology": 9
+      }
+    },
+    "zh": {
+      "articleCount": 10,
+      "totalCharacters": 6331,
+      "averageLength": 633,
+      "categories": {
+        "Technology": 10
+      }
+    },
+    "hi": {
+      "articleCount": 10,
+      "totalCharacters": 12609,
+      "averageLength": 1261,
+      "categories": {
+        "Technology": 10
+      }
+    },
+    "es": {
+      "articleCount": 10,
+      "totalCharacters": 13772,
+      "averageLength": 1377,
+      "categories": {
+        "Technology": 10
+      }
+    },
+    "fr": {
+      "articleCount": 10,
+      "totalCharacters": 14982,
+      "averageLength": 1498,
+      "categories": {
+        "Technology": 10
+      }
+    },
+    "de": {
+      "articleCount": 10,
+      "totalCharacters": 14177,
+      "averageLength": 1418,
+      "categories": {
+        "Technology": 10
+      }
+    },
+    "nl": {
+      "articleCount": 10,
+      "totalCharacters": 13555,
+      "averageLength": 1356,
+      "categories": {
+        "Technology": 10
+      }
+    },
+    "pt": {
+      "articleCount": 10,
+      "totalCharacters": 13761,
+      "averageLength": 1376,
+      "categories": {
+        "Technology": 10
+      }
+    },
+    "ru": {
+      "articleCount": 10,
+      "totalCharacters": 12924,
+      "averageLength": 1292,
+      "categories": {
+        "Technology": 10
+      }
+    }
+  },
+  "content": {
+    "totalCharacters": 130529,
+    "averageContentLength": 1198,
+    "shortestArticle": {
+      "id": 10,
+      "language": "zh",
+      "title": "title: VIDHUNT 路线图",
+      "length": 196
+    },
+    "longestArticle": {
+      "id": 2,
+      "language": "fr",
+      "title": "title: YouTube Data Obtenez-le gratuitement en 10 secondes.",
+      "length": 2777
+    }
+  }
+}

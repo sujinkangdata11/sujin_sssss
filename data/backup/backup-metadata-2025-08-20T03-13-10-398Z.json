@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "extractedAt": "2025-08-20T03:13:10.399Z",
+    "extractedFrom": "services/contentService.ts",
+    "totalArticles": 109,
+    "languages": [
+      "ko",
+      "en",
+      "ja",
+      "zh",
+      "hi",
+      "es",
+      "fr",
+      "de",
+      "nl",
+      "pt",
+      "ru"
+    ],
+    "description": "Complete backup of hardcoded news data from VIDHUNT"
+  },
+  "structure": {
+    "contentFiles": "public/contents/01/page1_article[1-10]_[language].txt",
+    "images": "public/contents/01/[articleId]_image_[number].png",
+    "thumbnails": "public/contents/01/[articleId]_thumbnail.png"
+  }
+}

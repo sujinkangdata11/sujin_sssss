@@ -1,0 +1,909 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "createdAt": "2025-08-20T03:13:10.399Z",
+    "description": "Index of all source content files"
+  },
+  "textFiles": [
+    {
+      "filename": "page1_article10_de.txt",
+      "articleId": 10,
+      "language": "de",
+      "path": "public/contents/01/page1_article10_de.txt"
+    },
+    {
+      "filename": "page1_article10_en.txt",
+      "articleId": 10,
+      "language": "en",
+      "path": "public/contents/01/page1_article10_en.txt"
+    },
+    {
+      "filename": "page1_article10_es.txt",
+      "articleId": 10,
+      "language": "es",
+      "path": "public/contents/01/page1_article10_es.txt"
+    },
+    {
+      "filename": "page1_article10_fr.txt",
+      "articleId": 10,
+      "language": "fr",
+      "path": "public/contents/01/page1_article10_fr.txt"
+    },
+    {
+      "filename": "page1_article10_hi.txt",
+      "articleId": 10,
+      "language": "hi",
+      "path": "public/contents/01/page1_article10_hi.txt"
+    },
+    {
+      "filename": "page1_article10_ja.txt",
+      "articleId": 10,
+      "language": "ja",
+      "path": "public/contents/01/page1_article10_ja.txt"
+    },
+    {
+      "filename": "page1_article10_ko.txt",
+      "articleId": 10,
+      "language": "ko",
+      "path": "public/contents/01/page1_article10_ko.txt"
+    },
+    {
+      "filename": "page1_article10_nl.txt",
+      "articleId": 10,
+      "language": "nl",
+      "path": "public/contents/01/page1_article10_nl.txt"
+    },
+    {
+      "filename": "page1_article10_pt.txt",
+      "articleId": 10,
+      "language": "pt",
+      "path": "public/contents/01/page1_article10_pt.txt"
+    },
+    {
+      "filename": "page1_article10_ru.txt",
+      "articleId": 10,
+      "language": "ru",
+      "path": "public/contents/01/page1_article10_ru.txt"
+    },
+    {
+      "filename": "page1_article10_zh.txt",
+      "articleId": 10,
+      "language": "zh",
+      "path": "public/contents/01/page1_article10_zh.txt"
+    },
+    {
+      "filename": "page1_article1_de.txt",
+      "articleId": 1,
+      "language": "de",
+      "path": "public/contents/01/page1_article1_de.txt"
+    },
+    {
+      "filename": "page1_article1_en.txt",
+      "articleId": 1,
+      "language": "en",
+      "path": "public/contents/01/page1_article1_en.txt"
+    },
+    {
+      "filename": "page1_article1_es.txt",
+      "articleId": 1,
+      "language": "es",
+      "path": "public/contents/01/page1_article1_es.txt"
+    },
+    {
+      "filename": "page1_article1_fr.txt",
+      "articleId": 1,
+      "language": "fr",
+      "path": "public/contents/01/page1_article1_fr.txt"
+    },
+    {
+      "filename": "page1_article1_hi.txt",
+      "articleId": 1,
+      "language": "hi",
+      "path": "public/contents/01/page1_article1_hi.txt"
+    },
+    {
+      "filename": "page1_article1_ko.txt",
+      "articleId": 1,
+      "language": "ko",
+      "path": "public/contents/01/page1_article1_ko.txt"
+    },
+    {
+      "filename": "page1_article1_nl.txt",
+      "articleId": 1,
+      "language": "nl",
+      "path": "public/contents/01/page1_article1_nl.txt"
+    },
+    {
+      "filename": "page1_article1_pt.txt",
+      "articleId": 1,
+      "language": "pt",
+      "path": "public/contents/01/page1_article1_pt.txt"
+    },
+    {
+      "filename": "page1_article1_ru.txt",
+      "articleId": 1,
+      "language": "ru",
+      "path": "public/contents/01/page1_article1_ru.txt"
+    },
+    {
+      "filename": "page1_article1_zh.txt",
+      "articleId": 1,
+      "language": "zh",
+      "path": "public/contents/01/page1_article1_zh.txt"
+    },
+    {
+      "filename": "page1_article2_de.txt",
+      "articleId": 2,
+      "language": "de",
+      "path": "public/contents/01/page1_article2_de.txt"
+    },
+    {
+      "filename": "page1_article2_en.txt",
+      "articleId": 2,
+      "language": "en",
+      "path": "public/contents/01/page1_article2_en.txt"
+    },
+    {
+      "filename": "page1_article2_es.txt",
+      "articleId": 2,
+      "language": "es",
+      "path": "public/contents/01/page1_article2_es.txt"
+    },
+    {
+      "filename": "page1_article2_fr.txt",
+      "articleId": 2,
+      "language": "fr",
+      "path": "public/contents/01/page1_article2_fr.txt"
+    },
+    {
+      "filename": "page1_article2_hi.txt",
+      "articleId": 2,
+      "language": "hi",
+      "path": "public/contents/01/page1_article2_hi.txt"
+    },
+    {
+      "filename": "page1_article2_ja.txt",
+      "articleId": 2,
+      "language": "ja",
+      "path": "public/contents/01/page1_article2_ja.txt"
+    },
+    {
+      "filename": "page1_article2_ko.txt",
+      "articleId": 2,
+      "language": "ko",
+      "path": "public/contents/01/page1_article2_ko.txt"
+    },
+    {
+      "filename": "page1_article2_nl.txt",
+      "articleId": 2,
+      "language": "nl",
+      "path": "public/contents/01/page1_article2_nl.txt"
+    },
+    {
+      "filename": "page1_article2_pt.txt",
+      "articleId": 2,
+      "language": "pt",
+      "path": "public/contents/01/page1_article2_pt.txt"
+    },
+    {
+      "filename": "page1_article2_ru.txt",
+      "articleId": 2,
+      "language": "ru",
+      "path": "public/contents/01/page1_article2_ru.txt"
+    },
+    {
+      "filename": "page1_article2_zh.txt",
+      "articleId": 2,
+      "language": "zh",
+      "path": "public/contents/01/page1_article2_zh.txt"
+    },
+    {
+      "filename": "page1_article3_de.txt",
+      "articleId": 3,
+      "language": "de",
+      "path": "public/contents/01/page1_article3_de.txt"
+    },
+    {
+      "filename": "page1_article3_en.txt",
+      "articleId": 3,
+      "language": "en",
+      "path": "public/contents/01/page1_article3_en.txt"
+    },
+    {
+      "filename": "page1_article3_es.txt",
+      "articleId": 3,
+      "language": "es",
+      "path": "public/contents/01/page1_article3_es.txt"
+    },
+    {
+      "filename": "page1_article3_fr.txt",
+      "articleId": 3,
+      "language": "fr",
+      "path": "public/contents/01/page1_article3_fr.txt"
+    },
+    {
+      "filename": "page1_article3_hi.txt",
+      "articleId": 3,
+      "language": "hi",
+      "path": "public/contents/01/page1_article3_hi.txt"
+    },
+    {
+      "filename": "page1_article3_ja.txt",
+      "articleId": 3,
+      "language": "ja",
+      "path": "public/contents/01/page1_article3_ja.txt"
+    },
+    {
+      "filename": "page1_article3_ko.txt",
+      "articleId": 3,
+      "language": "ko",
+      "path": "public/contents/01/page1_article3_ko.txt"
+    },
+    {
+      "filename": "page1_article3_nl.txt",
+      "articleId": 3,
+      "language": "nl",
+      "path": "public/contents/01/page1_article3_nl.txt"
+    },
+    {
+      "filename": "page1_article3_pt.txt",
+      "articleId": 3,
+      "language": "pt",
+      "path": "public/contents/01/page1_article3_pt.txt"
+    },
+    {
+      "filename": "page1_article3_ru.txt",
+      "articleId": 3,
+      "language": "ru",
+      "path": "public/contents/01/page1_article3_ru.txt"
+    },
+    {
+      "filename": "page1_article3_zh.txt",
+      "articleId": 3,
+      "language": "zh",
+      "path": "public/contents/01/page1_article3_zh.txt"
+    },
+    {
+      "filename": "page1_article4_de.txt",
+      "articleId": 4,
+      "language": "de",
+      "path": "public/contents/01/page1_article4_de.txt"
+    },
+    {
+      "filename": "page1_article4_en.txt",
+      "articleId": 4,
+      "language": "en",
+      "path": "public/contents/01/page1_article4_en.txt"
+    },
+    {
+      "filename": "page1_article4_es.txt",
+      "articleId": 4,
+      "language": "es",
+      "path": "public/contents/01/page1_article4_es.txt"
+    },
+    {
+      "filename": "page1_article4_fr.txt",
+      "articleId": 4,
+      "language": "fr",
+      "path": "public/contents/01/page1_article4_fr.txt"
+    },
+    {
+      "filename": "page1_article4_hi.txt",
+      "articleId": 4,
+      "language": "hi",
+      "path": "public/contents/01/page1_article4_hi.txt"
+    },
+    {
+      "filename": "page1_article4_ja.txt",
+      "articleId": 4,
+      "language": "ja",
+      "path": "public/contents/01/page1_article4_ja.txt"
+    },
+    {
+      "filename": "page1_article4_ko.txt",
+      "articleId": 4,
+      "language": "ko",
+      "path": "public/contents/01/page1_article4_ko.txt"
+    },
+    {
+      "filename": "page1_article4_nl.txt",
+      "articleId": 4,
+      "language": "nl",
+      "path": "public/contents/01/page1_article4_nl.txt"
+    },
+    {
+      "filename": "page1_article4_pt.txt",
+      "articleId": 4,
+      "language": "pt",
+      "path": "public/contents/01/page1_article4_pt.txt"
+    },
+    {
+      "filename": "page1_article4_ru.txt",
+      "articleId": 4,
+      "language": "ru",
+      "path": "public/contents/01/page1_article4_ru.txt"
+    },
+    {
+      "filename": "page1_article4_zh.txt",
+      "articleId": 4,
+      "language": "zh",
+      "path": "public/contents/01/page1_article4_zh.txt"
+    },
+    {
+      "filename": "page1_article5_de.txt",
+      "articleId": 5,
+      "language": "de",
+      "path": "public/contents/01/page1_article5_de.txt"
+    },
+    {
+      "filename": "page1_article5_en.txt",
+      "articleId": 5,
+      "language": "en",
+      "path": "public/contents/01/page1_article5_en.txt"
+    },
+    {
+      "filename": "page1_article5_es.txt",
+      "articleId": 5,
+      "language": "es",
+      "path": "public/contents/01/page1_article5_es.txt"
+    },
+    {
+      "filename": "page1_article5_fr.txt",
+      "articleId": 5,
+      "language": "fr",
+      "path": "public/contents/01/page1_article5_fr.txt"
+    },
+    {
+      "filename": "page1_article5_hi.txt",
+      "articleId": 5,
+      "language": "hi",
+      "path": "public/contents/01/page1_article5_hi.txt"
+    },
+    {
+      "filename": "page1_article5_ja.txt",
+      "articleId": 5,
+      "language": "ja",
+      "path": "public/contents/01/page1_article5_ja.txt"
+    },
+    {
+      "filename": "page1_article5_ko.txt",
+      "articleId": 5,
+      "language": "ko",
+      "path": "public/contents/01/page1_article5_ko.txt"
+    },
+    {
+      "filename": "page1_article5_nl.txt",
+      "articleId": 5,
+      "language": "nl",
+      "path": "public/contents/01/page1_article5_nl.txt"
+    },
+    {
+      "filename": "page1_article5_pt.txt",
+      "articleId": 5,
+      "language": "pt",
+      "path": "public/contents/01/page1_article5_pt.txt"
+    },
+    {
+      "filename": "page1_article5_ru.txt",
+      "articleId": 5,
+      "language": "ru",
+      "path": "public/contents/01/page1_article5_ru.txt"
+    },
+    {
+      "filename": "page1_article5_zh.txt",
+      "articleId": 5,
+      "language": "zh",
+      "path": "public/contents/01/page1_article5_zh.txt"
+    },
+    {
+      "filename": "page1_article6_de.txt",
+      "articleId": 6,
+      "language": "de",
+      "path": "public/contents/01/page1_article6_de.txt"
+    },
+    {
+      "filename": "page1_article6_en.txt",
+      "articleId": 6,
+      "language": "en",
+      "path": "public/contents/01/page1_article6_en.txt"
+    },
+    {
+      "filename": "page1_article6_es.txt",
+      "articleId": 6,
+      "language": "es",
+      "path": "public/contents/01/page1_article6_es.txt"
+    },
+    {
+      "filename": "page1_article6_fr.txt",
+      "articleId": 6,
+      "language": "fr",
+      "path": "public/contents/01/page1_article6_fr.txt"
+    },
+    {
+      "filename": "page1_article6_hi.txt",
+      "articleId": 6,
+      "language": "hi",
+      "path": "public/contents/01/page1_article6_hi.txt"
+    },
+    {
+      "filename": "page1_article6_ja.txt",
+      "articleId": 6,
+      "language": "ja",
+      "path": "public/contents/01/page1_article6_ja.txt"
+    },
+    {
+      "filename": "page1_article6_ko.txt",
+      "articleId": 6,
+      "language": "ko",
+      "path": "public/contents/01/page1_article6_ko.txt"
+    },
+    {
+      "filename": "page1_article6_nl.txt",
+      "articleId": 6,
+      "language": "nl",
+      "path": "public/contents/01/page1_article6_nl.txt"
+    },
+    {
+      "filename": "page1_article6_pt.txt",
+      "articleId": 6,
+      "language": "pt",
+      "path": "public/contents/01/page1_article6_pt.txt"
+    },
+    {
+      "filename": "page1_article6_ru.txt",
+      "articleId": 6,
+      "language": "ru",
+      "path": "public/contents/01/page1_article6_ru.txt"
+    },
+    {
+      "filename": "page1_article6_zh.txt",
+      "articleId": 6,
+      "language": "zh",
+      "path": "public/contents/01/page1_article6_zh.txt"
+    },
+    {
+      "filename": "page1_article7_de.txt",
+      "articleId": 7,
+      "language": "de",
+      "path": "public/contents/01/page1_article7_de.txt"
+    },
+    {
+      "filename": "page1_article7_en.txt",
+      "articleId": 7,
+      "language": "en",
+      "path": "public/contents/01/page1_article7_en.txt"
+    },
+    {
+      "filename": "page1_article7_es.txt",
+      "articleId": 7,
+      "language": "es",
+      "path": "public/contents/01/page1_article7_es.txt"
+    },
+    {
+      "filename": "page1_article7_fr.txt",
+      "articleId": 7,
+      "language": "fr",
+      "path": "public/contents/01/page1_article7_fr.txt"
+    },
+    {
+      "filename": "page1_article7_hi.txt",
+      "articleId": 7,
+      "language": "hi",
+      "path": "public/contents/01/page1_article7_hi.txt"
+    },
+    {
+      "filename": "page1_article7_ja.txt",
+      "articleId": 7,
+      "language": "ja",
+      "path": "public/contents/01/page1_article7_ja.txt"
+    },
+    {
+      "filename": "page1_article7_ko.txt",
+      "articleId": 7,
+      "language": "ko",
+      "path": "public/contents/01/page1_article7_ko.txt"
+    },
+    {
+      "filename": "page1_article7_nl.txt",
+      "articleId": 7,
+      "language": "nl",
+      "path": "public/contents/01/page1_article7_nl.txt"
+    },
+    {
+      "filename": "page1_article7_pt.txt",
+      "articleId": 7,
+      "language": "pt",
+      "path": "public/contents/01/page1_article7_pt.txt"
+    },
+    {
+      "filename": "page1_article7_ru.txt",
+      "articleId": 7,
+      "language": "ru",
+      "path": "public/contents/01/page1_article7_ru.txt"
+    },
+    {
+      "filename": "page1_article7_zh.txt",
+      "articleId": 7,
+      "language": "zh",
+      "path": "public/contents/01/page1_article7_zh.txt"
+    },
+    {
+      "filename": "page1_article8_de.txt",
+      "articleId": 8,
+      "language": "de",
+      "path": "public/contents/01/page1_article8_de.txt"
+    },
+    {
+      "filename": "page1_article8_en.txt",
+      "articleId": 8,
+      "language": "en",
+      "path": "public/contents/01/page1_article8_en.txt"
+    },
+    {
+      "filename": "page1_article8_es.txt",
+      "articleId": 8,
+      "language": "es",
+      "path": "public/contents/01/page1_article8_es.txt"
+    },
+    {
+      "filename": "page1_article8_fr.txt",
+      "articleId": 8,
+      "language": "fr",
+      "path": "public/contents/01/page1_article8_fr.txt"
+    },
+    {
+      "filename": "page1_article8_hi.txt",
+      "articleId": 8,
+      "language": "hi",
+      "path": "public/contents/01/page1_article8_hi.txt"
+    },
+    {
+      "filename": "page1_article8_ja.txt",
+      "articleId": 8,
+      "language": "ja",
+      "path": "public/contents/01/page1_article8_ja.txt"
+    },
+    {
+      "filename": "page1_article8_ko.txt",
+      "articleId": 8,
+      "language": "ko",
+      "path": "public/contents/01/page1_article8_ko.txt"
+    },
+    {
+      "filename": "page1_article8_nl.txt",
+      "articleId": 8,
+      "language": "nl",
+      "path": "public/contents/01/page1_article8_nl.txt"
+    },
+    {
+      "filename": "page1_article8_pt.txt",
+      "articleId": 8,
+      "language": "pt",
+      "path": "public/contents/01/page1_article8_pt.txt"
+    },
+    {
+      "filename": "page1_article8_ru.txt",
+      "articleId": 8,
+      "language": "ru",
+      "path": "public/contents/01/page1_article8_ru.txt"
+    },
+    {
+      "filename": "page1_article8_zh.txt",
+      "articleId": 8,
+      "language": "zh",
+      "path": "public/contents/01/page1_article8_zh.txt"
+    },
+    {
+      "filename": "page1_article9_de.txt",
+      "articleId": 9,
+      "language": "de",
+      "path": "public/contents/01/page1_article9_de.txt"
+    },
+    {
+      "filename": "page1_article9_en.txt",
+      "articleId": 9,
+      "language": "en",
+      "path": "public/contents/01/page1_article9_en.txt"
+    },
+    {
+      "filename": "page1_article9_es.txt",
+      "articleId": 9,
+      "language": "es",
+      "path": "public/contents/01/page1_article9_es.txt"
+    },
+    {
+      "filename": "page1_article9_fr.txt",
+      "articleId": 9,
+      "language": "fr",
+      "path": "public/contents/01/page1_article9_fr.txt"
+    },
+    {
+      "filename": "page1_article9_hi.txt",
+      "articleId": 9,
+      "language": "hi",
+      "path": "public/contents/01/page1_article9_hi.txt"
+    },
+    {
+      "filename": "page1_article9_ja.txt",
+      "articleId": 9,
+      "language": "ja",
+      "path": "public/contents/01/page1_article9_ja.txt"
+    },
+    {
+      "filename": "page1_article9_ko.txt",
+      "articleId": 9,
+      "language": "ko",
+      "path": "public/contents/01/page1_article9_ko.txt"
+    },
+    {
+      "filename": "page1_article9_nl.txt",
+      "articleId": 9,
+      "language": "nl",
+      "path": "public/contents/01/page1_article9_nl.txt"
+    },
+    {
+      "filename": "page1_article9_pt.txt",
+      "articleId": 9,
+      "language": "pt",
+      "path": "public/contents/01/page1_article9_pt.txt"
+    },
+    {
+      "filename": "page1_article9_ru.txt",
+      "articleId": 9,
+      "language": "ru",
+      "path": "public/contents/01/page1_article9_ru.txt"
+    },
+    {
+      "filename": "page1_article9_zh.txt",
+      "articleId": 9,
+      "language": "zh",
+      "path": "public/contents/01/page1_article9_zh.txt"
+    }
+  ],
+  "imageFiles": [
+    {
+      "filename": "01_image_1.png",
+      "articleId": 1,
+      "imageNumber": 1,
+      "path": "public/contents/01/01_image_1.png"
+    },
+    {
+      "filename": "01_image_2.png",
+      "articleId": 1,
+      "imageNumber": 2,
+      "path": "public/contents/01/01_image_2.png"
+    },
+    {
+      "filename": "01_image_3.png",
+      "articleId": 1,
+      "imageNumber": 3,
+      "path": "public/contents/01/01_image_3.png"
+    },
+    {
+      "filename": "01_image_4.png",
+      "articleId": 1,
+      "imageNumber": 4,
+      "path": "public/contents/01/01_image_4.png"
+    },
+    {
+      "filename": "02_image_1.png",
+      "articleId": 2,
+      "imageNumber": 1,
+      "path": "public/contents/01/02_image_1.png"
+    },
+    {
+      "filename": "02_image_2.png",
+      "articleId": 2,
+      "imageNumber": 2,
+      "path": "public/contents/01/02_image_2.png"
+    },
+    {
+      "filename": "02_image_3.png",
+      "articleId": 2,
+      "imageNumber": 3,
+      "path": "public/contents/01/02_image_3.png"
+    },
+    {
+      "filename": "02_image_4.png",
+      "articleId": 2,
+      "imageNumber": 4,
+      "path": "public/contents/01/02_image_4.png"
+    },
+    {
+      "filename": "02_image_5.png",
+      "articleId": 2,
+      "imageNumber": 5,
+      "path": "public/contents/01/02_image_5.png"
+    },
+    {
+      "filename": "02_image_6.png",
+      "articleId": 2,
+      "imageNumber": 6,
+      "path": "public/contents/01/02_image_6.png"
+    },
+    {
+      "filename": "02_image_7.png",
+      "articleId": 2,
+      "imageNumber": 7,
+      "path": "public/contents/01/02_image_7.png"
+    },
+    {
+      "filename": "02_image_8.png",
+      "articleId": 2,
+      "imageNumber": 8,
+      "path": "public/contents/01/02_image_8.png"
+    },
+    {
+      "filename": "03_image_1.png",
+      "articleId": 3,
+      "imageNumber": 1,
+      "path": "public/contents/01/03_image_1.png"
+    },
+    {
+      "filename": "03_image_2.png",
+      "articleId": 3,
+      "imageNumber": 2,
+      "path": "public/contents/01/03_image_2.png"
+    },
+    {
+      "filename": "03_image_3.png",
+      "articleId": 3,
+      "imageNumber": 3,
+      "path": "public/contents/01/03_image_3.png"
+    },
+    {
+      "filename": "03_image_4.png",
+      "articleId": 3,
+      "imageNumber": 4,
+      "path": "public/contents/01/03_image_4.png"
+    },
+    {
+      "filename": "03_image_5.png",
+      "articleId": 3,
+      "imageNumber": 5,
+      "path": "public/contents/01/03_image_5.png"
+    },
+    {
+      "filename": "03_image_6.png",
+      "articleId": 3,
+      "imageNumber": 6,
+      "path": "public/contents/01/03_image_6.png"
+    },
+    {
+      "filename": "03_image_7.png",
+      "articleId": 3,
+      "imageNumber": 7,
+      "path": "public/contents/01/03_image_7.png"
+    },
+    {
+      "filename": "03_image_8.png",
+      "articleId": 3,
+      "imageNumber": 8,
+      "path": "public/contents/01/03_image_8.png"
+    },
+    {
+      "filename": "03_image_9.png",
+      "articleId": 3,
+      "imageNumber": 9,
+      "path": "public/contents/01/03_image_9.png"
+    },
+    {
+      "filename": "04_image_1.png",
+      "articleId": 4,
+      "imageNumber": 1,
+      "path": "public/contents/01/04_image_1.png"
+    },
+    {
+      "filename": "04_image_2.png",
+      "articleId": 4,
+      "imageNumber": 2,
+      "path": "public/contents/01/04_image_2.png"
+    },
+    {
+      "filename": "04_image_3.png",
+      "articleId": 4,
+      "imageNumber": 3,
+      "path": "public/contents/01/04_image_3.png"
+    },
+    {
+      "filename": "04_image_4.png",
+      "articleId": 4,
+      "imageNumber": 4,
+      "path": "public/contents/01/04_image_4.png"
+    },
+    {
+      "filename": "04_image_5.png",
+      "articleId": 4,
+      "imageNumber": 5,
+      "path": "public/contents/01/04_image_5.png"
+    },
+    {
+      "filename": "05_image_1.png",
+      "articleId": 5,
+      "imageNumber": 1,
+      "path": "public/contents/01/05_image_1.png"
+    },
+    {
+      "filename": "05_image_2.png",
+      "articleId": 5,
+      "imageNumber": 2,
+      "path": "public/contents/01/05_image_2.png"
+    },
+    {
+      "filename": "06_image_1.png",
+      "articleId": 6,
+      "imageNumber": 1,
+      "path": "public/contents/01/06_image_1.png"
+    },
+    {
+      "filename": "06_image_2.png",
+      "articleId": 6,
+      "imageNumber": 2,
+      "path": "public/contents/01/06_image_2.png"
+    },
+    {
+      "filename": "06_image_3.png",
+      "articleId": 6,
+      "imageNumber": 3,
+      "path": "public/contents/01/06_image_3.png"
+    },
+    {
+      "filename": "08_image_1.png",
+      "articleId": 8,
+      "imageNumber": 1,
+      "path": "public/contents/01/08_image_1.png"
+    }
+  ],
+  "thumbnailFiles": [
+    {
+      "filename": "01_thumbnail.png",
+      "articleId": 1,
+      "path": "public/contents/01/01_thumbnail.png"
+    },
+    {
+      "filename": "02_thumbnail.png",
+      "articleId": 2,
+      "path": "public/contents/01/02_thumbnail.png"
+    },
+    {
+      "filename": "03_thumbnail.png",
+      "articleId": 3,
+      "path": "public/contents/01/03_thumbnail.png"
+    },
+    {
+      "filename": "04_thumbnail.png",
+      "articleId": 4,
+      "path": "public/contents/01/04_thumbnail.png"
+    },
+    {
+      "filename": "05_thumbnail.png",
+      "articleId": 5,
+      "path": "public/contents/01/05_thumbnail.png"
+    },
+    {
+      "filename": "06_thumbnail.png",
+      "articleId": 6,
+      "path": "public/contents/01/06_thumbnail.png"
+    },
+    {
+      "filename": "07_thumbnail.png",
+      "articleId": 7,
+      "path": "public/contents/01/07_thumbnail.png"
+    },
+    {
+      "filename": "08_thumbnail.png",
+      "articleId": 8,
+      "path": "public/contents/01/08_thumbnail.png"
+    },
+    {
+      "filename": "09_thumbnail.png",
+      "articleId": 9,
+      "path": "public/contents/01/09_thumbnail.png"
+    },
+    {
+      "filename": "10_thumbnail.png",
+      "articleId": 10,
+      "path": "public/contents/01/10_thumbnail.png"
+    }
+  ]
+}

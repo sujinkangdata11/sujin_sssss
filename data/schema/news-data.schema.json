@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VIDHUNT News Data Structure",
+  "type": "object",
+  "required": [
+    "version",
+    "lastUpdated",
+    "totalArticles",
+    "languages",
+    "articles"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Data structure version"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date",
+      "description": "Last update date"
+    },
+    "totalArticles": {
+      "type": "number",
+      "description": "Total number of articles across all languages"
+    },
+    "languages": {
+      "type": "number",
+      "description": "Number of supported languages"
+    },
+    "articles": {
+      "type": "object",
+      "patternProperties": {
+        "^(en|ko|ja|zh|hi|es|fr|de|nl|pt|ru)$": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/article"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "article": {
+      "id": {
+        "type": "number",
+        "description": "Unique identifier for the article"
+      },
+      "title": {
+        "type": "string",
+        "description": "Article title (may contain newlines)"
+      },
+      "date": {
+        "type": "string",
+        "format": "date",
+        "description": "Publication date in YYYY-MM-DD format"
+      },
+      "excerpt": {
+        "type": "string",
+        "description": "Brief excerpt or summary"
+      },
+      "content": {
+        "type": "string",
+        "description": "Full article content with markdown formatting"
+      },
+      "category": {
+        "type": "string",
+        "description": "Article category"
+      },
+      "sourceFile": {
+        "type": "string",
+        "description": "Optional: source file reference"
+      }
+    }
+  }
+}
