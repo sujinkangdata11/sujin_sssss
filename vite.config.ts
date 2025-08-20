@@ -22,7 +22,8 @@ export default defineConfig(({ mode }) => {
         },
         middlewareMode: false
       },
-      assetsInclude: ['**/*.txt', '**/*.xml']
+      assetsInclude: ['**/*.txt', '**/*.xml'],
+      publicDir: 'public'
     };
 });
 // Force rebuild Tue Aug 19 20:10:59 KST 2025
