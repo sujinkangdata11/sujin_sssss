@@ -3,6 +3,84 @@
 
 const API_BASE_URL = 'https://www.googleapis.com/youtube/v3';
 
+// Country to language mapping for translation
+const COUNTRIES = [
+  { code: 'US', name: 'United States', language: 'English' },
+  { code: 'KR', name: 'South Korea', language: 'Korean' },
+  { code: 'JP', name: 'Japan', language: 'Japanese' },
+  { code: 'CN', name: 'China', language: 'Chinese' },
+  { code: 'IN', name: 'India', language: 'Hindi' },
+  { code: 'ES', name: 'Spain', language: 'Spanish' },
+  { code: 'FR', name: 'France', language: 'French' },
+  { code: 'DE', name: 'Germany', language: 'German' },
+  { code: 'NL', name: 'Netherlands', language: 'Dutch' },
+  { code: 'PT', name: 'Portugal', language: 'Portuguese' },
+  { code: 'RU', name: 'Russia', language: 'Russian' },
+  { code: 'GB', name: 'United Kingdom', language: 'English' },
+  { code: 'CA', name: 'Canada', language: 'English' },
+  { code: 'AU', name: 'Australia', language: 'English' },
+  { code: 'IT', name: 'Italy', language: 'Italian' },
+  { code: 'PH', name: 'Philippines', language: 'English' },
+  { code: 'TH', name: 'Thailand', language: 'Thai' },
+  { code: 'VN', name: 'Vietnam', language: 'Vietnamese' },
+  { code: 'TR', name: 'Turkey', language: 'Turkish' },
+  { code: 'ZA', name: 'South Africa', language: 'English' }
+];
+
+// Translate keyword for countries using Gemini API
+const translateKeywordForCountries = async (keyword, selectedCountries, geminiApiKey) => {
+  if (!geminiApiKey) {
+    throw new Error("Gemini API key is not provided.");
+  }
+
+  const targetCountries = COUNTRIES.filter(c => selectedCountries.includes(c.code));
+  const uniqueLanguages = [...new Set(targetCountries.map(c => c.language))];
+  
+  const prompt = `Translate the keyword "${keyword}" into the following languages: ${uniqueLanguages.join(', ')}. Return the result as a JSON array of objects, where each object has a "language" key (the English name of the language) and a "translation" key (the translated keyword).`;
+
+  try {
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=' + geminiApiKey, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          response_mime_type: "application/json"
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Gemini API Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const translationsText = data.candidates[0].content.parts[0].text;
+    const translations = JSON.parse(translationsText);
+
+    const translationMap = {};
+    translations.forEach(t => {
+      translationMap[t.language] = t.translation;
+    });
+
+    const result = {};
+    targetCountries.forEach(country => {
+      result[country.code] = translationMap[country.language] || keyword;
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Translation error:', error);
+    throw error;
+  }
+};
+
 // Convert ISO 8601 duration (PT1M30S) to readable format (1:30)
 const formatDuration = (duration) => {
   const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
@@ -227,6 +305,15 @@ export async function onRequestPost(context) {
       });
     }
 
+    // Get Gemini API key from environment
+    const geminiApiKey = env.GEMINI_API_KEY;
+    if (!geminiApiKey) {
+      return new Response(JSON.stringify({ error: 'Gemini API 키가 설정되지 않았습니다.' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     // Find working API key
     const workingKey = await findWorkingApiKey(youtubeApiKeys, env);
     
@@ -237,14 +324,27 @@ export async function onRequestPost(context) {
       });
     }
 
-    // Perform search for each country with complete enhancement
+    // Translate keyword for each country
+    let translatedKeywords;
+    try {
+      translatedKeywords = await translateKeywordForCountries(keyword, selectedCountries, geminiApiKey);
+    } catch (translateError) {
+      console.error('Translation failed:', translateError);
+      return new Response(JSON.stringify({ error: '키워드 번역 중 오류가 발생했습니다.' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Perform search for each country with translated keywords
     const allShorts = [];
     const errors = [];
 
     for (const countryCode of selectedCountries) {
       try {
         const publishedAfter = getPublishedAfter(dateRange);
-        const searchResults = await searchYouTubeShorts(workingKey.key, keyword, {
+        const translatedKeyword = translatedKeywords[countryCode] || keyword;
+        const searchResults = await searchYouTubeShorts(workingKey.key, translatedKeyword, {
           regionCode: countryCode,
           publishedAfter
         });
