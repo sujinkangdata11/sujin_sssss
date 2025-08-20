@@ -26,5 +26,5 @@ export default defineConfig(({ mode }) => {
       publicDir: 'public'
     };
 });
-// Force rebuild Tue Aug 19 20:10:59 KST 2025
-// Force rebuild 1755605344
+// Force rebuild Tue Aug 20 16:30:00 KST 2025
+// Force rebuild static files deployment fix
