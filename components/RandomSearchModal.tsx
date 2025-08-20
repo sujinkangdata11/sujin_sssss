@@ -9,9 +9,10 @@ interface RandomSearchModalProps {
   language: Language;
   isOpen: boolean;
   onClose: () => void;
+  onResults: (results: YouTubeShort[], isLoading: boolean, error: string | null) => void;
 }
 
-const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen, onClose }) => {
+const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen, onClose, onResults }) => {
   const [keyword, setKeyword] = useState<string>('');
   const [selectedCountries, setSelectedCountries] = useState<string[]>(['US']);
   const [dateRange, setDateRange] = useState<string>('7');
@@ -30,6 +31,7 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
     setIsLoading(true);
     setError(null);
     setShorts([]);
+    onResults([], true, null);
     
     try {
       const response = await fetch('/api/random-search', {
@@ -54,15 +56,18 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
       
       if (data.errors && data.errors.length > 0) {
         setError(`일부 지역에서 검색 실패: ${data.errors.join(', ')}`);
-      }
-      
-      if (!data.shorts || data.shorts.length === 0) {
+        onResults(data.shorts || [], false, `일부 지역에서 검색 실패: ${data.errors.join(', ')}`);
+      } else if (!data.shorts || data.shorts.length === 0) {
         setError('검색 결과가 없습니다. 다른 키워드를 시도해보세요.');
+        onResults([], false, '검색 결과가 없습니다. 다른 키워드를 시도해보세요.');
+      } else {
+        onResults(data.shorts, false, null);
       }
 
     } catch (err: any) {
       console.error('Random search error:', err);
       setError(err.message || '검색 중 오류가 발생했습니다.');
+      onResults([], false, err.message || '검색 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -141,20 +146,6 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
         </div>
       )}
       
-      {shorts.length > 0 && (
-        <div style={{ padding: '1rem 2rem 2rem' }}>
-          <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
-            <p style={{ color: '#6b7280' }}>
-              총 <span style={{ fontWeight: '600', color: '#4f46e5' }}>{shorts.length}</span>개의 쇼츠를 찾았습니다
-            </p>
-          </div>
-          <div className="results-grid">
-            {shorts.map(short => (
-              <ShortsCard key={short.id} short={short} language={language} />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

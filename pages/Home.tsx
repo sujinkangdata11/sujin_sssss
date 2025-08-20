@@ -42,6 +42,9 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   const [videoVisible, setVideoVisible] = useState<boolean>(false);
   const [batchProgress, setBatchProgress] = useState<{current: number; total: number} | null>(null);
   const [isRandomSearchOpen, setIsRandomSearchOpen] = useState<boolean>(false);
+  const [randomSearchResults, setRandomSearchResults] = useState<YouTubeShort[]>([]);
+  const [randomSearchLoading, setRandomSearchLoading] = useState<boolean>(false);
+  const [randomSearchError, setRandomSearchError] = useState<string | null>(null);
   // Tutorial language syncs with global language
   const videoRef = useRef<HTMLVideoElement>(null);
   
@@ -667,6 +670,25 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
     });
   }, [shorts, sortBy]);
 
+  const sortedRandomResults = useMemo(() => {
+    return [...randomSearchResults].sort((a, b) => {
+      if (sortBy === 'viewCount') {
+        return b.viewCount - a.viewCount;
+      } else if (sortBy === 'viewsPerSubscriber') {
+        // Sort by views per subscriber (higher percentage first)
+        const aRatio = a.viewsPerSubscriber || 0;
+        const bRatio = b.viewsPerSubscriber || 0;
+        return bRatio - aRatio;
+      } else if (sortBy === 'videoCount') {
+        // Sort by video count (fewer videos first - better quality)
+        const aCount = a.videoCount || Number.MAX_SAFE_INTEGER;
+        const bCount = b.videoCount || Number.MAX_SAFE_INTEGER;
+        return aCount - bCount;
+      }
+      return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+    });
+  }, [randomSearchResults, sortBy]);
+
   return (
     <>
       <SEOHead
@@ -1034,9 +1056,9 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
                   </div>
               )}
           </div>
-          {error && (
+          {(error || randomSearchError) && (
           <div className="error-message">
-            <p style={{whiteSpace: 'pre-line'}}>{error}</p>
+            <p style={{whiteSpace: 'pre-line'}}>{isRandomSearchOpen ? randomSearchError : error}</p>
             <Link to="/news/article/5" className="free-badge" style={{marginTop: '12px'}}>
               {t('getNewKey')}
               <svg className="free-badge-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1051,10 +1073,15 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
             language={language}
             isOpen={isRandomSearchOpen}
             onClose={() => setIsRandomSearchOpen(false)}
+            onResults={(results, loading, error) => {
+              setRandomSearchResults(results);
+              setRandomSearchLoading(loading);
+              setRandomSearchError(error);
+            }}
           />
         )}
 
-        {isLoading ? (
+        {(isLoading || randomSearchLoading) ? (
           <div className="loading-container">
             <svg className="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             <p className="loading-text">
@@ -1065,12 +1092,12 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
               )}
             </p>
           </div>
-        ) : sortedShorts.length > 0 ? (
+        ) : (sortedShorts.length > 0 || sortedRandomResults.length > 0) ? (
           <>
             <div className="results-header">
                 <p className="results-count">
                     {t('foundMessage') && <span className="mr-1">{t('foundMessage')}</span>}
-                    <span className="results-count-number">{sortedShorts.length}</span>
+                    <span className="results-count-number">{isRandomSearchOpen ? sortedRandomResults.length : sortedShorts.length}</span>
                     <span className="ml-1">{t('uniqueShortsMessage')}</span>
                 </p>
               <div className="sort-toggle-group">
@@ -1081,11 +1108,14 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
               </div>
             </div>
             <div className="results-grid">
-              {sortedShorts.map(short => <ShortsCard key={short.id} short={short} language={language} />)}
+              {isRandomSearchOpen 
+                ? sortedRandomResults.map(short => <ShortsCard key={short.id} short={short} language={language} />)
+                : sortedShorts.map(short => <ShortsCard key={short.id} short={short} language={language} />)
+              }
             </div>
           </>
         ) : (
-          !error && !isLoading && <div className="no-results">
+          !error && !randomSearchError && !isLoading && !randomSearchLoading && <div className="no-results">
             <p className="no-results-text" lang={language} style={{whiteSpace: 'pre-line'}}>{t('heroSubtitle')}</p>
           </div>
         )}
