@@ -37,10 +37,16 @@ const News: React.FC<NewsProps> = ({ language }) => {
           // Rest become regular articles
           setArticles(loadedArticles.slice(1));
           
-          // Preload thumbnail images for better UX
-          loadedArticles.forEach((article) => {
+          // Preload only first 3 images for better mobile performance
+          loadedArticles.slice(0, 3).forEach((article, index) => {
             const img = new Image();
             img.src = getThumbnailPath(currentPage, article.id);
+            // High priority for featured image, low for others
+            if (index === 0) {
+              img.loading = 'eager';
+            } else {
+              img.loading = 'lazy';
+            }
           });
         }
       } catch (error) {
@@ -171,8 +177,16 @@ const News: React.FC<NewsProps> = ({ language }) => {
             alt={featuredArticle.title}
             className="thumbnail-image featured-thumbnail"
             loading="eager"
+            decoding="async"
+            fetchPriority="high"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
+            }}
+            style={{
+              aspectRatio: '1/1',
+              objectFit: 'cover',
+              width: '100%',
+              height: '100%'
             }}
           />
         </div>
@@ -207,8 +221,16 @@ const News: React.FC<NewsProps> = ({ language }) => {
                 alt={article.title}
                 className="thumbnail-image small-thumbnail"
                 loading="lazy"
+                decoding="async"
+                fetchPriority="low"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
+                }}
+                style={{
+                  aspectRatio: '1/1',
+                  objectFit: 'cover',
+                  width: '100%',
+                  height: '100%'
                 }}
               />
             </div>
