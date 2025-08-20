@@ -743,6 +743,26 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
           </div>
         </div>
         <div className="hero-video">
+          {/* YouTube 임베드 버전 - 자동재생 + 큰 크기 */}
+          <iframe
+            width="695"
+            height="522"
+            src="https://www.youtube.com/embed/mGGtmDN08kg?autoplay=1&mute=1&loop=1&playlist=mGGtmDN08kg&controls=0&modestbranding=1&rel=0"
+            title="VIDHUNT Hero Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="hero-video-player"
+            style={{
+              width: '100%',
+              maxWidth: '695px',
+              aspectRatio: '695/522',
+              height: 'auto'
+            }}
+          ></iframe>
+          
+          {/* 기존 video 태그 - 백업용 (주석처리) */}
+          {/*
           <video 
             ref={videoRef}
             autoPlay={videoVisible}
@@ -785,6 +805,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
             )}
             Your browser does not support the video tag.
           </video>
+          */}
         </div>
       </div>
       
