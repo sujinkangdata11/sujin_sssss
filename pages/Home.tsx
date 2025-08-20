@@ -8,7 +8,6 @@ import { translations } from '../i18n/translations';
 import CountrySelector from '../components/CountrySelector';
 import ShortsCard from '../components/ShortsCard';
 import ApiKeyUpload from '../components/ApiKeyUpload';
-import LuckyIcon from '../components/LuckyIcon';
 import RandomSearchModal from '../components/RandomSearchModal';
 import SEOHead from '../components/SEOHead';
 
@@ -844,9 +843,28 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
         <div 
           onClick={() => setIsRandomSearchOpen(!isRandomSearchOpen)}
           title={isRandomSearchOpen ? t('normalSearchTooltip') : t('luckySearchTooltip')}
-          style={{ position: 'absolute', top: '140px', right: '50px', cursor: 'pointer' }}
+          style={{ 
+            position: 'absolute', 
+            top: '140px', 
+            right: '50px', 
+            cursor: 'pointer',
+            fontSize: '28px',
+            backgroundColor: isRandomSearchOpen ? '#f3f4f6' : 'white',
+            padding: '10px 14px',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            minWidth: isRandomSearchOpen ? 'auto' : '52px',
+            justifyContent: 'center'
+          }}
         >
-          <LuckyIcon size={40} />
+          {isRandomSearchOpen && (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 12L6 8L10 4" stroke="#000000" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )}
+          <span>🎲</span>
         </div>
         
         {!isRandomSearchOpen ? (
