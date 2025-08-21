@@ -576,9 +576,11 @@ html, body {
 
 .form-section-header {
   display: flex;
-  justify-content: flex-start; /* 왼쪽 정렬 */
+  align-items: flex-end; /* 하단 정렬 - 마지막 줄과 주사위 맞춤 */
+  justify-content: space-between; /* 양쪽 끝에 배치 */
   margin-top: 50px; /* 50px 위쪽 간격 추가 */
   margin-bottom: var(--spacing-6); /* 24px gap between title and form card */
+  position: relative;
 }
 
 .form-section-title {
@@ -1172,7 +1174,7 @@ select.form-input {
 }
 
 .sort-toggle-btn.active {
-  background-color: var(--color-accent-secondary);
+  background-color: #7c3aed;
   color: var(--color-text-white);
   box-shadow: var(--shadow-sm);
 }
@@ -2928,9 +2930,6 @@ select.form-input {
 
 /* Dice Button for Lucky Search Toggle */
 .dice-toggle-button {
-  position: absolute;
-  top: 140px;
-  right: 50px;
   cursor: pointer;
   font-size: 28px;
   padding: 10px 14px;
@@ -2939,12 +2938,105 @@ select.form-input {
   align-items: center;
   gap: 8px;
   justify-content: center;
+  width: fit-content;
+  min-width: auto;
+  position: relative;
 }
 
 .dice-toggle-button.normal {
   background-color: white;
-  min-width: 52px;
   animation: dice-bounce 1.5s ease-out infinite;
+  position: relative;
+  width: fit-content;
+}
+
+/* PC only tooltip bubble for dice button */
+.dice-tooltip-pc {
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #7c3aed;
+  color: white;
+  padding: 8px 8px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 1;
+  animation: tooltip-bounce-pc 2s ease-out infinite;
+  z-index: 1000;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* PC tooltip arrow pointing right */
+.dice-tooltip-pc::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 6px solid #7c3aed;
+}
+
+/* Mobile tooltip bubble for dice button */
+.dice-tooltip-mobile {
+  display: none !important; /* Hidden by default, shown on mobile */
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #7c3aed;
+  color: white;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* Mobile tooltip arrow pointing left */
+.dice-tooltip-mobile::after {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid #7c3aed;
+}
+
+/* PC tooltip bounce animation */
+@keyframes tooltip-bounce-pc {
+  0%, 85%, 100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  5% {
+    transform: translateY(-50%) translateX(-4px);
+  }
+  15% {
+    transform: translateY(-50%) translateX(0);
+  }
+  25% {
+    transform: translateY(-50%) translateX(-2px);
+  }
+  35% {
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
 @keyframes dice-bounce {
@@ -2967,17 +3059,33 @@ select.form-input {
 
 .dice-toggle-button.active {
   background-color: #f3f4f6;
+  width: fit-content;
   min-width: auto;
 }
 
 /* Mobile: Move dice button below title */
 @media (max-width: 768px) {
+  .form-section-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+  
   .dice-toggle-button {
-    position: static !important;
     margin: 20px 0 0 0 !important;
     margin-bottom: 0 !important;
     align-self: flex-start;
     width: fit-content;
+  }
+  
+  /* Hide PC tooltip on mobile */
+  .dice-tooltip-pc {
+    display: none !important;
+  }
+  
+  /* Show mobile tooltip on mobile */
+  .dice-tooltip-mobile {
+    display: flex !important;
   }
   
   .form-card {

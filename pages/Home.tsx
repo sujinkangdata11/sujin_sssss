@@ -44,6 +44,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   const [randomSearchResults, setRandomSearchResults] = useState<YouTubeShort[]>([]);
   const [randomSearchLoading, setRandomSearchLoading] = useState<boolean>(false);
   const [randomSearchError, setRandomSearchError] = useState<string | null>(null);
+  const [showDiceTooltip, setShowDiceTooltip] = useState<boolean>(true);
   // Tutorial language syncs with global language
   const videoRef = useRef<HTMLVideoElement>(null);
   
@@ -838,27 +839,39 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
       <main className="main-container">
         <div className="form-section-header">
           <h2 className="form-section-title" lang={language} style={{whiteSpace: 'pre-line'}}>{t('formSectionTitle')}</h2>
-        </div>
-        {/* Random Search Mode Toggle - Outside form */}
-        <div 
-          onClick={() => {
-            setIsRandomSearchOpen(!isRandomSearchOpen);
-            // Clear error messages when switching modes
-            setError(null);
-            setRandomSearchError(null);
-            // Clear search results to show initial homepage content
-            setShorts([]);
-            setRandomSearchResults([]);
-          }}
-          title={isRandomSearchOpen ? t('normalSearchTooltip') : t('luckySearchTooltip')}
-          className={`dice-toggle-button ${isRandomSearchOpen ? 'active' : 'normal'}`}
-        >
-          {isRandomSearchOpen && (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 12L6 8L10 4" stroke="#000000" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          )}
-          <span>🎲</span>
+          
+          {/* Random Search Mode Toggle - Inside header for PC alignment */}
+          <div 
+            onClick={() => {
+              setIsRandomSearchOpen(!isRandomSearchOpen);
+              setShowDiceTooltip(false);
+              // Clear error messages when switching modes
+              setError(null);
+              setRandomSearchError(null);
+              // Clear search results to show initial homepage content
+              setShorts([]);
+              setRandomSearchResults([]);
+            }}
+            title={isRandomSearchOpen ? t('normalSearchTooltip') : t('luckySearchTooltip')}
+            className={`dice-toggle-button ${isRandomSearchOpen ? 'active' : 'normal'}`}
+          >
+            {!isRandomSearchOpen && showDiceTooltip && (
+              <>
+                <div className="dice-tooltip-pc">
+                  ?
+                </div>
+                <div className="dice-tooltip-mobile">
+                  <span style={{position: 'relative', left: '0px', top: '-1px'}}>?</span>
+                </div>
+              </>
+            )}
+            {isRandomSearchOpen && (
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 12L6 8L10 4" stroke="#000000" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+            <span>🎲</span>
+          </div>
         </div>
         
         {!isRandomSearchOpen ? (
