@@ -2923,6 +2923,7 @@ select.form-input {
   margin-top: 0.25rem;
   margin-bottom: 10px;
   color: #6b7280;
+  white-space: pre-line;
 }
 
 /* Dice Button for Lucky Search Toggle */
@@ -2972,6 +2973,24 @@ select.form-input {
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 15px !important;
+  }
+  
+  .random-form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  .random-search-button-container {
+    width: 100% !important;
+  }
+  
+  .random-search-button-container .btn-primary {
+    width: 100% !important;
+  }
+  
+  /* Reduce loading container padding in random search modal on mobile */
+  .form-card .loading-container {
+    padding: 1rem 0 !important;
   }
 }
 
