@@ -2825,12 +2825,12 @@ select.form-input {
     contain: layout;
   }
   
-  /* Make news article images smaller on mobile for faster loading */
+  /* Make news article images larger on mobile for better visibility */
   .article-small-image {
-    width: 120px !important;
-    height: 120px !important;
-    min-height: 120px !important;
-    max-height: 120px !important;
+    width: 160px !important;
+    height: 160px !important;
+    min-height: 160px !important;
+    max-height: 160px !important;
     aspect-ratio: 1/1 !important;
   }
   
