@@ -42,7 +42,8 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
         body: JSON.stringify({
           keyword: keyword.trim(),
           dateRange,
-          selectedCountries
+          selectedCountries,
+          language
         })
       });
 

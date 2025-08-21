@@ -27,6 +27,66 @@ const COUNTRIES = [
   { code: 'ZA', name: 'South Africa', language: 'English' }
 ];
 
+// Get localized error messages
+const getLocalizedMessage = (language, messageKey) => {
+  const messages = {
+    quotaExhausted: {
+      en: "Oh.. unfortunately, the previous search was the last quota.",
+      ko: "아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.",
+      ja: "あ.. 残念ながら前の検索が最後のクォータでした。",
+      zh: "啊.. 很遗憾，上次搜索是最后的配额了。",
+      hi: "अरे.. दुर्भाग्य से पिछली खोज अंतिम कोटा था।",
+      es: "Oh.. lamentablemente, la búsqueda anterior fue la última cuota.",
+      fr: "Oh.. malheureusement, la recherche précédente était le dernier quota.",
+      de: "Oh.. leider war die vorherige Suche das letzte Kontingent.",
+      nl: "Oh.. helaas was de vorige zoekopdracht het laatste quotum.",
+      pt: "Ah.. infelizmente, a busca anterior foi a última cota.",
+      ru: "Ох.. к сожалению, предыдущий поиск был последней квотой."
+    },
+    keywordRequired: {
+      en: "Please enter a keyword.",
+      ko: "키워드를 입력해주세요.",
+      ja: "キーワードを入力してください。",
+      zh: "请输入关键词。",
+      hi: "कृपया एक कीवर्ड दर्ज करें।",
+      es: "Por favor ingrese una palabra clave.",
+      fr: "Veuillez saisir un mot-clé.",
+      de: "Bitte geben Sie ein Schlüsselwort ein.",
+      nl: "Voer een zoekwoord in.",
+      pt: "Por favor, insira uma palavra-chave.",
+      ru: "Пожалуйста, введите ключевое слово."
+    },
+    geminiKeyMissing: {
+      en: "Gemini API key is not configured.",
+      ko: "Gemini API 키가 설정되지 않았습니다.",
+      ja: "Gemini API キーが設定されていません。",
+      zh: "Gemini API 密钥未配置。",
+      hi: "Gemini API कुंजी कॉन्फ़िगर नहीं है।",
+      es: "La clave API de Gemini no está configurada.",
+      fr: "La clé API Gemini n'est pas configurée.",
+      de: "Gemini API-Schlüssel ist nicht konfiguriert.",
+      nl: "Gemini API-sleutel is niet geconfigureerd.",
+      pt: "A chave da API Gemini não está configurada.",
+      ru: "Ключ API Gemini не настроен."
+    },
+    searchError: {
+      en: "An error occurred during search.",
+      ko: "검색 중 오류가 발생했습니다.",
+      ja: "検索中にエラーが発生しました。",
+      zh: "搜索过程中发生错误。",
+      hi: "खोज के दौरान एक त्रुटि हुई।",
+      es: "Ocurrió un error durante la búsqueda.",
+      fr: "Une erreur s'est produite lors de la recherche.",
+      de: "Während der Suche ist ein Fehler aufgetreten.",
+      nl: "Er is een fout opgetreden tijdens het zoeken.",
+      pt: "Ocorreu um erro durante a pesquisa.",
+      ru: "Произошла ошибка во время поиска."
+    }
+  };
+  
+  return messages[messageKey]?.[language] || messages[messageKey]?.['en'] || 'An error occurred.';
+};
+
 // Translate keyword for countries using Gemini API
 const translateKeywordForCountries = async (keyword, selectedCountries, geminiApiKey) => {
   if (!geminiApiKey) {
@@ -286,10 +346,10 @@ export async function onRequestPost(context) {
     
     // Get request data
     const body = await request.json();
-    const { keyword, dateRange, selectedCountries } = body;
+    const { keyword, dateRange, selectedCountries, language } = body;
     
     if (!keyword || !keyword.trim()) {
-      return new Response(JSON.stringify({ error: '키워드를 입력해주세요.' }), {
+      return new Response(JSON.stringify({ error: getLocalizedMessage(language || 'ko', 'keywordRequired') }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -308,7 +368,7 @@ export async function onRequestPost(context) {
     // Get Gemini API key from environment
     const geminiApiKey = env.GEMINI_API_KEYS;
     if (!geminiApiKey) {
-      return new Response(JSON.stringify({ error: 'Gemini API 키가 설정되지 않았습니다.' }), {
+      return new Response(JSON.stringify({ error: getLocalizedMessage(language || 'ko', 'geminiKeyMissing') }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -318,7 +378,7 @@ export async function onRequestPost(context) {
     const workingKey = await findWorkingApiKey(youtubeApiKeys, env);
     
     if (!workingKey) {
-      return new Response(JSON.stringify({ error: '현재 사용 가능한 API 키가 없습니다. 잠시 후 다시 시도해주세요.' }), {
+      return new Response(JSON.stringify({ error: getLocalizedMessage(language || 'ko', 'quotaExhausted') }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -330,7 +390,7 @@ export async function onRequestPost(context) {
       translatedKeywords = await translateKeywordForCountries(keyword, selectedCountries, geminiApiKey);
     } catch (translateError) {
       console.error('Translation failed:', translateError);
-      return new Response(JSON.stringify({ error: '키워드 번역 중 오류가 발생했습니다.' }), {
+      return new Response(JSON.stringify({ error: getLocalizedMessage(language || 'ko', 'quotaExhausted') }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -375,7 +435,7 @@ export async function onRequestPost(context) {
 
   } catch (error) {
     console.error('Random search error:', error);
-    return new Response(JSON.stringify({ error: '검색 중 오류가 발생했습니다.' }), {
+    return new Response(JSON.stringify({ error: getLocalizedMessage(language || 'ko', 'searchError') }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
