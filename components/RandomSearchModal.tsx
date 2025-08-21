@@ -144,9 +144,9 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
       </div>
       
       {isLoading && (
-        <div className="loading-container" style={{ paddingBottom: '10px', textAlign: 'center' }}>
+        <div className="loading-container" style={{ textAlign: 'center' }}>
           <div className="loading-spinner"></div>
-          <p style={{ marginTop: '1rem', color: '#6b7280' }}>{t('luckySearchLoading')}</p>
+          <p style={{ margin: '0', padding: '0', color: '#6b7280' }}>{t('luckySearchLoading')}</p>
         </div>
       )}
       

@@ -1193,8 +1193,19 @@ select.form-input {
   .sort-toggle-group {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    row-gap: 1px;
+    gap: 4px;
+    row-gap: 4px;
+    background-color: transparent; /* Remove grey background on mobile */
+    padding: 0; /* Remove padding on mobile */
+    width: 100%; /* 화면의 100% 너비 */
+  }
+  
+  .sort-toggle-btn.inactive {
+    background-color: #f3f4f6; /* Individual grey background for inactive buttons */
+  }
+  
+  .sort-toggle-btn {
+    padding: var(--spacing-3) var(--spacing-4); /* 12px top/bottom, 16px left/right */
   }
 }
 
