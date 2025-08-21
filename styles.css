@@ -1188,6 +1188,16 @@ select.form-input {
   background-color: #e5e7eb; /* light grey hover */
 }
 
+/* Mobile: 2x2 grid layout for sort buttons */
+@media (max-width: 768px) {
+  .sort-toggle-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    row-gap: 1px;
+  }
+}
+
 /* Results Grid */
 .results-grid {
   display: grid;
