@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>VIDHUNT - Global Shorts Finder</title>
+    <link>https://www.vidhunt.me</link>
+    <description>Discover trending YouTube Shorts and viral videos from around the world. Find popular short-form content, analyze global trends, and boost your channel growth with VIDHUNT's powerful video discovery tool.</description>
+    <language>ko-KR</language>
+    <lastBuildDate>Wed, 21 Aug 2025 09:00:00 GMT</lastBuildDate>
+    <pubDate>Wed, 21 Aug 2025 09:00:00 GMT</pubDate>
+    <ttl>1440</ttl>
+    <generator>VIDHUNT RSS Generator</generator>
+    <managingEditor>noreply@vidhunt.me (VIDHUNT)</managingEditor>
+    <webMaster>noreply@vidhunt.me (VIDHUNT)</webMaster>
+    <category>Technology</category>
+    <category>YouTube</category>
+    <category>Content Creation</category>
+    <category>Digital Marketing</category>
+    <atom:link href="https://www.vidhunt.me/rss.xml" rel="self" type="application/rss+xml"/>
+    
+    <image>
+      <url>https://www.vidhunt.me/vidhunt_logo.svg</url>
+      <title>VIDHUNT</title>
+      <link>https://www.vidhunt.me</link>
+      <width>144</width>
+      <height>144</height>
+    </image>
+
+    <!-- 최신 글 1 -->
+    <item>
+      <title>VIDHUNT VS 유튜브 일반 검색 - 무엇이 낫나요?</title>
+      <link>https://www.vidhunt.me/news/article/1</link>
+      <guid>https://www.vidhunt.me/news/article/1</guid>
+      <description>많은 분들이 궁금해하시는 질문이 있습니다. "VIDHUNT로 인기 쇼츠를 찾는 것과 유튜브에서 직접 영상을 검색하는 것, 무슨 차이가 있나요?"</description>
+      <content:encoded><![CDATA[
+        <h2>전 세계 트렌드를 한눈에</h2>
+        <p>VIDHUNT의 가장 큰 장점은 여러분이 입력한 키워드를 각국의 언어로 자동 변환하여 전 세계 쇼츠를 한 번에 보여준다는 것입니다.</p>
+        <p>예를 들어 'cat'라고 검색하면, 'cat', 'gato', '고양이', '猫' 등 다양한 언어로 검색된 결과를 통합해서 보여주죠.</p>
+        
+        <h2>유튜브 알고리즘의 특성을 활용하세요</h2>
+        <p>유튜브 알고리즘은 "현재" 뜨고 있는 콘텐츠를 비슷한 주제의 영상들에게 우선적으로 노출시킵니다.</p>
+        
+        <h2>타이밍이 곧 성공의 열쇠</h2>
+        <p>유튜브는 3개월 전 100만 조회수보다 어제 올라온 10만 영상을 더 높게 평가합니다.</p>
+        <p>검색 기간을 최대한 짧게 설정하세요. 7일, 심지어 3일 정도로 기간을 좁혀서 계획적으로 쇼츠를 제작하는 것을 권장합니다.</p>
+      ]]></content:encoded>
+      <category>Technology</category>
+      <pubDate>Sun, 18 Aug 2025 09:00:00 GMT</pubDate>
+      <dc:creator>VIDHUNT</dc:creator>
+    </item>
+
+    <!-- 최신 글 2 -->
+    <item>
+      <title>YouTube Data API - 10초 만에 무료 발급받기</title>
+      <link>https://www.vidhunt.me/news/article/2</link>
+      <guid>https://www.vidhunt.me/news/article/2</guid>
+      <description>YouTube의 모든 데이터를 무료로 활용하세요! YouTube Data API v3는 구글에서 제공하는 완전 무료 서비스입니다.</description>
+      <content:encoded><![CDATA[
+        <p>데이터 API? 이게 뭘까요? 처음 듣는 분들이 많을텐데요, 걱정하지 마세요!</p>
+        <ul>
+          <li>"돈을 내야 하나요?" → 아니요, 완전 무료입니다.</li>
+          <li>"신용카드가 필요한가요?" → 전혀 필요 없습니다.</li>
+          <li>"어려운가요?" → 10세 어린이도 할 수 있어요.</li>
+        </ul>
+        <p>YouTube Data API v3는 구글에서 제공하는 무료 서비스입니다.</p>
+        <p>이 API를 통해 YouTube의 모든 공개 데이터에 접근할 수 있습니다.</p>
+      ]]></content:encoded>
+      <category>Tutorial</category>
+      <pubDate>Sun, 18 Aug 2025 08:00:00 GMT</pubDate>
+      <dc:creator>VIDHUNT</dc:creator>
+    </item>
+
+    <!-- 최신 글 3 -->
+    <item>
+      <title>경쟁 채널의 바이럴을 뺏어올 수 있는 기회!</title>
+      <link>https://www.vidhunt.me/news/article/3</link>
+      <guid>https://www.vidhunt.me/news/article/3</guid>
+      <description>고급 옵션의 '즐겨찾는 채널'을 사용하여 경쟁 채널을 분석하고 바이럴 요소를 파악하세요.</description>
+      <content:encoded><![CDATA[
+        <p>YouTube 크리에이터라면 누구나 롤모델 채널이나 경쟁 채널이 있을 것입니다.</p>
+        <p>이 채널들의 바이럴 요소를 분석할 수 있다면 어떠신가요?</p>
+        
+        <h2>고급옵션의 '즐겨찾기 채널'을 사용하세요</h2>
+        <p>고급 옵션의 '즐겨찾는 채널'에 관심 있는 채널들을 등록하면, 다음과 같은 인사이트를 얻을 수 있습니다:</p>
+        <ul>
+          <li>🎯 바이럴 쇼츠 분석: 이 채널의 바이럴 요소</li>
+          <li>📊 성과 지표 확인: 구독자 대비 조회수 비율 및 성장률</li>
+          <li>📈 트렌드 파악: 경쟁 채널들의 최신 콘텐츠 동향</li>
+        </ul>
+      ]]></content:encoded>
+      <category>Strategy</category>
+      <pubDate>Sun, 18 Aug 2025 07:00:00 GMT</pubDate>
+      <dc:creator>VIDHUNT</dc:creator>
+    </item>
+
+    <!-- 최신 글 4 -->
+    <item>
+      <title>영어 쇼츠를 올릴 때 주의사항</title>
+      <link>https://www.vidhunt.me/news/article/4</link>
+      <guid>https://www.vidhunt.me/news/article/4</guid>
+      <description>광고비용이 높은 미국을 타겟으로 할 때 반드시 알아야 할 VPN 활용법과 RPM 최적화 전략을 알아보세요.</description>
+      <content:encoded><![CDATA[
+        <h2>영어 쇼츠를 제작한다면 반드시 VPN을 사용하세요</h2>
+        <p>미국이 아닌 다른 국가에서 쇼츠를 업로드할 경우, 여러분의 쇼츠는 RPM이 낮은 국가들에게 타겟될 수 있습니다.</p>
+        <p>단적인 예시로, 800만 조회수를 달성해도 불과 4만원 정도의 수익밖에 얻지 못할 수 있다는 뜻입니다.</p>
+        
+        <h2>2025년 기준 RPM 단가가 높은 상위 10개국</h2>
+        <ul>
+          <li>미국 🇺🇸 ($11.95)</li>
+          <li>호주 🇦🇺 ($8.93)</li>
+          <li>노르웨이 🇳🇴 ($8.19)</li>
+          <li>스위스 🇨🇭 ($8.02)</li>
+          <li>영국 🇬🇧 ($7.60)</li>
+        </ul>
+        <p>이 국가들을 타겟할 때는 VPN을 적극 활용하시기 바랍니다.</p>
+      ]]></content:encoded>
+      <category>Monetization</category>
+      <pubDate>Sun, 18 Aug 2025 06:00:00 GMT</pubDate>
+      <dc:creator>VIDHUNT</dc:creator>
+    </item>
+
+    <!-- 서비스 소개 -->
+    <item>
+      <title>VIDHUNT - 전세계 바이럴 쇼츠를 한 번에 찾아보세요</title>
+      <link>https://www.vidhunt.me</link>
+      <guid>https://www.vidhunt.me/about</guid>
+      <description>VIDHUNT는 전세계 11개 언어로 YouTube 쇼츠를 검색하여 바이럴 콘텐츠를 발견할 수 있는 무료 도구입니다.</description>
+      <content:encoded><![CDATA[
+        <h2>전세계 바이럴 쇼츠 발견 도구</h2>
+        <p>VIDHUNT는 콘텐츠 크리에이터들을 위한 강력한 도구입니다:</p>
+        <ul>
+          <li>🌍 11개 언어 동시 검색 (한국어, 영어, 일본어, 중국어 등)</li>
+          <li>🎯 바이럴 콘텐츠 실시간 발견</li>
+          <li>📊 구독자 대비 조회수 분석</li>
+          <li>🆓 완전 무료 서비스 (회원가입 불필요)</li>
+          <li>🔑 개인 API 키로 안전한 사용</li>
+        </ul>
+        
+        <h2>주요 기능</h2>
+        <p>• 키워드 자동 번역 및 다국어 검색</p>
+        <p>• 조회수, 최신순, 구독자 대비 조회수 정렬</p>
+        <p>• 즐겨찾는 채널 분석</p>
+        <p>• 럭키 서치 (랜덤 검색)</p>
+        
+        <p>지금 바로 VIDHUNT에서 다음 바이럴 아이디어를 찾아보세요!</p>
+      ]]></content:encoded>
+      <category>Service</category>
+      <pubDate>Wed, 21 Aug 2025 09:00:00 GMT</pubDate>
+      <dc:creator>VIDHUNT</dc:creator>
+    </item>
+
+  </channel>
+</rss>
