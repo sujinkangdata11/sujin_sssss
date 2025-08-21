@@ -97,6 +97,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "Free random search mode",
     normalSearchTooltip: "Back to normal search mode",
     quotaExhaustedMessage: "Oh.. unfortunately, the previous search was the last quota.",
+    luckySearchMainTitle: "🎲 Lucky Search",
+    luckySearchSubtitle: "You can search if the developer has remaining quota.",
     relatedArticlesTitle: "Read Other Articles",
   },
   ko: {
@@ -189,12 +191,14 @@ export const translations: Record<Language, Record<string, string>> = {
     tryNowButton: "지금 사용하기",
     
     // Lucky Search
-    luckySearchTitle: "🎲 럭키 서치 ㅣ 남은 할당량이 있다면 검색할 수 있어요",
+    luckySearchTitle: "🎲 럭키 서치\n개발자가 보유한 할당량이 남아있다면 검색할 수 있어요.",
     luckySearchButton: "럭키 서치",
     luckySearchLoading: "🎲 운이 있다면 결과가 나온다..",
     luckySearchTooltip: "무료 랜덤 검색 모드",
     normalSearchTooltip: "일반 검색 모드로 돌아가기",
     quotaExhaustedMessage: "아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.",
+    luckySearchMainTitle: "🎲 럭키 서치",
+    luckySearchSubtitle: "개발자가 보유한 할당량이 남아있다면 검색할 수 있어요.",
     relatedArticlesTitle: "다른 아티클 보기",
   },
   ja: {
@@ -289,6 +293,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "無料ランダム検索モード",
     normalSearchTooltip: "通常検索モードに戻る",
     quotaExhaustedMessage: "あ.. 残念ながら前の検索が最後のクォータでした。",
+    luckySearchMainTitle: "🎲 ラッキーサーチ",
+    luckySearchSubtitle: "開発者にクォータが残っていれば検索できます。",
     relatedArticlesTitle: "他の記事を読む",
   },
   zh: {
@@ -383,6 +389,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "免费随机搜索模式",
     normalSearchTooltip: "返回正常搜索模式",
     quotaExhaustedMessage: "啊.. 很遗憾，上次搜索是最后的配额了。",
+    luckySearchMainTitle: "🎲 幸运搜索",
+    luckySearchSubtitle: "如果开发者还有剩余配额，您可以搜索。",
     relatedArticlesTitle: "阅读其他文章",
   },
   hi: {
@@ -477,6 +485,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "मुफ्त रैंडम खोज मोड",
     normalSearchTooltip: "सामान्य खोज मोड पर वापस जाएं",
     quotaExhaustedMessage: "अरे.. दुर्भाग्य से पिछली खोज अंतिम कोटा था।",
+    luckySearchMainTitle: "🎲 लकी सर्च",
+    luckySearchSubtitle: "यदि डेवलपर के पास शेष कोटा है तो आप खोज सकते हैं।",
     relatedArticlesTitle: "अन्य लेख पढ़ें",
   },
   es: {
@@ -575,6 +585,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "Modo de búsqueda aleatoria gratuita",
     normalSearchTooltip: "Volver al modo de búsqueda normal",
     quotaExhaustedMessage: "Oh.. lamentablemente, la búsqueda anterior fue la última cuota.",
+    luckySearchMainTitle: "🎲 Búsqueda de la Suerte",
+    luckySearchSubtitle: "Puedes buscar si el desarrollador tiene cuota restante.",
     relatedArticlesTitle: "Leer otros artículos",
   },
   fr: {
@@ -673,6 +685,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "Mode de recherche aléatoire gratuite",
     normalSearchTooltip: "Retour au mode de recherche normal",
     quotaExhaustedMessage: "Oh.. malheureusement, la recherche précédente était le dernier quota.",
+    luckySearchMainTitle: "🎲 Recherche Chanceuse",
+    luckySearchSubtitle: "Vous pouvez chercher si le développeur a un quota restant.",
     relatedArticlesTitle: "Lire d'autres articles",
   },
   de: {
@@ -771,6 +785,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "Kostenloser zufälliger Suchmodus",
     normalSearchTooltip: "Zurück zum normalen Suchmodus",
     quotaExhaustedMessage: "Oh.. leider war die vorherige Suche das letzte Kontingent.",
+    luckySearchMainTitle: "🎲 Glückssuche",
+    luckySearchSubtitle: "Sie können suchen, wenn der Entwickler noch Kontingent hat.",
     relatedArticlesTitle: "Andere Artikel lesen",
   },
   nl: {
@@ -869,6 +885,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "Gratis willekeurige zoekmodus",
     normalSearchTooltip: "Terug naar normale zoekmodus",
     quotaExhaustedMessage: "Oh.. helaas was de vorige zoekopdracht het laatste quotum.",
+    luckySearchMainTitle: "🎲 Gelukszoekopdracht",
+    luckySearchSubtitle: "Je kunt zoeken als de ontwikkelaar nog quotum heeft.",
     relatedArticlesTitle: "Andere artikelen lezen",
   },
   pt: {
@@ -967,6 +985,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "Modo de busca aleatória gratuita",
     normalSearchTooltip: "Voltar ao modo de busca normal",
     quotaExhaustedMessage: "Ah.. infelizmente, a busca anterior foi a última cota.",
+    luckySearchMainTitle: "🎲 Busca da Sorte",
+    luckySearchSubtitle: "Você pode buscar se o desenvolvedor tiver cota restante.",
     relatedArticlesTitle: "Ler outros artigos",
   },
   ru: {
@@ -1065,6 +1085,8 @@ export const translations: Record<Language, Record<string, string>> = {
     luckySearchTooltip: "Режим бесплатного случайного поиска",
     normalSearchTooltip: "Вернуться к обычному режиму поиска",
     quotaExhaustedMessage: "Ох.. к сожалению, предыдущий поиск был последней квотой.",
+    luckySearchMainTitle: "🎲 Удачный Поиск",
+    luckySearchSubtitle: "Вы можете искать, если у разработчика есть оставшаяся квота.",
     relatedArticlesTitle: "Читать другие статьи",
   },
 };

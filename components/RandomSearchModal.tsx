@@ -79,7 +79,10 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
   return (
     <div className="form-card">
       <div className="random-search-header">
-        <h2 className="random-search-title">{t('luckySearchTitle')}</h2>
+        <h2 className="random-search-title">
+          {t('luckySearchMainTitle')}
+          <div className="random-search-subtitle">{t('luckySearchSubtitle')}</div>
+        </h2>
       </div>
       
       <div className="random-search-form">
