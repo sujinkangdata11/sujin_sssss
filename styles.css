@@ -2944,6 +2944,25 @@ select.form-input {
 .dice-toggle-button.normal {
   background-color: white;
   min-width: 52px;
+  animation: dice-bounce 1.5s ease-out infinite;
+}
+
+@keyframes dice-bounce {
+  0%, 90%, 100% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(-8px);
+  }
+  20% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+  40% {
+    transform: translateY(0);
+  }
 }
 
 .dice-toggle-button.active {
