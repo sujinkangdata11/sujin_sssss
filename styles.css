@@ -3136,10 +3136,19 @@ select.form-input {
     width: 100% !important;
   }
   
-  /* Reduce loading container padding in random search modal on mobile */
+  /* Minimize loading container padding in random search modal on mobile */
   .form-card .loading-container {
-    padding: 1rem 0 !important;
+    padding: 0 !important;
   }
+}
+
+/* Minimal loading container for random search */
+.random-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
 }
 
 /* Random Search Form - Horizontal Layout */
