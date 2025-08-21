@@ -851,21 +851,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
             setRandomSearchResults([]);
           }}
           title={isRandomSearchOpen ? t('normalSearchTooltip') : t('luckySearchTooltip')}
-          style={{ 
-            position: 'absolute', 
-            top: '140px', 
-            right: '50px', 
-            cursor: 'pointer',
-            fontSize: '28px',
-            backgroundColor: isRandomSearchOpen ? '#f3f4f6' : 'white',
-            padding: '10px 14px',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            minWidth: isRandomSearchOpen ? 'auto' : '52px',
-            justifyContent: 'center'
-          }}
+          className={`dice-toggle-button ${isRandomSearchOpen ? 'active' : 'normal'}`}
         >
           {isRandomSearchOpen && (
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

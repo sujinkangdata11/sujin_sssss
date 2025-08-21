@@ -1189,7 +1189,7 @@ select.form-input {
 /* Results Grid */
 .results-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-6);
   margin-bottom: 200px;
 }
@@ -2925,6 +2925,55 @@ select.form-input {
   color: #6b7280;
 }
 
+/* Dice Button for Lucky Search Toggle */
+.dice-toggle-button {
+  position: absolute;
+  top: 140px;
+  right: 50px;
+  cursor: pointer;
+  font-size: 28px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.dice-toggle-button.normal {
+  background-color: white;
+  min-width: 52px;
+}
+
+.dice-toggle-button.active {
+  background-color: #f3f4f6;
+  min-width: auto;
+}
+
+/* Mobile: Move dice button below title */
+@media (max-width: 768px) {
+  .dice-toggle-button {
+    position: static !important;
+    margin: 20px 0 0 0 !important;
+    margin-bottom: 0 !important;
+    align-self: flex-start;
+    width: fit-content;
+  }
+  
+  .form-card {
+    margin-top: 10px !important;
+  }
+  
+  .youtube-tutorial-card {
+    margin-top: 60px !important;
+  }
+  
+  .results-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 15px !important;
+  }
+}
 
 /* Random Search Form - Horizontal Layout */
 .random-search-form {
