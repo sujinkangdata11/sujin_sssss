@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Language, YouTubeShort } from '../types';
 import { COUNTRIES, getDateRanges } from '../constants';
 import { translations } from '../i18n/translations';
@@ -19,8 +19,25 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [shorts, setShorts] = useState<YouTubeShort[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [currentLoadingMessageIndex, setCurrentLoadingMessageIndex] = useState<number>(0);
 
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
+
+  // Dynamic loading message rotation
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const loadingMessages = t('loadingMessages') as string[];
+    if (!loadingMessages || !Array.isArray(loadingMessages)) return;
+
+    const interval = setInterval(() => {
+      setCurrentLoadingMessageIndex((prevIndex) => 
+        (prevIndex + 1) % loadingMessages.length
+      );
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isLoading, language]);
 
   const handleRandomSearch = async () => {
     if (!keyword.trim()) {
@@ -146,7 +163,15 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
       {isLoading && (
         <div className="random-loading-container" style={{ textAlign: 'center' }}>
           <div className="loading-spinner"></div>
-          <p style={{ margin: '0', padding: '0', color: '#6b7280' }}>{t('luckySearchLoading')}</p>
+          <p style={{ margin: '0', padding: '0', color: '#6b7280' }}>
+            {(() => {
+              const loadingMessages = t('loadingMessages') as string[];
+              if (loadingMessages && Array.isArray(loadingMessages) && loadingMessages.length > 0) {
+                return loadingMessages[currentLoadingMessageIndex];
+              }
+              return t('luckySearchLoading');
+            })()}
+          </p>
         </div>
       )}
       

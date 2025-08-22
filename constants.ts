@@ -17,19 +17,19 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
 
 export const getDateRanges = (lang: Language): DateRangeOption[] => {
   const labels: Record<Language, string[]> = {
-    en: ['Last 24 hours', 'Last 3 days', 'Last 7 days', 'Last month', 'Last 3 months', 'Last 6 months'],
-    ko: ['최근 24시간', '최근 3일', '최근 7일', '최근 한 달', '최근 3개월', '최근 6개월'],
-    ja: ['過去24時間', '過去3日間', '過去7日間', '過去1ヶ月', '過去3ヶ月', '過去6ヶ月'],
-    zh: ['过去24小时', '过去3天', '过去7天', '最近一个月', '最近三个月', '最近六个月'],
-    hi: ['पिछले 24 घंटे', 'पिछले 3 दिन', 'पिछले 7 दिन', 'पिछला महीना', 'पिछले 3 महीने', 'पिछले 6 महीने'],
-    es: ['Últimas 24 horas', 'Últimos 3 días', 'Últimos 7 días', 'Último mes', 'Últimos 3 meses', 'Últimos 6 meses'],
-    fr: ['Dernières 24 heures', '3 derniers jours', '7 derniers jours', 'Dernier mois', '3 derniers mois', '6 derniers mois'],
-    de: ['Letzte 24 Stunden', 'Letzte 3 Tage', 'Letzte 7 Tage', 'Letzter Monat', 'Letzte 3 Monate', 'Letzte 6 Monate'],
-    nl: ['Laatste 24 uur', 'Laatste 3 dagen', 'Laatste 7 dagen', 'Laatste maand', 'Laatste 3 maanden', 'Laatste 6 maanden'],
-    pt: ['Últimas 24 horas', 'Últimos 3 dias', 'Últimos 7 dias', 'Último mês', 'Últimos 3 meses', 'Últimos 6 meses'],
-    ru: ['Последние 24 часа', 'Последние 3 дня', 'Последние 7 дней', 'Последний месяц', 'Последние 3 месяца', 'Последние 6 месяцев'],
+    en: ['Last 24 hours', 'Last 3 days', 'Last 7 days', 'Last 2 weeks', 'Last month', 'Last 3 months', 'Last 6 months'],
+    ko: ['최근 24시간', '최근 3일', '최근 7일', '최근 2주', '최근 한 달', '최근 3개월', '최근 6개월'],
+    ja: ['過去24時間', '過去3日間', '過去7日間', '過去2週間', '過去1ヶ月', '過去3ヶ月', '過去6ヶ月'],
+    zh: ['过去24小时', '过去3天', '过去7天', '过去2周', '最近一个月', '最近三个月', '最近六个月'],
+    hi: ['पिछले 24 घंटे', 'पिछले 3 दिन', 'पिछले 7 दिन', 'पिछले 2 सप्ताह', 'पिछला महीना', 'पिछले 3 महीने', 'पिछले 6 महीने'],
+    es: ['Últimas 24 horas', 'Últimos 3 días', 'Últimos 7 días', 'Últimas 2 semanas', 'Último mes', 'Últimos 3 meses', 'Últimos 6 meses'],
+    fr: ['Dernières 24 heures', '3 derniers jours', '7 derniers jours', '2 dernières semaines', 'Dernier mois', '3 derniers mois', '6 derniers mois'],
+    de: ['Letzte 24 Stunden', 'Letzte 3 Tage', 'Letzte 7 Tage', 'Letzte 2 Wochen', 'Letzter Monat', 'Letzte 3 Monate', 'Letzte 6 Monate'],
+    nl: ['Laatste 24 uur', 'Laatste 3 dagen', 'Laatste 7 dagen', 'Laatste 2 weken', 'Laatste maand', 'Laatste 3 maanden', 'Laatste 6 maanden'],
+    pt: ['Últimas 24 horas', 'Últimos 3 dias', 'Últimos 7 dias', 'Últimas 2 semanas', 'Último mês', 'Últimos 3 meses', 'Últimos 6 meses'],
+    ru: ['Последние 24 часа', 'Последние 3 дня', 'Последние 7 дней', 'Последние 2 недели', 'Последний месяц', 'Последние 3 месяца', 'Последние 6 месяцев'],
   };
-  const values = ['1', '3', '7', '30', '90', '180'];
+  const values = ['1', '3', '7', '14', '30', '90', '180'];
   
   return values.map((value, index) => ({
     value,

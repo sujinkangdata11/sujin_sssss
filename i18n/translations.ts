@@ -250,6 +250,13 @@ export const translations: Record<Language, Record<string, string>> = {
     dateRangeLabel: "期間",
     searchButton: "検索",
     loadingMessage: "世界中からショート動画を検索しています...",
+    loadingMessages: [
+      "バイラル動画を探しています...",
+      "いいですね！きっとお役に立てるでしょう。",
+      "少々お待ちください...",
+      "情報を読み込んでいます...",
+      "世界のトレンドを分析中です..."
+    ],
     foundMessage: "",
     uniqueShortsMessage: "件のユニークなショート動画が見つかりました。",
     sortMostViews: "最多再生数",
@@ -346,6 +353,13 @@ export const translations: Record<Language, Record<string, string>> = {
     dateRangeLabel: "日期范围",
     searchButton: "搜索",
     loadingMessage: "正在全球范围内搜索热门短片...",
+    loadingMessages: [
+      "正在寻找病毒短片...",
+      "太好了！这一定会对您有帮助。",
+      "请稍等片刻...",
+      "正在加载信息...",
+      "正在分析全球趋势..."
+    ],
     foundMessage: "找到了",
     uniqueShortsMessage: "个独特的短片。",
     sortMostViews: "最多观看",
@@ -442,6 +456,13 @@ export const translations: Record<Language, Record<string, string>> = {
     dateRangeLabel: "तिथि सीमा",
     searchButton: "खोज",
     loadingMessage: "दुनिया भर में शॉर्ट्स खोज रहा है...",
+    loadingMessages: [
+      "वायरल शॉर्ट्स खोज रहा है...",
+      "बहुत बढ़िया! यह निश्चित रूप से आपकी मदद करेगा।",
+      "कृपया एक क्षण प्रतीक्षा करें...",
+      "जानकारी लोड हो रही है...",
+      "वैश्विक रुझानों का विश्लेषण कर रहा है..."
+    ],
     foundMessage: "मिले",
     uniqueShortsMessage: "अद्वितीय शॉर्ट्स।",
     sortMostViews: "सबसे ज्यादा देखे गए",
@@ -542,6 +563,13 @@ export const translations: Record<Language, Record<string, string>> = {
     videoTypeAll: "Todos los videos",
     searchButton: "Buscar",
     loadingMessage: "Buscando Shorts en todo el mundo...",
+    loadingMessages: [
+      "Buscando Shorts virales para ti...",
+      "¡Genial! Esto definitivamente te ayudará.",
+      "Por favor espera un momento...",
+      "Cargando información...",
+      "Analizando tendencias globales..."
+    ],
     foundMessage: "Se encontraron",
     uniqueShortsMessage: "shorts únicos.",
     sortMostViews: "Más vistos",
@@ -642,6 +670,13 @@ export const translations: Record<Language, Record<string, string>> = {
     videoTypeAll: "Toutes les vidéos",
     searchButton: "Rechercher",
     loadingMessage: "Recherche de Shorts dans le monde entier...",
+    loadingMessages: [
+      "Recherche de Shorts viraux pour vous...",
+      "Génial ! Cela va certainement vous aider.",
+      "Veuillez patienter un moment...",
+      "Chargement des informations...",
+      "Analyse des tendances mondiales..."
+    ],
     foundMessage: "",
     uniqueShortsMessage: "shorts uniques trouvés.",
     sortMostViews: "Les plus vus",
@@ -742,6 +777,13 @@ export const translations: Record<Language, Record<string, string>> = {
     videoTypeAll: "Alle Videos",
     searchButton: "Suchen",
     loadingMessage: "Suche weltweit nach Shorts...",
+    loadingMessages: [
+      "Suche virale Shorts für Sie...",
+      "Großartig! Das wird Ihnen definitiv helfen.",
+      "Bitte warten Sie einen Moment...",
+      "Lade Informationen...",
+      "Analysiere globale Trends..."
+    ],
     foundMessage: "",
     uniqueShortsMessage: "einzigartige Shorts gefunden.",
     sortMostViews: "Meistgesehen",
@@ -842,6 +884,13 @@ export const translations: Record<Language, Record<string, string>> = {
     videoTypeAll: "Alle video's",
     searchButton: "Zoeken",
     loadingMessage: "Wereldwijd naar Shorts aan het zoeken...",
+    loadingMessages: [
+      "Zoekt virale Shorts voor u...",
+      "Geweldig! Dit zal u zeker helpen.",
+      "Even geduld alstublieft...",
+      "Informatie laden...",
+      "Globale trends analyseren..."
+    ],
     foundMessage: "",
     uniqueShortsMessage: "unieke shorts gevonden.",
     sortMostViews: "Meest bekeken",
@@ -942,6 +991,13 @@ export const translations: Record<Language, Record<string, string>> = {
     videoTypeAll: "Todos os vídeos",
     searchButton: "Pesquisar",
     loadingMessage: "Pesquisando Shorts globalmente...",
+    loadingMessages: [
+      "Procurando Shorts virais para você...",
+      "Ótimo! Isso definitivamente vai te ajudar.",
+      "Por favor, aguarde um momento...",
+      "Carregando informações...",
+      "Analisando tendências globais..."
+    ],
     foundMessage: "",
     uniqueShortsMessage: "shorts únicos encontrados.",
     sortMostViews: "Mais vistos",
@@ -1042,6 +1098,13 @@ export const translations: Record<Language, Record<string, string>> = {
     videoTypeAll: "Все видео",
     searchButton: "Поиск",
     loadingMessage: "Идет поиск Shorts по всему миру...",
+    loadingMessages: [
+      "Ищем вирусные Shorts для вас...",
+      "Отлично! Это определенно поможет вам.",
+      "Пожалуйста, подождите немного...",
+      "Загружается информация...",
+      "Анализируем глобальные тенденции..."
+    ],
     foundMessage: "Найдено",
     uniqueShortsMessage: "уникальных видео.",
     sortMostViews: "Самые просматриваемые",
