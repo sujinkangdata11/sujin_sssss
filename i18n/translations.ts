@@ -40,6 +40,13 @@ export const translations: Record<Language, Record<string, string>> = {
     videoTypeAll: "All Videos",
     searchButton: "Search",
     loadingMessage: "Searching the globe for Shorts...",
+    loadingMessages: [
+      "Finding viral Shorts for you...",
+      "Great! This will definitely help you.",
+      "Please wait a moment...",
+      "Loading information...",
+      "Analyzing global trends..."
+    ],
     foundMessage: "Found",
     uniqueShortsMessage: "unique shorts.",
     sortMostViews: "Most Views",
@@ -140,6 +147,13 @@ export const translations: Record<Language, Record<string, string>> = {
     videoTypeAll: "모든 비디오",
     searchButton: "검색",
     loadingMessage: "전세계에서 쇼츠를 검색 중입니다...",
+    loadingMessages: [
+      "바이럴 쇼츠를 찾고 있습니다...",
+      "좋아요! 당신에게 분명 도움이 될겁니다.",
+      "조금만 기다려주세요...",
+      "정보를 불러오고 있습니다...",
+      "전세계 트렌드를 분석 중입니다..."
+    ],
     foundMessage: "",
     uniqueShortsMessage: "개의 고유한 쇼츠를 찾았습니다.",
     sortMostViews: "조회수 순",

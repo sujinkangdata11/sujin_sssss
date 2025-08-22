@@ -45,6 +45,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   const [randomSearchLoading, setRandomSearchLoading] = useState<boolean>(false);
   const [randomSearchError, setRandomSearchError] = useState<string | null>(null);
   const [showDiceTooltip, setShowDiceTooltip] = useState<boolean>(true);
+  const [currentLoadingMessageIndex, setCurrentLoadingMessageIndex] = useState<number>(0);
   // Tutorial language syncs with global language
   const videoRef = useRef<HTMLVideoElement>(null);
   
@@ -71,6 +72,22 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Dynamic loading messages rotation
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const loadingMessages = t('loadingMessages') as string[];
+    if (!loadingMessages || !Array.isArray(loadingMessages)) return;
+
+    const interval = setInterval(() => {
+      setCurrentLoadingMessageIndex((prevIndex) => 
+        (prevIndex + 1) % loadingMessages.length
+      );
+    }, 2000); // 2초마다 메시지 변경
+
+    return () => clearInterval(interval);
+  }, [isLoading, language]);
   
   const heroTitles = [t('heroTitle'), t('heroTitleAlt'), t('heroTitleAlt2')];
   
@@ -380,6 +397,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
     }
 
     setIsLoading(true);
+    setCurrentLoadingMessageIndex(0); // 로딩 메시지 인덱스 초기화
     setError(null);
     setShorts([]);
     
@@ -1113,7 +1131,13 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
               {batchProgress ? (
                 `${t('loadingMessage')} (${batchProgress.current}/${batchProgress.total} ${t('batchProgress')})`
               ) : (
-                t('loadingMessage')
+                (() => {
+                  const loadingMessages = t('loadingMessages') as string[];
+                  if (loadingMessages && Array.isArray(loadingMessages) && loadingMessages.length > 0) {
+                    return loadingMessages[currentLoadingMessageIndex] || t('loadingMessage');
+                  }
+                  return t('loadingMessage');
+                })()
               )}
             </p>
           </div>
