@@ -876,10 +876,10 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
             {!isRandomSearchOpen && showDiceTooltip && (
               <>
                 <div className="dice-tooltip-pc">
-                  ?
+                  무료 체험?
                 </div>
                 <div className="dice-tooltip-mobile">
-                  <span style={{position: 'relative', left: '0px', top: '-1px'}}>?</span>
+                  <span style={{position: 'relative', left: '0px', top: '-1px'}}>무료 체험?</span>
                 </div>
               </>
             )}
