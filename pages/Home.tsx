@@ -260,9 +260,10 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
     
     // Filter out failure reasons for non-existent keys (from previous uploads)
     const validReasons: {[key: number]: string} = {};
+    const totalKeys = youtubeApiKeys.length > 0 ? youtubeApiKeys.length : 1; // Single key mode
     Object.entries(allReasons).forEach(([index, reason]) => {
       const keyIndex = parseInt(index);
-      if (keyIndex < youtubeApiKeys.length && typeof reason === 'string') {
+      if (keyIndex < totalKeys && typeof reason === 'string') {
         validReasons[keyIndex] = reason;
       }
     });
@@ -876,10 +877,10 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
             {!isRandomSearchOpen && showDiceTooltip && (
               <>
                 <div className="dice-tooltip-pc">
-                  무료 체험?
+                  Free
                 </div>
                 <div className="dice-tooltip-mobile">
-                  <span style={{position: 'relative', left: '0px', top: '-1px'}}>무료 체험?</span>
+                  <span style={{position: 'relative', left: '0px', top: '-1px'}}>Free</span>
                 </div>
               </>
             )}

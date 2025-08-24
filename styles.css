@@ -2974,7 +2974,7 @@ select.form-input {
 /* PC only tooltip bubble for dice button */
 .dice-tooltip-pc {
   position: absolute;
-  left: -95px;
+  left: -60px;
   top: 50%;
   transform: translateY(-50%);
   background-color: #7c3aed;
@@ -3010,7 +3010,7 @@ select.form-input {
 .dice-tooltip-mobile {
   display: none !important; /* Hidden by default, shown on mobile */
   position: absolute;
-  right: -95px;
+  right: -60px;
   top: 50%;
   transform: translateY(-50%);
   background-color: #7c3aed;
