@@ -344,11 +344,6 @@ export async function onRequestPost(context) {
   try {
     const { request, env } = context;
     
-    // Debug: Check if environment variables exist
-    console.log('🔍 Debug - Environment check:');
-    console.log('🔍 YOUTUBE_API_KEYS exists:', !!env.YOUTUBE_API_KEYS);
-    console.log('🔍 GEMINI_API_KEYS exists:', !!env.GEMINI_API_KEYS);
-    
     // Get request data
     const body = await request.json();
     const { keyword, dateRange, selectedCountries, language } = body;
@@ -362,13 +357,6 @@ export async function onRequestPost(context) {
 
     // Get API keys from environment
     const youtubeApiKeys = env.YOUTUBE_API_KEYS?.split(',').map(key => key.trim()) || [];
-    
-    // Debug: Log API keys for troubleshooting (first 4 + last 4 chars)
-    console.log('🔍 Debug - API Keys count:', youtubeApiKeys.length);
-    youtubeApiKeys.forEach((key, index) => {
-      const maskedKey = key.length > 8 ? `${key.substring(0, 4)}...${key.substring(key.length - 4)}` : '****';
-      console.log(`🔍 Debug - Key ${index}: ${maskedKey}`);
-    });
 
     if (youtubeApiKeys.length === 0) {
       return new Response(JSON.stringify({ 
@@ -396,17 +384,12 @@ export async function onRequestPost(context) {
     const workingKey = await findWorkingApiKey(youtubeApiKeys, env);
     
     if (!workingKey) {
-      let debugInfo = { keysCount: youtubeApiKeys.length };
-      try {
-        debugInfo.firstKey = youtubeApiKeys.length > 0 ? 
-          `${youtubeApiKeys[0].substring(0, 4)}...${youtubeApiKeys[0].substring(youtubeApiKeys[0].length - 4)}` : 'none';
-      } catch (e) {
-        debugInfo.firstKey = 'error_parsing';
-      }
-      
       return new Response(JSON.stringify({ 
         error: getLocalizedMessage(language || 'ko', 'quotaExhausted'),
-        debug: debugInfo
+        debug: {
+          keysFound: youtubeApiKeys.length,
+          message: 'All API keys failed testing'
+        }
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
