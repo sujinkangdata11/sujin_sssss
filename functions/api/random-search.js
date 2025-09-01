@@ -371,7 +371,13 @@ export async function onRequestPost(context) {
     });
 
     if (youtubeApiKeys.length === 0) {
-      return new Response(JSON.stringify({ error: 'YouTube API 키가 설정되지 않았습니다.' }), {
+      return new Response(JSON.stringify({ 
+        error: 'YouTube API 키가 설정되지 않았습니다.',
+        debug: {
+          envExists: !!env.YOUTUBE_API_KEYS,
+          rawValue: env.YOUTUBE_API_KEYS ? `${env.YOUTUBE_API_KEYS.substring(0, 20)}...` : 'undefined'
+        }
+      }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
       });
