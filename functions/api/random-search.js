@@ -344,6 +344,11 @@ export async function onRequestPost(context) {
   try {
     const { request, env } = context;
     
+    // Debug: Check if environment variables exist
+    console.log('🔍 Debug - Environment check:');
+    console.log('🔍 YOUTUBE_API_KEYS exists:', !!env.YOUTUBE_API_KEYS);
+    console.log('🔍 GEMINI_API_KEYS exists:', !!env.GEMINI_API_KEYS);
+    
     // Get request data
     const body = await request.json();
     const { keyword, dateRange, selectedCountries, language } = body;
