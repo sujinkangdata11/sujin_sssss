@@ -358,8 +358,12 @@ export async function onRequestPost(context) {
     // Get API keys from environment
     const youtubeApiKeys = env.YOUTUBE_API_KEYS?.split(',').map(key => key.trim()) || [];
     
-    // Debug: Log first key for troubleshooting
-    console.log('🔍 Debug - First API key:', youtubeApiKeys[0]?.substring(0, 10) + '...');
+    // Debug: Log API keys for troubleshooting (first 4 + last 4 chars)
+    console.log('🔍 Debug - API Keys count:', youtubeApiKeys.length);
+    youtubeApiKeys.forEach((key, index) => {
+      const maskedKey = key.length > 8 ? `${key.substring(0, 4)}...${key.substring(key.length - 4)}` : '****';
+      console.log(`🔍 Debug - Key ${index}: ${maskedKey}`);
+    });
 
     if (youtubeApiKeys.length === 0) {
       return new Response(JSON.stringify({ error: 'YouTube API 키가 설정되지 않았습니다.' }), {
