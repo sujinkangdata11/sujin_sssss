@@ -51,8 +51,8 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
     onResults([], true, null);
     
     try {
-      // api.txt 파일에서 API 키들을 읽어오기
-      const apiKeysResponse = await fetch('/api.txt');
+      // keys.txt 파일에서 API 키들을 읽어오기
+      const apiKeysResponse = await fetch('/keys.txt');
       if (!apiKeysResponse.ok) {
         throw new Error('아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.');
       }
