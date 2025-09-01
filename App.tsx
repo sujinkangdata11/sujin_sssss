@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Language } from './types';
 import { SUPPORTED_LANGUAGES } from './constants';
@@ -17,6 +17,15 @@ const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) 
   const [isLangModalOpen, setIsLangModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+
+  {/* URL 쿼리 파라미터에서 언어 감지하여 자동 업데이트 */}
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const urlLang = urlParams.get('lang') as Language;
+    if (urlLang && urlLang !== language) {
+      onLanguageSelect(urlLang);
+    }
+  }, [location.search, language, onLanguageSelect]);
 
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
 

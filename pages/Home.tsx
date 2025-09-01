@@ -1207,13 +1207,17 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
           <div className="api-key-buttons">
             <button 
               className="api-key-button"
-              onClick={() => window.location.href = '/news/article/2'}
+              //////주석////// 언어별 아티클 링크 추가
+              onClick={() => window.location.href = `/news/article/2?lang=${language}`}
+              //////주석////// 기존: window.location.href = '/news/article/2'
             >
               {t('youtubeApiKeyButton')}
             </button>
             <button 
               className="api-key-button"
-              onClick={() => window.location.href = '/news/article/3'}
+              //////주석////// 언어별 아티클 링크 추가
+              onClick={() => window.location.href = `/news/article/3?lang=${language}`}
+              //////주석////// 기존: window.location.href = '/news/article/3'
             >
               {t('geminiApiKeyButton')}
             </button>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
+//////주석////// useSearchParams 추가하여 쿼리 파라미터 처리
 import { Language, Article } from '../types';
 import { translations } from '../i18n/translations';
 import { loadArticleFromFile, processContentWithImages, getThumbnailPath, loadArticlesForPage } from '../services/contentService';
@@ -11,11 +12,17 @@ interface ArticleDetailProps {
 
 const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
   const { id } = useParams<{ id: string }>();
+  //////주석////// 쿼리 파라미터에서 언어 정보 가져오기
+  const [searchParams] = useSearchParams();
+  const urlLang = searchParams.get('lang') as Language;
+  //////주석////// URL 쿼리 파라미터의 언어가 있으면 사용, 없으면 기본 언어 사용
+  const effectiveLanguage = urlLang || language;
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
-  const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
+  //////주석////// effectiveLanguage 사용하여 번역 처리
+  const t = (key: keyof typeof translations['en']) => translations[effectiveLanguage][key] || translations['en'][key];
 
   // Scroll to top when component mounts or ID changes
   useEffect(() => {
@@ -33,7 +40,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
       try {
         setLoading(true);
         // For now, we'll use page 1 (01 folder) as default
-        const loadedArticle = await loadArticleFromFile(1, parseInt(id), language);
+        //////주석////// effectiveLanguage로 아티클 로딩
+        const loadedArticle = await loadArticleFromFile(1, parseInt(id), effectiveLanguage);
+        //////주석////// 기존: await loadArticleFromFile(1, parseInt(id), language);
         
         if (loadedArticle) {
           // Process content to include proper image paths
@@ -45,7 +54,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
           img.src = getThumbnailPath(1, loadedArticle.id);
           
           // Load related articles (exclude current article)
-          const allArticles = await loadArticlesForPage(1, language);
+          //////주석////// effectiveLanguage로 관련 아티클 로딩
+          const allArticles = await loadArticlesForPage(1, effectiveLanguage);
+          //////주석////// 기존: await loadArticlesForPage(1, language);
           const filteredArticles = allArticles.filter(a => a.id !== loadedArticle.id);
           
           // Randomly select 2 articles
@@ -63,7 +74,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ language }) => {
     };
 
     loadArticle();
-  }, [id, language]);
+  //////주석////// effectiveLanguage를 dependency에 추가
+  }, [id, effectiveLanguage]);
+  //////주석////// 기존: }, [id, language]);
 
   if (loading) {
     return (
