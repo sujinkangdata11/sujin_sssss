@@ -396,7 +396,14 @@ export async function onRequestPost(context) {
     const workingKey = await findWorkingApiKey(youtubeApiKeys, env);
     
     if (!workingKey) {
-      return new Response(JSON.stringify({ error: getLocalizedMessage(language || 'ko', 'quotaExhausted') }), {
+      return new Response(JSON.stringify({ 
+        error: getLocalizedMessage(language || 'ko', 'quotaExhausted'),
+        debug: {
+          keysCount: youtubeApiKeys.length,
+          firstKey: youtubeApiKeys[0]?.substring(0, 4) + '...' + youtubeApiKeys[0]?.substring(-4),
+          allKeysTested: 'All keys failed or disabled'
+        }
+      }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
       });
