@@ -1209,13 +1209,13 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
               className="api-key-button"
               onClick={() => window.location.href = '/news/article/2'}
             >
-              YouTube API 키 발급받기
+              {t('youtubeApiKeyButton')}
             </button>
             <button 
               className="api-key-button"
               onClick={() => window.location.href = '/news/article/3'}
             >
-              Gemini API 키 발급받기
+              {t('geminiApiKeyButton')}
             </button>
           </div>
         </div>
