@@ -51,35 +51,128 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
     onResults([], true, null);
     
     try {
-      const response = await fetch('/api/random-search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          keyword: keyword.trim(),
-          dateRange,
-          selectedCountries,
-          language
-        })
-      });
+      // api.txt 파일에서 API 키들을 읽어오기
+      const apiKeysResponse = await fetch('/api.txt');
+      if (!apiKeysResponse.ok) {
+        throw new Error('아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.');
+      }
+      
+      const apiKeysText = await apiKeysResponse.text();
+      const lines = apiKeysText.split('\n').filter(line => line.trim());
+      
+      let youtubeApiKeys: string[] = [];
+      let geminiApiKeys: string[] = [];
+      
+      // API 키 복호화 함수 (앞 1자리를 뒤로 이동)
+      const decryptApiKey = (encryptedKey: string): string => {
+        if (encryptedKey.length < 1) return encryptedKey;
+        const front1 = encryptedKey.substring(0, 1);
+        const rest = encryptedKey.substring(1);
+        const decrypted = rest + front1;
+        console.log(`🔑 Decrypting: ${encryptedKey} → ${decrypted}`);
+        return decrypted;
+      };
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || '검색 중 오류가 발생했습니다.');
+      for (const line of lines) {
+        if (line.startsWith('YOUTUBE_API_KEYS=')) {
+          const encryptedKeys = line.split('=')[1].split(',').map(key => key.trim().replace(/"/g, ''));
+          youtubeApiKeys = encryptedKeys.map(key => decryptApiKey(key));
+        } else if (line.startsWith('GEMINI_API_KEYS=')) {
+          const encryptedKeys = line.split('=')[1].split(',').map(key => key.trim().replace(/"/g, ''));
+          geminiApiKeys = encryptedKeys.map(key => decryptApiKey(key));
+        }
+      }
+      
+      if (youtubeApiKeys.length === 0) {
+        throw new Error('아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.');
+      }
+      
+      if (geminiApiKeys.length === 0) {
+        throw new Error('아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.');
       }
 
-      setShorts(data.shorts || []);
+      // Import services dynamically
+      const { searchYouTubeShorts, enhanceVideosWithSubscriberData } = await import('../services/youtubeService');
+      const { translateKeywordForCountries } = await import('../services/geminiService');
       
-      if (data.errors && data.errors.length > 0) {
-        setError(`일부 지역에서 검색 실패: ${data.errors.join(', ')}`);
-        onResults(data.shorts || [], false, `일부 지역에서 검색 실패: ${data.errors.join(', ')}`);
-      } else if (!data.shorts || data.shorts.length === 0) {
+      // Get countries data
+      const targetCountries = COUNTRIES.filter(c => selectedCountries.includes(c.code));
+      
+      // 1단계: Gemini로 키워드 번역 (키 로테이션 적용)
+      let translatedKeywords;
+      try {
+        translatedKeywords = await translateWithGeminiRotation(
+          keyword.trim(), 
+          targetCountries, 
+          geminiApiKeys
+        );
+      } catch (geminiError: any) {
+        throw new Error('Gemini 번역에 실패했어요.');
+      }
+
+      // 2단계: YouTube API로 각 국가별 검색 (키 로테이션 적용)
+      const allShorts = [];
+      const errors = [];
+      const publishedAfter = getPublishedAfter(dateRange);
+      let currentYouTubeKeyIndex = 0;
+      let searchError: string | null = null;
+
+      for (const countryCode of selectedCountries) {
+        const translatedKeyword = translatedKeywords[countryCode] || keyword.trim();
+        let searchSuccessful = false;
+        let keyTried = 0;
+
+        // YouTube 키 로테이션으로 각 국가 검색 시도
+        while (!searchSuccessful && keyTried < youtubeApiKeys.length) {
+          const currentYouTubeKey = youtubeApiKeys[(currentYouTubeKeyIndex + keyTried) % youtubeApiKeys.length];
+          
+          try {
+            console.log(`🔍 Searching ${countryCode} with YouTube key ${(currentYouTubeKeyIndex + keyTried) % youtubeApiKeys.length}: ${currentYouTubeKey?.substring(0, 8)}****`);
+            
+            const searchResults = await searchYouTubeShorts(currentYouTubeKey, translatedKeyword, {
+              regionCode: countryCode,
+              publishedAfter
+            });
+            
+            allShorts.push(...searchResults);
+            searchSuccessful = true;
+            console.log(`✅ Successfully searched ${countryCode} with ${searchResults.length} results`);
+            
+          } catch (error: any) {
+            const errorString = error instanceof Error ? error.message : String(error);
+            console.error(`❌ YouTube search failed for ${countryCode} with key ${(currentYouTubeKeyIndex + keyTried) % youtubeApiKeys.length}:`, errorString);
+            
+            // Always try next key until all keys are exhausted
+            keyTried++;
+            console.log(`🔄 Trying next YouTube key for ${countryCode}...`);
+          }
+        }
+
+        if (!searchSuccessful && keyTried >= youtubeApiKeys.length) {
+          console.log(`❌ All YouTube keys failed for ${countryCode}`);
+          errors.push(countryCode);
+        }
+      }
+
+      // Remove duplicates
+      const uniqueShorts = Array.from(new Map(allShorts.map(short => [short.id, short])).values());
+      
+      // Enhance videos with subscriber data using first working YouTube key
+      const workingYouTubeKey = await findWorkingYouTubeKey(youtubeApiKeys);
+      const { videos: enhancedVideos } = workingYouTubeKey ? 
+        await enhanceVideosWithSubscriberData(workingYouTubeKey, uniqueShorts) : 
+        { videos: uniqueShorts, hasSubscriberDataError: true };
+
+      setShorts(enhancedVideos);
+      
+      if (errors.length > 0) {
+        setError(`일부 지역에서 검색 실패: ${errors.join(', ')}`);
+        onResults(enhancedVideos, false, `일부 지역에서 검색 실패: ${errors.join(', ')}`);
+      } else if (enhancedVideos.length === 0) {
         setError('검색 결과가 없습니다. 다른 키워드를 시도해보세요.');
         onResults([], false, '검색 결과가 없습니다. 다른 키워드를 시도해보세요.');
       } else {
-        onResults(data.shorts, false, null);
+        onResults(enhancedVideos, false, null);
       }
 
     } catch (err: any) {
@@ -89,6 +182,63 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Helper function to find working YouTube API key
+  const findWorkingYouTubeKey = async (apiKeys: string[]): Promise<string | null> => {
+    for (const key of apiKeys) {
+      if (await testYouTubeApiKey(key)) {
+        return key;
+      }
+    }
+    return null;
+  };
+
+  // Test if YouTube API key is working
+  const testYouTubeApiKey = async (apiKey: string): Promise<boolean> => {
+    try {
+      const testUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoDuration=short&maxResults=1&q=test&key=${apiKey}`;
+      const response = await fetch(testUrl);
+      return response.ok;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  // Translate with Gemini key rotation - try each key until success
+  const translateWithGeminiRotation = async (
+    keyword: string,
+    countries: any[],
+    geminiApiKeys: string[]
+  ): Promise<Record<string, string>> => {
+    const { translateKeywordForCountries } = await import('../services/geminiService');
+    
+    for (const geminiKey of geminiApiKeys) {
+      try {
+        console.log(`🔍 Trying Gemini key: ${geminiKey.substring(0, 10)}...`);
+        const result = await translateKeywordForCountries(keyword, countries, geminiKey);
+        console.log(`✅ Gemini key successful: ${geminiKey.substring(0, 10)}...`);
+        return result;
+      } catch (error: any) {
+        const errorString = error instanceof Error ? error.message : String(error);
+        console.error(`❌ Gemini key failed: ${geminiKey.substring(0, 10)}... - ${errorString}`);
+        
+        // Always try next key until all keys are exhausted
+        console.log(`🔄 Trying next Gemini key...`);
+        continue;
+      }
+    }
+    
+    // If all keys failed, throw error
+    throw new Error('아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.');
+  };
+
+  // Get published after date based on range
+  const getPublishedAfter = (dateRange: string): string => {
+    const now = new Date();
+    const days = parseInt(dateRange);
+    const pastDate = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000));
+    return pastDate.toISOString();
   };
 
   if (!isOpen) return null;
