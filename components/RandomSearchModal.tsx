@@ -99,8 +99,16 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
     onResults([], true, null);
     
     try {
-      // keys.txt 파일에서 API 키들을 읽어오기
-      const apiKeysResponse = await fetch('/keys.txt');
+      // keys.txt 파일에서 API 키들을 읽어오기 (캐시 방지를 위한 timestamp 추가)
+      const timestamp = Date.now();
+      const apiKeysResponse = await fetch(`/keys.txt?t=${timestamp}`, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
       if (!apiKeysResponse.ok) {
         throw new Error('아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.');
       }
