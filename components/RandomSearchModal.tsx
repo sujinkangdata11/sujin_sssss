@@ -246,7 +246,12 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
 
       setShorts(enhancedVideos);
       
-      if (errors.length > 0) {
+      if (errors.length > 0 && enhancedVideos.length === 0) {
+        // 모든 지역에서 실패하고 결과가 없는 경우 - 할당량 소진 메시지
+        setError('아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.');
+        onResults([], false, '아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.');
+      } else if (errors.length > 0) {
+        // 일부 지역에서 실패했지만 결과는 있는 경우 - 지역 실패 메시지
         setError(`일부 지역에서 검색 실패: ${errors.join(', ')}`);
         onResults(enhancedVideos, false, `일부 지역에서 검색 실패: ${errors.join(', ')}`);
       } else if (enhancedVideos.length === 0) {
