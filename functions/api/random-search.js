@@ -356,7 +356,10 @@ export async function onRequestPost(context) {
     }
 
     // Get API keys from environment
-    const youtubeApiKeys = env.YOUTUBE_API_KEYS?.split(',') || [];
+    const youtubeApiKeys = env.YOUTUBE_API_KEYS?.split(',').map(key => key.trim()) || [];
+    
+    // Debug: Log first key for troubleshooting
+    console.log('🔍 Debug - First API key:', youtubeApiKeys[0]?.substring(0, 10) + '...');
 
     if (youtubeApiKeys.length === 0) {
       return new Response(JSON.stringify({ error: 'YouTube API 키가 설정되지 않았습니다.' }), {
