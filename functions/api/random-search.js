@@ -355,8 +355,14 @@ export async function onRequestPost(context) {
       });
     }
 
-    // Get API keys from environment
-    const youtubeApiKeys = env.YOUTUBE_API_KEYS?.split(',').map(key => key.trim()) || [];
+    ////// 주석 - 환경변수에서 키 가져오기 (나중에 복구용) //////
+    // const youtubeApiKeys = env.YOUTUBE_API_KEYS?.split(',').map(key => key.trim()) || [];
+    
+    ////// 주석 - 하드코딩된 키 사용 (테스트용) //////
+    const youtubeApiKeys = [
+      "AIzaSyDOh7oTUrSxyw3fy2hfaNTMFRWqiYrbyVQ",
+      "AIzaSyDhegNdYCTu8_mAyp44y9usHNfUwZbOWUo"
+    ];
 
     if (youtubeApiKeys.length === 0) {
       return new Response(JSON.stringify({ 
@@ -371,8 +377,16 @@ export async function onRequestPost(context) {
       });
     }
 
-    // Get Gemini API key from environment
-    const geminiApiKey = env.GEMINI_API_KEYS;
+    ////// 주석 - 환경변수에서 Gemini 키 가져오기 (나중에 복구용) //////
+    // const geminiApiKeys = env.GEMINI_API_KEYS?.split(',').map(key => key.trim()) || [];
+    // const geminiApiKey = geminiApiKeys[0];
+    
+    ////// 주석 - 하드코딩된 Gemini 키 사용 (테스트용) //////
+    const geminiApiKeys = [
+      "AIzaSyC3A_H2WsGgTRVADmWFQAqThSQ7_Ipur1I",
+      "AIzaSyBO3r4xK-GLkqArE7vnLp6ROaDcrNUkxlk"
+    ];
+    const geminiApiKey = geminiApiKeys[0];
     if (!geminiApiKey) {
       return new Response(JSON.stringify({ error: getLocalizedMessage(language || 'ko', 'geminiKeyMissing') }), {
         status: 500,
