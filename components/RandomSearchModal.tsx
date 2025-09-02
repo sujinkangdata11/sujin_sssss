@@ -119,7 +119,7 @@ const RandomSearchModal: React.FC<RandomSearchModalProps> = ({ language, isOpen,
       let youtubeApiKeys: string[] = [];
       let geminiApiKeys: string[] = [];
       
-      // API 키 복호화 함수 (앞 1자리를 뒤로 이동)
+      // API 키 복호화 함수 (첫 1자리를 뒤로 이동)
       const decryptApiKey = (encryptedKey: string): string => {
         if (encryptedKey.length < 1) return encryptedKey;
         const front1 = encryptedKey.substring(0, 1);

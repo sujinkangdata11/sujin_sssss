@@ -123,6 +123,10 @@ export const searchYouTubeShorts = async (
       publishedAt: item.snippet.publishedAt,
       viewCount: parseInt(item.statistics.viewCount, 10) || 0,
       duration: item.contentDetails?.duration ? formatDuration(item.contentDetails.duration) : undefined,
+      likeCount: parseInt(item.statistics.likeCount, 10) || 0,
+      commentCount: parseInt(item.statistics.commentCount, 10) || 0,
+      categoryId: item.snippet.categoryId,
+      tags: item.snippet.tags || [],
     }));
 
     // Filter by duration on client side (4 minutes or less for shorts)
@@ -136,8 +140,8 @@ export const searchYouTubeShorts = async (
   }
 };
 
-// Get channel statistics for multiple channels (subscriber count + video count + channel view count)
-export const getChannelStatistics = async (apiKey: string, channelIds: string[]): Promise<Record<string, {subscriberCount: number, videoCount: number, viewCount: number}>> => {
+// Get channel statistics for multiple channels (subscriber count + video count + channel view count + published date + country)
+export const getChannelStatistics = async (apiKey: string, channelIds: string[]): Promise<Record<string, {subscriberCount: number, videoCount: number, viewCount: number, publishedAt: string, country: string | null, defaultLanguage: string | null}>> => {
   try {
     if (channelIds.length === 0) return {};
     
@@ -145,7 +149,7 @@ export const getChannelStatistics = async (apiKey: string, channelIds: string[])
     const channelIdsString = channelIds.join(',');
     
     const channelsParams = new URLSearchParams({
-      part: 'statistics',
+      part: 'statistics,snippet,localizations,brandingSettings',
       id: channelIdsString,
       key: apiKey,
     });
@@ -157,13 +161,23 @@ export const getChannelStatistics = async (apiKey: string, channelIds: string[])
     }
     
     const data = await response.json();
-    const channelStats: Record<string, {subscriberCount: number, videoCount: number, viewCount: number}> = {};
+    const channelStats: Record<string, {subscriberCount: number, videoCount: number, viewCount: number, publishedAt: string, country: string | null, defaultLanguage: string | null}> = {};
     
     data.items?.forEach((channel: any) => {
       const subscriberCount = parseInt(channel.statistics.subscriberCount, 10) || 0;
       const videoCount = parseInt(channel.statistics.videoCount, 10) || 0;
       const viewCount = parseInt(channel.statistics.viewCount, 10) || 0;
-      channelStats[channel.id] = { subscriberCount, videoCount, viewCount };
+      const publishedAt = channel.snippet.publishedAt || '';
+      const country = channel.snippet.country || null;
+      const defaultLanguage = channel.snippet.defaultLanguage || null;
+      console.log(`📍 Channel ${channel.snippet.title}:`, {
+        country: country,
+        defaultLanguage: defaultLanguage,
+        snippet: channel.snippet,
+        brandingSettings: channel.brandingSettings,
+        localizations: channel.localizations
+      });
+      channelStats[channel.id] = { subscriberCount, videoCount, viewCount, publishedAt, country, defaultLanguage };
     });
     
     return channelStats;
@@ -203,7 +217,7 @@ export const enhanceVideosWithSubscriberData = async (
     console.log(`📦 Split into ${channelBatches.length} batches`);
     
     // Process batches sequentially, allowing partial success
-    let allChannelStats: Record<string, {subscriberCount: number, videoCount: number, viewCount: number}> = {};
+    let allChannelStats: Record<string, {subscriberCount: number, videoCount: number, viewCount: number, publishedAt: string, country: string | null, defaultLanguage: string | null}> = {};
     let hasAnyError = false;
     
     for (let i = 0; i < channelBatches.length; i++) {
@@ -235,6 +249,9 @@ export const enhanceVideosWithSubscriberData = async (
       const subscriberCount = channelData?.subscriberCount;
       const videoCount = channelData?.videoCount;
       const channelViewCount = channelData?.viewCount;
+      const channelPublishedAt = channelData?.publishedAt;
+      const channelCountry = channelData?.country;
+      const channelLanguage = channelData?.defaultLanguage;
       
       let viewsPerSubscriber: number | undefined;
       if (subscriberCount !== undefined && subscriberCount > 0) {
@@ -246,6 +263,9 @@ export const enhanceVideosWithSubscriberData = async (
         subscriberCount,
         videoCount,
         channelViewCount,
+        channelPublishedAt,
+        channelCountry,
+        channelLanguage,
         viewsPerSubscriber,
       };
     });

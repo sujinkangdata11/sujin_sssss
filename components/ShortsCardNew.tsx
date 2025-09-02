@@ -1,14 +1,13 @@
-
 import React from 'react';
 import { YouTubeShort, Language } from '../types';
 
-interface ShortsCardProps {
+interface ShortsCardNewProps {
   short: YouTubeShort;
   language: Language;
-  index?: number;
+  index: number;
 }
 
-const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
+const ShortsCardNew: React.FC<ShortsCardNewProps> = ({ short, language, index }) => {
   const [showAllTags, setShowAllTags] = React.useState(false);
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [isCopied, setIsCopied] = React.useState(false);
@@ -685,4 +684,4 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
   );
 };
 
-export default ShortsCard;
+export default ShortsCardNew;

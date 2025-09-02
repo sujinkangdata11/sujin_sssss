@@ -12,6 +12,14 @@ export interface YouTubeShort {
   viewsPerSubscriber?: number;
   videoCount?: number;
   channelViewCount?: number;
+  channelPublishedAt?: string;
+  channelCountry?: string | null;
+  channelLanguage?: string | null;
+  likeCount?: number;
+  commentCount?: number;
+  categoryId?: string;
+  tags?: string[];
+  country?: string;
 }
 
 export interface Country {

@@ -1,14 +1,20 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Language } from './types';
 import { SUPPORTED_LANGUAGES } from './constants';
 import { translations } from './i18n/translations';
 import LanguageSelector from './components/LanguageSelector';
+
+//// 🏠 홈 페이지만 즉시 로딩 (사용자가 가장 많이 사용하는 페이지)
 import Home from './pages/Home';
-import ShortsmaKer from './pages/ShortsmaKer';
-import News from './pages/News';
-import ArticleDetail from './pages/ArticleDetail';
-import AdminPanel from './admin/AdminPanel';
+
+//// 📦 코드 분할: 나머지 페이지들은 필요할 때만 로딩 (첫 로딩 속도 향상)
+//// React.lazy()로 동적 import - 클릭할 때만 다운로드됨
+const ShortsmaKer = React.lazy(() => import('./pages/ShortsmaKer'));
+const News = React.lazy(() => import('./pages/News'));
+const ArticleDetail = React.lazy(() => import('./pages/ArticleDetail'));
+const AdminPanel = React.lazy(() => import('./admin/AdminPanel'));
+const Test = React.lazy(() => import('./pages/Test'));
 
 const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) => void }> = ({ 
   language, 
@@ -190,13 +196,20 @@ const App: React.FC = () => {
       <div className="app-container">
         <Header language={language} onLanguageSelect={setLanguage} />
         
-        <Routes>
-          <Route path="/" element={<Home language={language} onLanguageSelect={setLanguage} />} />
-          <Route path="/shortsmaker" element={<ShortsmaKer language={language} />} />
-          <Route path="/news" element={<News language={language} />} />
-          <Route path="/news/article/:id" element={<ArticleDetail language={language} />} />
-          <Route path="/admin" element={<AdminPanel />} />
-        </Routes>
+        {/* 🔄 Suspense: 코드 분할된 페이지들이 로딩될 때 로딩 화면 표시 */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            {/* 🏠 홈 페이지: 즉시 로딩 (코드 분할 X) */}
+            <Route path="/" element={<Home language={language} onLanguageSelect={setLanguage} />} />
+            
+            {/* 📦 코드 분할된 페이지들: 클릭할 때만 로딩 */}
+            <Route path="/shortsmaker" element={<ShortsmaKer language={language} />} />
+            <Route path="/news" element={<News language={language} />} />
+            <Route path="/news/article/:id" element={<ArticleDetail language={language} />} />
+            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/test" element={<Test language={language} />} />
+          </Routes>
+        </Suspense>
         
         <footer className="app-footer">
           <div className="footer-container">

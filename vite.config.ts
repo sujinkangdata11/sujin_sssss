@@ -9,7 +9,8 @@ export default defineConfig(({ mode }) => {
       },
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+        __XML_CONTENT_TYPE__: '"application/xml"'
       },
       resolve: {
         alias: {
@@ -21,9 +22,6 @@ export default defineConfig(({ mode }) => {
           'Content-Security-Policy': ''
         },
         middlewareMode: false
-      },
-      define: {
-        __XML_CONTENT_TYPE__: '"application/xml"'
       },
       assetsInclude: ['**/*.txt', '**/*.xml'],
       publicDir: 'public'
