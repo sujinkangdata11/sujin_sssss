@@ -250,31 +250,195 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
 
   const averageViews = calculateAverageViews();
 
-  // 수익 계산 함수들
+  // 수익 계산 함수들 - 다국어 기간 포맷팅
   const calculateChannelDuration = () => {
-    if (!short.channelPublishedAt) return '1개월';
+    // 기본값 처리
+    if (!short.channelPublishedAt) {
+      const defaultDuration = {
+        en: '1 mo', ko: '1개월', ja: '1ヶ月', zh: '1个月', hi: '1 महीना',
+        es: '1 mes', fr: '1 mois', de: '1 Mo', nl: '1 mnd', pt: '1 mês', ru: '1 мес'
+      };
+      return defaultDuration[language] || defaultDuration.en;
+    }
+    
     const channelStartDate = new Date(short.channelPublishedAt);
     const now = new Date();
     const diffMonths = Math.ceil((now.getTime() - channelStartDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
+    
     if (diffMonths >= 12) {
       const years = Math.floor(diffMonths / 12);
       const remainingMonths = diffMonths % 12;
-      return remainingMonths === 0 ? `${years}년` : `${years}년 ${remainingMonths}개월`;
+      
+      // 각 언어별 기간 포맷팅
+      switch (language) {
+        case 'ko':
+          return remainingMonths === 0 ? `${years}년` : `${years}년 ${remainingMonths}개월`;
+        case 'ja':
+          return remainingMonths === 0 ? `${years}年` : `${years}年${remainingMonths}ヶ月`;
+        case 'zh':
+          return remainingMonths === 0 ? `${years}年` : `${years}年${remainingMonths}个月`;
+        case 'hi':
+          return remainingMonths === 0 ? `${years} वर्ष` : `${years}व ${remainingMonths}मही`;
+        case 'es':
+          return remainingMonths === 0 ? `${years}a` : `${years}a ${remainingMonths}m`;
+        case 'fr':
+          return remainingMonths === 0 ? `${years}a` : `${years}a ${remainingMonths}m`;
+        case 'de':
+          return remainingMonths === 0 ? `${years}J` : `${years}J ${remainingMonths}Mo`;
+        case 'nl':
+          return remainingMonths === 0 ? `${years}j` : `${years}j ${remainingMonths}m`;
+        case 'pt':
+          return remainingMonths === 0 ? `${years}a` : `${years}a ${remainingMonths}m`;
+        case 'ru':
+          return remainingMonths === 0 ? `${years}г` : `${years}г ${remainingMonths}м`;
+        case 'en':
+        default:
+          return remainingMonths === 0 ? `${years}y` : `${years}y ${remainingMonths}mo`;
+      }
     }
-    return `${diffMonths}개월`;
+    
+    // 12개월 미만인 경우
+    const monthUnits = {
+      en: 'mo', ko: '개월', ja: 'ヶ月', zh: '个月', hi: 'महीना',
+      es: 'mes', fr: 'mois', de: 'Mo', nl: 'mnd', pt: 'mês', ru: 'мес'
+    };
+    const unit = monthUnits[language] || monthUnits.en;
+    return `${diffMonths}${unit}`;
   };
 
   const calculateVideoRevenue = () => (short.viewCount / 1000) * rpmRate;
   const calculateChannelRevenue = () => short.channelViewCount ? (short.channelViewCount / 1000) * rpmRate : 0;
-  const formatRevenue = (revenue: number) => {
-    const won = revenue * 1300;
-    if (won >= 100000000) {
-      const eok = Math.floor(won / 100000000);
-      const man = Math.floor((won % 100000000) / 10000);
-      return man > 0 ? `${eok}억 ${man}만원` : `${eok}억원`;
+  
+  // 다국가 환율 및 화폐 단위 (2024년 12월 기준)
+  const currencyData = {
+    ko: { rate: 1300, symbol: '원', major: 10000, majorUnit: '만원', superMajor: 100000000, superMajorUnit: '억원' },
+    en: { rate: 1, symbol: '$', major: 1000, majorUnit: 'K', superMajor: 1000000, superMajorUnit: 'M' },
+    ja: { rate: 150, symbol: '¥', major: 10000, majorUnit: '万円', superMajor: 100000000, superMajorUnit: '億円' },
+    zh: { rate: 7.2, symbol: '¥', major: 10000, majorUnit: '万元', superMajor: 100000000, superMajorUnit: '亿元' },
+    hi: { rate: 83, symbol: '₹', major: 100000, majorUnit: 'L', superMajor: 10000000, superMajorUnit: 'Cr' }, // Lakh/Crore
+    es: { rate: 0.92, symbol: '€', major: 1000, majorUnit: 'K€', superMajor: 1000000, superMajorUnit: 'M€' },
+    fr: { rate: 0.92, symbol: '€', major: 1000, majorUnit: 'K€', superMajor: 1000000, superMajorUnit: 'M€' },
+    de: { rate: 0.92, symbol: '€', major: 1000, majorUnit: 'Tsd€', superMajor: 1000000, superMajorUnit: 'Mio€' },
+    nl: { rate: 0.92, symbol: '€', major: 1000, majorUnit: 'K€', superMajor: 1000000, superMajorUnit: 'M€' },
+    pt: { rate: 5.2, symbol: 'R$', major: 1000, majorUnit: 'K', superMajor: 1000000, superMajorUnit: 'M' }, // Brazilian Real
+    ru: { rate: 92, symbol: '₽', major: 1000, majorUnit: 'тыс₽', superMajor: 1000000, superMajorUnit: 'млн₽' }
+  };
+
+  const formatRevenue = (revenueUSD: number) => {
+    const currency = currencyData[language] || currencyData.en;
+    const localAmount = revenueUSD * currency.rate;
+    
+    // 각 언어별 특별한 포맷팅
+    switch (language) {
+      case 'ko':
+        // 한국: 억원/만원 단위
+        if (localAmount >= currency.superMajor) {
+          const eok = Math.floor(localAmount / currency.superMajor);
+          const man = Math.floor((localAmount % currency.superMajor) / currency.major);
+          return man > 0 ? `${eok}억 ${man}만원` : `${eok}억원`;
+        }
+        if (localAmount >= currency.major) return `${Math.floor(localAmount / currency.major)}만원`;
+        return `${Math.floor(localAmount).toLocaleString('ko-KR')}원`;
+
+      case 'ja':
+        // 일본: 億円/万円 단위
+        if (localAmount >= currency.superMajor) {
+          const oku = (localAmount / currency.superMajor).toFixed(1);
+          return `${oku}億円`;
+        }
+        if (localAmount >= currency.major) {
+          const man = Math.floor(localAmount / currency.major);
+          return `${man}万円`;
+        }
+        return `${Math.floor(localAmount).toLocaleString('ja-JP')}円`;
+
+      case 'zh':
+        // 중국: 亿元/万元 단위
+        if (localAmount >= currency.superMajor) {
+          const yi = (localAmount / currency.superMajor).toFixed(1);
+          return `${yi}亿元`;
+        }
+        if (localAmount >= currency.major) {
+          const wan = Math.floor(localAmount / currency.major);
+          return `${wan}万元`;
+        }
+        return `${Math.floor(localAmount).toLocaleString('zh-CN')}元`;
+
+      case 'hi':
+        // 인도: Crore/Lakh 단위
+        if (localAmount >= currency.superMajor) {
+          const crore = (localAmount / currency.superMajor).toFixed(1);
+          return `₹${crore}Cr`;
+        }
+        if (localAmount >= currency.major) {
+          const lakh = (localAmount / currency.major).toFixed(1);
+          return `₹${lakh}L`;
+        }
+        return `₹${Math.floor(localAmount).toLocaleString('hi-IN')}`;
+
+      case 'en':
+        // 영어: $M/$K 단위
+        if (localAmount >= currency.superMajor) {
+          const millions = (localAmount / currency.superMajor).toFixed(1);
+          return `$${millions}M`;
+        }
+        if (localAmount >= currency.major) {
+          const thousands = (localAmount / currency.major).toFixed(1);
+          return `$${thousands}K`;
+        }
+        return `$${Math.floor(localAmount).toLocaleString('en-US')}`;
+
+      case 'de':
+        // 독일어: Mio€/Tsd€ 단위
+        if (localAmount >= currency.superMajor) {
+          const mio = (localAmount / currency.superMajor).toFixed(1);
+          return `${mio}Mio€`;
+        }
+        if (localAmount >= currency.major) {
+          const tsd = (localAmount / currency.major).toFixed(1);
+          return `${tsd}Tsd€`;
+        }
+        return `€${Math.floor(localAmount).toLocaleString('de-DE')}`;
+
+      case 'ru':
+        // 러시아어: млн₽/тыс₽ 단위
+        if (localAmount >= currency.superMajor) {
+          const mln = (localAmount / currency.superMajor).toFixed(1);
+          return `${mln}млн₽`;
+        }
+        if (localAmount >= currency.major) {
+          const tys = (localAmount / currency.major).toFixed(1);
+          return `${tys}тыс₽`;
+        }
+        return `₽${Math.floor(localAmount).toLocaleString('ru-RU')}`;
+
+      case 'pt':
+        // 포르투갈어(브라질): R$M/R$K 단위
+        if (localAmount >= currency.superMajor) {
+          const millions = (localAmount / currency.superMajor).toFixed(1);
+          return `R$${millions}M`;
+        }
+        if (localAmount >= currency.major) {
+          const thousands = (localAmount / currency.major).toFixed(1);
+          return `R$${thousands}K`;
+        }
+        return `R$${Math.floor(localAmount).toLocaleString('pt-BR')}`;
+
+      case 'es':
+      case 'fr':
+      case 'nl':
+      default:
+        // 유로권/기타: €M/€K 단위
+        if (localAmount >= currency.superMajor) {
+          const millions = (localAmount / currency.superMajor).toFixed(1);
+          return `€${millions}M`;
+        }
+        if (localAmount >= currency.major) {
+          const thousands = (localAmount / currency.major).toFixed(1);
+          return `€${thousands}K`;
+        }
+        return `€${Math.floor(localAmount).toLocaleString()}`;
     }
-    if (won >= 10000) return `${Math.floor(won / 10000)}만원`;
-    return `${Math.floor(won).toLocaleString()}원`;
   };
 
   // YouTube 카테고리 ID를 실제 카테고리명으로 변환
