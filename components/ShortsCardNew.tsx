@@ -38,7 +38,8 @@ const ShortsCardNew: React.FC<ShortsCardNewProps> = ({ short, language, index })
         'IN': 0.01,    // 인도
         'VN': 0.02,    // 베트남
         'PK': 0.03,    // 파키스탄
-        'ES': 0.08     // 스페인
+        'ES': 0.08,    // 스페인
+        'UA': 0.04     // 우크라이나
       };
       return rpmMap[countryCode] || 0.08; // 기타 국가 기본값
     }
@@ -162,7 +163,8 @@ const ShortsCardNew: React.FC<ShortsCardNewProps> = ({ short, language, index })
         'ID': { flag: '🇮🇩', names: { en: 'Indonesia', ko: '인도네시아', ja: 'インドネシア', zh: '印度尼西亚', hi: 'इंडोनेशिया', es: 'Indonesia', fr: 'Indonésie', de: 'Indonesien', nl: 'Indonesië', pt: 'Indonésia', ru: 'Индонезия' } },
         'VN': { flag: '🇻🇳', names: { en: 'Vietnam', ko: '베트남', ja: 'ベトナム', zh: '越南', hi: 'वियतनाम', es: 'Vietnam', fr: 'Vietnam', de: 'Vietnam', nl: 'Vietnam', pt: 'Vietnã', ru: 'Вьетнам' } },
         'PK': { flag: '🇵🇰', names: { en: 'Pakistan', ko: '파키스탄', ja: 'パキスタン', zh: '巴基斯坦', hi: 'पाकिस्तान', es: 'Pakistán', fr: 'Pakistan', de: 'Pakistan', nl: 'Pakistan', pt: 'Paquistão', ru: 'Пакистан' } },
-        'ES': { flag: '🇪🇸', names: { en: 'Spain', ko: '스페인', ja: 'スペイン', zh: '西班牙', hi: 'स्पेन', es: 'España', fr: 'Espagne', de: 'Spanien', nl: 'Spanje', pt: 'Espanha', ru: 'Испания' } }
+        'ES': { flag: '🇪🇸', names: { en: 'Spain', ko: '스페인', ja: 'スペイン', zh: '西班牙', hi: 'स्पेन', es: 'España', fr: 'Espagne', de: 'Spanien', nl: 'Spanje', pt: 'Espanha', ru: 'Испания' } },
+        'UA': { flag: '🇺🇦', names: { en: 'Ukraine', ko: '우크라이나', ja: 'ウクライナ', zh: '乌克兰', hi: 'यूक्रेन', es: 'Ucrania', fr: 'Ukraine', de: 'Ukraine', nl: 'Oekraïne', pt: 'Ucrânia', ru: 'Украина' } }
       };
       
       const country = countryMap[countryCode];
