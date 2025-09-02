@@ -340,48 +340,30 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
     return language === 'en' ? '🌍 Global' : language === 'ko' ? '🌍 글로벌' : '🌍 Global';
   };
 
-  // 기존 ShortsCard의 timeAgo 함수 복사
+  // 간결한 업로드 시간 표시 함수 (공간 절약형)
   const timeAgo = (dateString: string): string => {
     const date = new Date(dateString);
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    type Unit = 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
-    const units: Record<Language, Record<string, string>> = {
-      en: { year: 'year', month: 'month', day: 'day', hour: 'hour', minute: 'minute', second: 'second', plural: 's', ago: 'ago' },
-      ko: { year: '년', month: '개월', day: '일', hour: '시간', minute: '분', second: '초', plural: '', ago: '전' },
-      ja: { year: '年', month: 'ヶ月', day: '日', hour: '時間', minute: '分', second: '秒', plural: '', ago: '前' },
-      zh: { year: '年', month: '个月', day: '天', hour: '小时', minute: '分钟', second: '秒', plural: '', ago: '前' },
-      hi: { year: 'साल', month: 'महीने', day: 'दिन', hour: 'घंटा', minute: 'मिनट', second: 'सेकंड', plural: '', ago: 'पहले' },
-      es: { year: 'año', month: 'mes', day: 'día', hour: 'hora', minute: 'minuto', second: 'segundo', plural: 's', ago: 'hace' },
-      fr: { year: 'an', month: 'mois', day: 'jour', hour: 'heure', minute: 'minute', second: 'seconde', plural: 's', ago: 'il y a' },
-      de: { year: 'Jahr', month: 'Monat', day: 'Tag', hour: 'Stunde', minute: 'Minute', second: 'Sekunde', plural: 'en', ago: 'vor' },
-      nl: { year: 'jaar', month: 'maand', day: 'dag', hour: 'uur', minute: 'minuut', second: 'seconde', plural: 'en', ago: 'geleden' },
-      pt: { year: 'ano', month: 'mês', day: 'dia', hour: 'hora', minute: 'minuto', second: 'segundo', plural: 's', ago: 'atrás' },
-      ru: { year: 'год', month: 'месяц', day: 'день', hour: 'час', minute: 'минуту', second: 'секунду', ago: 'назад' },
+    // 간결한 단위 표기 (공간 절약)
+    const compactUnits: Record<Language, Record<string, string>> = {
+      en: { year: 'y', month: 'mo', day: 'd', hour: 'h', minute: 'm', second: 's', ago: ' ago' },
+      ko: { year: '년', month: '개월', day: '일', hour: '시간', minute: '분', second: '초', ago: ' 전' },
+      ja: { year: '年', month: 'ヶ月', day: '日', hour: 'h', minute: 'm', second: 's', ago: '前' },
+      zh: { year: '年', month: '月', day: '天', hour: 'h', minute: 'm', second: 's', ago: '前' },
+      hi: { year: 'y', month: 'mo', day: 'd', hour: 'h', minute: 'm', second: 's', ago: ' पहले' },
+      es: { year: 'a', month: 'mes', day: 'd', hour: 'h', minute: 'm', second: 's', ago: ' hace' },
+      fr: { year: 'a', month: 'mois', day: 'j', hour: 'h', minute: 'm', second: 's', ago: ' il y a' },
+      de: { year: 'J', month: 'Mo', day: 'T', hour: 'Std', minute: 'Min', second: 'Sek', ago: ' vor' },
+      nl: { year: 'j', month: 'mnd', day: 'd', hour: 'u', minute: 'm', second: 's', ago: ' geleden' },
+      pt: { year: 'a', month: 'mês', day: 'd', hour: 'h', minute: 'm', second: 's', ago: ' atrás' },
+      ru: { year: 'г', month: 'мес', day: 'д', hour: 'ч', minute: 'м', second: 'с', ago: ' назад' },
     };
 
-    const t = units[language] || units.en;
+    const units = compactUnits[language] || compactUnits.en;
 
-    const format = (value: number, unit: Unit) => {
-      if (language === 'ru') {
-        let form = '';
-        if (unit === 'year') form = (value === 1) ? 'год' : (value < 5 ? 'года' : 'лет');
-        else if (unit === 'month') form = (value === 1) ? 'месяц' : (value < 5 ? 'месяца' : 'месяцев');
-        else if (unit === 'day') form = (value === 1) ? 'день' : (value < 5 ? 'дня' : 'дней');
-        else if (unit === 'hour') form = (value === 1) ? 'час' : (value < 5 ? 'часа' : 'часов');
-        else if (unit === 'minute') form = (value === 1) ? 'минута' : (value < 5 ? 'минуты' : 'минут');
-        else form = (value === 1) ? 'секунда' : (value < 5 ? 'секунды' : 'секунд');
-        return `${value} ${form} ${t.ago}`;
-      }
-      const plural = value > 1 ? (t.plural || '') : '';
-      if(language === 'es' || language === 'fr' || language === 'pt') {
-        return `${t.ago} ${value} ${t[unit]}${plural}`;
-      }
-      return `${value} ${t[unit]}${plural} ${t.ago}`;
-    };
-
-    const intervals: { limit: number; unit: Unit }[] = [
+    const intervals: { limit: number; unit: keyof typeof units }[] = [
       { limit: 31536000, unit: 'year' },
       { limit: 2592000, unit: 'month' },
       { limit: 86400, unit: 'day' },
@@ -392,11 +374,53 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
     for (const interval of intervals) {
       const count = Math.floor(seconds / interval.limit);
       if (count >= 1) {
-        return format(count, interval.unit);
+        const unit = units[interval.unit];
+        
+        // 특별한 포맷팅이 필요한 언어들
+        if (language === 'es') {
+          return `hace ${count}${unit}`;
+        } else if (language === 'fr') {
+          return `il y a ${count}${unit}`;
+        } else if (language === 'pt') {
+          return `${count}${unit} atrás`;
+        } else if (language === 'de') {
+          return `vor ${count}${unit}`;
+        } else if (language === 'nl') {
+          return `${count}${unit} geleden`;
+        } else if (language === 'ru') {
+          return `${count}${unit} назад`;
+        } else if (language === 'hi') {
+          return `${count}${unit} पहले`;
+        } else if (language === 'ja' || language === 'zh') {
+          return `${count}${unit}前`;
+        } else {
+          // 영어, 한국어 등
+          return `${count}${unit}${units.ago}`;
+        }
       }
     }
 
-    return format(seconds, 'second');
+    // 초 단위
+    const secondUnit = units.second;
+    if (language === 'es') {
+      return `hace ${seconds}${secondUnit}`;
+    } else if (language === 'fr') {
+      return `il y a ${seconds}${secondUnit}`;
+    } else if (language === 'pt') {
+      return `${seconds}${secondUnit} atrás`;
+    } else if (language === 'de') {
+      return `vor ${seconds}${secondUnit}`;
+    } else if (language === 'nl') {
+      return `${seconds}${secondUnit} geleden`;
+    } else if (language === 'ru') {
+      return `${seconds}${secondUnit} назад`;
+    } else if (language === 'hi') {
+      return `${seconds}${secondUnit} पहले`;
+    } else if (language === 'ja' || language === 'zh') {
+      return `${seconds}${secondUnit}前`;
+    } else {
+      return `${seconds}${secondUnit}${units.ago}`;
+    }
   };
 
   return (
