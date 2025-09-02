@@ -153,15 +153,93 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
 
   const engagementRate = calculateEngagementRate();
 
-  // 숫자 포맷팅 함수
+  // 국가별 간결한 숫자 포맷팅 함수
   const formatNumber = (num: number): string => {
-    if (language === 'ko') {
-      if (num >= 100000000) return `${(num / 100000000).toFixed(1)}억`;
-      if (num >= 10000) return `${Math.floor(num / 10000)}만`;
-      if (num >= 1000) return `${(num / 1000).toFixed(1)}천`;
-      return num.toLocaleString();
+    switch (language) {
+      case 'ko':
+        // 한국: 억/만/천 단위
+        if (num >= 100000000) return `${(num / 100000000).toFixed(1)}억`;
+        if (num >= 10000) return `${Math.floor(num / 10000)}만`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}천`;
+        return num.toLocaleString('ko-KR');
+
+      case 'ja':
+        // 일본: 億/万 단위
+        if (num >= 100000000) return `${(num / 100000000).toFixed(1)}億`;
+        if (num >= 10000) return `${Math.floor(num / 10000)}万`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toLocaleString('ja-JP');
+
+      case 'zh':
+        // 중국: 亿/万 단위
+        if (num >= 100000000) return `${(num / 100000000).toFixed(1)}亿`;
+        if (num >= 10000) return `${Math.floor(num / 10000)}万`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toLocaleString('zh-CN');
+
+      case 'en':
+        // 영어: K/M/B 단위 (미국식)
+        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}B`;
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toLocaleString('en-US');
+
+      case 'es':
+        // 스페인어: K/M/B 단위
+        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}mil M`;
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toLocaleString('es-ES');
+
+      case 'fr':
+        // 프랑스어: K/M/Mrd 단위
+        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}Mrd`;
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toLocaleString('fr-FR');
+
+      case 'de':
+        // 독일어: Tsd/Mio/Mrd 단위
+        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}Mrd`;
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}Mio`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}Tsd`;
+        return num.toLocaleString('de-DE');
+
+      case 'ru':
+        // 러시아어: тыс/млн/млрд 단위
+        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}млрд`;
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}млн`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}тыс`;
+        return num.toLocaleString('ru-RU');
+
+      case 'pt':
+        // 포르투갈어: K/M/B 단위
+        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}B`;
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toLocaleString('pt-BR');
+
+      case 'nl':
+        // 네덜란드어: K/M/Mld 단위
+        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}Mld`;
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toLocaleString('nl-NL');
+
+      case 'hi':
+        // 힌디어: K/L(Lakh)/Cr(Crore) 단위 (인도식)
+        if (num >= 10000000) return `${(num / 10000000).toFixed(1)}Cr`; // 1 Crore = 10M
+        if (num >= 100000) return `${(num / 100000).toFixed(1)}L`; // 1 Lakh = 100K
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toLocaleString('hi-IN');
+
+      default:
+        // 기본값: 영어 스타일
+        if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}B`;
+        if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+        if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+        return num.toLocaleString();
     }
-    return num.toLocaleString();
   };
 
   // 평균 조회수 계산
