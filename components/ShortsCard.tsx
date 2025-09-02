@@ -13,6 +13,97 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [isCopied, setIsCopied] = React.useState(false);
   const [showTooltip, setShowTooltip] = React.useState(false);
+
+  // 다국어 번역 객체
+  const translations = {
+    // 기본 통계 항목들
+    subscribers: {
+      en: 'Subscribers', ko: '구독자', ja: '登録者', zh: '订阅者', hi: 'सब्सक्राइबर',
+      es: 'Suscriptores', fr: 'Abonnés', de: 'Abonnenten', nl: 'Abonnees', pt: 'Inscritos', ru: 'Подписчики'
+    },
+    views: {
+      en: 'Views', ko: '조회수', ja: '再生回数', zh: '观看次数', hi: 'दृश्य',
+      es: 'Vistas', fr: 'Vues', de: 'Aufrufe', nl: 'Weergaven', pt: 'Visualizações', ru: 'Просмотры'
+    },
+    uploaded: {
+      en: 'Uploaded', ko: '업로드', ja: '投稿', zh: '上传', hi: 'अपलोड',
+      es: 'Subido', fr: 'Téléchargé', de: 'Hochgeladen', nl: 'Geüpload', pt: 'Enviado', ru: 'Загружено'
+    },
+    // 분석 정보 항목들
+    country: {
+      en: 'Country', ko: '국가', ja: '国', zh: '国家', hi: 'देश',
+      es: 'País', fr: 'Pays', de: 'Land', nl: 'Land', pt: 'País', ru: 'Страна'
+    },
+    category: {
+      en: 'Category', ko: '카테고리', ja: 'カテゴリー', zh: '类别', hi: 'श्रेणी',
+      es: 'Categoría', fr: 'Catégorie', de: 'Kategorie', nl: 'Categorie', pt: 'Categoria', ru: 'Категория'
+    },
+    totalVideos: {
+      en: 'Total Videos', ko: '총 영상', ja: '総動画数', zh: '总视频', hi: 'कुल वीडियो',
+      es: 'Videos Totales', fr: 'Vidéos Totales', de: 'Gesamt Videos', nl: 'Totaal Video\'s', pt: 'Vídeos Totais', ru: 'Всего видео'
+    },
+    totalViews: {
+      en: 'Total Views', ko: '총 조회수', ja: '総再生回数', zh: '总观看次数', hi: 'कुल दृश्य',
+      es: 'Vistas Totales', fr: 'Vues Totales', de: 'Gesamt Aufrufe', nl: 'Totaal Weergaven', pt: 'Visualizações Totais', ru: 'Всего просмотров'
+    },
+    averageViews: {
+      en: 'Average Views', ko: '평균 조회수', ja: '平均再生回数', zh: '平均观看次数', hi: 'औसत दृश्य',
+      es: 'Vistas Promedio', fr: 'Vues Moyennes', de: 'Durchschn. Aufrufe', nl: 'Gem. Weergaven', pt: 'Visualizações Médias', ru: 'Средние просмотры'
+    },
+    viewsPerSubscriber: {
+      en: 'Views per Subscriber', ko: '구독자 대비 조회수', ja: '登録者対再生回数', zh: '每订阅者观看次数', hi: 'प्रति सब्सक्राइबर व्यू',
+      es: 'Vistas por Suscriptor', fr: 'Vues par Abonné', de: 'Aufrufe pro Abonnent', nl: 'Weergaven per Abonnee', pt: 'Views por Inscrito', ru: 'Просмотры на подписчика'
+    },
+    engagementRate: {
+      en: 'Engagement Rate', ko: '참여율', ja: 'エンゲージメント率', zh: '参与率', hi: 'सहभागिता दर',
+      es: 'Tasa de Participación', fr: 'Taux d\'Engagement', de: 'Engagement-Rate', nl: 'Betrokkenheidsgraad', pt: 'Taxa de Engajamento', ru: 'Уровень вовлеченности'
+    },
+    // RPM 수익 관련
+    rpm: {
+      en: 'RPM', ko: 'RPM', ja: 'RPM', zh: 'RPM', hi: 'RPM',
+      es: 'RPM', fr: 'RPM', de: 'RPM', nl: 'RPM', pt: 'RPM', ru: 'RPM'
+    },
+    duration: {
+      en: 'Duration', ko: '기간', ja: '期間', zh: '期间', hi: 'अवधि',
+      es: 'Duración', fr: 'Durée', de: 'Dauer', nl: 'Duur', pt: 'Duração', ru: 'Длительность'
+    },
+    videoRevenue: {
+      en: 'Video Revenue', ko: '이 영상 수익', ja: 'この動画収益', zh: '视频收益', hi: 'वीडियो आय',
+      es: 'Ingresos del Video', fr: 'Revenus Vidéo', de: 'Video-Einnahmen', nl: 'Video Inkomsten', pt: 'Receita do Vídeo', ru: 'Доход с видео'
+    },
+    channelRevenue: {
+      en: 'Channel Revenue', ko: '채널 총 수익', ja: 'チャンネル総収益', zh: '频道总收益', hi: 'चैनल आय',
+      es: 'Ingresos del Canal', fr: 'Revenus du Canal', de: 'Kanal-Einnahmen', nl: 'Kanaal Inkomsten', pt: 'Receita do Canal', ru: 'Доход канала'
+    },
+    // 툴팁 텍스트
+    calculationMethod: {
+      en: 'Calculation Method\nPer 1,000 views\nMultiplied by\nRPM rate',
+      ko: '계산방법\n1,000회당\nRPM 을 곱한\n금액',
+      ja: '計算方法\n1,000回当たり\nRPMを掛けた\n金額',
+      zh: '计算方法\n每1000次观看\n乘以RPM\n金额',
+      hi: 'गणना विधि\n1,000 व्यू प्रति\nRPM से गुणा\nराशि',
+      es: 'Método de Cálculo\nPor 1,000 vistas\nMultiplicado por\nTasa RPM',
+      fr: 'Méthode de Calcul\nPar 1,000 vues\nMultiplié par\nTaux RPM',
+      de: 'Berechnungsmethode\nPro 1.000 Aufrufe\nMultipliziert mit\nRPM-Rate',
+      nl: 'Berekeningsmethode\nPer 1.000 weergaven\nVermenigvuldigd met\nRPM tarief',
+      pt: 'Método de Cálculo\nPor 1.000 visualizações\nMultiplicado por\nTaxa RPM',
+      ru: 'Метод расчёта\nЗа 1000 просмотров\nУмноженное на\nСтавку RPM'
+    },
+    // 복사 관련
+    copyTags: {
+      en: 'Copy tags', ko: '태그 복사', ja: 'タグをコピー', zh: '复制标签', hi: 'टैग कॉपी करें',
+      es: 'Copiar etiquetas', fr: 'Copier les tags', de: 'Tags kopieren', nl: 'Tags kopiëren', pt: 'Copiar tags', ru: 'Копировать теги'
+    },
+    copyFailed: {
+      en: 'Copy failed.', ko: '복사에 실패했습니다.', ja: 'コピーに失敗しました。', zh: '复制失败。', hi: 'कॉपी असफल।',
+      es: 'Falló la copia.', fr: 'Échec de la copie.', de: 'Kopieren fehlgeschlagen.', nl: 'Kopiëren mislukt.', pt: 'Falha ao copiar.', ru: 'Копирование не удалось.'
+    }
+  };
+
+  // 번역 헬퍼 함수
+  const t = (key: keyof typeof translations) => {
+    return translations[key][language] || translations[key].en;
+  };
   const [rpmRate, setRpmRate] = React.useState(() => {
     // 1차: 실제 채널 국가 정보 기반 RPM (2024년 실제 데이터)
     if (short.channelCountry) {
@@ -110,27 +201,91 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
 
   // YouTube 카테고리 ID를 실제 카테고리명으로 변환
   const getCategoryName = (categoryId: string | undefined): string => {
-    if (!categoryId) return '인물/블로그';
-    
-    const categoryMap: Record<string, string> = {
-      '1': '영화/애니메이션',
-      '2': '자동차/차량',
-      '10': '음악',
-      '15': '애완동물/동물',
-      '17': '스포츠',
-      '19': '여행/이벤트',
-      '20': '게임',
-      '22': '인물/블로그',
-      '23': '코미디',
-      '24': '엔터테인먼트',
-      '25': '뉴스/정치',
-      '26': '하우투/스타일',
-      '27': '교육',
-      '28': '과학/기술',
-      '29': '비영리/활동'
+    const categoryTranslations = {
+      default: {
+        en: 'People & Blogs', ko: '인물/블로그', ja: '人物・ブログ', zh: '人物博客', hi: 'व्यक्ति और ब्लॉग',
+        es: 'Personas y Blogs', fr: 'Personnes et Blogs', de: 'Menschen & Blogs', nl: 'Mensen & Blogs', pt: 'Pessoas & Blogs', ru: 'Люди и блоги'
+      },
+      '1': {
+        en: 'Film & Animation', ko: '영화/애니메이션', ja: '映画・アニメ', zh: '电影动画', hi: 'फिल्म एवं एनीमेशन',
+        es: 'Cine y Animación', fr: 'Cinéma et Animation', de: 'Film & Animation', nl: 'Film & Animatie', pt: 'Filme e Animação', ru: 'Фильмы и анимация'
+      },
+      '2': {
+        en: 'Autos & Vehicles', ko: '자동차/차량', ja: '自動車・乗り物', zh: '汽车载具', hi: 'ऑटो एवं वाहन',
+        es: 'Autos y Vehículos', fr: 'Autos et Véhicules', de: 'Autos & Fahrzeuge', nl: 'Auto\'s & Voertuigen', pt: 'Autos e Veículos', ru: 'Авто и транспорт'
+      },
+      '10': {
+        en: 'Music', ko: '음악', ja: '音楽', zh: '音乐', hi: 'संगीत',
+        es: 'Música', fr: 'Musique', de: 'Musik', nl: 'Muziek', pt: 'Música', ru: 'Музыка'
+      },
+      '15': {
+        en: 'Pets & Animals', ko: '애완동물/동물', ja: 'ペット・動物', zh: '宠物动物', hi: 'पालतू जानवर एवं पशु',
+        es: 'Mascotas y Animales', fr: 'Animaux', de: 'Haustiere & Tiere', nl: 'Huisdieren & Dieren', pt: 'Pets e Animais', ru: 'Питомцы и животные'
+      },
+      '17': {
+        en: 'Sports', ko: '스포츠', ja: 'スポーツ', zh: '体育', hi: 'खेल',
+        es: 'Deportes', fr: 'Sports', de: 'Sport', nl: 'Sport', pt: 'Esportes', ru: 'Спорт'
+      },
+      '19': {
+        en: 'Travel & Events', ko: '여행/이벤트', ja: '旅行・イベント', zh: '旅游活动', hi: 'यात्रा एवं घटनाएं',
+        es: 'Viajes y Eventos', fr: 'Voyages et Événements', de: 'Reisen & Events', nl: 'Reizen & Evenementen', pt: 'Viagem e Eventos', ru: 'Путешествия и события'
+      },
+      '20': {
+        en: 'Gaming', ko: '게임', ja: 'ゲーム', zh: '游戏', hi: 'गेमिंग',
+        es: 'Videojuegos', fr: 'Jeux vidéo', de: 'Gaming', nl: 'Gaming', pt: 'Jogos', ru: 'Игры'
+      },
+      '22': {
+        en: 'People & Blogs', ko: '인물/블로그', ja: '人物・ブログ', zh: '人物博客', hi: 'व्यक्ति और ब्लॉग',
+        es: 'Personas y Blogs', fr: 'Personnes et Blogs', de: 'Menschen & Blogs', nl: 'Mensen & Blogs', pt: 'Pessoas & Blogs', ru: 'Люди и блоги'
+      },
+      '23': {
+        en: 'Comedy', ko: '코미디', ja: 'コメディ', zh: '喜剧', hi: 'कॉमेडी',
+        es: 'Comedia', fr: 'Comédie', de: 'Komödie', nl: 'Komedie', pt: 'Comédia', ru: 'Комедия'
+      },
+      '24': {
+        en: 'Entertainment', ko: '엔터테인먼트', ja: 'エンターテインメント', zh: '娱乐', hi: 'मनोरंजन',
+        es: 'Entretenimiento', fr: 'Divertissement', de: 'Unterhaltung', nl: 'Entertainment', pt: 'Entretenimento', ru: 'Развлечения'
+      },
+      '25': {
+        en: 'News & Politics', ko: '뉴스/정치', ja: 'ニュース・政治', zh: '新闻政治', hi: 'समाचार एवं राजनीति',
+        es: 'Noticias y Política', fr: 'Actualités et Politique', de: 'Nachrichten & Politik', nl: 'Nieuws & Politiek', pt: 'Notícias e Política', ru: 'Новости и политика'
+      },
+      '26': {
+        en: 'Howto & Style', ko: '하우투/스타일', ja: 'ハウツー・スタイル', zh: '时尚美妆', hi: 'कैसे करें एवं स्टाइल',
+        es: 'Tutoriales y Estilo', fr: 'Tutoriels et Style', de: 'Anleitungen & Stil', nl: 'Instructies & Stijl', pt: 'Estilo e Moda', ru: 'Обучение и стиль'
+      },
+      '27': {
+        en: 'Education', ko: '교육', ja: '教育', zh: '教育', hi: 'शिक्षा',
+        es: 'Educación', fr: 'Éducation', de: 'Bildung', nl: 'Onderwijs', pt: 'Educação', ru: 'Образование'
+      },
+      '28': {
+        en: 'Science & Technology', ko: '과학/기술', ja: '科学・技術', zh: '科学技术', hi: 'विज्ञान एवं प्रौद्योगिकी',
+        es: 'Ciencia y Tecnología', fr: 'Science et Technologie', de: 'Wissenschaft & Technik', nl: 'Wetenschap & Technologie', pt: 'Ciência e Tecnologia', ru: 'Наука и технологии'
+      },
+      '29': {
+        en: 'Nonprofits & Activism', ko: '비영리/활동', ja: '非営利・活動', zh: '非营利组织', hi: 'गैर-लाभकारी संस्थाएं',
+        es: 'ONG y Activismo', fr: 'Organisations à but non lucratif', de: 'Gemeinnützig & Aktivismus', nl: 'Non-profit & Activisme', pt: 'Organizações sem fins lucrativos', ru: 'Некоммерческие организации'
+      }
     };
     
-    return categoryMap[categoryId] || `카테고리 ${categoryId}`;
+    if (!categoryId) {
+      return categoryTranslations.default[language] || categoryTranslations.default.en;
+    }
+    
+    const category = categoryTranslations[categoryId as keyof typeof categoryTranslations];
+    if (category) {
+      return category[language] || category.en;
+    }
+    
+    // 알 수 없는 카테고리 ID인 경우
+    const unknownCategory = {
+      en: `Category ${categoryId}`, ko: `카테고리 ${categoryId}`, ja: `カテゴリー ${categoryId}`, 
+      zh: `类别 ${categoryId}`, hi: `श्रेणी ${categoryId}`, es: `Categoría ${categoryId}`, 
+      fr: `Catégorie ${categoryId}`, de: `Kategorie ${categoryId}`, nl: `Categorie ${categoryId}`, 
+      pt: `Categoria ${categoryId}`, ru: `Категория ${categoryId}`
+    };
+    
+    return unknownCategory[language] || unknownCategory.en;
   };
 
   // 채널 국가 정보를 실제 API 데이터로 변환
@@ -329,19 +484,19 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
           textAlign: 'center'
         }}>
           <div>
-            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px' }}>구독자</div>
+            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px' }}>{t('subscribers')}</div>
             <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#323545' }}>
               {short.subscriberCount ? formatNumber(short.subscriberCount) : 'N/A'}
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px' }}>조회수</div>
+            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px' }}>{t('views')}</div>
             <div style={{ fontSize: '16px', fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
               {formatNumber(short.viewCount)}
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px' }}>업로드</div>
+            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px' }}>{t('uploaded')}</div>
             <div style={{ fontSize: '16px', fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
               {timeAgo(short.publishedAt)}
             </div>
@@ -376,35 +531,35 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
         {/* 분석 정보 */}
         <div style={{ fontSize: '13px', lineHeight: '1.8', color: '#323545' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span>국가</span>
+            <span>{t('country')}</span>
             <span style={{ fontWeight: 'bold' }}>
               {detectCountryFromChannel()}
             </span>
           </div>
           
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span>카테고리</span>
+            <span>{t('category')}</span>
             <span style={{ fontWeight: 'bold' }}>
               {getCategoryName(short.categoryId)}
             </span>
           </div>
           
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span>총 영상</span>
+            <span>{t('totalVideos')}</span>
             <span style={{ fontWeight: 'bold' }}>
-              {short.videoCount ? formatNumber(short.videoCount) + '개' : 'N/A'}
+              {short.videoCount ? formatNumber(short.videoCount) + (language === 'ko' ? '개' : '') : 'N/A'}
             </span>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span>총 조회수</span>
+            <span>{t('totalViews')}</span>
             <span style={{ fontWeight: 'bold' }}>
               {short.channelViewCount ? formatNumber(short.channelViewCount) : 'N/A'}
             </span>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span>평균 조회수</span>
+            <span>{t('averageViews')}</span>
             <span style={{ fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
               {averageViews > 0 ? formatNumber(averageViews) : 'N/A'}
             </span>
@@ -414,7 +569,7 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
           {short.viewsPerSubscriber && (
             <div style={{ marginBottom: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                <span style={{ color: '#323545', fontSize: '13px' }}>구독자 대비 조회수</span>
+                <span style={{ color: '#323545', fontSize: '13px' }}>{t('viewsPerSubscriber')}</span>
                 <span style={{ fontWeight: 'bold', color: 'rgb(124, 58, 237)', fontSize: '13px' }}>
                   {short.viewsPerSubscriber.toFixed(0)}%
                 </span>
@@ -441,7 +596,7 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
           {/* 참여율 */}
           <div style={{ marginBottom: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-              <span>참여율</span>
+              <span>{t('engagementRate')}</span>
               <span style={{ fontWeight: 'bold' }}>{engagementRate.toFixed(2)}%</span>
             </div>
             
@@ -533,7 +688,7 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
                   setIsCopied(true);
                   setTimeout(() => setIsCopied(false), 2000);
                 }).catch(() => {
-                  alert('복사에 실패했습니다.');
+                  alert(t('copyFailed'));
                 });
               }}
               style={{
@@ -550,7 +705,7 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
                 alignItems: 'center',
                 justifyContent: 'center'
               }}
-              title="태그 복사"
+              title={t('copyTags')}
             >
               {isCopied ? '✓' : '📋'}
             </button>
@@ -632,10 +787,12 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
                 borderColor: 'rgb(124, 58, 237) transparent transparent transparent'
               }
             }}>
-              계산방법<br />
-              1,000회당<br />
-              RPM 을 곱한<br />
-              금액
+{t('calculationMethod').split('\n').map((line, i) => (
+                <React.Fragment key={i}>
+                  {line}
+                  {i < t('calculationMethod').split('\n').length - 1 && <br />}
+                </React.Fragment>
+              ))}
               {/* 말풍선 꼬리 */}
               <div style={{
                 position: 'absolute',
@@ -652,7 +809,7 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
           )}
           
           <div>
-            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px', textAlign: 'center' }}>RPM</div>
+            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px', textAlign: 'center' }}>{t('rpm')}</div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
               <button
                 onClick={() => setRpmRate(Math.max(0.01, rpmRate - 0.01))}
@@ -665,17 +822,17 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
           </div>
 
           <div style={{ marginLeft: '-10px' }}>
-            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px', textAlign: 'center' }}>기간</div>
+            <div style={{ fontSize: '12px', color: '#323545', marginBottom: '8px', textAlign: 'center' }}>{t('duration')}</div>
             <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#6C6D78', textAlign: 'center', minWidth: '60px', margin: '0 auto' }}>{calculateChannelDuration()}</div>
           </div>
 
           <div>
-            <div style={{ fontSize: '12px', color: 'rgb(124, 58, 237)', marginBottom: '8px', textAlign: 'center' }}>이 영상 수익</div>
+            <div style={{ fontSize: '12px', color: 'rgb(124, 58, 237)', marginBottom: '8px', textAlign: 'center' }}>{t('videoRevenue')}</div>
             <div style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgb(124, 58, 237)', textAlign: 'center' }}>{formatRevenue(calculateVideoRevenue())}</div>
           </div>
 
           <div style={{ marginLeft: '-10px' }}>
-            <div style={{ fontSize: '12px', color: 'rgb(124, 58, 237)', marginBottom: '8px', textAlign: 'center' }}>채널 총 수익</div>
+            <div style={{ fontSize: '12px', color: 'rgb(124, 58, 237)', marginBottom: '8px', textAlign: 'center' }}>{t('channelRevenue')}</div>
             <div style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgb(124, 58, 237)', textAlign: 'center' }}>{formatRevenue(calculateChannelRevenue())}</div>
           </div>
         </div>
