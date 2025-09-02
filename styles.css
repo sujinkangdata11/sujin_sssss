@@ -1213,8 +1213,17 @@ select.form-input {
 .results-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-6);
+  gap: var(--spacing-4);
   margin-bottom: 200px;
+  padding: 0 var(--spacing-2);
+}
+
+@media (max-width: 480px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+    padding: 0 var(--spacing-3);
+  }
 }
 
 @media (min-width: 640px) {

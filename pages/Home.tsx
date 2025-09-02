@@ -7,6 +7,7 @@ import { searchYouTubeShorts, resolveChannelUrlsToIds, enhanceVideosWithSubscrib
 import { translations } from '../i18n/translations';
 import CountrySelector from '../components/CountrySelector';
 import ShortsCard from '../components/ShortsCard';
+import ShortsCardMobile from '../components/ShortsCardMobile';
 import ApiKeyUpload from '../components/ApiKeyUpload';
 import RandomSearchModal from '../components/RandomSearchModal';
 import SEOHead from '../components/SEOHead';
@@ -18,6 +19,20 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   const [youtubeApiKey, setYoutubeApiKey] = useState<string>('');
+  
+  // 모바일 화면 감지 hook
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   const [youtubeApiKeys, setYoutubeApiKeys] = useState<string[]>([]);
   const [currentKeyIndex, setCurrentKeyIndex] = useState<number>(0);
   const [isApiKeyUploadOpen, setIsApiKeyUploadOpen] = useState<boolean>(false);
@@ -1159,8 +1174,16 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
             </div>
             <div className="results-grid">
               {isRandomSearchOpen 
-                ? sortedRandomResults.map(short => <ShortsCard key={short.id} short={short} language={language} />)
-                : sortedShorts.map(short => <ShortsCard key={short.id} short={short} language={language} />)
+                ? sortedRandomResults.map(short => 
+                    isMobile 
+                      ? <ShortsCardMobile key={short.id} short={short} language={language} />
+                      : <ShortsCard key={short.id} short={short} language={language} />
+                  )
+                : sortedShorts.map(short => 
+                    isMobile 
+                      ? <ShortsCardMobile key={short.id} short={short} language={language} />
+                      : <ShortsCard key={short.id} short={short} language={language} />
+                  )
               }
             </div>
           </>
