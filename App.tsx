@@ -10,6 +10,7 @@ import Home from './pages/Home';
 
 //// 📦 코드 분할: 나머지 페이지들은 필요할 때만 로딩 (첫 로딩 속도 향상)
 //// React.lazy()로 동적 import - 클릭할 때만 다운로드됨
+const ChannelFinder = React.lazy(() => import('./pages/ChannelFinder'));
 const ShortsmaKer = React.lazy(() => import('./pages/ShortsmaKer'));
 const News = React.lazy(() => import('./pages/News'));
 const ArticleDetail = React.lazy(() => import('./pages/ArticleDetail'));
@@ -67,6 +68,7 @@ const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) 
         <div className="header-nav">
           {/* Desktop Navigation */}
           <div className="nav-buttons desktop-nav">
+            <Link to="/channelfinder" className={getNavButtonClass('/channelfinder')}>{t('navChannelFinder')}</Link>
             <Link to="/" className={getNavButtonClass('/')}>{t('navShortsFinder')}</Link>
             <Link to="/shortsmaker" className={getNavButtonClass('/shortsmaker')}>{t('navShortsmaker')}</Link>
             <Link to="/news" className={getNavButtonClass('/news')}>{t('navNews')}</Link>
@@ -94,6 +96,13 @@ const Header: React.FC<{ language: Language; onLanguageSelect: (lang: Language) 
         {isMobileMenuOpen && (
           <div className="mobile-menu">
             <div className="mobile-nav-buttons">
+              <Link 
+                to="/channelfinder" 
+                className={getNavButtonClass('/channelfinder')}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('navChannelFinder')}
+              </Link>
               <Link 
                 to="/" 
                 className={getNavButtonClass('/')}
@@ -203,6 +212,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Home language={language} onLanguageSelect={setLanguage} />} />
             
             {/* 📦 코드 분할된 페이지들: 클릭할 때만 로딩 */}
+            <Route path="/channelfinder" element={<ChannelFinder language={language} />} />
             <Route path="/shortsmaker" element={<ShortsmaKer language={language} />} />
             <Route path="/news" element={<News language={language} />} />
             <Route path="/news/article/:id" element={<ArticleDetail language={language} />} />
