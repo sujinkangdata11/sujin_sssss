@@ -368,6 +368,26 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 40;
+  
+  // 현지 화폐 환율 및 모달 상태
+  const [localExchangeRate, setLocalExchangeRate] = useState(1300);
+  const [exchangeRateModalOpen, setExchangeRateModalOpen] = useState(false);
+  const [tempExchangeRate, setTempExchangeRate] = useState(1300);
+
+  // 언어별 기본 환율 및 화폐 단위
+  const currencySettings = {
+    en: { rate: 1, symbol: 'USD', code: '$' },
+    ko: { rate: 1300, symbol: '원', code: '₩' },
+    ja: { rate: 150, symbol: '円', code: '¥' },
+    zh: { rate: 7, symbol: '元', code: '¥' },
+    hi: { rate: 83, symbol: 'रुपये', code: '₹' },
+    es: { rate: 0.92, symbol: 'euros', code: '€' },
+    fr: { rate: 0.92, symbol: 'euros', code: '€' },
+    de: { rate: 0.92, symbol: 'euros', code: '€' },
+    nl: { rate: 0.92, symbol: 'euros', code: '€' },
+    pt: { rate: 0.92, symbol: 'euros', code: '€' },
+    ru: { rate: 95, symbol: 'рублей', code: '₽' }
+  };
 
   // 필터나 정렬이 변경되면 첫 페이지로 리셋
   React.useEffect(() => {
@@ -403,24 +423,49 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     'Nonprofits & Activism'
   ];
 
-  // 포매팅 함수들 - 숫자 데이터를 사용자가 읽기 쉬운 형태로 변환 (3자리 콤마 포함)
+  // 포매팅 함수들 - 숫자 데이터를 사용자가 읽기 쉬운 형태로 변환 (언어별 단위 적용)
   const formatNumber = (num: number): string => {
-    if (num >= 100000000) { // 1억 이상
-      const eok = Math.floor(num / 100000000);
-      const man = Math.floor((num % 100000000) / 10000);
-      if (man === 0) {
-        return `${eok.toLocaleString()}억`;
+    return formatLocalizedNumber(num, language, '');
+  };
+
+  // 성장 지표용 포매팅 (최대 5자리 숫자까지만)
+  const formatGrowthNumber = (num: number): string => {
+    // 5자리까지만 표시하면서 적절한 단위 사용
+    if (language === 'ko') {
+      // 한국어: 만, 억 단위로 5자리 제한
+      if (num >= 100000000) { // 억 단위
+        const eok = Math.floor(num / 100000000);
+        const man = Math.floor((num % 100000000) / 10000);
+        if (man >= 1000) {
+          // 만의 자리가 4자리면 천 단위로 반올림
+          const roundedMan = Math.round(man / 1000) * 1000;
+          return `${eok}억 ${roundedMan / 1000}천만`;
+        } else if (man > 0) {
+          return `${eok}억 ${man}만`;
+        }
+        return `${eok}억`;
+      } else if (num >= 10000) { // 만 단위
+        const man = Math.floor(num / 10000);
+        const remainder = num % 10000;
+        if (remainder >= 1000) {
+          // 천 단위로 표시
+          const thousand = Math.round(remainder / 1000);
+          return `${man}만 ${thousand}천`;
+        } else if (remainder > 0) {
+          // 나머지가 있으면 반올림해서 천 단위로
+          const rounded = Math.round(remainder / 100) * 100;
+          if (rounded >= 1000) {
+            return `${man}만 1천`;
+          } else if (rounded > 0) {
+            return `${man}만 ${Math.round(rounded / 100)}백`;
+          }
+        }
+        return `${man}만`;
       }
-      return `${eok.toLocaleString()}억 ${man.toLocaleString()}만`;
-    } else if (num >= 10000) { // 1만 이상
-      const man = Math.floor(num / 10000);
-      const remainder = num % 10000;
-      if (remainder === 0) {
-        return `${man.toLocaleString()}만`;
-      }
-      return `${man.toLocaleString()}만 ${remainder.toLocaleString()}`;
-    } else {
       return num.toLocaleString();
+    } else {
+      // 영어: K, M, B 단위로 5자리 제한
+      return formatLocalizedNumber(num, language, '');
     }
   };
 
@@ -434,7 +479,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const formatGrowth = (num: number): string => {
-    return '+' + formatNumber(num);
+    return '+' + formatGrowthNumber(num);
   };
 
   const formatVideosCount = (num: number): string => {
@@ -451,14 +496,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const formatUploadFrequency = (videosPerWeek: number): string => {
-    const timesUnit = getChannelFinderTranslation(channelFinderI18n, language, 'units.times');
-    const dayUnit = getChannelFinderTranslation(channelFinderI18n, language, 'units.perDay');
     const weekUnit = getChannelFinderTranslation(channelFinderI18n, language, 'units.perWeek');
     
     if (videosPerWeek >= 7) {
-      return `${dayUnit} ${Math.round(videosPerWeek / 7)}${timesUnit}`;
+      const perDay = Math.round(videosPerWeek / 7);
+      return language === 'en' ? `${perDay} daily` : `${perDay} 일`;
     } else {
-      return `${weekUnit} ${videosPerWeek}${timesUnit}`;
+      return `${videosPerWeek}${weekUnit}`;
     }
   };
 
@@ -823,6 +867,92 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     return formatRevenue(total);
   };
 
+  const calculateLocalCurrencyRevenue = () => {
+    if (!selectedChannel) return formatRevenue(0);
+    
+    const currentExchangeRate = exchangeRate; // 실제 설정된 환율 사용
+    
+    // 숏폼 조회수 = 총 조회수의 20%
+    const shortsViews = selectedChannel.totalViews * (shortsPercentage / 100);
+    // 숏폼 수익 = (숏폼 조회수 ÷ 1000) × 숏폼 RPM × 환율
+    const shortsRevenue = Math.round((shortsViews / 1000) * shortsRpm * currentExchangeRate);
+    
+    // 롱폼 조회수 = 총 조회수의 80%
+    const longViews = selectedChannel.totalViews * (longPercentage / 100);
+    // 롱폼 수익 = (롱폼 조회수 ÷ 1000) × 롱폼 RPM × 환율
+    const longRevenue = Math.round((longViews / 1000) * longRpm * currentExchangeRate);
+    
+    const totalUsd = shortsRevenue + longRevenue;
+    
+    // 현지 화폐로 환율 변환
+    const currentCurrency = currencySettings[language];
+    const localTotal = Math.round(totalUsd * localExchangeRate);
+    
+    return formatLocalizedNumber(localTotal, language, currentCurrency.symbol);
+  };
+
+  // 현지 화폐 초기화 effect
+  React.useEffect(() => {
+    const defaultRate = currencySettings[language]?.rate || 1300;
+    setLocalExchangeRate(defaultRate);
+    setTempExchangeRate(defaultRate);
+  }, [language]);
+
+  // 컬럼 리사이즈 상태 및 기능
+  const [isResizing, setIsResizing] = React.useState(false);
+  const [resizingColumn, setResizingColumn] = React.useState<number | null>(null);
+  const [columnWidths, setColumnWidths] = React.useState<{ [key: number]: string }>({});
+
+  // 리사이즈 핸들러 이벤트
+  const handleMouseDown = (columnIndex: number, event: React.MouseEvent) => {
+    event.stopPropagation(); // 헤더 클릭 이벤트 방지
+    setIsResizing(true);
+    setResizingColumn(columnIndex);
+    document.body.classList.add('resizing'); // 전역 커서 변경
+    
+    const startX = event.clientX;
+    const table = event.currentTarget.closest('table');
+    const th = table?.querySelectorAll('th')[columnIndex];
+    const startWidth = th?.offsetWidth || 100;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      // 왼쪽 핸들러도 직관적으로: 오른쪽 드래그 = 넓어짐, 왼쪽 드래그 = 좁아짐
+      const deltaX = e.clientX - startX; // 마우스가 오른쪽으로 가면 +, 왼쪽으로 가면 -
+      const newWidth = Math.max(50, Math.min(150, startWidth + deltaX)); // 최소 50px, 최대 150px
+      
+      setColumnWidths(prev => ({
+        ...prev,
+        [columnIndex]: `${newWidth}px`
+      }));
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      setResizingColumn(null);
+      document.body.classList.remove('resizing'); // 전역 커서 제거
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
+  // 환율 모달 관련 함수들
+  const openExchangeRateModal = () => {
+    setTempExchangeRate(localExchangeRate);
+    setExchangeRateModalOpen(true);
+  };
+
+  const closeExchangeRateModal = () => {
+    setExchangeRateModalOpen(false);
+  };
+
+  const applyExchangeRate = () => {
+    setLocalExchangeRate(tempExchangeRate);
+    setExchangeRateModalOpen(false);
+  };
+
   const calculateViewsPerSubscriber = (channel: ChannelData) => {
     if (!channel || channel.subscribers === 0) {
       return '0%'; // 안전한 기본값 (구독자 0명일 때)
@@ -858,13 +988,24 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
               <table className="channel-table">
                 <thead>
                   <tr>
-                    <th>{getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.no')}</th>
-                    <th>{getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.channelName')}</th>
+                    {/* 리사이즈 핸들러 추가 - No 컬럼 */}
+                    <th className="category-header-resizable" style={{ width: columnWidths[0] }}>
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(0, e)}></div>
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.no')}
+                    </th>
+                    {/* 리사이즈 핸들러 추가 - 채널명 컬럼 */}
+                    <th className="category-header-resizable" style={{ width: columnWidths[1] }}>
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(1, e)}></div>
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.channelName')}
+                    </th>
                     <th 
-                      className="sortable-header"
+                      className="sortable-header category-header-resizable"
                       onClick={() => handleHeaderClick('category')}
+                      style={{ width: columnWidths[2] }}
                     >
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(2, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.category')}
+                      
                       {sortMenuOpen === 'category' && (
                         <div className="sort-menu category-menu">
                           <div className="category-grid">
@@ -877,10 +1018,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                       )}
                     </th>
+                    {/* 리사이즈 핸들러 추가 - 구독자 컬럼 */}
                     <th 
-                      className="sortable-header"
+                      className="sortable-header category-header-resizable"
                       onClick={() => handleHeaderClick('subscribers')}
+                      style={{ width: columnWidths[3] }}
                     >
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(3, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.subscribers')}
                       {sortMenuOpen === 'subscribers' && (
                         <div className="sort-menu">
@@ -889,10 +1033,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                       )}
                     </th>
+                    {/* 리사이즈 핸들러 추가 - 연간성장 컬럼 */}
                     <th 
-                      className="sortable-header"
+                      className="sortable-header category-header-resizable"
                       onClick={() => handleHeaderClick('yearlyGrowth')}
+                      style={{ width: columnWidths[4] }}
                     >
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(4, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.yearlyGrowth')}
                       {sortMenuOpen === 'yearlyGrowth' && (
                         <div className="sort-menu">
@@ -901,10 +1048,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                       )}
                     </th>
+                    {/* 리사이즈 핸들러 추가 - 월간성장 컬럼 */}
                     <th 
-                      className="sortable-header"
+                      className="sortable-header category-header-resizable"
                       onClick={() => handleHeaderClick('monthlyGrowth')}
+                      style={{ width: columnWidths[5] }}
                     >
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(5, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.monthlyGrowth')}
                       {sortMenuOpen === 'monthlyGrowth' && (
                         <div className="sort-menu">
@@ -913,10 +1063,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                       )}
                     </th>
+                    {/* 리사이즈 핸들러 추가 - 일간성장 컬럼 */}
                     <th 
-                      className="sortable-header"
+                      className="sortable-header category-header-resizable"
                       onClick={() => handleHeaderClick('dailyGrowth')}
+                      style={{ width: columnWidths[6] }}
                     >
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(6, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.dailyGrowth')}
                       {sortMenuOpen === 'dailyGrowth' && (
                         <div className="sort-menu">
@@ -925,10 +1078,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                       )}
                     </th>
+                    {/* 리사이즈 핸들러 추가 - 구독전환율 컬럼 */}
                     <th 
-                      className="sortable-header"
+                      className="sortable-header category-header-resizable"
                       onClick={() => handleHeaderClick('subscribersPerVideo')}
+                      style={{ width: columnWidths[7] }}
                     >
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(7, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.subscriptionRate')}
                       {sortMenuOpen === 'subscribersPerVideo' && (
                         <div className="sort-menu">
@@ -937,10 +1093,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                       )}
                     </th>
+                    {/* 리사이즈 핸들러 추가 - 운영기간 컬럼 */}
                     <th 
-                      className="sortable-header"
+                      className="sortable-header category-header-resizable"
                       onClick={() => handleHeaderClick('operatingPeriod')}
+                      style={{ width: columnWidths[8] }}
                     >
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(8, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.operatingPeriod')}
                       {sortMenuOpen === 'operatingPeriod' && (
                         <div className="sort-menu">
@@ -949,10 +1108,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                       )}
                     </th>
+                    {/* 리사이즈 핸들러 추가 - 총조회수 컬럼 */}
                     <th 
-                      className="sortable-header"
+                      className="sortable-header category-header-resizable"
                       onClick={() => handleHeaderClick('totalViews')}
+                      style={{ width: columnWidths[9] }}
                     >
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(9, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.totalViews')}
                       {sortMenuOpen === 'totalViews' && (
                         <div className="sort-menu">
@@ -961,10 +1123,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                       )}
                     </th>
+                    {/* 리사이즈 핸들러 추가 - 평균조회수 컬럼 */}
                     <th 
-                      className="sortable-header"
+                      className="sortable-header category-header-resizable"
                       onClick={() => handleHeaderClick('avgViews')}
+                      style={{ width: columnWidths[10] }}
                     >
+                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(10, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.avgViews')}
                       {sortMenuOpen === 'avgViews' && (
                         <div className="sort-menu">
@@ -1118,8 +1283,10 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                   </div>
                 </div>
 
-                <div className="chart-section" style={{position: 'relative'}}>
-                  <SubTitle>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.subscriberGrowth')}</SubTitle>
+                {/* 구독자 성장 추이는 최소 3개월 데이터가 있을 때만 표시 */}
+                {selectedChannel?.subscriberHistory && selectedChannel.subscriberHistory.length >= 3 && (
+                  <div className="chart-section" style={{position: 'relative'}}>
+                    <SubTitle>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.subscriberGrowth')}</SubTitle>
                   <div className="chart-placeholder">
                     <div className="line-chart">
                       {chartData.length > 0 ? (
@@ -1214,7 +1381,8 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       </div>
                     );
                   })()}
-                </div>
+                  </div>
+                )}
 
                 <div className="rpm-section">
                   <SubTitle>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.revenueCalculation')}</SubTitle>
@@ -1312,6 +1480,18 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       <div className="total-revenue-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalRevenue')}</div>
                       <div className="total-revenue-value">{calculateTotalRevenue()}</div>
                     </div>
+                    
+                    {language !== 'en' && (
+                      <div 
+                        className="total-revenue-card korean-currency-hover"
+                        onClick={openExchangeRateModal}
+                      >
+                        <div className="total-revenue-label">
+                          {getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.localCurrencyText')}
+                        </div>
+                        <div className="total-revenue-value">{calculateLocalCurrencyRevenue()}</div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -1537,6 +1717,60 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
         .category-item:active {
           background: #e3f2fd;
+        }
+
+        /* 카테고리 헤더 리사이즈 핸들러 스타일 */
+        .category-header-resizable {
+          position: relative;
+        }
+
+        .resize-handle {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 8px;
+          height: 16px;
+          cursor: col-resize;
+          opacity: 1 !important;
+          transition: opacity 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 999;
+          right: -4px; /* 기본은 오른쪽 */
+        }
+
+        /* 왼쪽 핸들러 - 더 구체적인 선택자로 강제 적용 */
+        .category-header-resizable .resize-handle.resize-handle-left,
+        th .resize-handle.resize-handle-left {
+          width: 12px !important;
+          height: 20px !important;
+          z-index: 0 !important;
+          opacity: 1 !important;
+        }
+
+        .resize-handle-left::before {
+          content: '';
+          width: 1px;
+          height: 12px;
+          background-color: #1976d2;
+          margin-right: 1px;
+          box-shadow: 2px 0 0 #1976d2, 4px 0 0 #1976d2;
+        }
+
+        /* 카테고리 헤더 hover 시 핸들러 표시 */
+        .category-header-resizable:hover .resize-handle {
+          opacity: 0.7;
+        }
+
+        .resize-handle:hover {
+          opacity: 1 !important;
+        }
+
+        /* 리사이즈 중일 때 커서 변경 */
+        body.resizing {
+          cursor: col-resize !important;
+          user-select: none;
         }
 
 
@@ -2598,6 +2832,138 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
             font-size: 14px;
           }
         }
+
+        /* 한국 화폐 변환 호버 효과 */
+        .korean-currency-hover {
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .korean-currency-hover:hover {
+          background-color: #f5f5f5 !important;
+          transform: translateY(-1px);
+        }
+
+        /* 환율 모달 스타일 */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 3000;
+        }
+
+        .exchange-rate-modal {
+          background: white;
+          border-radius: 12px;
+          width: 400px;
+          overflow: hidden;
+        }
+
+        .modal-header {
+          padding: 20px 24px 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .modal-header h3 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 600;
+          color: #333;
+        }
+
+        .modal-close {
+          background: none;
+          border: 1px solid transparent;
+          font-size: 28px;
+          color: #666;
+          cursor: pointer;
+          padding: 0;
+          width: 34px;
+          height: 34px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          transition: background-color 0.2s;
+        }
+
+        .modal-close:hover {
+          background-color: #f5f5f5;
+        }
+
+        .modal-content {
+          padding: 24px;
+          text-align: center;
+          box-shadow: none !important;
+        }
+
+        .exchange-rate-display {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          font-size: 20px;
+          color: #333;
+        }
+
+        .exchange-rate-input {
+          border: 2px solid #e9ecef;
+          border-radius: 12px;
+          padding: 12px 16px;
+          font-size: 20px;
+          width: 120px;
+          text-align: center;
+          outline: none;
+          transition: border-color 0.2s;
+        }
+
+        .exchange-rate-input:focus {
+          border-color: #7c4dff;
+        }
+
+        .modal-footer {
+          padding: 16px 24px 24px;
+          display: flex;
+          gap: 12px;
+          justify-content: center;
+        }
+
+        .confirm-btn, .cancel-btn {
+          padding: 10px 24px;
+          border-radius: 12px;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          border: none;
+          transition: all 0.2s;
+        }
+
+        .confirm-btn {
+          background: #7c4dff;
+          color: white;
+        }
+
+        .confirm-btn:hover {
+          background: #6a3de8;
+        }
+
+        .cancel-btn {
+          background: #f8f9fa;
+          color: #666;
+          border: 1px solid #e9ecef;
+        }
+
+        .cancel-btn:hover {
+          background: #e9ecef;
+        }
       `}</style>
 
       {/* 전역 공용 드롭다운 - 단 1개만 존재 */}
@@ -2619,6 +2985,34 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
             maxHeight="250px"
             showSearch={true}
           />
+        </div>
+      )}
+
+      {/* 환율 설정 모달 */}
+      {exchangeRateModalOpen && (
+        <div className="modal-overlay" onClick={closeExchangeRateModal}>
+          <div className="exchange-rate-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>환율 설정</h3>
+              <button className="modal-close" onClick={closeExchangeRateModal}>×</button>
+            </div>
+            <div className="modal-content">
+              <div className="exchange-rate-display">
+                <span>$ 1 = </span>
+                <input 
+                  type="number" 
+                  value={tempExchangeRate}
+                  onChange={(e) => setTempExchangeRate(Number(e.target.value))}
+                  className="exchange-rate-input"
+                />
+                <span>{currencySettings[language]?.symbol || '원'}</span>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={closeExchangeRateModal}>취소</button>
+              <button className="confirm-btn" onClick={applyExchangeRate}>확인</button>
+            </div>
+          </div>
         </div>
       )}
     </>
