@@ -141,7 +141,7 @@ const SubTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 // 스켈레톤 컴포넌트들
 const TableSkeleton: React.FC = () => (
   <>
-    {Array.from({ length: 2 }).map((_, i) => (
+    {Array.from({ length: 40 }).map((_, i) => (
       <tr key={`skeleton-${i}`} className="skeleton-row">
         <td><div className="skeleton-cell skeleton-rank">{i + 1}</div></td>
         <td>
