@@ -2,6 +2,9 @@ import { Language } from '../types';
 
 export const channelFinderTranslations: Record<Language, Record<string, string>> = {
   en: {
+    // Main title
+    mainTitle: "Global YouTube Channel Data",
+    
     // Stat tooltips
     viewsPerSubscriberTooltip: "This metric shows high view counts relative to subscribers. It means your content is being exposed to many users beyond your own subscribers.",
     subscriptionRateTooltip: "This metric shows the rate of people who subscribe after watching videos. An average of 3% is considered very high. Even if only 3 out of 100 viewers subscribe, it's an excellent metric.",

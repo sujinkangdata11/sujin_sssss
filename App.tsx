@@ -4,6 +4,7 @@ import { Language } from './types';
 import { SUPPORTED_LANGUAGES } from './constants';
 import { translations } from './i18n/translations';
 import LanguageSelector from './components/LanguageSelector';
+// Google Drive 서비스는 더 이상 사용하지 않음 (CloudflareService로 대체됨)
 
 //// 🏠 홈 페이지만 즉시 로딩 (사용자가 가장 많이 사용하는 페이지)
 import Home from './pages/Home';
@@ -200,6 +201,9 @@ const App: React.FC = () => {
   
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
 
+  // 📝 Google Drive 설정 함수 제거됨 (CloudflareService로 대체됨)
+  // 이제 채널 데이터는 ChannelFinder에서 CloudflareService를 통해 자동으로 로드됩니다.
+
   return (
     <Router>
       <div className="app-container">
@@ -242,26 +246,26 @@ const App: React.FC = () => {
                   {t('footerContactDesc')}
                 </p>
                 
-                {/* Hidden Admin Button */}
-                <button 
-                  onClick={() => window.location.href = '/admin'}
-                  title="Admin Access"
-                  className="footer-admin-btn"
-                  style={{
-                    background: '#f3f4f6',
-                    border: '1px solid #d1d5db',
-                    color: '#6b7280',
-                    fontSize: '0.8rem',
-                    cursor: 'pointer',
-                    padding: '0.3rem 0.5rem',
-                    borderRadius: '4px',
-                    marginTop: '1rem',
-                    float: 'right',
-                    opacity: 0.3
-                  }}
-                >
-                  ⚙️
-                </button>
+                {/* Hidden Admin Buttons */}
+                <div style={{ marginTop: '1rem', float: 'right' }}>
+                  <button 
+                    onClick={() => window.location.href = '/admin'}
+                    title="Admin Access"
+                    className="footer-admin-btn"
+                    style={{
+                      background: '#f3f4f6',
+                      border: '1px solid #d1d5db',
+                      color: '#6b7280',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      padding: '0.3rem 0.5rem',
+                      borderRadius: '4px',
+                      opacity: 0.3
+                    }}
+                  >
+                    ⚙️
+                  </button>
+                </div>
               </div>
             </div>
           </div>

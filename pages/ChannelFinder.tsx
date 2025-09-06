@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { translations } from '../i18n/translations';
 import { channelFinderTranslations } from '../i18n/channelFinderTranslations';
+import { channelFinderI18n, getChannelFinderTranslation, formatLocalizedNumber } from '../i18n/channelFinderI18n';
 import SEOHead from '../components/SEOHead';
 import DropdownOptions from '../components/DropdownOptions';
+import Pagination from '../components/Pagination';
 import countryRpmDefaults from '../data/countryRpmDefaults.json';
+import currencyExchangeData from '../data/currencyExchangeData.json';
+import { cloudflareService } from '../services/mainFinder/cloudflareService';
 
-// 국가 표시용 매핑 (영어 -> 한국어)
+// 국가 표시용 매핑 (간단한 객체)
 const countryDisplayNames: { [key: string]: string } = {
   'United States': '미국',
   'India': '인도',
@@ -44,6 +48,48 @@ const countryDisplayNames: { [key: string]: string } = {
   '기타': '기타'
 };
 
+// 국가 표시용 매핑 함수 (컴포넌트 내부에서 사용)
+const getCountryDisplayName = (language: Language, countryKey: string): string => {
+  const countryTranslations: { [key: string]: { [key in Language]: string } } = {
+    'United States': { en: 'United States', ko: '미국', ja: 'アメリカ', zh: '美国', hi: 'अमेरिका', es: 'Estados Unidos', fr: 'États-Unis', de: 'USA', nl: 'Verenigde Staten', pt: 'Estados Unidos', ru: 'США' },
+    'Australia': { en: 'Australia', ko: '호주', ja: 'オーストラリア', zh: '澳大利亚', hi: 'ऑस्ट्रेलिया', es: 'Australia', fr: 'Australie', de: 'Australien', nl: 'Australië', pt: 'Austrália', ru: 'Австралия' },
+    'Austria': { en: 'Austria', ko: '오스트리아', ja: 'オーストリア', zh: '奥地利', hi: 'ऑस्ट्रिया', es: 'Austria', fr: 'Autriche', de: 'Österreich', nl: 'Oostenrijk', pt: 'Áustria', ru: 'Австрия' },
+    'Belgium': { en: 'Belgium', ko: '벨기에', ja: 'ベルギー', zh: '比利时', hi: 'बेल्जियम', es: 'Bélgica', fr: 'Belgique', de: 'Belgien', nl: 'België', pt: 'Bélgica', ru: 'Бельгия' },
+    'Brazil': { en: 'Brazil', ko: '브라질', ja: 'ブラジル', zh: '巴西', hi: 'ब्राजील', es: 'Brasil', fr: 'Brésil', de: 'Brasilien', nl: 'Brazilië', pt: 'Brasil', ru: 'Бразилия' },
+    'Canada': { en: 'Canada', ko: '캐나다', ja: 'カナダ', zh: '加拿大', hi: 'कनाडा', es: 'Canadá', fr: 'Canada', de: 'Kanada', nl: 'Canada', pt: 'Canadá', ru: 'Канада' },
+    'Denmark': { en: 'Denmark', ko: '덴마크', ja: 'デンマーク', zh: '丹麦', hi: 'डेनमार्क', es: 'Dinamarca', fr: 'Danemark', de: 'Dänemark', nl: 'Denemarken', pt: 'Dinamarca', ru: 'Дания' },
+    'Egypt': { en: 'Egypt', ko: '이집트', ja: 'エジプト', zh: '埃及', hi: 'मिस्र', es: 'Egipto', fr: 'Égypte', de: 'Ägypten', nl: 'Egypte', pt: 'Egito', ru: 'Египет' },
+    'Finland': { en: 'Finland', ko: '핀란드', ja: 'フィンランド', zh: '芬兰', hi: 'फिनलैंड', es: 'Finlandia', fr: 'Finlande', de: 'Finnland', nl: 'Finland', pt: 'Finlândia', ru: 'Финляндия' },
+    'France': { en: 'France', ko: '프랑스', ja: 'フランス', zh: '法国', hi: 'फ्रांस', es: 'Francia', fr: 'France', de: 'Frankreich', nl: 'Frankrijk', pt: 'França', ru: 'Франция' },
+    'Germany': { en: 'Germany', ko: '독일', ja: 'ドイツ', zh: '德国', hi: 'जर्मनी', es: 'Alemania', fr: 'Allemagne', de: 'Deutschland', nl: 'Duitsland', pt: 'Alemanha', ru: 'Германия' },
+    'Hong Kong': { en: 'Hong Kong', ko: '홍콩', ja: '香港', zh: '香港', hi: 'हांग कांग', es: 'Hong Kong', fr: 'Hong Kong', de: 'Hongkong', nl: 'Hong Kong', pt: 'Hong Kong', ru: 'Гонконг' },
+    'India': { en: 'India', ko: '인도', ja: 'インド', zh: '印度', hi: 'भारत', es: 'India', fr: 'Inde', de: 'Indien', nl: 'India', pt: 'Índia', ru: 'Индия' },
+    'Indonesia': { en: 'Indonesia', ko: '인도네시아', ja: 'インドネシア', zh: '印度尼西亚', hi: 'इंडोनेशिया', es: 'Indonesia', fr: 'Indonésie', de: 'Indonesien', nl: 'Indonesië', pt: 'Indonésia', ru: 'Индонезия' },
+    'Ireland': { en: 'Ireland', ko: '아일랜드', ja: 'アイルランド', zh: '爱尔兰', hi: 'आयरलैंड', es: 'Irlanda', fr: 'Irlande', de: 'Irland', nl: 'Ierland', pt: 'Irlanda', ru: 'Ирландия' },
+    'Israel': { en: 'Israel', ko: '이스라엘', ja: 'イスラエル', zh: '以色列', hi: 'इज़राइल', es: 'Israel', fr: 'Israël', de: 'Israel', nl: 'Israël', pt: 'Israel', ru: 'Израиль' },
+    'Japan': { en: 'Japan', ko: '일본', ja: '日本', zh: '日本', hi: 'जापान', es: 'Japón', fr: 'Japon', de: 'Japan', nl: 'Japan', pt: 'Japão', ru: 'Япония' },
+    'Mexico': { en: 'Mexico', ko: '멕시코', ja: 'メキシコ', zh: '墨西哥', hi: 'मेक्सिको', es: 'México', fr: 'Mexique', de: 'Mexiko', nl: 'Mexico', pt: 'México', ru: 'Мексика' },
+    'Netherlands': { en: 'Netherlands', ko: '네덜란드', ja: 'オランダ', zh: '荷兰', hi: 'नीदरलैंड', es: 'Países Bajos', fr: 'Pays-Bas', de: 'Niederlande', nl: 'Nederland', pt: 'Países Baixos', ru: 'Нидерланды' },
+    'New Zealand': { en: 'New Zealand', ko: '뉴질랜드', ja: 'ニュージーランド', zh: '新西兰', hi: 'न्यूज़ीलैंड', es: 'Nueva Zelanda', fr: 'Nouvelle-Zélande', de: 'Neuseeland', nl: 'Nieuw-Zeeland', pt: 'Nova Zelândia', ru: 'Новая Зеландия' },
+    'Norway': { en: 'Norway', ko: '노르웨이', ja: 'ノルウェー', zh: '挪威', hi: 'नॉर्वे', es: 'Noruega', fr: 'Norvège', de: 'Norwegen', nl: 'Noorwegen', pt: 'Noruega', ru: 'Норвегия' },
+    'Pakistan': { en: 'Pakistan', ko: '파키스탄', ja: 'パキスタン', zh: '巴基斯坦', hi: 'पाकिस्तान', es: 'Pakistán', fr: 'Pakistan', de: 'Pakistan', nl: 'Pakistan', pt: 'Paquistão', ru: 'Пакистан' },
+    'Philippines': { en: 'Philippines', ko: '필리핀', ja: 'フィリピン', zh: '菲律宾', hi: 'फिलीपींस', es: 'Filipinas', fr: 'Philippines', de: 'Philippinen', nl: 'Filipijnen', pt: 'Filipinas', ru: 'Филиппины' },
+    'Portugal': { en: 'Portugal', ko: '포르투갈', ja: 'ポルトガル', zh: '葡萄牙', hi: 'पुर्तगाल', es: 'Portugal', fr: 'Portugal', de: 'Portugal', nl: 'Portugal', pt: 'Portugal', ru: 'Португалия' },
+    'Singapore': { en: 'Singapore', ko: '싱가포르', ja: 'シンガポール', zh: '新加坡', hi: 'सिंगापुर', es: 'Singapur', fr: 'Singapour', de: 'Singapur', nl: 'Singapore', pt: 'Singapura', ru: 'Сингапур' },
+    'South Africa': { en: 'South Africa', ko: '남아프리카공화국', ja: '南アフリカ', zh: '南非', hi: 'दक्षिण अफ्रीका', es: 'Sudáfrica', fr: 'Afrique du Sud', de: 'Südafrika', nl: 'Zuid-Afrika', pt: 'África do Sul', ru: 'ЮАР' },
+    'South Korea': { en: 'South Korea', ko: '한국', ja: '韓国', zh: '韩国', hi: 'दक्षिण कोरिया', es: 'Corea del Sur', fr: 'Corée du Sud', de: 'Südkorea', nl: 'Zuid-Korea', pt: 'Coreia do Sul', ru: 'Южная Корея' },
+    'Spain': { en: 'Spain', ko: '스페인', ja: 'スペイン', zh: '西班牙', hi: 'स्पेन', es: 'España', fr: 'Espagne', de: 'Spanien', nl: 'Spanje', pt: 'Espanha', ru: 'Испания' },
+    'Sweden': { en: 'Sweden', ko: '스웨덴', ja: 'スウェーデン', zh: '瑞典', hi: 'स्वीडन', es: 'Suecia', fr: 'Suède', de: 'Schweden', nl: 'Zweden', pt: 'Suécia', ru: 'Швеция' },
+    'Switzerland': { en: 'Switzerland', ko: '스위스', ja: 'スイス', zh: '瑞士', hi: 'स्विट्जरलैंड', es: 'Suiza', fr: 'Suisse', de: 'Schweiz', nl: 'Zwitserland', pt: 'Suíça', ru: 'Швейцария' },
+    'Taiwan': { en: 'Taiwan', ko: '대만', ja: '台湾', zh: '台湾', hi: 'ताइवान', es: 'Taiwán', fr: 'Taïwan', de: 'Taiwan', nl: 'Taiwan', pt: 'Taiwan', ru: 'Тайвань' },
+    'Turkey': { en: 'Turkey', ko: '터키', ja: 'トルコ', zh: '土耳其', hi: 'तुर्की', es: 'Turquía', fr: 'Turquie', de: 'Türkei', nl: 'Turkije', pt: 'Turquia', ru: 'Турция' },
+    'United Kingdom': { en: 'United Kingdom', ko: '영국', ja: 'イギリス', zh: '英国', hi: 'यूनाइटेड किंगडम', es: 'Reino Unido', fr: 'Royaume-Uni', de: 'Vereinigtes Königreich', nl: 'Verenigd Koninkrijk', pt: 'Reino Unido', ru: 'Великобритания' },
+    '기타': { en: 'Others', ko: '기타', ja: 'その他', zh: '其他', hi: 'अन्य', es: 'Otros', fr: 'Autres', de: 'Andere', nl: 'Anderen', pt: 'Outros', ru: 'Прочие' }
+  };
+  
+  return countryTranslations[countryKey]?.[language] || countryKey;
+};
+
 interface ChannelFinderProps {
   language: Language;
 }
@@ -78,6 +124,14 @@ interface ChannelData {
   // 수익 계산용 데이터 (조회수)
   shortsTotalViews: number;  // 숏폼 총 조회수
   longTotalViews: number;    // 롱폼 총 조회수
+  // 조회수 비율 데이터
+  shortsViewsPercentage?: number;  // 숏폼 조회수 비율 (%)
+  longformViewsPercentage?: number; // 롱폼 조회수 비율 (%)
+  // 구독자 성장 데이터
+  subscriberHistory?: Array<{
+    month: string;
+    count: string;
+  }>;
 }
 
 const SubTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -228,12 +282,12 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   // 국가 옵션 배열 생성 (사이드바용)
   const countryOptions = Object.keys(countryRpmDefaults).map(country => ({
     value: country,
-    label: countryDisplayNames[country] || country
+    label: getCountryDisplayName(language, country)
   }));
   
   // 메인 테이블용 국가 옵션 배열 ("전체 국가" 포함) - 사이드바와 동일한 국가 목록 사용
   const mainCountryOptions = [
-    { value: '', label: '전체 국가' },
+    { value: '', label: 'ALL' },
     ...countryOptions
   ];
   const [selectedChannel, setSelectedChannel] = useState<ChannelData | null>(null);
@@ -241,9 +295,49 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   const [currentCountry, setCurrentCountry] = useState('기타'); // 기본 국가
   const [shortsRpm, setShortsRpm] = useState(countryRpmDefaults['기타'].shorts);
   const [longRpm, setLongRpm] = useState(countryRpmDefaults['기타'].long);
-  // TODO: 추후 변수로 변경예정 - 숏폼/롱폼 비율
-  const shortsPercentage = 20; // 숏폼 20% (추후 변수로 변경예정)
-  const longPercentage = 80;   // 롱폼 80% (추후 변수로 변경예정)
+  const [exchangeRate, setExchangeRate] = useState(currencyExchangeData['기타'].exchangeRate); // 환율 상태
+  // 선택된 채널의 숏폼/롱폼 비율 (실제 데이터 사용)
+  const shortsPercentage = selectedChannel?.shortsViewsPercentage || 20;
+  const longPercentage = selectedChannel?.longformViewsPercentage || 80;
+
+  // 숫자를 영어 단위로 변환하는 함수
+  const formatToEnglishUnits = (num: number): string => {
+    if (num >= 1000000000) {
+      return (num / 1000000000).toFixed(1) + 'B';
+    } else if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'K';
+    } else {
+      return num.toString();
+    }
+  };
+
+  // 구독자 성장 차트 데이터 생성
+  const generateChartData = () => {
+    const history = selectedChannel?.subscriberHistory || [];
+    if (history.length === 0) return [];
+
+    const chartWidth = 240; // 300에서 여백 60 빼기
+    const pointSpacing = history.length > 1 ? chartWidth / (history.length - 1) : 0;
+    
+    return history.map((item, index) => {
+      const x = 30 + (index * pointSpacing);
+      const subscriberCount = parseInt(item.count) || 0;
+      const y = 80 - (index * 15); // 간단한 상승 곡선
+      const monthName = new Date(item.month + '-01').toLocaleDateString('ko-KR', { month: 'long' });
+      
+      return {
+        x,
+        y,
+        value: formatToEnglishUnits(subscriberCount),
+        month: monthName,
+        index
+      };
+    }).slice(-5); // 최근 5개월만
+  };
+
+  const chartData = generateChartData();
   const [sortMenuOpen, setSortMenuOpen] = useState<string | null>(null);
   const [sortedChannels, setSortedChannels] = useState<ChannelData[]>([]);
   const [countrySearch, setCountrySearch] = useState('');
@@ -252,6 +346,15 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   const [loading, setLoading] = useState(true); // 데이터 로딩 상태
   const [hoveredPoint, setHoveredPoint] = useState<number | null>(null); // 호버된 포인트 인덱스
   const [hoveredStat, setHoveredStat] = useState<string | null>(null); // 호버된 통계 항목
+  const [apiStatus, setApiStatus] = useState<{
+    isConnected: boolean;
+    message: string;
+    dataSource: 'api' | 'cache' | 'mock';
+  }>({
+    isConnected: false,
+    message: '연결 확인 중...',
+    dataSource: 'mock'
+  });
   const [dropdownState, setDropdownState] = useState<{
     isOpen: boolean;
     type: 'main' | 'sidebar' | null;
@@ -261,6 +364,16 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     type: null,
     position: null
   });
+
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 40;
+
+  // 필터나 정렬이 변경되면 첫 페이지로 리셋
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredChannels.length, selectedCountry]);
+
 
   // 그래프 호버 툴팁 데이터
   const growthTooltips = [
@@ -312,7 +425,8 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const formatSubscribers = (num: number): string => {
-    return formatNumber(num) + '명';
+    const unit = getChannelFinderTranslation(channelFinderI18n, language, 'units.people');
+    return formatNumber(num) + unit;
   };
 
   const formatViews = (num: number): string => {
@@ -324,20 +438,27 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const formatVideosCount = (num: number): string => {
-    return num.toLocaleString() + '개';
+    const unit = getChannelFinderTranslation(channelFinderI18n, language, 'units.items');
+    return num.toLocaleString() + unit;
   };
 
   const formatOperatingPeriod = (months: number): string => {
     const years = Math.floor(months / 12);
     const remainingMonths = months % 12;
-    return `${years}년 ${remainingMonths}개월`;
+    const yearUnit = getChannelFinderTranslation(channelFinderI18n, language, 'units.years');
+    const monthUnit = getChannelFinderTranslation(channelFinderI18n, language, 'units.months');
+    return `${years}${yearUnit} ${remainingMonths}${monthUnit}`;
   };
 
   const formatUploadFrequency = (videosPerWeek: number): string => {
+    const timesUnit = getChannelFinderTranslation(channelFinderI18n, language, 'units.times');
+    const dayUnit = getChannelFinderTranslation(channelFinderI18n, language, 'units.perDay');
+    const weekUnit = getChannelFinderTranslation(channelFinderI18n, language, 'units.perWeek');
+    
     if (videosPerWeek >= 7) {
-      return `일 ${Math.round(videosPerWeek / 7)}회`;
+      return `${dayUnit} ${Math.round(videosPerWeek / 7)}${timesUnit}`;
     } else {
-      return `주 ${videosPerWeek}회`;
+      return `${weekUnit} ${videosPerWeek}${timesUnit}`;
     }
   };
 
@@ -387,15 +508,78 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     }
   ];
 
-  // TODO: 구글 드라이브 JSON 데이터 로딩으로 변경될 예정
-  // 초기 정렬된 채널 설정 (현재 하드코딩 데이터 사용)
+  // 🌐 CloudflareService에서 실제 채널 데이터 로딩
   React.useEffect(() => {
-    // 시뮬레이션: 2초 로딩 시간
-    setTimeout(() => {
-      setSortedChannels([...dummyChannels]);
-      setFilteredChannels([...dummyChannels]);
-      setLoading(false); // 로딩 완료
-    }, 2000);
+    const loadChannelData = async () => {
+      try {
+        setLoading(true);
+        setApiStatus({
+          isConnected: false,
+          message: '데이터를 불러오고 있습니다...',
+          dataSource: 'mock'
+        });
+        
+        console.log('📊 [INFO] 채널 데이터 로딩 시작...');
+        
+        // CloudflareService에서 데이터 가져오기
+        const result = await cloudflareService.getChannelData();
+        
+        if (result.success && result.data.length > 0) {
+          console.log('✅ [SUCCESS] 채널 데이터 로드 성공:', result.data.length, '개');
+          
+          // 기본 정렬: 구독자 수 높은 순
+          const sortedData = [...result.data].sort((a, b) => b.subscribers - a.subscribers);
+          
+          setSortedChannels(sortedData);
+          setFilteredChannels(sortedData);
+          
+          // API 상태 업데이트
+          setApiStatus({
+            isConnected: true,
+            message: result.message,
+            dataSource: result.fromCache ? 'cache' : 
+                       result.message.includes('Mock') ? 'mock' : 'api'
+          });
+        } else {
+          // API 실패시 더미 데이터 폴백
+          console.warn('⚠️ [WARNING] API 데이터 로드 실패, 더미 데이터 사용');
+          
+          // 기본 정렬: 구독자 수 높은 순
+          const sortedDummyData = [...dummyChannels].sort((a, b) => b.subscribers - a.subscribers);
+          
+          setSortedChannels(sortedDummyData);
+          setFilteredChannels(sortedDummyData);
+          
+          setApiStatus({
+            isConnected: false,
+            message: 'API 서버에 연결할 수 없어 샘플 데이터를 표시합니다.',
+            dataSource: 'mock'
+          });
+        }
+        
+        console.log('📊 [INFO] 로딩 완료 -', result.message);
+        
+      } catch (error) {
+        console.error('❌ [ERROR] 채널 데이터 로딩 실패:', error);
+        // 에러 발생시 더미 데이터 사용
+        
+        // 기본 정렬: 구독자 수 높은 순
+        const sortedDummyData = [...dummyChannels].sort((a, b) => b.subscribers - a.subscribers);
+        
+        setSortedChannels(sortedDummyData);
+        setFilteredChannels(sortedDummyData);
+        
+        setApiStatus({
+          isConnected: false,
+          message: `연결 오류: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
+          dataSource: 'mock'
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadChannelData();
   }, []);
 
   // 국가 필터링
@@ -511,6 +695,10 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
       const rpm = countryRpmDefaults[newCountry];
       setShortsRpm(rpm.shorts);
       setLongRpm(rpm.long);
+      const exchangeData = currencyExchangeData[newCountry as keyof typeof currencyExchangeData];
+      if (exchangeData) {
+        setExchangeRate(exchangeData.exchangeRate);
+      }
     }
     closeDropdown();
   };
@@ -526,11 +714,16 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
       setCurrentCountry(channelCountry);
       setShortsRpm(defaultRpm.shorts);
       setLongRpm(defaultRpm.long);
+      const exchangeData = currencyExchangeData[channelCountry as keyof typeof currencyExchangeData];
+      if (exchangeData) {
+        setExchangeRate(exchangeData.exchangeRate);
+      }
     } else {
       // 해당 국가의 데이터가 없거나 국가 설정이 없는 채널은 "기타" 사용
       setCurrentCountry('기타');
       setShortsRpm(countryRpmDefaults['기타'].shorts);
       setLongRpm(countryRpmDefaults['기타'].long);
+      setExchangeRate(currencyExchangeData['기타'].exchangeRate);
     }
   };
 
@@ -539,13 +732,36 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     setSelectedChannel(null);
   };
 
-  const handleCategoryFilter = (category: string) => {
-    if (category === 'All') {
-      setSortedChannels(dummyChannels);
-    } else {
-      const filtered = dummyChannels.filter(channel => channel.category === category);
-      setSortedChannels(filtered);
+  const handleCategoryFilter = async (category: string) => {
+    try {
+      console.log('🔍 [INFO] 카테고리 필터링:', category);
+      
+      if (category === 'All') {
+        // 전체 데이터 다시 로드
+        const result = await cloudflareService.getChannelData();
+        if (result.success) {
+          setSortedChannels(result.data);
+          console.log('📊 [SUCCESS] 전체 채널 데이터 복원:', result.data.length, '개');
+        } else {
+          // 폴백: 더미 데이터 사용
+          setSortedChannels(dummyChannels);
+        }
+      } else {
+        // 현재 데이터에서 카테고리 필터링
+        const currentData = sortedChannels.length > 0 ? sortedChannels : dummyChannels;
+        const filtered = currentData.filter(channel => channel.category === category);
+        setSortedChannels(filtered);
+        console.log('🔍 [SUCCESS] 카테고리 필터링 완료:', category, '-', filtered.length, '개');
+      }
+    } catch (error) {
+      console.error('❌ [ERROR] 카테고리 필터링 실패:', error);
+      // 에러 발생시 더미 데이터 사용
+      const filtered = dummyChannels.filter(channel => 
+        category === 'All' || channel.category === category
+      );
+      setSortedChannels(category === 'All' ? dummyChannels : filtered);
     }
+    
     setSortMenuOpen(null);
   };
 
@@ -574,23 +790,12 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const formatRevenue = (revenue: number): string => {
-    if (revenue >= 100000000) {
-      const eok = Math.floor(revenue / 100000000);
-      const man = Math.floor((revenue % 100000000) / 10000);
-      if (man === 0) {
-        return `${eok.toLocaleString()}억원`;
-      }
-      return `${eok.toLocaleString()}억 ${man.toLocaleString()}만원`;
-    } else if (revenue >= 10000) {
-      const man = Math.floor(revenue / 10000);
-      const remainder = revenue % 10000;
-      if (remainder === 0) {
-        return `${man.toLocaleString()}만원`;
-      }
-      return `${man.toLocaleString()}만 ${remainder.toLocaleString()}원`;
-    } else {
-      return `${revenue.toLocaleString()}원`;
-    }
+    const currentCurrency = currencyExchangeData[currentCountry as keyof typeof currencyExchangeData];
+    const currencyCode = currentCurrency?.currency || 'USD';
+    const currencySymbol = getChannelFinderTranslation(channelFinderI18n, language, `currencies.${currencyCode}`) || '달러';
+    
+    // 지역화된 숫자 형식 사용
+    return formatLocalizedNumber(revenue, language, currencySymbol);
   };
 
   // 조회수로부터 수익 계산
@@ -599,19 +804,19 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const calculateTotalRevenue = () => {
-    if (!selectedChannel) return '0원';
+    if (!selectedChannel) return formatRevenue(0);
     
-    const usdToKrw = 1388; // 환율 (추후 변수로 변경예정)
+    const currentExchangeRate = exchangeRate; // 실제 설정된 환율 사용
     
     // 숏폼 조회수 = 총 조회수의 20%
     const shortsViews = selectedChannel.totalViews * (shortsPercentage / 100);
     // 숏폼 수익 = (숏폼 조회수 ÷ 1000) × 숏폼 RPM × 환율
-    const shortsRevenue = Math.round((shortsViews / 1000) * shortsRpm * usdToKrw);
+    const shortsRevenue = Math.round((shortsViews / 1000) * shortsRpm * currentExchangeRate);
     
     // 롱폼 조회수 = 총 조회수의 80%
     const longViews = selectedChannel.totalViews * (longPercentage / 100);
     // 롱폼 수익 = (롱폼 조회수 ÷ 1000) × 롱폼 RPM × 환율
-    const longRevenue = Math.round((longViews / 1000) * longRpm * usdToKrw);
+    const longRevenue = Math.round((longViews / 1000) * longRpm * currentExchangeRate);
     
     const total = shortsRevenue + longRevenue;
     
@@ -628,15 +833,10 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const calculateSubscriptionRate = (channel: ChannelData) => {
-    // 구독자수를 총조회수로 나누고 100을 곱해 백분율로 계산
-    const totalViewsNum = channel.channelName === "MrBeast" ? 93991066041 : 309025825692;
-    const subscribersNum = channel.channelName === "MrBeast" ? 424000000 : 300000000;
-    const rate = ((subscribersNum / totalViewsNum) * 100).toFixed(2);
-    // 소수점이 있는 경우 숫자 부분만 콤마 처리
-    const [integerPart, decimalPart] = rate.split('.');
-    const formattedInteger = parseInt(integerPart).toLocaleString();
-    return decimalPart ? `${formattedInteger}.${decimalPart}%` : `${formattedInteger}%`;
+    // API에서 받은 gsub 값을 소수점 3자리까지 표시
+    return `${(channel.subscribersPerVideo || 0).toFixed(3)}%`;
   };
+
 
   return (
     <>
@@ -651,20 +851,20 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
           <div className="channel-stats-section">
             <div className="stats-header">
-              <h2>전세계 유튜브 채널 데이터</h2>
+              <h2>{getChannelFinderTranslation(channelFinderI18n, language, 'header.mainTitle')}</h2>
             </div>
 
             <div className="table-container">
               <table className="channel-table">
                 <thead>
                   <tr>
-                    <th>No</th>
-                    <th>채널명</th>
+                    <th>{getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.no')}</th>
+                    <th>{getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.channelName')}</th>
                     <th 
                       className="sortable-header"
                       onClick={() => handleHeaderClick('category')}
                     >
-                      카테고리
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.category')}
                       {sortMenuOpen === 'category' && (
                         <div className="sort-menu category-menu">
                           <div className="category-grid">
@@ -681,11 +881,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('subscribers')}
                     >
-                      구독자수
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.subscribers')}
                       {sortMenuOpen === 'subscribers' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('subscribers', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('subscribers', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('subscribers', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('subscribers', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -693,11 +893,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('yearlyGrowth')}
                     >
-                      매년증가
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.yearlyGrowth')}
                       {sortMenuOpen === 'yearlyGrowth' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('yearlyGrowth', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('yearlyGrowth', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('yearlyGrowth', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('yearlyGrowth', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -705,11 +905,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('monthlyGrowth')}
                     >
-                      월간 증가
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.monthlyGrowth')}
                       {sortMenuOpen === 'monthlyGrowth' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('monthlyGrowth', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('monthlyGrowth', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('monthlyGrowth', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('monthlyGrowth', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -717,11 +917,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('dailyGrowth')}
                     >
-                      일일증가
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.dailyGrowth')}
                       {sortMenuOpen === 'dailyGrowth' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('dailyGrowth', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('dailyGrowth', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('dailyGrowth', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('dailyGrowth', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -729,11 +929,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('subscribersPerVideo')}
                     >
-                      구독 전환율
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.subscriptionRate')}
                       {sortMenuOpen === 'subscribersPerVideo' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('subscribersPerVideo', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('subscribersPerVideo', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('subscribersPerVideo', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('subscribersPerVideo', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -741,11 +941,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('operatingPeriod')}
                     >
-                      운영기간
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.operatingPeriod')}
                       {sortMenuOpen === 'operatingPeriod' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('operatingPeriod', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('operatingPeriod', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('operatingPeriod', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('operatingPeriod', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -753,11 +953,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('totalViews')}
                     >
-                      총조회수
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.totalViews')}
                       {sortMenuOpen === 'totalViews' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('totalViews', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('totalViews', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('totalViews', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('totalViews', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -765,11 +965,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('avgViews')}
                     >
-                      평균조회수
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.avgViews')}
                       {sortMenuOpen === 'avgViews' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('avgViews', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('avgViews', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('avgViews', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('avgViews', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -777,11 +977,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('videosCount')}
                     >
-                      총영상수
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.totalVideos')}
                       {sortMenuOpen === 'videosCount' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('videosCount', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('videosCount', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('videosCount', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('videosCount', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -789,11 +989,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       className="sortable-header"
                       onClick={() => handleHeaderClick('uploadFrequency')}
                     >
-                      업로드 빈도
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.uploadFrequency')}
                       {sortMenuOpen === 'uploadFrequency' && (
                         <div className="sort-menu">
-                          <div onClick={() => handleSort('uploadFrequency', 'desc')}>수치 높은 순</div>
-                          <div onClick={() => handleSort('uploadFrequency', 'asc')}>수치 낮은 순</div>
+                          <div onClick={() => handleSort('uploadFrequency', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('uploadFrequency', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -802,7 +1002,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         className="country-select-button main-country-button"
                         onClick={(e) => openDropdown('main', e)}
                       >
-                        <span>{selectedCountry || '국가'}</span>
+                        <span>{selectedCountry || '🌍'}</span>
                         <svg className={`dropdown-arrow ${dropdownState.isOpen && dropdownState.type === 'main' ? 'open' : ''}`} width="16" height="16" viewBox="0 0 20 20">
                           <path stroke="#666" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m6 8 4 4 4-4"/>
                         </svg>
@@ -814,15 +1014,25 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                   {loading ? (
                     <TableSkeleton />
                   ) : (
-                    filteredChannels.map((channel) => (
+                    filteredChannels
+                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                      .map((channel, index) => (
                     <tr 
                       key={channel.rank}
                       className="channel-row"
                       onClick={() => handleChannelClick(channel)}
                     >
-                      <td>{channel.rank}</td>
+                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                       <td className="channel-name">
-                        <span className="rank-badge"></span>
+                        <span className="rank-badge">
+                          {channel.thumbnailUrl && (
+                            <img 
+                              src={channel.thumbnailUrl} 
+                              alt={channel.channelName}
+                              className="rank-badge-img"
+                            />
+                          )}
+                        </span>
                         <span className="name">{channel.channelName}</span>
                       </td>
                       <td>{channel.category}</td>
@@ -836,13 +1046,22 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       <td className="avg-views">{formatViews(channel.avgViews)}</td>
                       <td>{formatVideosCount(channel.videosCount)}</td>
                       <td className="upload-frequency">{formatUploadFrequency(channel.uploadFrequency)}</td>
-                      <td className="country">{countryDisplayNames[channel.country] || channel.country}</td>
+                      <td className="country">{getCountryDisplayName(language, channel.country)}</td>
                     </tr>
                     ))
                   )}
                 </tbody>
               </table>
             </div>
+            
+            {/* Pagination */}
+            {!loading && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(filteredChannels.length / itemsPerPage)}
+                onPageChange={setCurrentPage}
+              />
+            )}
           </div>
         </div>
 
@@ -878,88 +1097,92 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
               <div className="sidebar-content">
                 <div className="channel-info">
                   <div className="info-item">
-                    <span className="label">채널명:</span>
+                    <span className="label">채널명</span>
                     <span className="value">{selectedChannel.channelName}</span>
                   </div>
                   <div className="info-item">
-                    <span className="label">카테고리:</span>
+                    <span className="label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.category')}</span>
                     <span className="value">{selectedChannel.category}</span>
                   </div>
                   <div className="info-item">
-                    <span className="label">구독자수:</span>
+                    <span className="label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.subscribers')}</span>
                     <span className="value">{formatSubscribers(selectedChannel.subscribers)}</span>
                   </div>
                   <div className="info-item">
-                    <span className="label">국가:</span>
-                    <span className="value">{countryDisplayNames[selectedChannel.country] || selectedChannel.country}</span>
+                    <span className="label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.country')}</span>
+                    <span className="value">{getCountryDisplayName(language, selectedChannel.country)}</span>
                   </div>
                   <div className="info-item">
-                    <span className="label">운영기간:</span>
+                    <span className="label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.operatingPeriod')}</span>
                     <span className="value">{formatOperatingPeriod(selectedChannel.operatingPeriod)}</span>
                   </div>
                 </div>
 
                 <div className="chart-section" style={{position: 'relative'}}>
-                  <SubTitle>구독자 성장 추이</SubTitle>
+                  <SubTitle>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.subscriberGrowth')}</SubTitle>
                   <div className="chart-placeholder">
                     <div className="line-chart">
-                      <svg width="100%" height="100" viewBox="0 0 300 100">
-                        <defs>
-                          <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" style={{stopColor: '#4fc3f7', stopOpacity: 0.3}} />
-                            <stop offset="100%" style={{stopColor: '#4fc3f7', stopOpacity: 0.05}} />
-                          </linearGradient>
-                        </defs>
-                        
-                        {/* 그라데이션 영역 */}
-                        <path 
-                          d="M 30 80 Q 90 60 150 40 Q 210 20 270 15 L 270 100 L 30 100 Z" 
-                          fill="url(#areaGradient)"
-                        />
-                        
-                        {/* 선 그래프 */}
-                        <path 
-                          d="M 30 80 Q 90 60 150 40 Q 210 20 270 15" 
-                          stroke="#4fc3f7" 
-                          strokeWidth="3" 
-                          fill="none"
-                          className="growth-line"
-                        />
-                        
-                        {/* 호버 가능한 투명 영역 (구간별) */}
-                        <rect x="30" y="0" width="60" height="100" fill="transparent" className="hover-area"
-                              onMouseEnter={() => setHoveredPoint(0)}
-                              onMouseLeave={() => setHoveredPoint(null)} />
-                        <rect x="90" y="0" width="60" height="100" fill="transparent" className="hover-area"
-                              onMouseEnter={() => setHoveredPoint(1)}
-                              onMouseLeave={() => setHoveredPoint(null)} />
-                        <rect x="150" y="0" width="60" height="100" fill="transparent" className="hover-area"
-                              onMouseEnter={() => setHoveredPoint(2)}
-                              onMouseLeave={() => setHoveredPoint(null)} />
-                        <rect x="210" y="0" width="60" height="100" fill="transparent" className="hover-area"
-                              onMouseEnter={() => setHoveredPoint(3)}
-                              onMouseLeave={() => setHoveredPoint(null)} />
-                        
-                        {/* 데이터 포인트 */}
-                        <circle cx="30" cy="80" r="4" fill="#4fc3f7" />
-                        <circle cx="90" cy="60" r="4" fill="#4fc3f7" />
-                        <circle cx="150" cy="40" r="4" fill="#4fc3f7" />
-                        <circle cx="210" cy="20" r="4" fill="#4fc3f7" />
-                        <circle cx="270" cy="15" r="4" fill="#4fc3f7" />
-                        
-                        {/* 성장률 퍼센트 라벨 */}
-                        <text x="90" y="52" textAnchor="middle" className="growth-percentage">3%</text>
-                        <text x="150" y="32" textAnchor="middle" className="growth-percentage">4%</text>
-                        <text x="210" y="12" textAnchor="middle" className="growth-percentage">7.3%</text>
-                        <text x="270" y="7" textAnchor="middle" className="growth-percentage">10%</text>
-                      </svg>
+                      {chartData.length > 0 ? (
+                        <svg width="100%" height="100" viewBox="0 0 300 100">
+                          <defs>
+                            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" style={{stopColor: '#4fc3f7', stopOpacity: 0.3}} />
+                              <stop offset="100%" style={{stopColor: '#4fc3f7', stopOpacity: 0.05}} />
+                            </linearGradient>
+                          </defs>
+                          
+                          {/* 동적으로 생성되는 선 그래프와 포인트 */}
+                          {chartData.length > 1 && (
+                            <>
+                              {/* 그라데이션 영역 */}
+                              <path 
+                                d={`M ${chartData[0].x} ${chartData[0].y} ${chartData.slice(1).map(point => `L ${point.x} ${point.y}`).join(' ')} L ${chartData[chartData.length-1].x} 100 L ${chartData[0].x} 100 Z`}
+                                fill="url(#areaGradient)"
+                              />
+                              {/* 선 그래프 */}
+                              <path 
+                                d={`M ${chartData[0].x} ${chartData[0].y} ${chartData.slice(1).map(point => `L ${point.x} ${point.y}`).join(' ')}`}
+                                stroke="#4fc3f7" 
+                                strokeWidth="3" 
+                                fill="none"
+                                className="growth-line"
+                              />
+                            </>
+                          )}
+                          
+                          {/* 데이터 포인트와 라벨 */}
+                          {chartData.map((point, index) => (
+                            <g key={index}>
+                              <circle cx={point.x} cy={point.y} r="4" fill="#4fc3f7" />
+                              <text x={point.x} y={point.y - 8} textAnchor="middle" className="growth-percentage">
+                                {point.value}
+                              </text>
+                            </g>
+                          ))}
+                        </svg>
+                      ) : (
+                        <div className="no-data-message">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.noSubscriberData')}</div>
+                      )}
                     </div>
-                    <div className="chart-labels">
-                      <span>5월</span>
-                      <span>6월</span>
-                      <span>7월</span>
-                      <span>8월</span>
-                      <span>9월</span>
+                    <div className="chart-labels" style={{ position: 'relative', height: '20px', width: '100%' }}>
+                      {chartData.map((point, index) => {
+                        // SVG 300px 기준으로 퍼센트 계산 후 적용 + 20px 오프셋 (30px에서 10px 왼쪽으로)
+                        const leftPercentage = ((point.x + 20) / 300) * 100;
+                        return (
+                          <span 
+                            key={index} 
+                            style={{ 
+                              position: 'absolute', 
+                              left: `${leftPercentage}%`,
+                              transform: 'translateX(-50%)',
+                              fontSize: '0.8rem',
+                              color: '#666'
+                            }}
+                          >
+                            {point.month}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                   
@@ -994,7 +1217,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                 </div>
 
                 <div className="rpm-section">
-                  <SubTitle>수익계산</SubTitle>
+                  <SubTitle>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.revenueCalculation')}</SubTitle>
                   
                   <div className="unified-revenue-section">
                     <div className="total-views-simple">
@@ -1008,12 +1231,38 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         className="country-select-button"
                         onClick={(e) => openDropdown('sidebar', e)}
                       >
-                        <span>{countryDisplayNames[currentCountry] || currentCountry}</span>
+                        <span>{getCountryDisplayName(language, currentCountry)}</span>
                         <svg className={`dropdown-arrow ${dropdownState.isOpen && dropdownState.type === 'sidebar' ? 'open' : ''}`} width="16" height="16" viewBox="0 0 20 20">
                           <path stroke="#666" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m6 8 4 4 4-4"/>
                         </svg>
                       </button>
                     </div>
+                    
+                    {/* 환율 입력 섹션 (미국이 아닐 때만 표시) */}
+                    {currentCountry !== 'United States' && (
+                      <div className="exchange-rate-section">
+                        <div className="country-selector">
+                          <label className="country-label">{getChannelFinderTranslation(channelFinderI18n, language, 'units.exchangeRate')}</label>
+                          <div className="exchange-rate-input-wrapper">
+                            <input
+                              type="number"
+                              className="exchange-rate-input"
+                              value={exchangeRate}
+                              onChange={(e) => setExchangeRate(Number(e.target.value))}
+                              placeholder={getChannelFinderTranslation(channelFinderI18n, language, 'units.exchangeRatePlaceholder')}
+                              min="0"
+                              step="0.01"
+                            />
+                            <span className="currency-unit">
+                              {(() => {
+                                const currencyCode = currencyExchangeData[currentCountry as keyof typeof currencyExchangeData]?.currency || 'USD';
+                                return getChannelFinderTranslation(channelFinderI18n, language, `currencies.${currencyCode}`) || '달러';
+                              })()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     
                     <div className="revenue-cards-container">
                       {/* 숏폼 카드 */}
@@ -1030,9 +1279,9 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                         
                         <div className="revenue-result">
-                          <div className="revenue-label">총 숏폼 수익</div>
+                          <div className="revenue-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalShortsRevenue')}</div>
                           <div className="revenue-value">
-                            {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm * 1388)) : '0원'}
+                            {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm * exchangeRate)) : formatRevenue(0)}
                           </div>
                         </div>
                       </div>
@@ -1051,45 +1300,45 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                         </div>
                         
                         <div className="revenue-result">
-                          <div className="revenue-label">총 롱폼 수익</div>
+                          <div className="revenue-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalLongRevenue')}</div>
                           <div className="revenue-value">
-                            {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm * 1388)) : '0원'}
+                            {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm * exchangeRate)) : formatRevenue(0)}
                           </div>
                         </div>
                       </div>
                     </div>
                     
                     <div className="total-revenue-card">
-                      <div className="total-revenue-label">숏폼 + 롱폼 총 수익</div>
+                      <div className="total-revenue-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalRevenue')}</div>
                       <div className="total-revenue-value">{calculateTotalRevenue()}</div>
                     </div>
                   </div>
                 </div>
 
-                <SubTitle>디테일 정보</SubTitle>
+                <SubTitle>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.detailInfo')}</SubTitle>
                 <div className="stats-grid">
                   <div className="stat-card">
-                    <div className="stat-label">총 조회수</div>
+                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.totalViews')}</div>
                     <div className="stat-value">{formatViews(selectedChannel.totalViews)}</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-label">평균 조회수</div>
+                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.avgViews')}</div>
                     <div className="stat-value">{formatViews(selectedChannel.avgViews)}</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-label">총 영상수</div>
+                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.totalVideos')}</div>
                     <div className="stat-value">{formatVideosCount(selectedChannel.videosCount)}</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-label">업로드 빈도</div>
+                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.uploadFrequency')}</div>
                     <div className="stat-value">{formatUploadFrequency(selectedChannel.uploadFrequency)}</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-label">월간증가</div>
+                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.monthlyGrowth')}</div>
                     <div className="stat-value growth-value">{formatGrowth(selectedChannel.monthlyGrowth)}</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-label">년간증가</div>
+                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.yearlyGrowth')}</div>
                     <div className="stat-value growth-value">{formatGrowth(selectedChannel.yearlyGrowth)}</div>
                   </div>
                   <div 
@@ -1097,10 +1346,10 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     onMouseEnter={() => setHoveredStat('views-per-subscriber')}
                     onMouseLeave={() => setHoveredStat(null)}
                   >
-                    <div className="stat-label">구독자 대비 조회수</div>
+                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.viewsPerSubscriber')}</div>
                     <div className="stat-value">{calculateViewsPerSubscriber(selectedChannel)}</div>
                     {hoveredStat === 'views-per-subscriber' && (
-                      <div className="stat-tooltip" dangerouslySetInnerHTML={{__html: cf('viewsPerSubscriberTooltip')}} />
+                      <div className="stat-tooltip" dangerouslySetInnerHTML={{__html: getChannelFinderTranslation(channelFinderI18n, language, 'tooltips.viewsPerSubscriber')}} />
                     )}
                   </div>
                   <div 
@@ -1108,10 +1357,10 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     onMouseEnter={() => setHoveredStat('subscription-rate')}
                     onMouseLeave={() => setHoveredStat(null)}
                   >
-                    <div className="stat-label">구독 전환율</div>
+                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.subscriptionRate')}</div>
                     <div className="stat-value">{calculateSubscriptionRate(selectedChannel)}</div>
                     {hoveredStat === 'subscription-rate' && (
-                      <div className="stat-tooltip" dangerouslySetInnerHTML={{__html: cf('subscriptionRateTooltip')}} />
+                      <div className="stat-tooltip" dangerouslySetInnerHTML={{__html: getChannelFinderTranslation(channelFinderI18n, language, 'tooltips.subscriptionRate')}} />
                     )}
                   </div>
                 </div>
@@ -1128,10 +1377,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
         }
 
         .stats-header {
+          width: 90%;
+          margin: 0 auto 1rem auto;
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 1rem;
           padding: 1rem;
           background: white;
           border-radius: 8px;
@@ -1154,6 +1404,8 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
         }
 
         .table-container {
+          width: 90%;
+          margin: 0 auto;
           background: white;
           border-radius: 8px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -1322,6 +1574,8 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
         .rank-badge {
           width: 24px;
           height: 24px;
+          min-width: 24px;
+          min-height: 24px;
           background: #333;
           color: white;
           border-radius: 50%;
@@ -1330,6 +1584,23 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           display: flex;
           align-items: center;
           justify-content: center;
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+
+        .rank-badge-img {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: none;
+        }
+
+        .channel-name .name {
+          max-width: 120px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .subscribers {
@@ -1875,6 +2146,64 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.1);
         }
 
+        /* 환율 입력 섹션 */
+        .exchange-rate-section {
+          margin-top: 1rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .exchange-rate-input-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          width: 100%;
+          flex: 1;
+        }
+
+        .exchange-rate-input {
+          flex: 0.4;
+          padding: 0.4rem 0.6rem;
+          border: 1px solid #ddd;
+          border-radius: 12px;
+          background: white;
+          font-size: 0.85rem;
+          color: #333;
+          cursor: text;
+          height: 48px;
+          margin-right: 10px;
+          transition: border-color 0.2s ease;
+        }
+
+        /* 브라우저 기본 number input 화살표 제거 */
+        .exchange-rate-input::-webkit-outer-spin-button,
+        .exchange-rate-input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        .exchange-rate-input[type=number] {
+          -moz-appearance: textfield;
+        }
+
+        .exchange-rate-input:hover {
+          border-color: #999;
+        }
+
+        .exchange-rate-input:focus {
+          border-color: #7c4dff;
+          box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.1);
+          outline: none;
+        }
+
+        .currency-unit {
+          flex-shrink: 0;
+          font-size: 0.85rem;
+          font-weight: 400;
+          color: #666;
+          white-space: nowrap;
+        }
+
         .dropdown-arrow {
           transition: transform 0.2s ease;
         }
@@ -2206,6 +2535,39 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           }
         }
 
+        /* Pagination Styles - VidHunt News Design */
+        .pagination {
+          display: flex;
+          justify-content: center;
+          gap: var(--spacing-1, 8px);
+          margin-top: 50px;
+        }
+
+        .pagination-btn {
+          width: 40px;
+          height: 40px;
+          border: none;
+          background: transparent;
+          color: #374151;
+          border-radius: 50%;
+          cursor: pointer;
+          transition: all var(--transition-fast, 0.2s ease);
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .pagination-btn:hover {
+          background-color: #f3f4f6;
+        }
+
+        .pagination-btn.active {
+          background-color: #7c3aed;
+          color: white;
+          border: 1px solid #7c3aed;
+        }
+
         @media (max-width: 768px) {
           .table-container {
             
@@ -2223,6 +2585,17 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
           .stats-grid {
             grid-template-columns: 1fr;
+          }
+
+          .pagination {
+            gap: 6px;
+            margin-top: 30px;
+          }
+
+          .pagination-btn {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
           }
         }
       `}</style>

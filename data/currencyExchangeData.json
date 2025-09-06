@@ -1,0 +1,80 @@
+{
+  "United States": {
+    "currency": "USD",
+    "symbol": "$",
+    "exchangeRate": 1,
+    "displayName": "달러"
+  },
+  "South Korea": {
+    "currency": "KRW", 
+    "symbol": "원",
+    "exchangeRate": 1300,
+    "displayName": "원"
+  },
+  "Japan": {
+    "currency": "JPY",
+    "symbol": "¥",
+    "exchangeRate": 150,
+    "displayName": "엔"
+  },
+  "China": {
+    "currency": "CNY",
+    "symbol": "¥",
+    "exchangeRate": 7.2,
+    "displayName": "위안"
+  },
+  "India": {
+    "currency": "INR",
+    "symbol": "₹",
+    "exchangeRate": 83,
+    "displayName": "루피"
+  },
+  "United Kingdom": {
+    "currency": "GBP",
+    "symbol": "£",
+    "exchangeRate": 0.79,
+    "displayName": "파운드"
+  },
+  "Germany": {
+    "currency": "EUR",
+    "symbol": "€",
+    "exchangeRate": 0.92,
+    "displayName": "유로"
+  },
+  "France": {
+    "currency": "EUR",
+    "symbol": "€",
+    "exchangeRate": 0.92,
+    "displayName": "유로"
+  },
+  "Canada": {
+    "currency": "CAD",
+    "symbol": "C$",
+    "exchangeRate": 1.35,
+    "displayName": "캐나다달러"
+  },
+  "Australia": {
+    "currency": "AUD",
+    "symbol": "A$",
+    "exchangeRate": 1.52,
+    "displayName": "호주달러"
+  },
+  "Brazil": {
+    "currency": "BRL",
+    "symbol": "R$",
+    "exchangeRate": 5.1,
+    "displayName": "레알"
+  },
+  "Mexico": {
+    "currency": "MXN",
+    "symbol": "$",
+    "exchangeRate": 17.5,
+    "displayName": "페소"
+  },
+  "기타": {
+    "currency": "USD",
+    "symbol": "$",
+    "exchangeRate": 1,
+    "displayName": "달러"
+  }
+}

@@ -12,6 +12,31 @@
     <meta name="msapplication-TileColor" content="#4f46e5">
     <meta name="msapplication-TileImage" content="/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Content Security Policy for Google APIs -->
+    <meta http-equiv="Content-Security-Policy" content="
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' 
+        https://apis.google.com 
+        https://www.gstatic.com 
+        https://accounts.google.com 
+        https://cdn.tailwindcss.com 
+        https://esm.sh;
+      connect-src 'self' 
+        https://www.googleapis.com 
+        https://accounts.google.com 
+        https://generativelanguage.googleapis.com
+        https://vidhunt-api.evvi-aa-aa.workers.dev;
+      frame-src 'self' 
+        https://accounts.google.com
+        https://content.googleapis.com;
+      img-src 'self' data: https: blob:;
+      style-src 'self' 'unsafe-inline' 
+        https://fonts.googleapis.com 
+        https://cdn.tailwindcss.com;
+      font-src 'self' 
+        https://fonts.gstatic.com;
+    ">
+    
     <title>VIDHUNT - Global Shorts Finder | Find Viral YouTube Shorts & TikTok Videos Worldwide</title>
     
     <!-- SEO Meta Tags -->
