@@ -500,7 +500,21 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     
     if (videosPerWeek >= 7) {
       const perDay = Math.round(videosPerWeek / 7);
-      return language === 'en' ? `${perDay} daily` : `${perDay} 일`;
+      // 언어별 일일 업로드 표현
+      switch (language) {
+        case 'en': return `${perDay} daily`;
+        case 'ko': return `하루 ${perDay}개`;
+        case 'ja': return `日${perDay}本`;
+        case 'zh': return `每日${perDay}个`;
+        case 'hi': return `दैनिक ${perDay}`;
+        case 'es': return `${perDay} diarios`;
+        case 'fr': return `${perDay} par jour`;
+        case 'de': return `${perDay} täglich`;
+        case 'nl': return `${perDay} dagelijks`;
+        case 'pt': return `${perDay} diários`;
+        case 'ru': return `${perDay} в день`;
+        default: return `${perDay} daily`;
+      }
     } else {
       return `${videosPerWeek}${weekUnit}`;
     }
