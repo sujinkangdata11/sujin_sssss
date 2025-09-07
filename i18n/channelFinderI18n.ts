@@ -67,6 +67,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       exchangeRate: "Exchange Rate",
       exchangeRatePlaceholder: "Enter exchange rate"
     },
+    buttons: {
+      cancel: "Cancel",
+      confirm: "Confirm"
+    },
     currencies: {
       USD: "Dollar",
       KRW: "Won", 
@@ -156,6 +160,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       others: "기타",
       exchangeRate: "환율",
       exchangeRatePlaceholder: "환율을 입력하세요"
+    },
+    buttons: {
+      cancel: "취소",
+      confirm: "확인"
     },
     currencies: {
       USD: "달러",
@@ -247,6 +255,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       exchangeRate: "為替レート",
       exchangeRatePlaceholder: "為替レートを入力してください"
     },
+    buttons: {
+      cancel: "キャンセル",
+      confirm: "確認"
+    },
     currencies: {
       USD: "ドル",
       KRW: "ウォン", 
@@ -336,6 +348,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       others: "其他",
       exchangeRate: "汇率",
       exchangeRatePlaceholder: "请输入汇率"
+    },
+    buttons: {
+      cancel: "取消",
+      confirm: "确认"
     },
     currencies: {
       USD: "美元",
@@ -427,6 +443,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       exchangeRate: "विनिमय दर",
       exchangeRatePlaceholder: "विनिमय दर दर्ज करें"
     },
+    buttons: {
+      cancel: "रद्द करें",
+      confirm: "पुष्टि करें"
+    },
     currencies: {
       USD: "डॉलर",
       KRW: "वॉन", 
@@ -516,6 +536,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       others: "Otros",
       exchangeRate: "Tipo de Cambio",
       exchangeRatePlaceholder: "Ingrese tipo de cambio"
+    },
+    buttons: {
+      cancel: "Cancelar",
+      confirm: "Confirmar"
     },
     currencies: {
       USD: "Dólar",
@@ -607,6 +631,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       exchangeRate: "Taux de Change",
       exchangeRatePlaceholder: "Saisissez le taux de change"
     },
+    buttons: {
+      cancel: "Annuler",
+      confirm: "Confirmer"
+    },
     currencies: {
       USD: "Dollar",
       KRW: "Won", 
@@ -696,6 +724,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       others: "Andere",
       exchangeRate: "Wechselkurs",
       exchangeRatePlaceholder: "Wechselkurs eingeben"
+    },
+    buttons: {
+      cancel: "Abbrechen",
+      confirm: "Bestätigen"
     },
     currencies: {
       USD: "Dollar",
@@ -787,6 +819,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       exchangeRate: "Wisselkoers",
       exchangeRatePlaceholder: "Voer wisselkoers in"
     },
+    buttons: {
+      cancel: "Annuleren",
+      confirm: "Bevestigen"
+    },
     currencies: {
       USD: "Dollar",
       KRW: "Won", 
@@ -877,6 +913,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       exchangeRate: "Taxa de Câmbio",
       exchangeRatePlaceholder: "Digite a taxa de câmbio"
     },
+    buttons: {
+      cancel: "Cancelar",
+      confirm: "Confirmar"
+    },
     currencies: {
       USD: "Dólar",
       KRW: "Won", 
@@ -966,6 +1006,23 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       others: "Прочие",
       exchangeRate: "Обменный курс",
       exchangeRatePlaceholder: "Введите обменный курс"
+    },
+    buttons: {
+      cancel: "Отмена",
+      confirm: "Подтвердить"
+    },
+    currencies: {
+      USD: "доллар",
+      KRW: "вон", 
+      JPY: "йена",
+      CNY: "юань",
+      INR: "рупия",
+      GBP: "фунт",
+      EUR: "евро",
+      CAD: "канадский доллар",
+      AUD: "австралийский доллар",
+      BRL: "реал",
+      MXN: "песо"
     },
     numberFormat: {
       thousand: "тысяча",

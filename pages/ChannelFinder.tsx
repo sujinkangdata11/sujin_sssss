@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { translations } from '../i18n/translations';
-import { channelFinderTranslations } from '../i18n/channelFinderTranslations';
 import { channelFinderI18n, getChannelFinderTranslation, formatLocalizedNumber } from '../i18n/channelFinderI18n';
 import SEOHead from '../components/SEOHead';
 import DropdownOptions from '../components/DropdownOptions';
@@ -9,44 +8,18 @@ import Pagination from '../components/Pagination';
 import countryRpmDefaults from '../data/countryRpmDefaults.json';
 import currencyExchangeData from '../data/currencyExchangeData.json';
 import { cloudflareService } from '../services/mainFinder/cloudflareService';
+import { CONFIG, countryDisplayNames } from '../components/ChannelFinder/constants';
+import { ChannelFinderProps, ChannelData } from '../components/ChannelFinder/types';
+import { formatRevenue, calculateRevenueFromViews, calculateViewsPerSubscriber, calculateSubscriptionRate, formatUploadFrequency } from '../components/ChannelFinder/utils';
+import { useChannelData } from '../components/ChannelFinder/hooks/useChannelData';
+import { usePagination } from '../components/ChannelFinder/hooks/usePagination';
+import TableHeader from '../components/ChannelFinder/components/TableHeader';
+import TableRow from '../components/ChannelFinder/components/TableRow';
+import ChannelSidebar from '../components/ChannelFinder/components/ChannelSidebar';
+import TableSkeleton from '../components/ChannelFinder/components/TableSkeleton';
+import SidebarSkeleton from '../components/ChannelFinder/components/SidebarSkeleton';
+import styles from '../styles/ChannelFinder.module.css';
 
-// 국가 표시용 매핑 (간단한 객체)
-const countryDisplayNames: { [key: string]: string } = {
-  'United States': '미국',
-  'India': '인도',
-  'Australia': '호주',
-  'Austria': '오스트리아',
-  'Belgium': '벨기에',
-  'Brazil': '브라질',
-  'Canada': '캐나다',
-  'Denmark': '덴마크',
-  'Egypt': '이집트',
-  'Finland': '핀란드',
-  'France': '프랑스',
-  'Germany': '독일',
-  'Hong Kong': '홍콩',
-  'Indonesia': '인도네시아',
-  'Ireland': '아일랜드',
-  'Israel': '이스라엘',
-  'Japan': '일본',
-  'Mexico': '멕시코',
-  'Netherlands': '네덜란드',
-  'New Zealand': '뉴질랜드',
-  'Norway': '노르웨이',
-  'Pakistan': '파키스탄',
-  'Philippines': '필리핀',
-  'Portugal': '포르투갈',
-  'Singapore': '싱가포르',
-  'South Africa': '남아프리카공화국',
-  'South Korea': '한국',
-  'Spain': '스페인',
-  'Sweden': '스웨덴',
-  'Switzerland': '스위스',
-  'Taiwan': '대만',
-  'Turkey': '터키',
-  'United Kingdom': '영국',
-  '기타': '기타'
-};
 
 // 국가 표시용 매핑 함수 (컴포넌트 내부에서 사용)
 const getCountryDisplayName = (language: Language, countryKey: string): string => {
@@ -90,194 +63,14 @@ const getCountryDisplayName = (language: Language, countryKey: string): string =
   return countryTranslations[countryKey]?.[language] || countryKey;
 };
 
-interface ChannelFinderProps {
-  language: Language;
-}
-
-// Configuration Constants
-const CONFIG = {
-  RPM: {
-    SHORTS_BASE: 0.05,
-    LONG_BASE: 0.15,
-    DEFAULT: 0.08,
-    STEP: 0.01
-  },
-} as const;
-
-interface ChannelData {
-  id: string;
-  rank: number;
-  channelName: string;
-  category: string;
-  subscribers: number;
-  yearlyGrowth: number;
-  monthlyGrowth: number;
-  dailyGrowth: number;
-  subscribersPerVideo: number;
-  operatingPeriod: number; // months
-  totalViews: number;
-  avgViews: number;
-  videosCount: number;
-  uploadFrequency: number; // videos per week
-  country: string;
-  youtubeUrl: string;
-  // 수익 계산용 데이터 (조회수)
-  shortsTotalViews: number;  // 숏폼 총 조회수
-  longTotalViews: number;    // 롱폼 총 조회수
-  // 조회수 비율 데이터
-  shortsViewsPercentage?: number;  // 숏폼 조회수 비율 (%)
-  longformViewsPercentage?: number; // 롱폼 조회수 비율 (%)
-  // 구독자 성장 데이터
-  subscriberHistory?: Array<{
-    month: string;
-    count: string;
-  }>;
-}
 
 const SubTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <h4 className="subtitle">{children}</h4>;
+  return <h4 className={styles.subtitle}>{children}</h4>;
 };
-
-// 스켈레톤 컴포넌트들
-const TableSkeleton: React.FC = () => (
-  <>
-    {Array.from({ length: 40 }).map((_, i) => (
-      <tr key={`skeleton-${i}`} className="skeleton-row">
-        <td><div className="skeleton-cell skeleton-rank">{i + 1}</div></td>
-        <td>
-          <div className="skeleton-cell-group">
-            <div className="skeleton-cell skeleton-channel-name"></div>
-          </div>
-        </td>
-        <td><div className="skeleton-cell skeleton-category"></div></td>
-        <td><div className="skeleton-cell skeleton-subscribers"></div></td>
-        <td><div className="skeleton-cell skeleton-growth"></div></td>
-        <td><div className="skeleton-cell skeleton-growth"></div></td>
-        <td><div className="skeleton-cell skeleton-growth"></div></td>
-        <td><div className="skeleton-cell skeleton-number"></div></td>
-        <td><div className="skeleton-cell skeleton-period"></div></td>
-        <td><div className="skeleton-cell skeleton-views-large"></div></td>
-        <td><div className="skeleton-cell skeleton-views-medium"></div></td>
-        <td><div className="skeleton-cell skeleton-videos-count"></div></td>
-        <td><div className="skeleton-cell skeleton-frequency"></div></td>
-        <td><div className="skeleton-cell skeleton-country"></div></td>
-      </tr>
-    ))}
-  </>
-);
-
-const SidebarSkeleton: React.FC = () => (
-  <div className="sidebar-overlay">
-    <div className="sidebar skeleton-sidebar-content">
-      <div className="sidebar-header">
-        <h3>
-          <button className="back-btn skeleton-back-btn">←</button>
-          <div className="skeleton-title"></div>
-        </h3>
-        <button className="youtube-visit-btn skeleton-youtube-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{opacity: 0}}>
-            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-          </svg>
-          <div className="skeleton-btn-text"></div>
-        </button>
-      </div>
-      
-      <div className="sidebar-content">
-        {/* 채널 정보 스켈레톤 - 실제 구조와 동일 */}
-        <div className="channel-info">
-          <div className="info-item">
-            <span className="label">채널명:</span>
-            <div className="skeleton-info-value" style={{width: '120px', height: '18px'}}></div>
-          </div>
-          <div className="info-item">
-            <span className="label">카테고리:</span>
-            <div className="skeleton-info-value" style={{width: '80px', height: '18px'}}></div>
-          </div>
-          <div className="info-item">
-            <span className="label">구독자수:</span>
-            <div className="skeleton-info-value" style={{width: '100px', height: '18px'}}></div>
-          </div>
-          <div className="info-item">
-            <span className="label">국가:</span>
-            <div className="skeleton-info-value" style={{width: '50px', height: '18px'}}></div>
-          </div>
-          <div className="info-item">
-            <span className="label">운영기간:</span>
-            <div className="skeleton-info-value" style={{width: '90px', height: '18px'}}></div>
-          </div>
-        </div>
-        
-        {/* 차트 스켈레톤 - 실제 구조와 동일 */}
-        <div className="chart-section">
-          <h4 className="subtitle">구독자 성장 추이</h4>
-          <div className="chart-placeholder">
-            <div className="line-chart">
-              <div className="skeleton-chart"></div>
-            </div>
-            <div className="chart-labels">
-              <span>5월</span><span>6월</span><span>7월</span><span>8월</span><span>9월</span>
-            </div>
-          </div>
-        </div>
-        
-        {/* RPM 섹션 스켈레톤 - 실제 구조와 동일 */}
-        <div className="rpm-section">
-          <h4 className="subtitle">수익계산</h4>
-          <div className="rpm-card">
-            <div className="content-tabs">
-              <button className="tab active">숏폼</button>
-              <button className="tab">롱폼</button>
-            </div>
-            <div className="rpm-header">
-              <span>RPM</span>
-              <span>총 조회수</span>
-            </div>
-            <div className="rpm-controls">
-              <button className="rpm-btn minus">-</button>
-              <div className="skeleton-rpm-value"></div>
-              <button className="rpm-btn plus">+</button>
-              <div className="skeleton-period-value"></div>
-            </div>
-            
-            <div className="revenue-grid">
-              <div className="revenue-card">
-                <div className="revenue-label">최근 영상 수익</div>
-                <div className="skeleton-revenue-value"></div>
-              </div>
-              <div className="revenue-card">
-                <div className="revenue-label">채널 총 수익</div>
-                <div className="skeleton-revenue-value"></div>
-              </div>
-            </div>
-            
-            <div className="total-revenue-card">
-              <div className="total-revenue-label">쇼폼 + 롱폼 총수익</div>
-              <div className="skeleton-total-revenue"></div>
-            </div>
-          </div>
-        </div>
-        
-        {/* 스탯 스켈레톤 - 실제 구조와 동일 */}
-        <h4 className="subtitle">디테일 정보</h4>
-        <div className="stats-grid">
-          {[
-            '총 조회수', '평균 조회수', '총 영상수', '업로드 빈도',
-            '월간증가', '년간증가', '구독자 대비 조회수', '구독 전환율'
-          ].map((label, i) => (
-            <div key={i} className="stat-card">
-              <div className="stat-label">{label}</div>
-              <div className="skeleton-stat-value"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
-  const cf = (key: keyof typeof channelFinderTranslations['en']) => channelFinderTranslations[language][key] || channelFinderTranslations['en'][key];
+  const cf = (key: string) => getChannelFinderTranslation(channelFinderI18n, language, key);
   
   // 국가 옵션 배열 생성 (사이드바용)
   const countryOptions = Object.keys(countryRpmDefaults).map(country => ({
@@ -990,41 +783,41 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
         language={language}
       />
       
-      <div className="page-container">
-        <div className="content-wrapper" style={{ padding: '0 100px' }}>
+      <div className={styles.pageContainer}>
+        <div className={styles.contentWrapper} style={{ padding: '0 100px' }}>
 
-          <div className="channel-stats-section">
-            <div className="stats-header">
+          <div className={styles.channelStatsSection}>
+            <div className={styles.statsHeader}>
               <h2>{getChannelFinderTranslation(channelFinderI18n, language, 'header.mainTitle')}</h2>
             </div>
 
-            <div className="table-container">
-              <table className="channel-table">
+            <div className={styles.tableContainer}>
+              <table className={styles.channelTable}>
                 <thead>
                   <tr>
                     {/* 리사이즈 핸들러 추가 - No 컬럼 */}
-                    <th className="category-header-resizable" style={{ width: columnWidths[0] }}>
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(0, e)}></div>
+                    <th className={styles.categoryHeaderResizable} style={{ width: columnWidths[0] }}>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(0, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.no')}
                     </th>
                     {/* 리사이즈 핸들러 추가 - 채널명 컬럼 */}
-                    <th className="category-header-resizable" style={{ width: columnWidths[1] }}>
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(1, e)}></div>
+                    <th className={styles.categoryHeaderResizable} style={{ width: columnWidths[1] }}>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(1, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.channelName')}
                     </th>
                     <th 
-                      className="sortable-header category-header-resizable"
+                      className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
                       onClick={() => handleHeaderClick('category')}
                       style={{ width: columnWidths[2] }}
                     >
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(2, e)}></div>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(2, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.category')}
                       
                       {sortMenuOpen === 'category' && (
-                        <div className="sort-menu category-menu">
-                          <div className="category-grid">
+                        <div className={`${styles.sortMenu} ${styles.categoryMenu}`}>
+                          <div className={styles.categoryGrid}>
                             {youtubeCategories.map((category) => (
-                              <div key={category} onClick={() => handleCategoryFilter(category)} className="category-item">
+                              <div key={category} onClick={() => handleCategoryFilter(category)} className={styles.categoryItem}>
                                 {category}
                               </div>
                             ))}
@@ -1034,14 +827,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     </th>
                     {/* 리사이즈 핸들러 추가 - 구독자 컬럼 */}
                     <th 
-                      className="sortable-header category-header-resizable"
+                      className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
                       onClick={() => handleHeaderClick('subscribers')}
                       style={{ width: columnWidths[3] }}
                     >
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(3, e)}></div>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(3, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.subscribers')}
                       {sortMenuOpen === 'subscribers' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('subscribers', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('subscribers', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
@@ -1049,14 +842,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     </th>
                     {/* 리사이즈 핸들러 추가 - 연간성장 컬럼 */}
                     <th 
-                      className="sortable-header category-header-resizable"
+                      className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
                       onClick={() => handleHeaderClick('yearlyGrowth')}
                       style={{ width: columnWidths[4] }}
                     >
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(4, e)}></div>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(4, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.yearlyGrowth')}
                       {sortMenuOpen === 'yearlyGrowth' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('yearlyGrowth', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('yearlyGrowth', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
@@ -1064,14 +857,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     </th>
                     {/* 리사이즈 핸들러 추가 - 월간성장 컬럼 */}
                     <th 
-                      className="sortable-header category-header-resizable"
+                      className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
                       onClick={() => handleHeaderClick('monthlyGrowth')}
                       style={{ width: columnWidths[5] }}
                     >
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(5, e)}></div>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(5, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.monthlyGrowth')}
                       {sortMenuOpen === 'monthlyGrowth' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('monthlyGrowth', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('monthlyGrowth', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
@@ -1079,14 +872,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     </th>
                     {/* 리사이즈 핸들러 추가 - 일간성장 컬럼 */}
                     <th 
-                      className="sortable-header category-header-resizable"
+                      className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
                       onClick={() => handleHeaderClick('dailyGrowth')}
                       style={{ width: columnWidths[6] }}
                     >
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(6, e)}></div>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(6, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.dailyGrowth')}
                       {sortMenuOpen === 'dailyGrowth' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('dailyGrowth', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('dailyGrowth', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
@@ -1094,14 +887,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     </th>
                     {/* 리사이즈 핸들러 추가 - 구독전환율 컬럼 */}
                     <th 
-                      className="sortable-header category-header-resizable"
+                      className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
                       onClick={() => handleHeaderClick('subscribersPerVideo')}
                       style={{ width: columnWidths[7] }}
                     >
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(7, e)}></div>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(7, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.subscriptionRate')}
                       {sortMenuOpen === 'subscribersPerVideo' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('subscribersPerVideo', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('subscribersPerVideo', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
@@ -1109,14 +902,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     </th>
                     {/* 리사이즈 핸들러 추가 - 운영기간 컬럼 */}
                     <th 
-                      className="sortable-header category-header-resizable"
+                      className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
                       onClick={() => handleHeaderClick('operatingPeriod')}
                       style={{ width: columnWidths[8] }}
                     >
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(8, e)}></div>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(8, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.operatingPeriod')}
                       {sortMenuOpen === 'operatingPeriod' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('operatingPeriod', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('operatingPeriod', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
@@ -1124,14 +917,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     </th>
                     {/* 리사이즈 핸들러 추가 - 총조회수 컬럼 */}
                     <th 
-                      className="sortable-header category-header-resizable"
+                      className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
                       onClick={() => handleHeaderClick('totalViews')}
                       style={{ width: columnWidths[9] }}
                     >
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(9, e)}></div>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(9, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.totalViews')}
                       {sortMenuOpen === 'totalViews' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('totalViews', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('totalViews', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
@@ -1139,46 +932,46 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                     </th>
                     {/* 리사이즈 핸들러 추가 - 평균조회수 컬럼 */}
                     <th 
-                      className="sortable-header category-header-resizable"
+                      className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
                       onClick={() => handleHeaderClick('avgViews')}
                       style={{ width: columnWidths[10] }}
                     >
-                      <div className="resize-handle resize-handle-left" onMouseDown={(e) => handleMouseDown(10, e)}></div>
+                      <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(10, e)}></div>
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.avgViews')}
                       {sortMenuOpen === 'avgViews' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('avgViews', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('avgViews', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
                     <th 
-                      className="sortable-header"
+                      className={styles.sortableHeader}
                       onClick={() => handleHeaderClick('videosCount')}
                     >
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.totalVideos')}
                       {sortMenuOpen === 'videosCount' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('videosCount', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('videosCount', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
                     <th 
-                      className="sortable-header"
+                      className={styles.sortableHeader}
                       onClick={() => handleHeaderClick('uploadFrequency')}
                     >
                       {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.uploadFrequency')}
                       {sortMenuOpen === 'uploadFrequency' && (
-                        <div className="sort-menu">
+                        <div className={styles.sortMenu}>
                           <div onClick={() => handleSort('uploadFrequency', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
                           <div onClick={() => handleSort('uploadFrequency', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
-                    <th className="sortable-header country-header">
+                    <th className={`${styles.sortableHeader} ${styles.countryHeader}`}>
                       <button 
-                        className="country-select-button main-country-button"
+                        className={`${styles.countrySelectButton} ${styles.mainCountryButton}`}
                         onClick={(e) => openDropdown('main', e)}
                       >
                         <span>{selectedCountry || '🌍'}</span>
@@ -1198,34 +991,34 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       .map((channel, index) => (
                     <tr 
                       key={channel.rank}
-                      className="channel-row"
+                      className={styles.channelRow}
                       onClick={() => handleChannelClick(channel)}
                     >
                       <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td className="channel-name">
-                        <span className="rank-badge">
+                      <td className={styles.channelName}>
+                        <span className={styles.rankBadge}>
                           {channel.thumbnailUrl && (
                             <img 
                               src={channel.thumbnailUrl} 
                               alt={channel.channelName}
-                              className="rank-badge-img"
+                              className={styles.rankBadgeImg}
                             />
                           )}
                         </span>
-                        <span className="name">{channel.channelName}</span>
+                        <span className={styles.name}>{channel.channelName}</span>
                       </td>
                       <td>{channel.category}</td>
-                      <td className="subscribers">{formatSubscribers(channel.subscribers)}</td>
-                      <td className="growth positive">{formatGrowth(channel.yearlyGrowth)}</td>
-                      <td className="growth positive">{formatGrowth(channel.monthlyGrowth)}</td>
-                      <td className="growth positive">{formatGrowth(channel.dailyGrowth)}</td>
+                      <td className={styles.subscribers}>{formatSubscribers(channel.subscribers)}</td>
+                      <td className={`${styles.growth} ${styles.positive}`}>{formatGrowth(channel.yearlyGrowth)}</td>
+                      <td className={`${styles.growth} ${styles.positive}`}>{formatGrowth(channel.monthlyGrowth)}</td>
+                      <td className={`${styles.growth} ${styles.positive}`}>{formatGrowth(channel.dailyGrowth)}</td>
                       <td>{formatNumber(channel.subscribersPerVideo)}</td>
-                      <td className="period">{formatOperatingPeriod(channel.operatingPeriod)}</td>
-                      <td className="total-views">{formatViews(channel.totalViews)}</td>
-                      <td className="avg-views">{formatViews(channel.avgViews)}</td>
+                      <td className={styles.period}>{formatOperatingPeriod(channel.operatingPeriod)}</td>
+                      <td className={styles.totalViews}>{formatViews(channel.totalViews)}</td>
+                      <td className={styles.avgViews}>{formatViews(channel.avgViews)}</td>
                       <td>{formatVideosCount(channel.videosCount)}</td>
-                      <td className="upload-frequency">{formatUploadFrequency(channel.uploadFrequency)}</td>
-                      <td className="country">{getCountryDisplayName(language, channel.country)}</td>
+                      <td className={styles.uploadFrequency}>{formatUploadFrequency(channel.uploadFrequency)}</td>
+                      <td className={styles.country}>{getCountryDisplayName(language, channel.country)}</td>
                     </tr>
                     ))
                   )}
@@ -1249,1736 +1042,43 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           loading ? (
             <SidebarSkeleton />
           ) : selectedChannel ? (
-          <div className="sidebar-overlay">
-            <div className="sidebar">
-              <div className="sidebar-header">
-                <h3>
-                  <button onClick={closeSidebar} className="back-btn">←</button>
-                  @{selectedChannel.channelName}
-                </h3>
-                <button 
-                  className="youtube-visit-btn"
-                  onClick={() => {
-                    // TODO: 구글 드라이브 연동 후 selectedChannel.youtubeUrl 사용으로 변경될 예정
-                    const channelUrl = selectedChannel.channelName === 'MrBeast' 
-                      ? 'https://www.youtube.com/@MrBeast'
-                      : 'https://www.youtube.com/@tseries';
-                    window.open(channelUrl, '_blank');
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                  </svg>
-                  이동
-                </button>
-              </div>
-              
-              <div className="sidebar-content">
-                <div className="channel-info">
-                  <div className="info-item">
-                    <span className="label">채널명</span>
-                    <span className="value">{selectedChannel.channelName}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.category')}</span>
-                    <span className="value">{selectedChannel.category}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.subscribers')}</span>
-                    <span className="value">{formatSubscribers(selectedChannel.subscribers)}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.country')}</span>
-                    <span className="value">{getCountryDisplayName(language, selectedChannel.country)}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.operatingPeriod')}</span>
-                    <span className="value">{formatOperatingPeriod(selectedChannel.operatingPeriod)}</span>
-                  </div>
-                </div>
-
-                {/* 구독자 성장 추이는 최소 3개월 데이터가 있을 때만 표시 */}
-                {selectedChannel?.subscriberHistory && selectedChannel.subscriberHistory.length >= 3 && (
-                  <div className="chart-section" style={{position: 'relative'}}>
-                    <SubTitle>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.subscriberGrowth')}</SubTitle>
-                  <div className="chart-placeholder">
-                    <div className="line-chart">
-                      {chartData.length > 0 ? (
-                        <svg width="100%" height="100" viewBox="0 0 300 100">
-                          <defs>
-                            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                              <stop offset="0%" style={{stopColor: '#4fc3f7', stopOpacity: 0.3}} />
-                              <stop offset="100%" style={{stopColor: '#4fc3f7', stopOpacity: 0.05}} />
-                            </linearGradient>
-                          </defs>
-                          
-                          {/* 동적으로 생성되는 선 그래프와 포인트 */}
-                          {chartData.length > 1 && (
-                            <>
-                              {/* 그라데이션 영역 */}
-                              <path 
-                                d={`M ${chartData[0].x} ${chartData[0].y} ${chartData.slice(1).map(point => `L ${point.x} ${point.y}`).join(' ')} L ${chartData[chartData.length-1].x} 100 L ${chartData[0].x} 100 Z`}
-                                fill="url(#areaGradient)"
-                              />
-                              {/* 선 그래프 */}
-                              <path 
-                                d={`M ${chartData[0].x} ${chartData[0].y} ${chartData.slice(1).map(point => `L ${point.x} ${point.y}`).join(' ')}`}
-                                stroke="#4fc3f7" 
-                                strokeWidth="3" 
-                                fill="none"
-                                className="growth-line"
-                              />
-                            </>
-                          )}
-                          
-                          {/* 데이터 포인트와 라벨 */}
-                          {chartData.map((point, index) => (
-                            <g key={index}>
-                              <circle cx={point.x} cy={point.y} r="4" fill="#4fc3f7" />
-                              <text x={point.x} y={point.y - 8} textAnchor="middle" className="growth-percentage">
-                                {point.value}
-                              </text>
-                            </g>
-                          ))}
-                        </svg>
-                      ) : (
-                        <div className="no-data-message">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.noSubscriberData')}</div>
-                      )}
-                    </div>
-                    <div className="chart-labels" style={{ position: 'relative', height: '20px', width: '100%' }}>
-                      {chartData.map((point, index) => {
-                        // SVG 300px 기준으로 퍼센트 계산 후 적용 + 20px 오프셋 (30px에서 10px 왼쪽으로)
-                        const leftPercentage = ((point.x + 20) / 300) * 100;
-                        return (
-                          <span 
-                            key={index} 
-                            style={{ 
-                              position: 'absolute', 
-                              left: `${leftPercentage}%`,
-                              transform: 'translateX(-50%)',
-                              fontSize: '0.8rem',
-                              color: '#666'
-                            }}
-                          >
-                            {point.month}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  
-                  {/* HTML 말풍선 툴팁 - chart-section 레벨에서 절대 위치 */}
-                  {hoveredPoint !== null && (() => {
-                    // 각 구간의 중앙 x 좌표 계산 (퍼센트 기준)
-                    const tooltipPositions = [20, 40, 60, 80]; // 각 구간 중앙 (%)
-                    const tooltipX = tooltipPositions[hoveredPoint];
-                    
-                    return (
-                      <div 
-                        className="html-tooltip"
-                        style={{
-                          position: 'absolute',
-                          left: `${tooltipX}%`,
-                          top: '170px',
-                          transform: 'translateX(-50%)',
-                          zIndex: 9999,
-                          pointerEvents: 'none'
-                        }}
-                      >
-                        <div className="tooltip-bubble">
-                          <div className="tooltip-arrow"></div>
-                          <div className="tooltip-content">
-                            <div>{growthTooltips[hoveredPoint].message[0]}</div>
-                            <div>{growthTooltips[hoveredPoint].message[1]}</div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
-                  </div>
-                )}
-
-                <div className="rpm-section">
-                  <SubTitle>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.revenueCalculation')}</SubTitle>
-                  
-                  <div className="unified-revenue-section">
-                    <div className="total-views-simple">
-                      <span className="total-views-label">{cf('totalViewsLabel')}</span>
-                      <span className="total-views-value">{selectedChannel ? formatViews(selectedChannel.totalViews) : '0'}</span>
-                    </div>
-                    
-                    <div className="country-selector">
-                      <label className="country-label">{cf('countryRpmLabel')}</label>
-                      <button 
-                        className="country-select-button"
-                        onClick={(e) => openDropdown('sidebar', e)}
-                      >
-                        <span>{getCountryDisplayName(language, currentCountry)}</span>
-                        <svg className={`dropdown-arrow ${dropdownState.isOpen && dropdownState.type === 'sidebar' ? 'open' : ''}`} width="16" height="16" viewBox="0 0 20 20">
-                          <path stroke="#666" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m6 8 4 4 4-4"/>
-                        </svg>
-                      </button>
-                    </div>
-                    
-                    {/* 환율 입력 섹션 (미국이 아닐 때만 표시) */}
-                    {currentCountry !== 'United States' && (
-                      <div className="exchange-rate-section">
-                        <div className="country-selector">
-                          <label className="country-label">{getChannelFinderTranslation(channelFinderI18n, language, 'units.exchangeRate')}</label>
-                          <div className="exchange-rate-input-wrapper">
-                            <input
-                              type="number"
-                              className="exchange-rate-input"
-                              value={exchangeRate}
-                              onChange={(e) => setExchangeRate(Number(e.target.value))}
-                              placeholder={getChannelFinderTranslation(channelFinderI18n, language, 'units.exchangeRatePlaceholder')}
-                              min="0"
-                              step="0.01"
-                            />
-                            <span className="currency-unit">
-                              {(() => {
-                                const currencyCode = currencyExchangeData[currentCountry as keyof typeof currencyExchangeData]?.currency || 'USD';
-                                return getChannelFinderTranslation(channelFinderI18n, language, `currencies.${currencyCode}`) || '달러';
-                              })()}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    <div className="revenue-cards-container">
-                      {/* 숏폼 카드 */}
-                      <div className="content-revenue-card">
-                        <div className="content-header">
-                          <span className="content-title">{cf('shortsRpmLabel')}</span>
-                          <span className="content-percentage">{shortsPercentage}%</span>
-                        </div>
-                        
-                        <div className="rpm-controller">
-                          <button onClick={() => adjustShortsRpm(false)} className="rpm-btn">-</button>
-                          <span className="rpm-value">{shortsRpm.toFixed(2)}</span>
-                          <button onClick={() => adjustShortsRpm(true)} className="rpm-btn">+</button>
-                        </div>
-                        
-                        <div className="revenue-result">
-                          <div className="revenue-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalShortsRevenue')}</div>
-                          <div className="revenue-value">
-                            {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm * exchangeRate)) : formatRevenue(0)}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* 롱폼 카드 */}
-                      <div className="content-revenue-card">
-                        <div className="content-header">
-                          <span className="content-title">{cf('longRpmLabel')}</span>
-                          <span className="content-percentage">{longPercentage}%</span>
-                        </div>
-                        
-                        <div className="rpm-controller">
-                          <button onClick={() => adjustLongRpm(false)} className="rpm-btn">-</button>
-                          <span className="rpm-value">{longRpm.toFixed(2)}</span>
-                          <button onClick={() => adjustLongRpm(true)} className="rpm-btn">+</button>
-                        </div>
-                        
-                        <div className="revenue-result">
-                          <div className="revenue-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalLongRevenue')}</div>
-                          <div className="revenue-value">
-                            {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm * exchangeRate)) : formatRevenue(0)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="total-revenue-card">
-                      <div className="total-revenue-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalRevenue')}</div>
-                      <div className="total-revenue-value">{calculateTotalRevenue()}</div>
-                    </div>
-                    
-                    {language !== 'en' && (
-                      <div 
-                        className="total-revenue-card korean-currency-hover"
-                        onClick={openExchangeRateModal}
-                      >
-                        <div className="total-revenue-label">
-                          {getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.localCurrencyText')}
-                        </div>
-                        <div className="total-revenue-value">{calculateLocalCurrencyRevenue()}</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <SubTitle>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.detailInfo')}</SubTitle>
-                <div className="stats-grid">
-                  <div className="stat-card">
-                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.totalViews')}</div>
-                    <div className="stat-value">{formatViews(selectedChannel.totalViews)}</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.avgViews')}</div>
-                    <div className="stat-value">{formatViews(selectedChannel.avgViews)}</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.totalVideos')}</div>
-                    <div className="stat-value">{formatVideosCount(selectedChannel.videosCount)}</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.uploadFrequency')}</div>
-                    <div className="stat-value">{formatUploadFrequency(selectedChannel.uploadFrequency)}</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.monthlyGrowth')}</div>
-                    <div className="stat-value growth-value">{formatGrowth(selectedChannel.monthlyGrowth)}</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.yearlyGrowth')}</div>
-                    <div className="stat-value growth-value">{formatGrowth(selectedChannel.yearlyGrowth)}</div>
-                  </div>
-                  <div 
-                    className="stat-card tooltip-container"
-                    onMouseEnter={() => setHoveredStat('views-per-subscriber')}
-                    onMouseLeave={() => setHoveredStat(null)}
-                  >
-                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.viewsPerSubscriber')}</div>
-                    <div className="stat-value">{calculateViewsPerSubscriber(selectedChannel)}</div>
-                    {hoveredStat === 'views-per-subscriber' && (
-                      <div className="stat-tooltip" dangerouslySetInnerHTML={{__html: getChannelFinderTranslation(channelFinderI18n, language, 'tooltips.viewsPerSubscriber')}} />
-                    )}
-                  </div>
-                  <div 
-                    className="stat-card tooltip-container"
-                    onMouseEnter={() => setHoveredStat('subscription-rate')}
-                    onMouseLeave={() => setHoveredStat(null)}
-                  >
-                    <div className="stat-label">{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.labels.subscriptionRate')}</div>
-                    <div className="stat-value">{calculateSubscriptionRate(selectedChannel)}</div>
-                    {hoveredStat === 'subscription-rate' && (
-                      <div className="stat-tooltip" dangerouslySetInnerHTML={{__html: getChannelFinderTranslation(channelFinderI18n, language, 'tooltips.subscriptionRate')}} />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            <ChannelSidebar
+              selectedChannel={selectedChannel}
+              language={language}
+              onClose={closeSidebar}
+              formatSubscribers={formatSubscribers}
+              formatOperatingPeriod={formatOperatingPeriod}
+              formatGrowth={formatGrowth}
+              getCountryDisplayName={getCountryDisplayName}
+              chartData={chartData}
+              growthTooltips={growthTooltips}
+              hoveredPoint={hoveredPoint}
+              hoveredStat={hoveredStat}
+              setHoveredStat={setHoveredStat}
+              shortsPercentage={shortsPercentage}
+              longPercentage={longPercentage}
+              shortsRpm={shortsRpm}
+              longRpm={longRpm}
+              exchangeRate={exchangeRate}
+              currentCountry={currentCountry}
+              dropdownState={dropdownState}
+              openDropdown={openDropdown}
+              adjustShortsRpm={adjustShortsRpm}
+              adjustLongRpm={adjustLongRpm}
+              calculateTotalRevenue={calculateTotalRevenue}
+              calculateLocalCurrencyRevenue={calculateLocalCurrencyRevenue}
+              openExchangeRateModal={openExchangeRateModal}
+              setExchangeRate={setExchangeRate}
+              formatViews={formatViews}
+              formatVideosCount={formatVideosCount}
+              formatUploadFrequency={formatUploadFrequency}
+              currencyExchangeData={currencyExchangeData}
+              cf={cf}
+            />
           ) : null
         )}
       </div>
 
-      <style>{`
-        .channel-stats-section {
-          margin-top: 2rem;
-        }
-
-        .stats-header {
-          width: 90%;
-          margin: 0 auto 1rem auto;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem;
-          background: white;
-          border-radius: 8px;
-        }
-
-        .stats-header h2 {
-          color: #333;
-          margin: 0;
-          font-size: 1.2rem;
-        }
-
-        .stats-info {
-          color: #666;
-        }
-
-        .total-channels {
-          color: #4a9eff;
-          font-weight: bold;
-          margin-right: 1rem;
-        }
-
-        .table-container {
-          width: 90%;
-          margin: 0 auto;
-          background: white;
-          border-radius: 8px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .channel-table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 0.9rem;
-          table-layout: fixed;
-        }
-
-        .channel-table th {
-          background: #f8f9fa;
-          padding: 12px 8px;
-          text-align: left;
-          font-weight: 600;
-          border-bottom: 2px solid #e9ecef;
-          white-space: nowrap;
-          color: #333;
-        }
-
-        .channel-table th:nth-child(1) { width: 5%; } /* 순위 */
-        .channel-table th:nth-child(2) { width: 12%; } /* 채널명 */
-        .channel-table th:nth-child(3) { width: 8%; } /* 카테고리 */
-        .channel-table th:nth-child(4) { width: 10%; } /* 구독자 */
-        .channel-table th:nth-child(5) { width: 10%; } /* 연간성장 */
-        .channel-table th:nth-child(6) { width: 10%; } /* 월간성장 */
-        .channel-table th:nth-child(7) { width: 8%; } /* 일간성장 */
-        .channel-table th:nth-child(8) { width: 8%; } /* 구독자/영상 */
-        .channel-table th:nth-child(9) { width: 8%; } /* 운영기간 */
-        .channel-table th:nth-child(10) { width: 10%; } /* 총 조회수 */
-        .channel-table th:nth-child(11) { width: 8%; } /* 평균 조회수 */
-        .channel-table th:nth-child(12) { width: 6%; } /* 영상 수 */
-        .channel-table th:nth-child(13) { width: 8%; } /* 업로드 빈도 */
-        .channel-table th:nth-child(14) { width: 7%; } /* 국가 */
-
-        .sortable-header {
-          cursor: pointer;
-          position: relative;
-          transition: all 0.2s ease;
-          user-select: none;
-        }
-
-        .sortable-header:hover {
-          background: #e3f2fd !important;
-          color: #1976d2;
-        }
-
-        .sortable-header:active {
-          background: #bbdefb !important;
-        }
-
-        .sort-menu {
-          position: absolute;
-          top: 100%;
-          left: 0;
-          background: white;
-          border: 1px solid #e9ecef;
-          border-radius: 6px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-          z-index: 1000;
-          min-width: 140px;
-          overflow: hidden;
-          animation: sortMenuSlide 0.2s ease;
-        }
-
-        @keyframes sortMenuSlide {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .sort-menu div {
-          padding: 0.75rem 1rem;
-          cursor: pointer;
-          transition: background 0.2s ease;
-          color: #333;
-          font-size: 0.9rem;
-          border-bottom: 1px solid #f5f5f5;
-        }
-
-        .sort-menu div:last-child {
-          border-bottom: none;
-        }
-
-        .sort-menu div:hover {
-          background: #f8f9fa;
-          color: #1976d2;
-        }
-
-        .sort-menu div:active {
-          background: #e3f2fd;
-        }
-
-        .category-menu {
-          width: 400px;
-        }
-
-        .category-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 0;
-        }
-
-        .category-item {
-          padding: 0.75rem 1rem;
-          cursor: pointer;
-          transition: background 0.2s ease;
-          color: #333;
-          font-size: 0.9rem;
-          border-bottom: 1px solid #f5f5f5;
-          border-right: 1px solid #f5f5f5;
-        }
-
-        .category-item:nth-child(even) {
-          border-right: none;
-        }
-
-        .category-item:hover {
-          background: #f8f9fa;
-          color: #1976d2;
-        }
-
-        .category-item:active {
-          background: #e3f2fd;
-        }
-
-        /* 카테고리 헤더 리사이즈 핸들러 스타일 */
-        .category-header-resizable {
-          position: relative;
-        }
-
-        .resize-handle {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 8px;
-          height: 16px;
-          cursor: col-resize;
-          opacity: 1 !important;
-          transition: opacity 0.3s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 999;
-          right: -4px; /* 기본은 오른쪽 */
-        }
-
-        /* 왼쪽 핸들러 - 더 구체적인 선택자로 강제 적용 */
-        .category-header-resizable .resize-handle.resize-handle-left,
-        th .resize-handle.resize-handle-left {
-          width: 12px !important;
-          height: 20px !important;
-          z-index: 0 !important;
-          opacity: 1 !important;
-        }
-
-        .resize-handle-left::before {
-          content: '';
-          width: 1px;
-          height: 12px;
-          background-color: #1976d2;
-          margin-right: 1px;
-          box-shadow: 2px 0 0 #1976d2, 4px 0 0 #1976d2;
-        }
-
-        /* 카테고리 헤더 hover 시 핸들러 표시 */
-        .category-header-resizable:hover .resize-handle {
-          opacity: 0.7;
-        }
-
-        .resize-handle:hover {
-          opacity: 1 !important;
-        }
-
-        /* 리사이즈 중일 때 커서 변경 */
-        body.resizing {
-          cursor: col-resize !important;
-          user-select: none;
-        }
-
-
-        .channel-table td {
-          padding: 12px 8px;
-          border-bottom: 1px solid #e9ecef;
-          white-space: nowrap;
-          color: #555;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .channel-row {
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .channel-row:hover {
-          background: #e3f2fd !important;
-          transform: translateX(2px);
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .channel-row:active {
-          background: #bbdefb !important;
-          transform: translateX(1px);
-        }
-
-        .channel-name {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .rank-badge {
-          width: 24px;
-          height: 24px;
-          min-width: 24px;
-          min-height: 24px;
-          background: #333;
-          color: white;
-          border-radius: 50%;
-          font-size: 0.8rem;
-          font-weight: bold;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-          flex-shrink: 0;
-        }
-
-        .rank-badge-img {
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          object-fit: cover;
-          border: none;
-        }
-
-        .channel-name .name {
-          max-width: 120px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .subscribers {
-          font-weight: 600;
-          color: #333;
-        }
-
-        .growth.positive {
-          color: #28a745;
-          font-weight: 500;
-        }
-
-        .period {
-          color: #555;
-          text-align: center;
-          font-size: 0.9rem;
-        }
-
-        .total-views {
-          font-weight: 600;
-          color: #6c757d;
-        }
-
-        .avg-views {
-          font-weight: 500;
-          color: #495057;
-        }
-
-        .upload-frequency {
-          color: #555;
-          text-align: center;
-          font-size: 0.9rem;
-        }
-
-        .country {
-          color: #555;
-          text-align: center;
-          font-size: 0.9rem;
-        }
-
-        /* Sidebar Styles */
-        .sidebar-overlay {
-          position: fixed;
-          top: 0;
-          right: 0;
-          width: 450px;
-          height: 100%;
-          display: flex;
-          justify-content: flex-end;
-          z-index: 1000;
-          pointer-events: none;
-        }
-
-        .sidebar {
-          width: 450px;
-          height: 100%;
-          background: white;
-          box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-          animation: slideIn 0.3s ease;
-          pointer-events: auto;
-        }
-
-        @keyframes slideIn {
-          from { transform: translateX(100%); }
-          to { transform: translateX(0); }
-        }
-
-        .sidebar-header {
-          padding: 1.5rem;
-          border-bottom: 1px solid #e9ecef;
-          background: #f8f9fa;
-        }
-
-        .sidebar-header h3 {
-          margin: 0;
-          color: #333;
-          font-size: 1.75rem;
-          font-weight: bold;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .back-btn {
-          background: none;
-          border: none;
-          font-size: 1.3rem;
-          cursor: pointer;
-          color: #666;
-          padding: 0.3rem 0.5rem;
-          border-radius: 4px;
-          transition: all 0.2s ease;
-        }
-
-        .back-btn:hover {
-          background: #e9ecef;
-          color: #333;
-        }
-
-        .youtube-visit-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.4rem;
-          padding: 0.4rem 0.7rem;
-          background: #FF0000;
-          color: white;
-          border: none;
-          border-radius: 12px;
-          font-size: 0.8rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          margin-top: 0.6rem;
-          margin-left: 2.3rem;
-          text-decoration: none;
-        }
-
-        .youtube-visit-btn:hover {
-          background: #CC0000;
-          transform: translateY(-1px);
-          box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
-        }
-
-        .youtube-visit-btn:active {
-          transform: translateY(0);
-          box-shadow: 0 1px 4px rgba(255, 0, 0, 0.3);
-        }
-
-        .sidebar-content {
-          padding: 1.5rem;
-          padding-bottom: 150px;
-          height: calc(100% - 80px);
-          overflow-y: auto;
-        }
-
-        .channel-info {
-          margin-bottom: 2rem;
-        }
-
-        .info-item {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 6px;
-          padding: 0.8rem;
-          background: #f8f9fa;
-          border-radius: 6px;
-        }
-
-        .info-item .label {
-          font-weight: 600;
-          color: #666;
-        }
-
-        .info-item .value {
-          color: #333;
-        }
-
-        .chart-section {
-          margin-bottom: 2rem;
-        }
-
-        .subtitle {
-          color: #333;
-          margin-bottom: 1rem;
-          font-size: 1.1rem;
-          margin-top: 0;
-        }
-
-        .chart-placeholder {
-          padding: 1rem;
-          background: #f8f9fa;
-          border-radius: 8px;
-        }
-
-        .line-chart {
-          margin-bottom: 1rem;
-          background: white;
-          padding: 1rem;
-          border-radius: 6px;
-          overflow: hidden;
-        }
-
-        .growth-line {
-          animation: drawLine 2s ease-out;
-          stroke-dasharray: 400;
-          stroke-dashoffset: 400;
-        }
-
-        @keyframes drawLine {
-          to {
-            stroke-dashoffset: 0;
-          }
-        }
-
-        .line-chart circle {
-          animation: fadeInPoints 2.5s ease-out;
-          opacity: 0;
-          animation-fill-mode: forwards;
-        }
-
-        @keyframes fadeInPoints {
-          0% { opacity: 0; transform: scale(0); }
-          80% { opacity: 0; transform: scale(0); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-
-        .growth-percentage {
-          font-size: 10px;
-          font-weight: 600;
-          fill: #2c3e50;
-          opacity: 0;
-          animation: fadeInPercentage 3s ease-out forwards;
-        }
-
-        @keyframes fadeInPercentage {
-          0% { opacity: 0; transform: translateY(3px); }
-          70% { opacity: 0; }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .hover-area {
-          cursor: pointer;
-        }
-
-        .hover-area:hover {
-          fill: rgba(79, 195, 247, 0.2);
-        }
-
-        .tooltip {
-          pointer-events: none;
-          animation: tooltipFadeIn 0.2s ease-out;
-        }
-
-        .tooltip-text {
-          font-size: 14px;
-          font-weight: 500;
-          fill: white;
-        }
-
-        .html-tooltip {
-          animation: tooltipFadeIn 0.2s ease-out;
-        }
-
-        .tooltip-bubble {
-          position: relative;
-          background: #4fc3f7;
-          border-radius: 15px;
-          padding: 15px 20px;
-          width: 150px;
-          height: 80px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .tooltip-arrow {
-          position: absolute;
-          top: -10px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 0;
-          height: 0;
-          border-left: 10px solid transparent;
-          border-right: 10px solid transparent;
-          border-bottom: 10px solid #4fc3f7;
-        }
-
-        .tooltip-content {
-          color: white;
-          font-size: 14px;
-          font-weight: 500;
-          text-align: center;
-          line-height: 1.4;
-        }
-
-        @keyframes tooltipFadeIn {
-          0% { opacity: 0; transform: translateY(-3px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .chart-labels {
-          display: flex;
-          justify-content: space-around;
-          font-size: 0.8rem;
-          color: #666;
-        }
-
-        .stats-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 1rem;
-        }
-
-        .stat-card {
-          padding: 1rem;
-          background: #f8f9fa;
-          border-radius: 8px;
-          text-align: center;
-          border: 1px solid #e9ecef;
-        }
-
-        .tooltip-container {
-          position: relative;
-          cursor: help;
-        }
-
-        .stat-tooltip {
-          position: absolute;
-          top: -10px;
-          left: 50%;
-          transform: translateX(-50%) translateY(-100%);
-          background: #333;
-          color: white;
-          padding: 1.2rem;
-          border-radius: 12px;
-          font-size: 15px;
-          line-height: 1.8;
-          width: 200px;
-          text-align: left;
-          z-index: 1000;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          white-space: normal;
-          word-wrap: break-word;
-        }
-
-        .stat-tooltip::after {
-          content: '';
-          position: absolute;
-          top: 100%;
-          left: 50%;
-          transform: translateX(-50%);
-          border: 8px solid transparent;
-          border-top-color: #333;
-        }
-
-        .stat-label {
-          font-size: 0.8rem;
-          color: #666;
-          font-weight: 500;
-          margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-          font-size: 1.1rem;
-          font-weight: 700;
-          color: #333544;
-        }
-
-        .growth-value {
-          color: #28a745 !important;
-        }
-
-        /* RPM Section Styles */
-        .rpm-section {
-          margin-bottom: 2rem;
-        }
-
-        .content-tabs {
-          display: flex;
-          margin-bottom: 1rem;
-          background: #e9ecef;
-          border-radius: 6px;
-          padding: 4px;
-        }
-
-        .tab {
-          flex: 1;
-          padding: 0.5rem 1rem;
-          border: none;
-          background: transparent;
-          color: #666;
-          font-weight: 500;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .tab.active {
-          background: white;
-          color: #333;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .tab:hover:not(.active) {
-          color: #333;
-        }
-
-        .rpm-card {
-          background: #f8f9fa;
-          border-radius: 8px;
-          padding: 1rem;
-          margin-bottom: 1rem;
-          border: 1px solid #e9ecef;
-        }
-
-        .rpm-header {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 1rem;
-          color: #666;
-          font-weight: 600;
-          font-size: 0.9rem;
-        }
-
-        .rpm-controls {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        .rpm-btn {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          border: none;
-          background: #e9ecef;
-          color: #666;
-          font-size: 1.2rem;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .rpm-btn:hover {
-          background: #dee2e6;
-          color: #333;
-        }
-
-        .rpm-value {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: #333;
-        }
-
-        .period-value {
-          font-size: 1.1rem;
-          font-weight: 600;
-          color: #333;
-        }
-
-        .revenue-grid {
-          display: grid;
-          grid-template-columns: 1fr 1.5fr;
-          gap: 1rem;
-          margin-top: 30px;
-        }
-
-        .revenue-card {
-          background: white;
-          border-radius: 8px;
-          padding: 1rem;
-          text-align: center;
-          border: 1px solid #e9ecef;
-        }
-
-        .revenue-label {
-          font-size: 0.8rem;
-          color: #7c4dff;
-          margin-bottom: 0.5rem;
-          font-weight: 500;
-        }
-
-        .revenue-value {
-          font-size: 1.2rem;
-          font-weight: 700;
-          color: #7c4dff;
-        }
-
-        .revenue-value.recent {
-          color: #7c4dff;
-        }
-
-        .revenue-value.total {
-          color: #7c4dff;
-        }
-
-        .unified-revenue-section {
-          background: #f8f9fa;
-          border-radius: 12px;
-          padding: 1.5rem 10px;
-          border: 1px solid #e9ecef;
-        }
-
-        .total-views-simple {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1rem;
-        }
-
-        .total-views-label {
-          font-size: 0.9rem;
-          color: #666;
-          font-weight: 500;
-        }
-
-        .total-views-value {
-          font-size: 1.1rem;
-          color: #333;
-          font-weight: 700;
-        }
-
-        .country-selector {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1.5rem;
-        }
-
-        .country-label {
-          font-size: 0.9rem;
-          color: #666;
-          font-weight: 500;
-        }
-
-        .country-dropdown-wrapper {
-          position: relative;
-        }
-
-        .country-select-button {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0.4rem 0.6rem;
-          border: 1px solid #ddd;
-          border-radius: 12px;
-          background: white;
-          font-size: 0.85rem;
-          color: #333;
-          cursor: pointer;
-          outline: none;
-          height: 48px;
-          width: 50%;
-          transition: border-color 0.2s ease;
-        }
-
-        .country-select-button:hover {
-          border-color: #999;
-        }
-
-        .country-select-button:focus {
-          border-color: #7c4dff;
-          box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.1);
-        }
-
-        /* 환율 입력 섹션 */
-        .exchange-rate-section {
-          margin-top: 1rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .exchange-rate-input-wrapper {
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-          width: 100%;
-          flex: 1;
-        }
-
-        .exchange-rate-input {
-          flex: 0.4;
-          padding: 0.4rem 0.6rem;
-          border: 1px solid #ddd;
-          border-radius: 12px;
-          background: white;
-          font-size: 0.85rem;
-          color: #333;
-          cursor: text;
-          height: 48px;
-          margin-right: 10px;
-          transition: border-color 0.2s ease;
-        }
-
-        /* 브라우저 기본 number input 화살표 제거 */
-        .exchange-rate-input::-webkit-outer-spin-button,
-        .exchange-rate-input::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
-
-        .exchange-rate-input[type=number] {
-          -moz-appearance: textfield;
-        }
-
-        .exchange-rate-input:hover {
-          border-color: #999;
-        }
-
-        .exchange-rate-input:focus {
-          border-color: #7c4dff;
-          box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.1);
-          outline: none;
-        }
-
-        .currency-unit {
-          flex-shrink: 0;
-          font-size: 0.85rem;
-          font-weight: 400;
-          color: #666;
-          white-space: nowrap;
-        }
-
-        .dropdown-arrow {
-          transition: transform 0.2s ease;
-        }
-
-        .dropdown-arrow.open {
-          transform: rotate(180deg);
-        }
-
-        .main-country-button {
-          width: auto;
-          min-width: 50px;
-          height: auto;
-          padding: 0.3rem 0.4rem;
-          font-size: 0.9rem;
-          font-weight: 500;
-        }
-
-        .country-header {
-          position: relative;
-        }
-
-        .revenue-cards-container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 0.5rem;
-          margin-bottom: 0.5rem;
-        }
-
-        .content-revenue-card {
-          background: white;
-          border-radius: 8px;
-          padding: 1rem;
-          border: 1px solid #e9ecef;
-        }
-
-        .content-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1rem;
-        }
-
-        .content-title {
-          font-size: 1rem;
-          color: #333;
-          font-weight: 600;
-        }
-
-        .content-percentage {
-          font-size: 0.9rem;
-          color: #666;
-          background: #f0f0f0;
-          padding: 0.25rem 0.5rem;
-          border-radius: 10px;
-        }
-
-        .rpm-controller {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 0.5rem;
-          margin-bottom: 0.5rem;
-        }
-
-        .rpm-label {
-          text-align: center;
-          font-size: 0.8rem;
-          color: #666;
-          margin-bottom: 1rem;
-        }
-
-        .rpm-controller .rpm-btn {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          border: none;
-          background: #f8f9fa;
-          color: #666;
-          font-size: 1.1rem;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s ease;
-        }
-
-        .rpm-controller .rpm-btn:hover {
-          background: #e9ecef;
-        }
-
-        .rpm-controller .rpm-value {
-          font-size: 1.2rem;
-          font-weight: 700;
-          color: #333;
-          min-width: 60px;
-          text-align: center;
-        }
-
-        .revenue-result {
-          text-align: center;
-          border-top: 1px solid #f0f0f0;
-          padding-top: 1rem;
-        }
-
-        .revenue-result .revenue-label {
-          font-size: 0.8rem;
-          color: #666;
-          margin-bottom: 0.5rem;
-        }
-
-        .revenue-result .revenue-value {
-          font-size: 1.1rem;
-          font-weight: 700;
-          color: #333;
-        }
-
-        .total-revenue-card {
-          background: white;
-          border-radius: 8px;
-          padding: 1rem;
-          text-align: center;
-          border: 1px solid #e9ecef;
-          margin-top: 0;
-        }
-
-        .total-revenue-label {
-          font-size: 0.9rem;
-          color: #7c4dff;
-          margin-bottom: 0.5rem;
-          font-weight: 500;
-        }
-
-        .total-revenue-value {
-          font-size: 1.3rem;
-          font-weight: 700;
-          color: #7c4dff;
-        }
-
-        /* 스켈레톤 스타일 */
-        .skeleton-row {
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .skeleton-row td {
-          padding: 12px 8px;
-          border-bottom: 1px solid #e9ecef;
-          white-space: nowrap;
-          color: transparent;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .skeleton-cell-group {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .skeleton-cell {
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 4px;
-          display: inline-block;
-        }
-
-        .skeleton-rank {
-          width: 20px;
-          height: 20px;
-          color: transparent;
-        }
-        
-        .skeleton-channel-name {
-          width: 120px;
-          height: 18px;
-        }
-        
-        .skeleton-category {
-          width: 80px;
-          height: 16px;
-        }
-        
-        .skeleton-subscribers {
-          width: 90px;
-          height: 18px;
-        }
-        
-        .skeleton-growth {
-          width: 70px;
-          height: 16px;
-        }
-        
-        .skeleton-number {
-          width: 60px;
-          height: 16px;
-        }
-        
-        .skeleton-period {
-          width: 80px;
-          height: 16px;
-        }
-        
-        .skeleton-views-large {
-          width: 100px;
-          height: 18px;
-        }
-        
-        .skeleton-views-medium {
-          width: 85px;
-          height: 18px;
-        }
-        
-        .skeleton-videos-count {
-          width: 50px;
-          height: 16px;
-        }
-        
-        .skeleton-frequency {
-          width: 65px;
-          height: 16px;
-        }
-        
-        .skeleton-country {
-          width: 45px;
-          height: 16px;
-        }
-
-        /* 사이드바 스켈레톤 스타일 - 실제 구조와 정확히 매칭 */
-        .skeleton-sidebar-content .skeleton-back-btn {
-          color: #666;
-        }
-
-        .skeleton-title {
-          width: 180px;
-          height: 28px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 4px;
-          margin-left: 0.5rem;
-        }
-
-        .skeleton-youtube-btn {
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          color: transparent;
-        }
-
-        .skeleton-btn-text {
-          width: 30px;
-          height: 16px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 4px;
-        }
-
-        .skeleton-info-value {
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 4px;
-        }
-
-        .skeleton-chart {
-          width: 100%;
-          height: 100px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 6px;
-        }
-
-        .skeleton-rpm-value {
-          width: 60px;
-          height: 30px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 4px;
-        }
-
-        .skeleton-period-value {
-          width: 120px;
-          height: 24px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 4px;
-        }
-
-        .skeleton-revenue-value {
-          width: 90px;
-          height: 20px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 4px;
-          margin-top: 0.5rem;
-        }
-
-        .skeleton-total-revenue {
-          width: 110px;
-          height: 22px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 4px;
-          margin-top: 0.5rem;
-        }
-
-        .skeleton-stat-value {
-          width: 85px;
-          height: 18px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
-          border-radius: 4px;
-        }
-
-        @keyframes shimmer {
-          0% {
-            background-position: -200% 0;
-          }
-          100% {
-            background-position: 200% 0;
-          }
-        }
-
-        /* Pagination Styles - VidHunt News Design */
-        .pagination {
-          display: flex;
-          justify-content: center;
-          gap: var(--spacing-1, 8px);
-          margin-top: 50px;
-        }
-
-        .pagination-btn {
-          width: 40px;
-          height: 40px;
-          border: none;
-          background: transparent;
-          color: #374151;
-          border-radius: 50%;
-          cursor: pointer;
-          transition: all var(--transition-fast, 0.2s ease);
-          font-weight: 500;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .pagination-btn:hover {
-          background-color: #f3f4f6;
-        }
-
-        .pagination-btn.active {
-          background-color: #7c3aed;
-          color: white;
-          border: 1px solid #7c3aed;
-        }
-
-        @media (max-width: 768px) {
-          .table-container {
-            
-          }
-          
-          .stats-header {
-            flex-direction: column;
-            gap: 0.5rem;
-            text-align: center;
-          }
-
-          .sidebar {
-            width: 100%;
-          }
-
-          .stats-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .pagination {
-            gap: 6px;
-            margin-top: 30px;
-          }
-
-          .pagination-btn {
-            width: 32px;
-            height: 32px;
-            font-size: 14px;
-          }
-        }
-
-        /* 한국 화폐 변환 호버 효과 */
-        .korean-currency-hover {
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .korean-currency-hover:hover {
-          background-color: #f5f5f5 !important;
-          transform: translateY(-1px);
-        }
-
-        /* 환율 모달 스타일 */
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 3000;
-        }
-
-        .exchange-rate-modal {
-          background: white;
-          border-radius: 12px;
-          width: 400px;
-          overflow: hidden;
-        }
-
-        .modal-header {
-          padding: 20px 24px 16px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .modal-header h3 {
-          margin: 0;
-          font-size: 18px;
-          font-weight: 600;
-          color: #333;
-        }
-
-        .modal-close {
-          background: none;
-          border: 1px solid transparent;
-          font-size: 28px;
-          color: #666;
-          cursor: pointer;
-          padding: 0;
-          width: 34px;
-          height: 34px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          transition: background-color 0.2s;
-        }
-
-        .modal-close:hover {
-          background-color: #f5f5f5;
-        }
-
-        .modal-content {
-          padding: 24px;
-          text-align: center;
-          box-shadow: none !important;
-        }
-
-        .exchange-rate-display {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          font-size: 20px;
-          color: #333;
-        }
-
-        .exchange-rate-input {
-          border: 2px solid #e9ecef;
-          border-radius: 12px;
-          padding: 12px 16px;
-          font-size: 20px;
-          width: 120px;
-          text-align: center;
-          outline: none;
-          transition: border-color 0.2s;
-        }
-
-        .exchange-rate-input:focus {
-          border-color: #7c4dff;
-        }
-
-        .modal-footer {
-          padding: 16px 24px 24px;
-          display: flex;
-          gap: 12px;
-          justify-content: center;
-        }
-
-        .confirm-btn, .cancel-btn {
-          padding: 10px 24px;
-          border-radius: 12px;
-          font-size: 14px;
-          font-weight: 500;
-          cursor: pointer;
-          border: none;
-          transition: all 0.2s;
-        }
-
-        .confirm-btn {
-          background: #7c4dff;
-          color: white;
-        }
-
-        .confirm-btn:hover {
-          background: #6a3de8;
-        }
-
-        .cancel-btn {
-          background: #f8f9fa;
-          color: #666;
-          border: 1px solid #e9ecef;
-        }
-
-        .cancel-btn:hover {
-          background: #e9ecef;
-        }
-      `}</style>
 
       {/* 전역 공용 드롭다운 - 단 1개만 존재 */}
       {dropdownState.isOpen && dropdownState.position && (
@@ -3004,27 +1104,27 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
       {/* 환율 설정 모달 */}
       {exchangeRateModalOpen && (
-        <div className="modal-overlay" onClick={closeExchangeRateModal}>
-          <div className="exchange-rate-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>환율 설정</h3>
-              <button className="modal-close" onClick={closeExchangeRateModal}>×</button>
+        <div className={styles.modalOverlay} onClick={closeExchangeRateModal}>
+          <div className={styles.exchangeRateModal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>{getChannelFinderTranslation(channelFinderI18n, language, 'units.exchangeRate')}</h3>
+              <button className={styles.modalClose} onClick={closeExchangeRateModal}>×</button>
             </div>
-            <div className="modal-content">
-              <div className="exchange-rate-display">
+            <div className={styles.modalContent}>
+              <div className={styles.exchangeRateDisplay}>
                 <span>$ 1 = </span>
                 <input 
                   type="number" 
                   value={tempExchangeRate}
                   onChange={(e) => setTempExchangeRate(Number(e.target.value))}
-                  className="exchange-rate-input"
+                  className={styles.exchangeRateInput}
                 />
                 <span>{currencySettings[language]?.symbol || '원'}</span>
               </div>
             </div>
-            <div className="modal-footer">
-              <button className="cancel-btn" onClick={closeExchangeRateModal}>취소</button>
-              <button className="confirm-btn" onClick={applyExchangeRate}>확인</button>
+            <div className={styles.modalFooter}>
+              <button className={styles.cancelBtn} onClick={closeExchangeRateModal}>{getChannelFinderTranslation(channelFinderI18n, language, 'buttons.cancel')}</button>
+              <button className={styles.confirmBtn} onClick={applyExchangeRate}>{getChannelFinderTranslation(channelFinderI18n, language, 'buttons.confirm')}</button>
             </div>
           </div>
         </div>
