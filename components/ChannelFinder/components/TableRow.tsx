@@ -2,6 +2,8 @@ import React from 'react';
 import { Language } from '../../../types';
 import { ChannelData } from '../types';
 import { formatUploadFrequency } from '../utils';
+import { RESPONSIVE_COLUMN_CONFIG } from '../constants';
+import styles from '../../../styles/ChannelFinder.module.css';
 
 interface TableRowProps {
   channel: ChannelData;
@@ -34,14 +36,20 @@ const TableRow: React.FC<TableRowProps> = ({
   formatVideosCount,
   getCountryDisplayName
 }) => {
+  // 우선순위 클래스 생성 헬퍼 함수
+  const getPriorityClass = (columnKey: keyof typeof RESPONSIVE_COLUMN_CONFIG.COLUMN_PRIORITIES) => {
+    const priority = RESPONSIVE_COLUMN_CONFIG.COLUMN_PRIORITIES[columnKey];
+    return styles[`priority${priority}`];
+  };
+
   return (
     <tr 
       key={channel.rank}
       className="channel-row"
       onClick={() => onChannelClick(channel)}
     >
-      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-      <td className="channel-name">
+      <td className={getPriorityClass('rank')}>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+      <td className={`channel-name ${getPriorityClass('channelName')}`}>
         <span className="rank-badge">
           {channel.thumbnailUrl && (
             <img 
@@ -53,18 +61,18 @@ const TableRow: React.FC<TableRowProps> = ({
         </span>
         <span className="name">{channel.channelName}</span>
       </td>
-      <td>{channel.category}</td>
-      <td className="subscribers">{formatSubscribers(channel.subscribers)}</td>
-      <td className="growth positive">{formatGrowth(channel.yearlyGrowth)}</td>
-      <td className="growth positive">{formatGrowth(channel.monthlyGrowth)}</td>
-      <td className="growth positive">{formatGrowth(channel.dailyGrowth)}</td>
-      <td>{formatNumber(channel.subscribersPerVideo)}</td>
-      <td className="period">{formatOperatingPeriod(channel.operatingPeriod)}</td>
-      <td className="total-views">{formatViews(channel.totalViews)}</td>
-      <td className="avg-views">{formatViews(channel.avgViews)}</td>
-      <td>{formatVideosCount(channel.videosCount)}</td>
-      <td className="upload-frequency">{formatUploadFrequency(channel.uploadFrequency, language)}</td>
-      <td className="country">{getCountryDisplayName(language, channel.country)}</td>
+      <td className={getPriorityClass('category')}>{channel.category}</td>
+      <td className={`subscribers ${getPriorityClass('subscribers')}`}>{formatSubscribers(channel.subscribers)}</td>
+      <td className={`growth positive ${getPriorityClass('yearlyGrowth')}`}>{formatGrowth(channel.yearlyGrowth)}</td>
+      <td className={`growth positive ${getPriorityClass('monthlyGrowth')}`}>{formatGrowth(channel.monthlyGrowth)}</td>
+      <td className={`growth positive ${getPriorityClass('dailyGrowth')}`}>{formatGrowth(channel.dailyGrowth)}</td>
+      <td className={getPriorityClass('subsPerVideo')}>{formatNumber(channel.subscribersPerVideo)}</td>
+      <td className={`period ${getPriorityClass('operatingPeriod')}`}>{formatOperatingPeriod(channel.operatingPeriod)}</td>
+      <td className={`total-views ${getPriorityClass('totalViews')}`}>{formatViews(channel.totalViews)}</td>
+      <td className={`avg-views ${getPriorityClass('avgViews')}`}>{formatViews(channel.avgViews)}</td>
+      <td className={getPriorityClass('videoCount')}>{formatVideosCount(channel.videosCount)}</td>
+      <td className={`upload-frequency ${getPriorityClass('uploadFreq')}`}>{formatUploadFrequency(channel.uploadFrequency, language)}</td>
+      <td className={`country ${getPriorityClass('country')}`}>{getCountryDisplayName(language, channel.country)}</td>
     </tr>
   );
 };

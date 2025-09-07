@@ -1247,6 +1247,11 @@ th .resizeHandle.resizeHandleLeft {
   border: 1px solid #7c3aed;
 }
 
+/* 반응형 컬럼 우선순위 클래스 - 기본값 */
+.priority1 { display: table-cell; }
+.priority2 { display: table-cell; }
+.priority3 { display: table-cell; }
+
 /* 타블렛 가로 (1024px 이하) */
 @media (max-width: 1024px) {
   .contentWrapper {
@@ -1260,6 +1265,24 @@ th .resizeHandle.resizeHandleLeft {
   .tableContainer {
     width: 100%;
   }
+  
+  /* 타블렛에서는 priority 3 컬럼 숨김 (연간성장, 일간성장, 구독자/영상, 운영기간, 평균조회수, 총영상개수, 업로드빈도) */
+  .channelTable th:nth-child(5),  /* 연간성장 */
+  .channelTable td:nth-child(5),
+  .channelTable th:nth-child(7),  /* 일간성장 */
+  .channelTable td:nth-child(7),
+  .channelTable th:nth-child(8),  /* 구독자/영상 */
+  .channelTable td:nth-child(8),
+  .channelTable th:nth-child(9),  /* 운영기간 */
+  .channelTable td:nth-child(9),
+  .channelTable th:nth-child(11), /* 평균조회수 */
+  .channelTable td:nth-child(11),
+  .channelTable th:nth-child(12), /* 총영상개수 */
+  .channelTable td:nth-child(12),
+  .channelTable th:nth-child(13), /* 업로드빈도 */
+  .channelTable td:nth-child(13) {
+    display: none !important;
+  }
 }
 
 /* 모바일 (768px 이하) */
@@ -1272,6 +1295,30 @@ th .resizeHandle.resizeHandleLeft {
     width: 100%;
     margin: 0;
     border-radius: 0;
+  }
+  
+  /* 모바일에서는 priority 2, 3 컬럼 숨김 (카테고리, 월간성장, 총조회수 + 위의 모든 priority 3) */
+  .channelTable th:nth-child(3),  /* 카테고리 */
+  .channelTable td:nth-child(3),
+  .channelTable th:nth-child(5),  /* 연간성장 */
+  .channelTable td:nth-child(5),
+  .channelTable th:nth-child(6),  /* 월간성장 */
+  .channelTable td:nth-child(6),
+  .channelTable th:nth-child(7),  /* 일간성장 */
+  .channelTable td:nth-child(7),
+  .channelTable th:nth-child(8),  /* 구독자/영상 */
+  .channelTable td:nth-child(8),
+  .channelTable th:nth-child(9),  /* 운영기간 */
+  .channelTable td:nth-child(9),
+  .channelTable th:nth-child(10), /* 총조회수 */
+  .channelTable td:nth-child(10),
+  .channelTable th:nth-child(11), /* 평균조회수 */
+  .channelTable td:nth-child(11),
+  .channelTable th:nth-child(12), /* 총영상개수 */
+  .channelTable td:nth-child(12),
+  .channelTable th:nth-child(13), /* 업로드빈도 */
+  .channelTable td:nth-child(13) {
+    display: none !important;
   }
   
   .statsHeader {

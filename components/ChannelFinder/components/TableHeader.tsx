@@ -2,6 +2,8 @@ import React from 'react';
 import { Language } from '../../../types';
 import { getChannelFinderTranslation } from '../../../i18n/channelFinderI18n';
 import { channelFinderI18n } from '../../../i18n/channelFinderI18n';
+import { RESPONSIVE_COLUMN_CONFIG } from '../constants';
+import styles from '../../../styles/ChannelFinder.module.css';
 
 interface TableHeaderProps {
   language: Language;
@@ -30,21 +32,26 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   onCategoryFilter,
   openDropdown
 }) => {
+  // 우선순위 클래스 생성 헬퍼 함수
+  const getPriorityClass = (columnKey: keyof typeof RESPONSIVE_COLUMN_CONFIG.COLUMN_PRIORITIES) => {
+    const priority = RESPONSIVE_COLUMN_CONFIG.COLUMN_PRIORITIES[columnKey];
+    return styles[`priority${priority}`];
+  };
   return (
     <thead>
       <tr>
         {/* 리사이즈 핸들러 추가 - No 컬럼 */}
-        <th className="category-header-resizable" style={{ width: columnWidths[0] }}>
+        <th className={`category-header-resizable ${getPriorityClass('rank')}`} style={{ width: columnWidths[0] }}>
           <div className="resize-handle resize-handle-left" onMouseDown={(e) => onMouseDown(0, e)}></div>
           {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.no')}
         </th>
         {/* 리사이즈 핸들러 추가 - 채널명 컬럼 */}
-        <th className="category-header-resizable" style={{ width: columnWidths[1] }}>
+        <th className={`category-header-resizable ${getPriorityClass('channelName')}`} style={{ width: columnWidths[1] }}>
           <div className="resize-handle resize-handle-left" onMouseDown={(e) => onMouseDown(1, e)}></div>
           {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.channelName')}
         </th>
         <th 
-          className="sortable-header category-header-resizable"
+          className={`sortable-header category-header-resizable ${getPriorityClass('category')}`}
           onClick={() => onHeaderClick('category')}
           style={{ width: columnWidths[2] }}
         >
@@ -65,7 +72,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </th>
         {/* 리사이즈 핸들러 추가 - 구독자 컬럼 */}
         <th 
-          className="sortable-header category-header-resizable"
+          className={`sortable-header category-header-resizable ${getPriorityClass('subscribers')}`}
           onClick={() => onHeaderClick('subscribers')}
           style={{ width: columnWidths[3] }}
         >
@@ -80,7 +87,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </th>
         {/* 리사이즈 핸들러 추가 - 연간성장 컬럼 */}
         <th 
-          className="sortable-header category-header-resizable"
+          className={`sortable-header category-header-resizable ${getPriorityClass('yearlyGrowth')}`}
           onClick={() => onHeaderClick('yearlyGrowth')}
           style={{ width: columnWidths[4] }}
         >
@@ -95,7 +102,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </th>
         {/* 리사이즈 핸들러 추가 - 월간성장 컬럼 */}
         <th 
-          className="sortable-header category-header-resizable"
+          className={`sortable-header category-header-resizable ${getPriorityClass('monthlyGrowth')}`}
           onClick={() => onHeaderClick('monthlyGrowth')}
           style={{ width: columnWidths[5] }}
         >
@@ -110,7 +117,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </th>
         {/* 리사이즈 핸들러 추가 - 일간성장 컬럼 */}
         <th 
-          className="sortable-header category-header-resizable"
+          className={`sortable-header category-header-resizable ${getPriorityClass('dailyGrowth')}`}
           onClick={() => onHeaderClick('dailyGrowth')}
           style={{ width: columnWidths[6] }}
         >
@@ -125,7 +132,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </th>
         {/* 리사이즈 핸들러 추가 - 구독전환율 컬럼 */}
         <th 
-          className="sortable-header category-header-resizable"
+          className={`sortable-header category-header-resizable ${getPriorityClass('subsPerVideo')}`}
           onClick={() => onHeaderClick('subscribersPerVideo')}
           style={{ width: columnWidths[7] }}
         >
@@ -140,7 +147,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </th>
         {/* 리사이즈 핸들러 추가 - 운영기간 컬럼 */}
         <th 
-          className="sortable-header category-header-resizable"
+          className={`sortable-header category-header-resizable ${getPriorityClass('operatingPeriod')}`}
           onClick={() => onHeaderClick('operatingPeriod')}
           style={{ width: columnWidths[8] }}
         >
@@ -155,7 +162,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </th>
         {/* 리사이즈 핸들러 추가 - 총조회수 컬럼 */}
         <th 
-          className="sortable-header category-header-resizable"
+          className={`sortable-header category-header-resizable ${getPriorityClass('totalViews')}`}
           onClick={() => onHeaderClick('totalViews')}
           style={{ width: columnWidths[9] }}
         >
@@ -170,7 +177,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </th>
         {/* 리사이즈 핸들러 추가 - 평균조회수 컬럼 */}
         <th 
-          className="sortable-header category-header-resizable"
+          className={`sortable-header category-header-resizable ${getPriorityClass('avgViews')}`}
           onClick={() => onHeaderClick('avgViews')}
           style={{ width: columnWidths[10] }}
         >
@@ -183,7 +190,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             </div>
           )}
         </th>
-        <th className="sortable-header"
+        <th className={`sortable-header ${getPriorityClass('videoCount')}`}
           onClick={() => onHeaderClick('videosCount')}
         >
           {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.totalVideos')}
@@ -195,7 +202,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           )}
         </th>
         <th 
-          className="sortable-header"
+          className={`sortable-header ${getPriorityClass('uploadFreq')}`}
           onClick={() => onHeaderClick('uploadFrequency')}
         >
           {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.uploadFrequency')}
@@ -206,7 +213,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             </div>
           )}
         </th>
-        <th className="sortable-header country-header">
+        <th className={`sortable-header country-header ${getPriorityClass('country')}`}>
           <button 
             className="country-select-button main-country-button"
             onClick={(e) => openDropdown('main', e)}
