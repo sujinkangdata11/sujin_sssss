@@ -8,6 +8,7 @@ import Pagination from '../components/Pagination';
 import countryRpmDefaults from '../data/countryRpmDefaults.json';
 import currencyExchangeData from '../data/currencyExchangeData.json';
 import { cloudflareService } from '../services/mainFinder/cloudflareService';
+import { calculateTableMonthlyRevenue } from '../utils/tableMonthlyRevenue';
 import { CONFIG, countryDisplayNames } from '../components/ChannelFinder/constants';
 import { ChannelFinderProps, ChannelData } from '../components/ChannelFinder/types';
 import { formatRevenue, calculateRevenueFromViews, calculateViewsPerSubscriber, calculateSubscriptionRate, formatUploadFrequency } from '../components/ChannelFinder/utils';
@@ -521,7 +522,19 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           aValue = a.subscribers;
           bValue = b.subscribers;
           break;
-        case 'yearlyGrowth':
+        // 🔄 OLD: 매년증가 정렬 -> 🆕 NEW: 월 수익 정렬 (채널별 국가 RPM 사용)
+        case 'monthlyRevenue':
+          // 🔄 FIXED: 정렬도 표시와 동일한 유틸 함수 사용 (고정 RPM)
+          
+          // calculateTableMonthlyRevenue는 문자열을 반환하므로 숫자로 변환
+          const aRevenueStr = calculateTableMonthlyRevenue(a);
+          const bRevenueStr = calculateTableMonthlyRevenue(b);
+          
+          // 문자열에서 숫자 추출 (억, 만원 등 제거)
+          aValue = parseFloat(aRevenueStr.replace(/[^0-9]/g, '')) || 0;
+          bValue = parseFloat(bRevenueStr.replace(/[^0-9]/g, '')) || 0;
+          break;
+        case 'yearlyGrowth': // 백업용으로 유지
           aValue = a.yearlyGrowth;
           bValue = b.yearlyGrowth;
           break;
@@ -800,6 +813,28 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     }
   };
 
+  // 🆕 정렬용 월 수익 숫자값 계산 - 각 채널의 고유 데이터 사용 (정렬용)
+  const getMonthlyRevenueNumber = (channel: ChannelData): number => {
+    if (!channel.operatingPeriod || channel.operatingPeriod <= 0) return 0;
+    
+    // 🔄 FIXED: 정렬은 각 채널의 고유 데이터 사용 (일관성 보장)
+    const currentShortsPercentage = channel.shortsViewsPercentage || 20;
+    const currentLongPercentage = channel.longformViewsPercentage || 80;
+    
+    // USD 월 수익 계산 (사이드바와 동일한 공식이지만 각 채널 데이터 사용)
+    const totalRevenueUSD = (channel.totalViews * (currentShortsPercentage / 100) / 1000) * shortsRpm +
+                           (channel.totalViews * (currentLongPercentage / 100) / 1000) * longRpm;
+    const monthlyRevenueUSD = totalRevenueUSD / channel.operatingPeriod;
+    
+    // 환율 적용
+    return language === 'en' ? monthlyRevenueUSD : monthlyRevenueUSD * exchangeRate;
+  };
+
+  // 🆕 테이블용 월 수익 표시 - 새로운 유틸 함수 사용 (채널별 국가 RPM)
+  const getTableMonthlyRevenue = (channel: ChannelData): string => {
+    return calculateTableMonthlyRevenue(channel); // exchangeRate은 기본값 1300 사용
+  };
+
   // 현지 화폐 초기화 effect
   React.useEffect(() => {
     // 한국 원화 환율은 항상 1300원으로 고정
@@ -953,17 +988,18 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       )}
                     </th>
                     {/* 리사이즈 핸들러 추가 - 연간성장 컬럼 */}
+                    {/* 🔄 OLD: 매년증가 -> 🆕 NEW: 월 수익 컬럼으로 교체 */}
                     <th 
                       className={`${styles.sortableHeader} ${styles.categoryHeaderResizable}`}
-                      onClick={() => handleHeaderClick('yearlyGrowth')}
+                      onClick={() => handleHeaderClick('monthlyRevenue')}
                       style={{ width: columnWidths[4] }}
                     >
                       <div className={`${styles.resizeHandle} ${styles.resizeHandleLeft}`} onMouseDown={(e) => handleMouseDown(4, e)}></div>
-                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.yearlyGrowth')}
-                      {sortMenuOpen === 'yearlyGrowth' && (
+                      {getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.monthlyRevenue')}
+                      {sortMenuOpen === 'monthlyRevenue' && (
                         <div className={styles.sortMenu}>
-                          <div onClick={() => handleSort('yearlyGrowth', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
-                          <div onClick={() => handleSort('yearlyGrowth', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
+                          <div onClick={() => handleSort('monthlyRevenue', 'desc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.highToLow')}</div>
+                          <div onClick={() => handleSort('monthlyRevenue', 'asc')}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.sortOptions.lowToHigh')}</div>
                         </div>
                       )}
                     </th>
@@ -1121,7 +1157,8 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       </td>
                       <td>{channel.category}</td>
                       <td className={styles.subscribers}>{formatSubscribers(channel.subscribers)}</td>
-                      <td className={`${styles.growth} ${styles.positive}`}>{formatGrowth(channel.yearlyGrowth)}</td>
+                      {/* 🔄 OLD: 매년증가 -> 🆕 NEW: 월 수익 표시 */}
+                      <td className={`${styles.growth} ${styles.positive}`}>{getTableMonthlyRevenue(channel)}</td>
                       <td className={`${styles.growth} ${styles.positive}`}>{formatGrowth(channel.monthlyGrowth)}</td>
                       <td className={`${styles.growth} ${styles.positive}`}>{formatGrowth(channel.dailyGrowth)}</td>
                       <td>{formatNumber(channel.subscribersPerVideo)}</td>

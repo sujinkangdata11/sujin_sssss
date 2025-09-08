@@ -504,7 +504,7 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
               <div className={styles.statLabel}>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.monthlyUsdRevenue')}</div>
               <div className={`${styles.statValue} ${styles.revenueValue}`}>{calculateMonthlyRevenue()}</div>
               {hoveredStat === 'monthly-revenue' && (
-                <div className={styles.statTooltip}>총 수익을 운영기간으로 나눈 월평균 수익</div>
+                <div className={styles.statTooltip}>{getChannelFinderTranslation(channelFinderI18n, language, 'tooltips.monthlyRevenue')}</div>
               )}
             </div>
             {/* 🌍 미국이 아닌 경우에만 현지 통화 변환 블럭 표시 */}
@@ -522,10 +522,10 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
                 </div>
                 {hoveredStat === 'monthly-revenue-local' && (
                   <div className={styles.statTooltip}>
-                    {language === 'ko' 
-                      ? `클릭하여 환율을 변경할 수 있습니다 (현재: ${exchangeRate}원)`
-                      : `Current exchange rate: ${EXCHANGE_RATES[language].rate} ${EXCHANGE_RATES[language].symbol}/USD`
-                    }
+                    {getChannelFinderTranslation(channelFinderI18n, language, 'tooltips.exchangeRateChange', {
+                      rate: exchangeRate,
+                      symbol: EXCHANGE_RATES[language].symbol
+                    })}
                   </div>
                 )}
               </div>

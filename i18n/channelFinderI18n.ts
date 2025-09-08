@@ -13,7 +13,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "Channel Name",
         category: "Category", 
         subscribers: "Subscribers",
-        yearlyGrowth: "Yearly Growth",
+        yearlyGrowth: "Yearly Growth", // 🔄 OLD: 매년증가 컬럼 (삭제 예정)
+        monthlyRevenue: "Monthly Revenue", // 🆕 NEW: 월 수익 컬럼
         monthlyGrowth: "Monthly Growth",
         dailyGrowth: "Daily Growth",
         subscriptionRate: "Subscription Rate",
@@ -93,7 +94,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "This metric shows high view counts relative to subscribers. It means your content is being exposed to many users beyond your own subscribers.",
-      subscriptionRate: "This metric shows the rate of people who subscribe after watching videos. An average of 3% is considered very high."
+      subscriptionRate: "This metric shows the rate of people who subscribe after watching videos. An average of 3% is considered very high.",
+      monthlyRevenue: "Average monthly revenue calculated by dividing total revenue by operating period",
+      exchangeRateChange: "Click to change exchange rate (Current: {rate} {symbol})"
     }
   },
   ko: {
@@ -108,7 +111,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "채널명",
         category: "카테고리", 
         subscribers: "구독자수",
-        yearlyGrowth: "매년증가",
+        yearlyGrowth: "매년증가", // 🔄 OLD: 매년증가 컬럼 (삭제 예정)
+        monthlyRevenue: "월 수익", // 🆕 NEW: 월 수익 컬럼
         monthlyGrowth: "월간 증가",
         dailyGrowth: "일일증가",
         subscriptionRate: "구독 전환율",
@@ -188,7 +192,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "이 지표는 구독자 대비 높은 조회수를 나타냅니다. 본인의 구독자를 넘어 많은 사용자들에게 콘텐츠가 노출되고 있음을 의미합니다.",
-      subscriptionRate: "이 지표는 영상을 본 후 구독하는 사람들의 비율을 나타냅니다. 평균 3%는 매우 높은 수치로 간주됩니다."
+      subscriptionRate: "이 지표는 영상을 본 후 구독하는 사람들의 비율을 나타냅니다. 평균 3%는 매우 높은 수치로 간주됩니다.",
+      monthlyRevenue: "총 수익을 운영기간으로 나눈 월평균 수익",
+      exchangeRateChange: "클릭하여 환율을 변경할 수 있습니다 (현재: {rate}{symbol})"
     }
   },
   ja: {
@@ -283,7 +289,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "この指標は登録者に対する高い再生数を示します。自分の登録者を超えて多くのユーザーにコンテンツが露出されていることを意味します。",
-      subscriptionRate: "この指標は動画を見た後に登録する人の割合を示します。平均3%は非常に高い数値とされます。"
+      subscriptionRate: "この指標は動画を見た後に登録する人の割合を示します。平均3%は非常に高い数値とされます。",
+      monthlyRevenue: "総収益を運営期間で割った月平均収益",
+      exchangeRateChange: "クリックして為替レートを変更 (現在: {rate}{symbol})"
     }
   },
   zh: {
@@ -378,7 +386,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "这个指标显示相对于订阅者的高观看量。意味着您的内容正在向超出自己订阅者范围的许多用户展示。",
-      subscriptionRate: "这个指标显示观看视频后订阅的人的比例。平均3%被认为是非常高的数值。"
+      subscriptionRate: "这个指标显示观看视频后订阅的人的比例。平均3%被认为是非常高的数值。",
+      monthlyRevenue: "用总收益除以运营期间的月平均收益",
+      exchangeRateChange: "点击更改汇率 (当前: {rate}{symbol})"
     }
   },
   hi: {
@@ -473,7 +483,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "यह मेट्रिक सब्सक्राइबर्स की तुलना में उच्च व्यू दर्शाता है। इसका मतलब है कि आपका कंटेंट आपके सब्सक्राइबर्स से कहीं अधिक उपयोगकर्ताओं तक पहुंच रहा है।",
-      subscriptionRate: "यह मेट्रिक वीडियो देखने के बाद सब्सक्राइब करने वाले लोगों का अनुपात दर्शाता है। औसत 3% को बहुत उच्च माना जाता है।"
+      subscriptionRate: "यह मेट्रिक वीडियो देखने के बाद सब्सक्राइब करने वाले लोगों का अनुपात दर्शाता है। औसत 3% को बहुत उच्च माना जाता है।",
+      monthlyRevenue: "कुल राजस्व को संचालन अवधि से विभाजित करके निकाली गई मासिक औसत आय",
+      exchangeRateChange: "विनिमय दर बदलने के लिए क्लिक करें (वर्तमान: {rate}{symbol})"
     }
   },
   es: {
@@ -568,7 +580,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "Esta métrica muestra altas visualizaciones en relación a los suscriptores. Significa que tu contenido está siendo expuesto a muchos usuarios más allá de tus propios suscriptores.",
-      subscriptionRate: "Esta métrica muestra la tasa de personas que se suscriben después de ver videos. Un promedio del 3% se considera muy alto."
+      subscriptionRate: "Esta métrica muestra la tasa de personas que se suscriben después de ver videos. Un promedio del 3% se considera muy alto.",
+      monthlyRevenue: "Ingresos promedio mensuales calculados dividiendo los ingresos totales por el período operativo",
+      exchangeRateChange: "Haz clic para cambiar el tipo de cambio (Actual: {rate}{symbol})"
     }
   },
   fr: {
@@ -663,7 +677,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "Cette métrique montre un nombre élevé de vues par rapport aux abonnés. Cela signifie que votre contenu est exposé à de nombreux utilisateurs au-delà de vos propres abonnés.",
-      subscriptionRate: "Cette métrique montre le taux de personnes qui s'abonnent après avoir regardé des vidéos. Une moyenne de 3% est considérée comme très élevée."
+      subscriptionRate: "Cette métrique montre le taux de personnes qui s'abonnent après avoir regardé des vidéos. Une moyenne de 3% est considérée comme très élevée.",
+      monthlyRevenue: "Revenus mensuels moyens calculés en divisant les revenus totaux par la période d'exploitation",
+      exchangeRateChange: "Cliquez pour changer le taux de change (Actuel: {rate}{symbol})"
     }
   },
   de: {
@@ -758,7 +774,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "Diese Metrik zeigt hohe Aufrufzahlen im Verhältnis zu den Abonnenten. Es bedeutet, dass Ihr Inhalt vielen Nutzern über Ihre eigenen Abonnenten hinaus gezeigt wird.",
-      subscriptionRate: "Diese Metrik zeigt die Rate der Personen, die nach dem Anschauen von Videos abonnieren. Ein Durchschnitt von 3% gilt als sehr hoch."
+      subscriptionRate: "Diese Metrik zeigt die Rate der Personen, die nach dem Anschauen von Videos abonnieren. Ein Durchschnitt von 3% gilt als sehr hoch.",
+      monthlyRevenue: "Durchschnittliche monatliche Einnahmen berechnet durch Teilung der Gesamteinnahmen durch den Betriebszeitraum",
+      exchangeRateChange: "Klicken Sie zum Ändern des Wechselkurses (Aktuell: {rate}{symbol})"
     }
   },
   nl: {
@@ -853,7 +871,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "Deze metriek toont hoge weergaven ten opzichte van abonnees. Het betekent dat uw content wordt blootgesteld aan veel gebruikers buiten uw eigen abonnees.",
-      subscriptionRate: "Deze metriek toont het percentage mensen dat zich abonneert na het bekijken van video's. Een gemiddelde van 3% wordt als zeer hoog beschouwd."
+      subscriptionRate: "Deze metriek toont het percentage mensen dat zich abonneert na het bekijken van video's. Een gemiddelde van 3% wordt als zeer hoog beschouwd.",
+      monthlyRevenue: "Gemiddelde maandelijkse inkomsten berekend door totale inkomsten te delen door de operatieperiode",
+      exchangeRateChange: "Klik om wisselkoers te wijzigen (Huidig: {rate}{symbol})"
     }
   },
   pt: {
@@ -948,7 +968,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "Esta métrica mostra altas visualizações em relação aos inscritos. Significa que seu conteúdo está sendo exposto a muitos usuários além de seus próprios inscritos.",
-      subscriptionRate: "Esta métrica mostra a taxa de pessoas que se inscrevem depois de assistir vídeos. Uma média de 3% é considerada muito alta."
+      subscriptionRate: "Esta métrica mostra a taxa de pessoas que se inscrevem depois de assistir vídeos. Uma média de 3% é considerada muito alta.",
+      monthlyRevenue: "Receita média mensal calculada dividindo a receita total pelo período operacional",
+      exchangeRateChange: "Clique para alterar a taxa de câmbio (Atual: {rate}{symbol})"
     }
   },
   ru: {
@@ -1043,7 +1065,9 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     },
     tooltips: {
       viewsPerSubscriber: "Эта метрика показывает высокое количество просмотров относительно подписчиков. Это означает, что ваш контент показывается многим пользователям помимо ваших собственных подписчиков.",
-      subscriptionRate: "Эта метрика показывает долю людей, которые подписываются после просмотра видео. Средний показатель 3% считается очень высоким."
+      subscriptionRate: "Эта метрика показывает долю людей, которые подписываются после просмотра видео. Средний показатель 3% считается очень высоким.",
+      monthlyRevenue: "Средний месячный доход, рассчитанный путем деления общего дохода на период работы",
+      exchangeRateChange: "Нажмите для изменения курса обмена (Текущий: {rate}{symbol})"
     }
   }
 };
