@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import DropdownOptions from '../../DropdownOptions';
 import { Language } from '../../../types';
 import { ChannelData } from '../types';
 import { getChannelFinderTranslation, channelFinderI18n } from '../../../i18n/channelFinderI18n';
@@ -26,6 +27,8 @@ interface ChannelSidebarProps {
   currentCountry: string;
   dropdownState: { isOpen: boolean; type: string | null };
   openDropdown: (type: string, e: React.MouseEvent) => void;
+  countryOptions: Array<{ value: string; label: string }>;
+  onCountrySelect: (value: string) => void;
   adjustShortsRpm: (isIncrease: boolean) => void;
   adjustLongRpm: (isIncrease: boolean) => void;
   calculateTotalRevenue: () => string;
@@ -64,6 +67,8 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
   currentCountry,
   dropdownState,
   openDropdown,
+  countryOptions,
+  onCountrySelect,
   adjustShortsRpm,
   adjustLongRpm,
   calculateTotalRevenue,
@@ -76,11 +81,109 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
   currencyExchangeData,
   cf
 }) => {
+  // 로컬 드롭다운 상태
+  const [localDropdownOpen, setLocalDropdownOpen] = useState(false);
+  
+  // 드롭다운 핸들러
+  const handleDropdownToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLocalDropdownOpen(!localDropdownOpen);
+  };
+  
+  const handleDropdownClose = () => {
+    setLocalDropdownOpen(false);
+  };
+  
+  const handleDropdownSelect = (value: string) => {
+    onCountrySelect(value);
+    setLocalDropdownOpen(false);
+  };
+  
   // 안전장치: 필수 props 확인
   if (!selectedChannel || !language) {
     console.error('ChannelSidebar: Missing required props', { selectedChannel, language });
     return null;
   }
+
+  // 💰 USD 기준 월 수익 계산 함수 (환율 적용 X)
+  const calculateMonthlyRevenue = () => {
+    if (!selectedChannel.operatingPeriod || selectedChannel.operatingPeriod <= 0) return '$0';
+    
+    // ShortsUSD + LongUSD (환율 적용 X)
+    const totalRevenueUSD = (selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm +
+                           (selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm;
+    const monthlyRevenueUSD = totalRevenueUSD / selectedChannel.operatingPeriod;
+    
+    // USD를 한국어 단위로 표시
+    const amount = Math.round(monthlyRevenueUSD);
+    if (amount >= 100000000) {
+      const eok = Math.floor(amount / 100000000);
+      const remainder = amount % 100000000;
+      const man = Math.floor(remainder / 10000);
+      if (man > 0) {
+        return `${eok}억 ${man}만 달러`;
+      } else {
+        return `${eok}억 달러`;
+      }
+    } else if (amount >= 10000) {
+      const man = Math.floor(amount / 10000);
+      const remainder = amount % 10000;
+      if (remainder >= 1000) {
+        const cheon = Math.floor(remainder / 1000);
+        return `${man}만 ${cheon}천 달러`;
+      } else if (remainder > 0) {
+        return `${man}만 ${remainder} 달러`;
+      } else {
+        return `${man}만 달러`;
+      }
+    } else if (amount >= 1000) {
+      const cheon = Math.floor(amount / 1000);
+      const remainder = amount % 1000;
+      if (remainder > 0) {
+        return `${cheon}천 ${remainder} 달러`;
+      } else {
+        return `${cheon}천 달러`;
+      }
+    } else {
+      return `${amount} 달러`;
+    }
+  };
+
+  // 🇰🇷 한국 원화 월 수익 계산 함수
+  const calculateMonthlyRevenueKRW = () => {
+    if (!selectedChannel.operatingPeriod || selectedChannel.operatingPeriod <= 0) return '0원';
+    
+    // USD 월 수익 계산 (환율 적용 X)
+    const totalRevenueUSD = (selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm +
+                           (selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm;
+    const monthlyRevenueUSD = totalRevenueUSD / selectedChannel.operatingPeriod;
+    
+    // 마지막에만 환율 곱하기: KRW = USD * 환율
+    const monthlyRevenueKRW = monthlyRevenueUSD * exchangeRate;
+    
+    // 한국 원화 포맷팅 (억, 만원 단위)
+    const amount = Math.round(monthlyRevenueKRW);
+    if (amount >= 100000000) {
+      const eok = Math.floor(amount / 100000000);
+      const remainder = amount % 100000000;
+      const man = Math.floor(remainder / 10000);
+      if (man > 0) {
+        return `${eok}억 ${man}만원`;
+      } else {
+        return `${eok}억원`;
+      }
+    } else if (amount >= 10000) {
+      const man = Math.floor(amount / 10000);
+      const remainder = amount % 10000;
+      if (remainder > 0) {
+        return `${man}만 ${remainder.toLocaleString()}원`;
+      } else {
+        return `${man}만원`;
+      }
+    } else {
+      return `${amount.toLocaleString()}원`;
+    }
+  };
 
   try {
     return (
@@ -251,17 +354,30 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
                 <span className={styles.totalViewsValue}>{selectedChannel ? formatViews(selectedChannel.totalViews) : '0'}</span>
               </div>
               
-              <div className={styles.countrySelector}>
-                <label className={styles.countryLabel}>{getChannelFinderTranslation(channelFinderI18n, language, 'units.exchangeRate')}</label>
+              <div className={styles.countrySelector} style={{ position: 'relative' }}>
+                <label className={styles.countryLabel}>국가 RPM</label>
                 <button 
                   className={styles.countrySelectButton}
-                  onClick={(e) => openDropdown('sidebar', e)}
+                  onClick={handleDropdownToggle}
                 >
                   <span>{getCountryDisplayName(language, currentCountry)}</span>
-                  <svg className={`${styles.dropdownArrow} ${dropdownState.isOpen && dropdownState.type === 'sidebar' ? styles.open : ''}`} width="16" height="16" viewBox="0 0 20 20">
+                  <svg className={`${styles.dropdownArrow} ${localDropdownOpen ? styles.open : ''}`} width="16" height="16" viewBox="0 0 20 20">
                     <path stroke="#666" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m6 8 4 4 4-4"/>
                   </svg>
                 </button>
+                {localDropdownOpen && (
+                  <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10000 }}>
+                    <DropdownOptions
+                      options={countryOptions}
+                      onSelect={handleDropdownSelect}
+                      isOpen={localDropdownOpen}
+                      onClose={handleDropdownClose}
+                      selectedValue={currentCountry}
+                      maxHeight="250px"
+                      showSearch={true}
+                    />
+                  </div>
+                )}
               </div>
               
               {currentCountry !== 'United States' && (
@@ -305,7 +421,7 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
                   <div className={styles.revenueResult}>
                     <div className={styles.revenueLabel}>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalShortsRevenue')}</div>
                     <div className={styles.revenueValue}>
-                      {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm * exchangeRate), language, '기타') : formatRevenue(0, language, '기타')}
+                      {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm), language, '기타') : formatRevenue(0, language, '기타')}
                     </div>
                   </div>
                 </div>
@@ -325,7 +441,7 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
                   <div className={styles.revenueResult}>
                     <div className={styles.revenueLabel}>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalLongRevenue')}</div>
                     <div className={styles.revenueValue}>
-                      {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm * exchangeRate), language, '기타') : formatRevenue(0, language, '기타')}
+                      {selectedChannel ? formatRevenue(Math.round((selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm), language, '기타') : formatRevenue(0, language, '기타')}
                     </div>
                   </div>
                 </div>
@@ -396,6 +512,30 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
               <div className={styles.statValue}>{calculateSubscriptionRate(selectedChannel)}</div>
               {hoveredStat === 'subscription-rate' && (
                 <div className={styles.statTooltip} dangerouslySetInnerHTML={{__html: getChannelFinderTranslation(channelFinderI18n, language, 'tooltips.subscriptionRate') || ''}} />
+              )}
+            </div>
+            <div 
+              className={`${styles.statCard} ${styles.tooltipContainer}`}
+              onMouseEnter={() => setHoveredStat('monthly-revenue')}
+              onMouseLeave={() => setHoveredStat(null)}
+            >
+              <div className={styles.statLabel}>USD 월 수익</div>
+              <div className={`${styles.statValue} ${styles.revenueValue}`}>{calculateMonthlyRevenue()}</div>
+              {hoveredStat === 'monthly-revenue' && (
+                <div className={styles.statTooltip}>총 수익을 운영기간으로 나눈 월평균 수익</div>
+              )}
+            </div>
+            <div 
+              className={`${styles.statCard} ${styles.tooltipContainer}`}
+              onMouseEnter={() => setHoveredStat('monthly-revenue-krw')}
+              onMouseLeave={() => setHoveredStat(null)}
+              onClick={openExchangeRateModal}
+              style={{ cursor: 'pointer' }}
+            >
+              <div className={styles.statLabel}>← 이 금액을 한국 돈으로 보면</div>
+              <div className={`${styles.statValue} ${styles.revenueValue}`}>{calculateMonthlyRevenueKRW()}</div>
+              {hoveredStat === 'monthly-revenue-krw' && (
+                <div className={styles.statTooltip}>클릭하여 환율을 변경할 수 있습니다 (현재: {exchangeRate}원)</div>
               )}
             </div>
           </div>

@@ -18,6 +18,7 @@ import TableRow from '../components/ChannelFinder/components/TableRow';
 import ChannelSidebar from '../components/ChannelFinder/components/ChannelSidebar';
 import TableSkeleton from '../components/ChannelFinder/components/TableSkeleton';
 import SidebarSkeleton from '../components/ChannelFinder/components/SidebarSkeleton';
+import FilterTagsSection, { FilterState } from '../components/ChannelFinder/components/FilterTagsSection';
 import styles from '../styles/ChannelFinder.module.css';
 
 
@@ -85,10 +86,28 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   ];
   const [selectedChannel, setSelectedChannel] = useState<ChannelData | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentCountry, setCurrentCountry] = useState('기타'); // 기본 국가
-  const [shortsRpm, setShortsRpm] = useState(countryRpmDefaults['기타'].shorts);
-  const [longRpm, setLongRpm] = useState(countryRpmDefaults['기타'].long);
-  const [exchangeRate, setExchangeRate] = useState(currencyExchangeData['기타'].exchangeRate); // 환율 상태
+  const [currentCountry, setCurrentCountry] = useState(() => {
+    // 한국어 사용자면 South Korea, 아니면 기타
+    return language === 'ko' ? 'South Korea' : '기타';
+  });
+  const [shortsRpm, setShortsRpm] = useState(() => {
+    const defaultCountry = language === 'ko' ? 'South Korea' : '기타';
+    return countryRpmDefaults[defaultCountry].shorts;
+  });
+  const [longRpm, setLongRpm] = useState(() => {
+    const defaultCountry = language === 'ko' ? 'South Korea' : '기타';
+    return countryRpmDefaults[defaultCountry].long;
+  });
+  const [exchangeRate, setExchangeRate] = useState(() => {
+    // 한국어 사용자면 1300원, 아니면 1 (USD 기준)
+    const rate = language === 'ko' ? currencyExchangeData['South Korea'].exchangeRate : 1;
+    console.log('🔍 [DEBUG] 초기 환율 설정:', {
+      language,
+      rate,
+      currencyData: currencyExchangeData['South Korea']
+    });
+    return rate;
+  });
   // 선택된 채널의 숏폼/롱폼 비율 (실제 데이터 사용)
   const shortsPercentage = selectedChannel?.shortsViewsPercentage || 20;
   const longPercentage = selectedChannel?.longformViewsPercentage || 80;
@@ -162,11 +181,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 40;
   
-  // 현지 화폐 환율 및 모달 상태
-  const [localExchangeRate, setLocalExchangeRate] = useState(1300);
-  const [exchangeRateModalOpen, setExchangeRateModalOpen] = useState(false);
-  const [tempExchangeRate, setTempExchangeRate] = useState(1300);
-
   // 언어별 기본 환율 및 화폐 단위
   const currencySettings = {
     en: { rate: 1, symbol: 'USD', code: '$' },
@@ -182,10 +196,31 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     ru: { rate: 95, symbol: 'рублей', code: '₽' }
   };
 
+  // 현지 화폐 환율 및 모달 상태
+  const [localExchangeRate, setLocalExchangeRate] = useState(1300);
+  const [exchangeRateModalOpen, setExchangeRateModalOpen] = useState(false);
+  const [tempExchangeRate, setTempExchangeRate] = useState(() => {
+    return language === 'ko' ? currencyExchangeData['South Korea'].exchangeRate : 1;
+  });
+
   // 필터나 정렬이 변경되면 첫 페이지로 리셋
   React.useEffect(() => {
     setCurrentPage(1);
   }, [filteredChannels.length, selectedCountry]);
+
+
+  // 언어가 변경되면 환율을 해당 언어에 맞게 업데이트
+  React.useEffect(() => {
+    const newRate = language === 'ko' ? currencyExchangeData['South Korea'].exchangeRate : 1;
+    console.log('🔍 [DEBUG] 언어 변경 effect:', {
+      language,
+      newRate,
+      currencyData: currencyExchangeData['South Korea'],
+      isKorean: language === 'ko'
+    });
+    setTempExchangeRate(newRate);
+    setExchangeRate(newRate);
+  }, [language]);
 
 
   // 그래프 호버 툴팁 데이터
@@ -546,10 +581,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
       const rpm = countryRpmDefaults[newCountry];
       setShortsRpm(rpm.shorts);
       setLongRpm(rpm.long);
-      const exchangeData = currencyExchangeData[newCountry as keyof typeof currencyExchangeData];
-      if (exchangeData) {
-        setExchangeRate(exchangeData.exchangeRate);
-      }
+      // 환율은 언어에 따라 결정되므로 국가 변경 시 환율 변경하지 않음
     }
     closeDropdown();
   };
@@ -565,17 +597,21 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
       setCurrentCountry(channelCountry);
       setShortsRpm(defaultRpm.shorts);
       setLongRpm(defaultRpm.long);
-      const exchangeData = currencyExchangeData[channelCountry as keyof typeof currencyExchangeData];
-      if (exchangeData) {
-        setExchangeRate(exchangeData.exchangeRate);
-      }
+      // ❌ 환율은 채널 국가가 아닌 사용자 언어에 따라 결정되므로 제거
     } else {
       // 해당 국가의 데이터가 없거나 국가 설정이 없는 채널은 "기타" 사용
       setCurrentCountry('기타');
       setShortsRpm(countryRpmDefaults['기타'].shorts);
       setLongRpm(countryRpmDefaults['기타'].long);
-      setExchangeRate(currencyExchangeData['기타'].exchangeRate);
+      // 환율은 언어에 따라 결정되므로 여기서 변경하지 않음
     }
+    
+    console.log('🔍 [DEBUG] handleChannelClick:', {
+      channelCountry,
+      selectedRpm: defaultRpm,
+      currentExchangeRate: exchangeRate,
+      userLanguage: language
+    });
   };
 
   const closeSidebar = () => {
@@ -654,53 +690,83 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     return Math.round(views * rpm);
   };
 
+  // 총 수익의 USD 숫자값만 반환하는 함수 (환율 적용 X)
+  const calculateTotalRevenueValue = () => {
+    if (!selectedChannel) return 0;
+    
+    // ShortsViews = TotalViews * 숏폼비율 (vsvp)
+    const shortsViews = selectedChannel.totalViews * (shortsPercentage / 100);
+    // LongViews = TotalViews * 롱폼비율 (vlvp)
+    const longViews = selectedChannel.totalViews * (longPercentage / 100);
+    
+    // ShortsUSD = (ShortsViews/1000) * 각 나라 숏폼 RPM (환율 적용 X)
+    const shortsRevenueUsd = (shortsViews / 1000) * shortsRpm;
+    // LongUSD = (LongViews/1000) * 각 나라 롱폼 RPM (환율 적용 X)
+    const longRevenueUsd = (longViews / 1000) * longRpm;
+    
+    // TotalUSD = ShortsUSD + LongUSD
+    const totalUSD = Math.round(shortsRevenueUsd + longRevenueUsd);
+    
+    console.log('🔍 [DEBUG] calculateTotalRevenueValue:', {
+      channel: selectedChannel?.channelName,
+      totalViews: selectedChannel?.totalViews,
+      shortsPercentage,
+      longPercentage,
+      shortsViews,
+      longViews,
+      shortsRpm,
+      longRpm,
+      shortsRevenueUsd,
+      longRevenueUsd,
+      totalUSD,
+      currentCountry
+    });
+    
+    return totalUSD;
+  };
+
   const calculateTotalRevenue = () => {
     if (!selectedChannel) return formatRevenue(0);
     
-    const currentExchangeRate = exchangeRate; // 실제 설정된 환율 사용
+    const totalUsd = calculateTotalRevenueValue();
     
-    // 숏폼 조회수 = 총 조회수의 20%
-    const shortsViews = selectedChannel.totalViews * (shortsPercentage / 100);
-    // 숏폼 수익 = (숏폼 조회수 ÷ 1000) × 숏폼 RPM × 환율
-    const shortsRevenue = Math.round((shortsViews / 1000) * shortsRpm * currentExchangeRate);
-    
-    // 롱폼 조회수 = 총 조회수의 80%
-    const longViews = selectedChannel.totalViews * (longPercentage / 100);
-    // 롱폼 수익 = (롱폼 조회수 ÷ 1000) × 롱폼 RPM × 환율
-    const longRevenue = Math.round((longViews / 1000) * longRpm * currentExchangeRate);
-    
-    const total = shortsRevenue + longRevenue;
-    
-    return formatRevenue(total);
+    return formatRevenue(totalUsd);
   };
 
   const calculateLocalCurrencyRevenue = () => {
     if (!selectedChannel) return formatRevenue(0);
     
-    const currentExchangeRate = exchangeRate; // 실제 설정된 환율 사용
+    // TotalUSD 값을 가져와서 환율만 곱하기
+    const totalRevenueUsd = calculateTotalRevenueValue(); // USD 숫자값 (환율 적용 X)
     
-    // 숏폼 조회수 = 총 조회수의 20%
-    const shortsViews = selectedChannel.totalViews * (shortsPercentage / 100);
-    // 숏폼 수익 = (숏폼 조회수 ÷ 1000) × 숏폼 RPM × 환율
-    const shortsRevenue = Math.round((shortsViews / 1000) * shortsRpm * currentExchangeRate);
+    // KRW = TotalUSD * 각나라 환율 (환율모달창에서 변경가능)
+    const localTotal = Math.round(totalRevenueUsd * exchangeRate);
     
-    // 롱폼 조회수 = 총 조회수의 80%
-    const longViews = selectedChannel.totalViews * (longPercentage / 100);
-    // 롱폼 수익 = (롱폼 조회수 ÷ 1000) × 롱폼 RPM × 환율
-    const longRevenue = Math.round((longViews / 1000) * longRpm * currentExchangeRate);
+    console.log('🔍 [DEBUG] calculateLocalCurrencyRevenue:', {
+      totalRevenueUsd,
+      exchangeRate,
+      localTotal,
+      language,
+      selectedChannel: selectedChannel?.channelName
+    });
     
-    const totalUsd = shortsRevenue + longRevenue;
-    
-    // 현지 화폐로 환율 변환
-    const currentCurrency = currencySettings[language];
-    const localTotal = Math.round(totalUsd * localExchangeRate);
-    
-    return formatLocalizedNumber(localTotal, language, currentCurrency.symbol);
+    // 11개 다국어 지원 국가만 현지화폐로 표시, 나머지는 USD
+    if (language === 'ko') {
+      return formatLocalizedNumber(localTotal, language, '원');
+    } else if (language === 'ja') {
+      return formatLocalizedNumber(localTotal, language, '円');
+    } else if (language === 'zh') {
+      return formatLocalizedNumber(localTotal, language, '元');
+    } else {
+      // 기타 언어는 USD로 표시
+      return formatLocalizedNumber(totalRevenueUsd, language, '$');
+    }
   };
 
   // 현지 화폐 초기화 effect
   React.useEffect(() => {
-    const defaultRate = currencySettings[language]?.rate || 1300;
+    // 한국 원화 환율은 항상 1300원으로 고정
+    const defaultRate = 1300;
     setLocalExchangeRate(defaultRate);
     setTempExchangeRate(defaultRate);
   }, [language]);
@@ -747,7 +813,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
   // 환율 모달 관련 함수들
   const openExchangeRateModal = () => {
-    setTempExchangeRate(localExchangeRate);
+    setTempExchangeRate(currencySettings[language].rate); // 언어별 기본 환율 사용
     setExchangeRateModalOpen(true);
   };
 
@@ -756,7 +822,8 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const applyExchangeRate = () => {
-    setLocalExchangeRate(tempExchangeRate);
+    setExchangeRate(tempExchangeRate); // exchangeRate를 업데이트하도록 수정
+    setLocalExchangeRate(tempExchangeRate); // 기존 로직도 유지
     setExchangeRateModalOpen(false);
   };
 
@@ -790,6 +857,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
             <div className={styles.statsHeader}>
               <h2>{getChannelFinderTranslation(channelFinderI18n, language, 'header.mainTitle')}</h2>
             </div>
+
+            {/* 🏷️ 필터 태그 섹션 추가 */}
+            <FilterTagsSection 
+              onFilterApply={(filters: FilterState) => {
+                console.log('필터 적용:', filters);
+                // TODO: 실제 필터링 로직 구현
+              }}
+            />
 
             <div className={styles.tableContainer}>
               <table className={styles.channelTable}>
@@ -1063,6 +1138,15 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
               currentCountry={currentCountry}
               dropdownState={dropdownState}
               openDropdown={openDropdown}
+              countryOptions={countryOptions}
+              onCountrySelect={(value) => {
+                const newCountry = value as keyof typeof countryRpmDefaults;
+                setCurrentCountry(newCountry);
+                const rpm = countryRpmDefaults[newCountry];
+                setShortsRpm(rpm.shorts);
+                setLongRpm(rpm.long);
+                // 환율은 언어에 따라 결정되므로 국가 변경 시 환율 변경하지 않음
+              }}
               adjustShortsRpm={adjustShortsRpm}
               adjustLongRpm={adjustLongRpm}
               calculateTotalRevenue={calculateTotalRevenue}
@@ -1087,7 +1171,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
             position: 'fixed',
             left: dropdownState.position.x,
             top: dropdownState.position.y,
-            zIndex: 2000
+            zIndex: 5000
           }}
         >
           <DropdownOptions
@@ -1119,7 +1203,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                   onChange={(e) => setTempExchangeRate(Number(e.target.value))}
                   className={styles.exchangeRateInput}
                 />
-                <span>{currencySettings[language]?.symbol || '원'}</span>
+                <span>{currencySettings[language].symbol}</span>
               </div>
             </div>
             <div className={styles.modalFooter}>

@@ -39,6 +39,110 @@ export const RESPONSIVE_COLUMN_CONFIG = {
   }
 } as const;
 
+// 🎛️ 필터 태그 시스템 - 유지보수를 위한 설정 중심 구조
+// ⚠️ 유지보수 가이드: 태그/옵션 변경 시 이 설정만 수정하세요
+export const FILTER_TAG_CONFIG = {
+  // 💰 드롭다운 옵션 정의 (단위: 만원)
+  OPTIONS: {
+    videoCount: {
+      label: '영상 개수',
+      values: [
+        { value: 1000, label: '1000개' },
+        { value: 500, label: '500개' },
+        { value: 100, label: '100개' },
+        { value: 50, label: '50개' },
+        { value: 30, label: '30개' },
+        { value: 10, label: '10개' }
+      ]
+    },
+    revenue: {
+      label: '수익',
+      values: [
+        { value: 10000, label: '1억원' },
+        { value: 5000, label: '5천만원' },
+        { value: 3000, label: '3천만원' },
+        { value: 1000, label: '1000만원' },
+        { value: 500, label: '500만원' },
+        { value: 300, label: '300만원' },
+        { value: 100, label: '100만원' },
+        { value: 50, label: '50만원' },
+        { value: 10, label: '10만원' }
+      ]
+    },
+    period: {
+      label: '기간',
+      values: [
+        { value: 20, label: '20년' },
+        { value: 10, label: '10년' },
+        { value: 5, label: '5년' },
+        { value: 3, label: '3년' },
+        { value: 1, label: '1년' },
+        { value: 0.5, label: '6개월' },
+        { value: 0.25, label: '3개월' }
+      ]
+    },
+    views: {
+      label: '조회수',
+      values: [
+        { value: 100000000, label: '1억' },
+        { value: 50000000, label: '5천만' },
+        { value: 30000000, label: '3천만' },
+        { value: 10000000, label: '1천만' },
+        { value: 5000000, label: '500만' },
+        { value: 1000000, label: '100만' },
+        { value: 500000, label: '50만' },
+        { value: 100000, label: '10만' }
+      ]
+    },
+    subscribers: {
+      label: '구독자',
+      values: [
+        { value: 10000000, label: '1천만' },
+        { value: 5000000, label: '500만' },
+        { value: 1000000, label: '100만' },
+        { value: 500000, label: '50만' },
+        { value: 100000, label: '10만' },
+        { value: 50000, label: '5만' },
+        { value: 10000, label: '1만' }
+      ]
+    }
+  },
+
+  // 🏷️ 태그 정의 - 새로운 태그는 여기에 추가하세요
+  TAGS: [
+    {
+      id: 'videoRevenue',
+      template: '영상 개수 {videoCount} 이하 매월 {revenue}이상 버는 채널',
+      placeholders: ['videoCount', 'revenue'],
+      defaultValues: { videoCount: 100, revenue: 1000 }
+    },
+    {
+      id: 'periodRevenue',
+      template: '개설 {period} 이하 매월 {revenue}이상 버는 채널',
+      placeholders: ['period', 'revenue'],
+      defaultValues: { period: 1, revenue: 1000 }
+    },
+    {
+      id: 'monthlyRevenue',
+      template: '평균 월 {revenue}이상 버는 채널',
+      placeholders: ['revenue'],
+      defaultValues: { revenue: 1000 }
+    },
+    {
+      id: 'avgViews',
+      template: '평균 조회수 {views} 이상 채널',
+      placeholders: ['views'],
+      defaultValues: { views: 1000000 }
+    },
+    {
+      id: 'videoSubscribers',
+      template: '영상 개수 {videoCount} 이하 구독자 {subscribers} 이상 채널',
+      placeholders: ['videoCount', 'subscribers'],
+      defaultValues: { videoCount: 100, subscribers: 100000 }
+    }
+  ]
+} as const;
+
 // 국가 표시용 매핑 (간단한 객체)
 export const countryDisplayNames: { [key: string]: string } = {
   'United States': '미국',

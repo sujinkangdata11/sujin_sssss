@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
         }
       },
       server: {
+        port: 5178,
         headers: {
           'Content-Security-Policy': ''
         },

@@ -1,0 +1,142 @@
+.dropdownBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: transparent;
+}
+
+.dropdownOptions {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 200px;
+  z-index: 9999;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.dropdownOptionsContent {
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+.dropdownOption {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.dropdownOption:last-child {
+  border-bottom: none;
+}
+
+.dropdownOption:hover {
+  background: #f8f9fa;
+}
+
+.dropdownOption.selected {
+  background: #e3f2fd;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.dropdownOption:first-child {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.dropdownOption:last-child {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 스크롤바 스타일링 */
+.dropdownOptionsContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdownOptionsContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdownOptionsContent::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+}
+
+.dropdownOptionsContent::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+.dropdownSearchSection {
+  padding: 8px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.searchInputContainer {
+  position: relative;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dropdownSearchInput {
+  width: 100%;
+  padding: 6px 8px 6px 32px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.dropdownSearchInput:focus {
+  border-color: #7c4dff;
+  box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.1);
+}
+
+.dropdownSearchInput::placeholder {
+  color: #999;
+}
+
+.noResults {
+  padding: 12px 16px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  font-style: italic;
+}
