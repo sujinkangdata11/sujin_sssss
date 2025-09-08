@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DropdownOptions from '../../DropdownOptions';
 import { Language } from '../../../types';
 import { ChannelData } from '../types';
 import { getChannelFinderTranslation, channelFinderI18n } from '../../../i18n/channelFinderI18n';
 import { formatRevenue, calculateViewsPerSubscriber, calculateSubscriptionRate } from '../utils';
+import countryRpmDefaults from '../../../data/countryRpmDefaults.json';
 import styles from '../../../styles/ChannelFinder.module.css';
 
 interface ChannelSidebarProps {
@@ -83,6 +84,7 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
 }) => {
   // 로컬 드롭다운 상태
   const [localDropdownOpen, setLocalDropdownOpen] = useState(false);
+  
   
   // 드롭다운 핸들러
   const handleDropdownToggle = (e: React.MouseEvent) => {
@@ -380,35 +382,11 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
                 )}
               </div>
               
-              {currentCountry !== 'United States' && (
-                <div className={styles.exchangeRateSection}>
-                  <div className={styles.countrySelector}>
-                    <label className={styles.countryLabel}>{getChannelFinderTranslation(channelFinderI18n, language, 'units.exchangeRate')}</label>
-                    <div className={styles.exchangeRateInputWrapper}>
-                      <input
-                        type="number"
-                        className={styles.exchangeRateInput}
-                        value={exchangeRate}
-                        onChange={(e) => setExchangeRate(Number(e.target.value))}
-                        placeholder={getChannelFinderTranslation(channelFinderI18n, language, 'units.exchangeRatePlaceholder')}
-                        min="0"
-                        step="0.01"
-                      />
-                      <span className={styles.currencyUnit}>
-                        {(() => {
-                          const currencyCode = currencyExchangeData[currentCountry as keyof typeof currencyExchangeData]?.currency || 'USD';
-                          return getChannelFinderTranslation(channelFinderI18n, language, `currencies.${currencyCode}`) || '달러';
-                        })()}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
               
               <div className={styles.revenueCardsContainer}>
                 <div className={styles.contentRevenueCard}>
                   <div className={styles.contentHeader}>
-                    <span className={styles.contentTitle}>Shorts RPM</span>
+                    <span className={styles.contentTitle}>Shorts<br/>RPM</span>
                     <span className={styles.contentPercentage}>{shortsPercentage}%</span>
                   </div>
                   
@@ -428,7 +406,7 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
                 
                 <div className={styles.contentRevenueCard}>
                   <div className={styles.contentHeader}>
-                    <span className={styles.contentTitle}>Long RPM</span>
+                    <span className={styles.contentTitle}>Long<br/>RPM</span>
                     <span className={styles.contentPercentage}>{longPercentage}%</span>
                   </div>
                   
@@ -541,8 +519,9 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
           </div>
         </div>
       </div>
+      
     </div>
-    );
+  );
   } catch (error) {
     console.error('ChannelSidebar render error:', error);
     return (

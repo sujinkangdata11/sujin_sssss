@@ -726,11 +726,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const calculateTotalRevenue = () => {
-    if (!selectedChannel) return formatRevenue(0);
+    if (!selectedChannel) return formatLocalizedNumber(0, language, '달러');
     
     const totalUsd = calculateTotalRevenueValue();
     
-    return formatRevenue(totalUsd);
+    return formatLocalizedNumber(totalUsd, language, '달러');
   };
 
   const calculateLocalCurrencyRevenue = () => {
@@ -1145,7 +1145,17 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                 const rpm = countryRpmDefaults[newCountry];
                 setShortsRpm(rpm.shorts);
                 setLongRpm(rpm.long);
-                // 환율은 언어에 따라 결정되므로 국가 변경 시 환율 변경하지 않음
+                
+                // 선택된 국가의 환율로 변경
+                const exchangeData = currencyExchangeData[newCountry as keyof typeof currencyExchangeData];
+                if (exchangeData) {
+                  setExchangeRate(exchangeData.exchangeRate);
+                  console.log('🔍 [DEBUG] 국가 RPM 변경으로 환율 업데이트:', {
+                    country: newCountry,
+                    newRate: exchangeData.exchangeRate,
+                    currency: exchangeData.currency
+                  });
+                }
               }}
               adjustShortsRpm={adjustShortsRpm}
               adjustLongRpm={adjustLongRpm}
