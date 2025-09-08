@@ -8,7 +8,7 @@ import Pagination from '../components/Pagination';
 import countryRpmDefaults from '../data/countryRpmDefaults.json';
 import currencyExchangeData from '../data/currencyExchangeData.json';
 import { cloudflareService } from '../services/mainFinder/cloudflareService';
-import { calculateTableMonthlyRevenue } from '../utils/tableMonthlyRevenue';
+import { calculateTableMonthlyRevenue, calculateMonthlyRevenueUSD } from '../utils/tableMonthlyRevenue';
 import { CONFIG, countryDisplayNames } from '../components/ChannelFinder/constants';
 import { ChannelFinderProps, ChannelData } from '../components/ChannelFinder/types';
 import { formatRevenue, calculateRevenueFromViews, calculateViewsPerSubscriber, calculateSubscriptionRate, formatUploadFrequency } from '../components/ChannelFinder/utils';
@@ -522,17 +522,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           aValue = a.subscribers;
           bValue = b.subscribers;
           break;
-        // 🔄 OLD: 매년증가 정렬 -> 🆕 NEW: 월 수익 정렬 (다국어 지원)
+        // 🔄 OLD: 매년증가 정렬 -> 🆕 NEW: 월 수익 정렬 (USD 기준)
         case 'monthlyRevenue':
-          // 🔄 FIXED: 정렬도 표시와 동일한 유틸 함수 사용 (다국어 환율)
-          
-          // calculateTableMonthlyRevenue는 문자열을 반환하므로 숫자로 변환
-          const aRevenueStr = calculateTableMonthlyRevenue(a, language);
-          const bRevenueStr = calculateTableMonthlyRevenue(b, language);
-          
-          // 문자열에서 숫자 추출 (억, 만원, $, € 등 제거)
-          aValue = parseFloat(aRevenueStr.replace(/[^0-9]/g, '')) || 0;
-          bValue = parseFloat(bRevenueStr.replace(/[^0-9]/g, '')) || 0;
+          // 🔄 FIXED: 정렬은 순수 USD 값 사용, 표시는 다국어 환율 적용
+          aValue = calculateMonthlyRevenueUSD(a); // 순수 USD 숫자값
+          bValue = calculateMonthlyRevenueUSD(b); // 순수 USD 숫자값
           break;
         case 'yearlyGrowth': // 백업용으로 유지
           aValue = a.yearlyGrowth;

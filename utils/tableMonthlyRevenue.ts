@@ -54,6 +54,38 @@ const CURRENCY_EXCHANGE_RATES = {
   ru: { rate: 95, symbol: '₽', name: 'RUB' }         // 러시아 루블
 };
 
+// 🆕 정렬용 순수 USD 값 계산 함수 (표시용과 동일한 로직, USD 값만 반환)
+export const calculateMonthlyRevenueUSD = (
+  channel: ChannelData
+): number => {
+  // 1. 기본값 체크
+  if (!channel.operatingPeriod || channel.operatingPeriod <= 0) {
+    return 0;
+  }
+  
+  // 2. 채널의 국가에 따른 RPM 값 선택
+  const countryName = channel.country || 'United States';
+  const rpmValues = COUNTRY_RPM_VALUES[countryName] || COUNTRY_RPM_VALUES["United States"];
+  const { shortsRpm, longRpm } = rpmValues;
+  
+  // 3. 조회수 분할
+  const vsvp = channel.shortsViewsPercentage || 20;
+  const vlvp = channel.longformViewsPercentage || 80;
+  
+  const shortsViews = channel.totalViews * (vsvp / 100);
+  const longViews = channel.totalViews * (vlvp / 100);
+  
+  // 4. 수익 계산 (USD)
+  const shortsRevenueUSD = (shortsViews / 1000) * shortsRpm;
+  const longRevenueUSD = (longViews / 1000) * longRpm;
+  const totalRevenueUSD = shortsRevenueUSD + longRevenueUSD;
+  
+  // 5. 월평균 수익 계산 (USD)
+  const monthlyAvgUSD = totalRevenueUSD / channel.operatingPeriod;
+  
+  return monthlyAvgUSD; // 순수 USD 숫자 값 반환
+};
+
 export const calculateTableMonthlyRevenue = (
   channel: ChannelData,
   language: string = 'ko'
