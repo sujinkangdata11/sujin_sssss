@@ -99,12 +99,25 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     return countryRpmDefaults[defaultCountry].long;
   });
   const [exchangeRate, setExchangeRate] = useState(() => {
-    // 한국어 사용자면 1300원, 아니면 1 (USD 기준)
-    const rate = language === 'ko' ? currencyExchangeData['South Korea'].exchangeRate : 1;
+    // 🌍 각 언어별 기본 환율 설정 (실제 환율 기준)
+    const defaultRates = {
+      ko: 1300,  // 한국원
+      ja: 150,   // 일본엔  
+      zh: 7.2,   // 중국위안
+      hi: 83,    // 인도루피
+      es: 0.92,  // 스페인유로
+      fr: 0.92,  // 프랑스유로
+      de: 0.92,  // 독일유로
+      nl: 0.92,  // 네덜란드유로
+      pt: 5.1,   // 브라질헤알
+      ru: 95,    // 러시아루블
+      en: 1      // 미국달러 (기준)
+    };
+    const rate = defaultRates[language] || 1;
     console.log('🔍 [DEBUG] 초기 환율 설정:', {
       language,
       rate,
-      currencyData: currencyExchangeData['South Korea']
+      defaultRates
     });
     return rate;
   });
@@ -200,7 +213,12 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   const [localExchangeRate, setLocalExchangeRate] = useState(1300);
   const [exchangeRateModalOpen, setExchangeRateModalOpen] = useState(false);
   const [tempExchangeRate, setTempExchangeRate] = useState(() => {
-    return language === 'ko' ? currencyExchangeData['South Korea'].exchangeRate : 1;
+    // 🌍 초기값도 언어별 기본 환율 사용
+    const defaultRates = {
+      ko: 1300, ja: 150, zh: 7.2, hi: 83, es: 0.92, 
+      fr: 0.92, de: 0.92, nl: 0.92, pt: 5.1, ru: 95, en: 1
+    };
+    return defaultRates[language] || 1;
   });
 
   // 필터나 정렬이 변경되면 첫 페이지로 리셋
@@ -211,12 +229,16 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
   // 언어가 변경되면 환율을 해당 언어에 맞게 업데이트
   React.useEffect(() => {
-    const newRate = language === 'ko' ? currencyExchangeData['South Korea'].exchangeRate : 1;
+    // 🌍 언어별 기본 환율로 업데이트
+    const defaultRates = {
+      ko: 1300, ja: 150, zh: 7.2, hi: 83, es: 0.92, 
+      fr: 0.92, de: 0.92, nl: 0.92, pt: 5.1, ru: 95, en: 1
+    };
+    const newRate = defaultRates[language] || 1;
     console.log('🔍 [DEBUG] 언어 변경 effect:', {
       language,
       newRate,
-      currencyData: currencyExchangeData['South Korea'],
-      isKorean: language === 'ko'
+      defaultRates
     });
     setTempExchangeRate(newRate);
     setExchangeRate(newRate);
@@ -726,11 +748,12 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const calculateTotalRevenue = () => {
-    if (!selectedChannel) return formatLocalizedNumber(0, language, '달러');
+    const dollarText = getChannelFinderTranslation(channelFinderI18n, language, 'currencies.USD') || '달러';
+    if (!selectedChannel) return formatLocalizedNumber(0, language, dollarText);
     
     const totalUsd = calculateTotalRevenueValue();
     
-    return formatLocalizedNumber(totalUsd, language, '달러');
+    return formatLocalizedNumber(totalUsd, language, dollarText);
   };
 
   const calculateLocalCurrencyRevenue = () => {
@@ -750,15 +773,29 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
       selectedChannel: selectedChannel?.channelName
     });
     
-    // 11개 다국어 지원 국가만 현지화폐로 표시, 나머지는 USD
+    // 🌍 모든 11개 언어가 환율 반영된 localTotal 사용
     if (language === 'ko') {
-      return formatLocalizedNumber(localTotal, language, '원');
+      return formatLocalizedNumber(localTotal, language, '원'); // 한국원
     } else if (language === 'ja') {
-      return formatLocalizedNumber(localTotal, language, '円');
+      return formatLocalizedNumber(localTotal, language, '円'); // 일본엔
     } else if (language === 'zh') {
-      return formatLocalizedNumber(localTotal, language, '元');
+      return formatLocalizedNumber(localTotal, language, '元'); // 중국위안
+    } else if (language === 'hi') {
+      return formatLocalizedNumber(localTotal, language, '₹'); // 인도루피
+    } else if (language === 'es') {
+      return formatLocalizedNumber(localTotal, language, '€'); // 스페인유로
+    } else if (language === 'fr') {
+      return formatLocalizedNumber(localTotal, language, '€'); // 프랑스유로
+    } else if (language === 'de') {
+      return formatLocalizedNumber(localTotal, language, '€'); // 독일유로
+    } else if (language === 'nl') {
+      return formatLocalizedNumber(localTotal, language, '€'); // 네덜란드유로
+    } else if (language === 'pt') {
+      return formatLocalizedNumber(localTotal, language, 'R$'); // 브라질헤알
+    } else if (language === 'ru') {
+      return formatLocalizedNumber(localTotal, language, '₽'); // 러시아루블
     } else {
-      // 기타 언어는 USD로 표시
+      // 미국 영어는 USD 원본값 사용 (환율적용안함)
       return formatLocalizedNumber(totalRevenueUsd, language, '$');
     }
   };
@@ -813,7 +850,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
   // 환율 모달 관련 함수들
   const openExchangeRateModal = () => {
-    setTempExchangeRate(currencySettings[language].rate); // 언어별 기본 환율 사용
+    setTempExchangeRate(exchangeRate); // 현재 상태값 사용 (한국어처럼)
     setExchangeRateModalOpen(true);
   };
 

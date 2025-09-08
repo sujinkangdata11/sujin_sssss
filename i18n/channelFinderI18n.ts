@@ -48,6 +48,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "Total Shorts Revenue",
       totalLongRevenue: "Total Long Revenue",
       totalRevenue: "Shorts + Long Total Revenue (USD)",
+      monthlyUsdRevenue: "Monthly USD Revenue",
       localCurrencyText: "This amount in USD is",
       detailInfo: "Detail Information",
       noSubscriberData: "No subscriber data available"
@@ -142,6 +143,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "총 숏폼 수익",
       totalLongRevenue: "총 롱폼 수익",
       totalRevenue: "숏폼 + 롱폼 총 수익(USD)",
+      monthlyUsdRevenue: "USD 월 수익",
       localCurrencyText: "이 금액은 한국 돈으로 보면",
       detailInfo: "디테일 정보",
       noSubscriberData: "구독자 데이터가 없습니다"
@@ -236,6 +238,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "総ショート収益",
       totalLongRevenue: "総ロング収益",
       totalRevenue: "ショート + ロング総収益 (USD)",
+      monthlyUsdRevenue: "月間USD収益",
       localCurrencyText: "この金額は日本円で見ると",
       detailInfo: "詳細情報",
       noSubscriberData: "登録者データがありません"
@@ -330,6 +333,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "短视频总收益",
       totalLongRevenue: "长视频总收益",
       totalRevenue: "短视频 + 长视频总收益 (USD)",
+      monthlyUsdRevenue: "月度美元收益",
       localCurrencyText: "这个金额换成人民币是",
       detailInfo: "详细信息",
       noSubscriberData: "没有订阅者数据"
@@ -424,6 +428,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "कुल शॉर्ट्स राजस्व",
       totalLongRevenue: "कुल लॉन्ग राजस्व",
       totalRevenue: "शॉर्ट्स + लॉन्ग कुल राजस्व (USD)",
+      monthlyUsdRevenue: "मासिक USD आय",
       localCurrencyText: "यह राशि भारतीय रुपए में है",
       detailInfo: "विस्तृत जानकारी",
       noSubscriberData: "सब्सक्राइबर डेटा उपलब्ध नहीं"
@@ -518,6 +523,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "Ingresos Totales de Shorts",
       totalLongRevenue: "Ingresos Totales de Videos Largos",
       totalRevenue: "Shorts + Videos Largos Ingresos Totales (USD)",
+      monthlyUsdRevenue: "Ingresos Mensuales USD",
       localCurrencyText: "Esta cantidad en euros es",
       detailInfo: "Información Detallada",
       noSubscriberData: "No hay datos de suscriptores disponibles"
@@ -612,6 +618,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "Revenus Totaux des Shorts",
       totalLongRevenue: "Revenus Totaux des Longs",
       totalRevenue: "Shorts + Longs Revenus Totaux (USD)",
+      monthlyUsdRevenue: "Revenus Mensuels USD",
       localCurrencyText: "Ce montant en euros est",
       detailInfo: "Informations Détaillées",
       noSubscriberData: "Aucune donnée d'abonné disponible"
@@ -706,6 +713,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "Gesamtumsatz Shorts",
       totalLongRevenue: "Gesamtumsatz Lange Videos",
       totalRevenue: "Shorts + Lange Videos Gesamtumsatz (USD)",
+      monthlyUsdRevenue: "Monatlicher USD-Umsatz",
       localCurrencyText: "Dieser Betrag in Euro ist",
       detailInfo: "Detaillierte Informationen",
       noSubscriberData: "Keine Abonnentendaten verfügbar"
@@ -800,6 +808,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "Totale Shorts Inkomsten",
       totalLongRevenue: "Totale Lange Video Inkomsten",
       totalRevenue: "Shorts + Lange Videos Totale Inkomsten (USD)",
+      monthlyUsdRevenue: "Maandelijkse USD-inkomsten",
       localCurrencyText: "Dit bedrag in euro's is",
       detailInfo: "Gedetailleerde Informatie",
       noSubscriberData: "Geen abonneegegevens beschikbaar"
@@ -894,6 +903,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "Receita Total de Shorts",
       totalLongRevenue: "Receita Total de Vídeos Longos",
       totalRevenue: "Shorts + Vídeos Longos Receita Total (USD)",
+      monthlyUsdRevenue: "Receita Mensal USD",
       localCurrencyText: "Este valor em euros é",
       detailInfo: "Informações Detalhadas",
       noSubscriberData: "Dados de inscritos não disponíveis"
@@ -988,6 +998,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       totalShortsRevenue: "Общий доход от Shorts",
       totalLongRevenue: "Общий доход от длинных видео",
       totalRevenue: "Shorts + длинные общий доход (USD)",
+      monthlyUsdRevenue: "Ежемесячный доход USD",
       localCurrencyText: "Эта сумма в рублях составляет",
       detailInfo: "Детальная информация",
       noSubscriberData: "Данные о подписчиках недоступны"
@@ -1029,19 +1040,6 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       million: "миллион",
       billion: "миллиард",
       trillion: "триллион"
-    },
-    currencies: {
-      USD: "доллар",
-      KRW: "вон", 
-      JPY: "йена",
-      CNY: "юань",
-      INR: "рупия",
-      GBP: "фунт",
-      EUR: "евро",
-      CAD: "канадский доллар",
-      AUD: "австралийский доллар",
-      BRL: "реал",
-      MXN: "песо"
     },
     tooltips: {
       viewsPerSubscriber: "Эта метрика показывает высокое количество просмотров относительно подписчиков. Это означает, что ваш контент показывается многим пользователям помимо ваших собственных подписчиков.",

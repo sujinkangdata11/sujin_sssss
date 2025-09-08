@@ -4,6 +4,8 @@ import { getChannelFinderTranslation, formatLocalizedNumber } from '../../i18n/c
 import { channelFinderI18n } from '../../i18n/channelFinderI18n';
 import currencyExchangeData from '../../data/currencyExchangeData.json';
 
+export { formatLocalizedNumber };
+
 export const formatRevenue = (
   revenue: number,
   language: Language,

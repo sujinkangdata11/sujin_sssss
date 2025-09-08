@@ -3,7 +3,7 @@ import DropdownOptions from '../../DropdownOptions';
 import { Language } from '../../../types';
 import { ChannelData } from '../types';
 import { getChannelFinderTranslation, channelFinderI18n } from '../../../i18n/channelFinderI18n';
-import { formatRevenue, calculateViewsPerSubscriber, calculateSubscriptionRate } from '../utils';
+import { formatRevenue, calculateViewsPerSubscriber, calculateSubscriptionRate, formatLocalizedNumber } from '../utils';
 import countryRpmDefaults from '../../../data/countryRpmDefaults.json';
 import styles from '../../../styles/ChannelFinder.module.css';
 
@@ -109,6 +109,7 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
 
   // 💰 USD 기준 월 수익 계산 함수 (환율 적용 X)
   const calculateMonthlyRevenue = () => {
+    const dollarText = getChannelFinderTranslation(channelFinderI18n, language, 'currencies.USD') || '달러';
     if (!selectedChannel.operatingPeriod || selectedChannel.operatingPeriod <= 0) return '$0';
     
     // ShortsUSD + LongUSD (환율 적용 X)
@@ -116,42 +117,26 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
                            (selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm;
     const monthlyRevenueUSD = totalRevenueUSD / selectedChannel.operatingPeriod;
     
-    // USD를 한국어 단위로 표시
+    // 각 언어에 맞는 숫자 표기로 표시
     const amount = Math.round(monthlyRevenueUSD);
-    if (amount >= 100000000) {
-      const eok = Math.floor(amount / 100000000);
-      const remainder = amount % 100000000;
-      const man = Math.floor(remainder / 10000);
-      if (man > 0) {
-        return `${eok}억 ${man}만 달러`;
-      } else {
-        return `${eok}억 달러`;
-      }
-    } else if (amount >= 10000) {
-      const man = Math.floor(amount / 10000);
-      const remainder = amount % 10000;
-      if (remainder >= 1000) {
-        const cheon = Math.floor(remainder / 1000);
-        return `${man}만 ${cheon}천 달러`;
-      } else if (remainder > 0) {
-        return `${man}만 ${remainder} 달러`;
-      } else {
-        return `${man}만 달러`;
-      }
-    } else if (amount >= 1000) {
-      const cheon = Math.floor(amount / 1000);
-      const remainder = amount % 1000;
-      if (remainder > 0) {
-        return `${cheon}천 ${remainder} 달러`;
-      } else {
-        return `${cheon}천 달러`;
-      }
-    } else {
-      return `${amount} 달러`;
-    }
+    return formatLocalizedNumber(amount, language, dollarText);
   };
 
-  // 🇰🇷 한국 원화 월 수익 계산 함수
+  // 🌍 다국가 환율 설정 - 모든 나라가 exchangeRate 상태값 사용
+  const EXCHANGE_RATES = {
+    ko: { rate: exchangeRate, symbol: '원', label: '← 이 금액을 한국 돈으로 보면' },
+    ja: { rate: exchangeRate, symbol: '円', label: '← この金額を日本円で見ると' }, // 일본엔
+    zh: { rate: exchangeRate, symbol: '元', label: '← 这个金额用人民币来看' },   // 중국위안
+    hi: { rate: exchangeRate, symbol: '₹', label: '← यह राशि भारतीय रुपये में' },  // 인도루피
+    es: { rate: exchangeRate, symbol: '€', label: '← Esta cantidad en euros' },  // 스페인유로
+    fr: { rate: exchangeRate, symbol: '€', label: '← Ce montant en euros' },     // 프랑스유로
+    de: { rate: exchangeRate, symbol: '€', label: '← Dieser Betrag in Euro' },   // 독일유로
+    nl: { rate: exchangeRate, symbol: '€', label: '← Dit bedrag in euro' },      // 네덜란드유로
+    pt: { rate: exchangeRate, symbol: 'R$', label: '← Este valor em reais' },     // 브라질헤알
+    ru: { rate: exchangeRate, symbol: '₽', label: '← Эта сумма в рублях' }         // 러시아루블
+  };
+
+  // 🇰🇷 한국 원화 월 수익 계산 함수 (기존 유지)
   const calculateMonthlyRevenueKRW = () => {
     if (!selectedChannel.operatingPeriod || selectedChannel.operatingPeriod <= 0) return '0원';
     
@@ -185,6 +170,25 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
     } else {
       return `${amount.toLocaleString()}원`;
     }
+  };
+
+  // 🌍 범용 현지 통화 월 수익 계산 함수
+  const calculateMonthlyRevenueLocal = (currentLanguage: Language) => {
+    if (!selectedChannel.operatingPeriod || selectedChannel.operatingPeriod <= 0) return '0';
+    if (!EXCHANGE_RATES[currentLanguage]) return '0'; // 지원하지 않는 언어
+    
+    // USD 월 수익 계산 (환율 적용 X)
+    const totalRevenueUSD = (selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm +
+                           (selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm;
+    const monthlyRevenueUSD = totalRevenueUSD / selectedChannel.operatingPeriod;
+    
+    // 마지막에만 각 국가 환율 곱하기
+    const exchangeConfig = EXCHANGE_RATES[currentLanguage];
+    const monthlyRevenueLocal = monthlyRevenueUSD * exchangeConfig.rate;
+    const amount = Math.round(monthlyRevenueLocal);
+    
+    // formatLocalizedNumber 사용해서 각 언어에 맞게 포맷팅
+    return formatLocalizedNumber(amount, currentLanguage, exchangeConfig.symbol);
   };
 
   try {
@@ -497,25 +501,35 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
               onMouseEnter={() => setHoveredStat('monthly-revenue')}
               onMouseLeave={() => setHoveredStat(null)}
             >
-              <div className={styles.statLabel}>USD 월 수익</div>
+              <div className={styles.statLabel}>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.monthlyUsdRevenue')}</div>
               <div className={`${styles.statValue} ${styles.revenueValue}`}>{calculateMonthlyRevenue()}</div>
               {hoveredStat === 'monthly-revenue' && (
                 <div className={styles.statTooltip}>총 수익을 운영기간으로 나눈 월평균 수익</div>
               )}
             </div>
-            <div 
-              className={`${styles.statCard} ${styles.tooltipContainer}`}
-              onMouseEnter={() => setHoveredStat('monthly-revenue-krw')}
-              onMouseLeave={() => setHoveredStat(null)}
-              onClick={openExchangeRateModal}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className={styles.statLabel}>← 이 금액을 한국 돈으로 보면</div>
-              <div className={`${styles.statValue} ${styles.revenueValue}`}>{calculateMonthlyRevenueKRW()}</div>
-              {hoveredStat === 'monthly-revenue-krw' && (
-                <div className={styles.statTooltip}>클릭하여 환율을 변경할 수 있습니다 (현재: {exchangeRate}원)</div>
-              )}
-            </div>
+            {/* 🌍 미국이 아닌 경우에만 현지 통화 변환 블럭 표시 */}
+            {language !== 'en' && EXCHANGE_RATES[language] && (
+              <div 
+                className={`${styles.statCard} ${styles.tooltipContainer}`}
+                onMouseEnter={() => setHoveredStat('monthly-revenue-local')}
+                onMouseLeave={() => setHoveredStat(null)}
+                onClick={openExchangeRateModal}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className={styles.statLabel}>{EXCHANGE_RATES[language].label}</div>
+                <div className={`${styles.statValue} ${styles.revenueValue}`}>
+                  {language === 'ko' ? calculateMonthlyRevenueKRW() : calculateMonthlyRevenueLocal(language)}
+                </div>
+                {hoveredStat === 'monthly-revenue-local' && (
+                  <div className={styles.statTooltip}>
+                    {language === 'ko' 
+                      ? `클릭하여 환율을 변경할 수 있습니다 (현재: ${exchangeRate}원)`
+                      : `Current exchange rate: ${EXCHANGE_RATES[language].rate} ${EXCHANGE_RATES[language].symbol}/USD`
+                    }
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
