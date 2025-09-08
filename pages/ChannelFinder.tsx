@@ -522,15 +522,15 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           aValue = a.subscribers;
           bValue = b.subscribers;
           break;
-        // 🔄 OLD: 매년증가 정렬 -> 🆕 NEW: 월 수익 정렬 (채널별 국가 RPM 사용)
+        // 🔄 OLD: 매년증가 정렬 -> 🆕 NEW: 월 수익 정렬 (다국어 지원)
         case 'monthlyRevenue':
-          // 🔄 FIXED: 정렬도 표시와 동일한 유틸 함수 사용 (고정 RPM)
+          // 🔄 FIXED: 정렬도 표시와 동일한 유틸 함수 사용 (다국어 환율)
           
           // calculateTableMonthlyRevenue는 문자열을 반환하므로 숫자로 변환
-          const aRevenueStr = calculateTableMonthlyRevenue(a);
-          const bRevenueStr = calculateTableMonthlyRevenue(b);
+          const aRevenueStr = calculateTableMonthlyRevenue(a, language);
+          const bRevenueStr = calculateTableMonthlyRevenue(b, language);
           
-          // 문자열에서 숫자 추출 (억, 만원 등 제거)
+          // 문자열에서 숫자 추출 (억, 만원, $, € 등 제거)
           aValue = parseFloat(aRevenueStr.replace(/[^0-9]/g, '')) || 0;
           bValue = parseFloat(bRevenueStr.replace(/[^0-9]/g, '')) || 0;
           break;
@@ -830,9 +830,9 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     return language === 'en' ? monthlyRevenueUSD : monthlyRevenueUSD * exchangeRate;
   };
 
-  // 🆕 테이블용 월 수익 표시 - 새로운 유틸 함수 사용 (채널별 국가 RPM)
+  // 🆕 테이블용 월 수익 표시 - 다국어 지원 (채널별 국가 RPM)
   const getTableMonthlyRevenue = (channel: ChannelData): string => {
-    return calculateTableMonthlyRevenue(channel); // exchangeRate은 기본값 1300 사용
+    return calculateTableMonthlyRevenue(channel, language); // 언어별 환율 적용
   };
 
   // 현지 화폐 초기화 effect

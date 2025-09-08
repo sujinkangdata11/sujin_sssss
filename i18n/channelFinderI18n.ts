@@ -209,7 +209,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "チャンネル名",
         category: "カテゴリ", 
         subscribers: "登録者数",
-        yearlyGrowth: "年間成長",
+        yearlyGrowth: "年間成長", // 🔄 OLD: 年間成長 컬럼 (삭제 예정)
+        monthlyRevenue: "月収益", // 🆕 NEW: 月収益 컬럼
         monthlyGrowth: "月間成長",
         dailyGrowth: "日間成長",
         subscriptionRate: "登録転換率",
@@ -306,7 +307,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "频道名称",
         category: "类别", 
         subscribers: "订阅者",
-        yearlyGrowth: "年增长率",
+        yearlyGrowth: "年增长率", // 🔄 OLD: 年增长率 컬럼 (삭제 예정)
+        monthlyRevenue: "月收入", // 🆕 NEW: 月收入 컬럼
         monthlyGrowth: "月增长率",
         dailyGrowth: "日增长率",
         subscriptionRate: "订阅转换率",
@@ -403,7 +405,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "चैनल नाम",
         category: "श्रेणी", 
         subscribers: "सब्सक्राइबर",
-        yearlyGrowth: "वार्षिक विकास",
+        yearlyGrowth: "वार्षिक विकास", // 🔄 OLD: वार्षिक विकास 컬럼 (삭제 예정)
+        monthlyRevenue: "मासिक आय", // 🆕 NEW: मासिक आय 컬럼
         monthlyGrowth: "मासिक विकास",
         dailyGrowth: "दैनिक विकास",
         subscriptionRate: "सब्सक्रिप्शन दर",
@@ -500,7 +503,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "Nombre del Canal",
         category: "Categoría", 
         subscribers: "Suscriptores",
-        yearlyGrowth: "Crecimiento Anual",
+        yearlyGrowth: "Crecimiento Anual", // 🔄 OLD: Crecimiento Anual 컬럼 (삭제 예정)
+        monthlyRevenue: "Ingresos Mensuales", // 🆕 NEW: Ingresos Mensuales 컬럼
         monthlyGrowth: "Crecimiento Mensual",
         dailyGrowth: "Crecimiento Diario",
         subscriptionRate: "Tasa de Suscripción",
@@ -597,7 +601,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "Nom de la Chaîne",
         category: "Catégorie", 
         subscribers: "Abonnés",
-        yearlyGrowth: "Croissance Annuelle",
+        yearlyGrowth: "Croissance Annuelle", // 🔄 OLD: Croissance Annuelle 컬럼 (삭제 예정)
+        monthlyRevenue: "Revenus Mensuels", // 🆕 NEW: Revenus Mensuels 컬럼
         monthlyGrowth: "Croissance Mensuelle",
         dailyGrowth: "Croissance Quotidienne",
         subscriptionRate: "Taux d'Abonnement",
@@ -694,7 +699,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "Kanalname",
         category: "Kategorie", 
         subscribers: "Abonnenten",
-        yearlyGrowth: "Jährliches Wachstum",
+        yearlyGrowth: "Jährliches Wachstum", // 🔄 OLD: Jährliches Wachstum 컬럼 (삭제 예정)
+        monthlyRevenue: "Monatlicher Umsatz", // 🆕 NEW: Monatlicher Umsatz 컬럼
         monthlyGrowth: "Monatliches Wachstum",
         dailyGrowth: "Tägliches Wachstum",
         subscriptionRate: "Abonnement-Rate",
@@ -791,7 +797,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "Kanaalnaam",
         category: "Categorie", 
         subscribers: "Abonnees",
-        yearlyGrowth: "Jaarlijkse Groei",
+        yearlyGrowth: "Jaarlijkse Groei", // 🔄 OLD: Jaarlijkse Groei 컬럼 (삭제 예정)
+        monthlyRevenue: "Maandelijkse Inkomsten", // 🆕 NEW: Maandelijkse Inkomsten 컬럼
         monthlyGrowth: "Maandelijkse Groei",
         dailyGrowth: "Dagelijkse Groei",
         subscriptionRate: "Abonnementstarief",
@@ -888,7 +895,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "Nome do Canal",
         category: "Categoria", 
         subscribers: "Inscritos",
-        yearlyGrowth: "Crescimento Anual",
+        yearlyGrowth: "Crescimento Anual", // 🔄 OLD: Crescimento Anual 컬럼 (삭제 예정)
+        monthlyRevenue: "Receita Mensal", // 🆕 NEW: Receita Mensal 컬럼
         monthlyGrowth: "Crescimento Mensal",
         dailyGrowth: "Crescimento Diário",
         subscriptionRate: "Taxa de Inscrição",
@@ -985,7 +993,8 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         channelName: "Название канала",
         category: "Категория", 
         subscribers: "Подписчики",
-        yearlyGrowth: "Годовой рост",
+        yearlyGrowth: "Годовой рост", // 🔄 OLD: Годовой рост 컬럼 (삭제 예정)
+        monthlyRevenue: "Месячный доход", // 🆕 NEW: Месячный доход 컬럼
         monthlyGrowth: "Месячный рост",
         dailyGrowth: "Ежедневный рост",
         subscriptionRate: "Коэффициент подписки",
