@@ -59,15 +59,15 @@ export const FILTER_TAG_CONFIG = {
     revenue: {
       label: '수익',
       values: [
-        { value: 76923, label: '1억원' },
-        { value: 38461, label: '5천만원' },
-        { value: 23077, label: '3천만원' },
-        { value: 7692, label: '1천만원' },
-        { value: 3846, label: '500만원' },
-        { value: 2308, label: '300만원' },
-        { value: 769, label: '100만원' },
-        { value: 385, label: '50만원' },
-        { value: 77, label: '10만원' }
+        { value: 76923, label: '1억' },
+        { value: 38461, label: '5천만' },
+        { value: 23077, label: '3천만' },
+        { value: 7692, label: '1천만' },
+        { value: 3846, label: '500만' },
+        { value: 2308, label: '300만' },
+        { value: 769, label: '100만' },
+        { value: 385, label: '50만' },
+        { value: 77, label: '10만' }
       ]
     },
     period: {
@@ -113,33 +113,33 @@ export const FILTER_TAG_CONFIG = {
   TAGS: [
     {
       id: 'videoRevenue',
-      template: '영상 개수 {videoCount} 이하 매월 {revenue}만원 이상 버는 채널',
+      template: '영상 개수 {videoCount} 이하\n매월 {revenue}원 이상 버는 채널',
       placeholders: ['videoCount', 'revenue'],
-      defaultValues: { videoCount: 100, revenue: 1000 }
+      defaultValues: { videoCount: 100, revenue: 7692 }
     },
     {
       id: 'periodRevenue',
-      template: '개설 {period} 이하 매월 {revenue}만원 이상 버는 채널',
+      template: '개설 {period} 이하\n매월 {revenue}원 이상 버는 채널',
       placeholders: ['period', 'revenue'],
-      defaultValues: { period: 1, revenue: 1000 }
+      defaultValues: { period: 1, revenue: 7692 }
+    },
+    {
+      id: 'videoSubscribers',
+      template: '영상 개수 {videoCount} 이하\n구독자 {subscribers} 이상 채널',
+      placeholders: ['videoCount', 'subscribers'],
+      defaultValues: { videoCount: 100, subscribers: 100000 }
     },
     {
       id: 'monthlyRevenue',
-      template: '평균 월 {revenue}만원 이상 버는 채널',
+      template: '평균 월 {revenue}원 이상 버는 채널',
       placeholders: ['revenue'],
-      defaultValues: { revenue: 1000 }
+      defaultValues: { revenue: 7692 }
     },
     {
       id: 'avgViews',
       template: '평균 조회수 {views} 이상 채널',
       placeholders: ['views'],
       defaultValues: { views: 1000000 }
-    },
-    {
-      id: 'videoSubscribers',
-      template: '영상 개수 {videoCount} 이하 구독자 {subscribers} 이상 채널',
-      placeholders: ['videoCount', 'subscribers'],
-      defaultValues: { videoCount: 100, subscribers: 100000 }
     }
   ]
 } as const;
