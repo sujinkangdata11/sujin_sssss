@@ -195,7 +195,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 40;
+  const itemsPerPage = 15;
   
   // 언어별 기본 환율 및 화폐 단위
   const currencySettings = {
