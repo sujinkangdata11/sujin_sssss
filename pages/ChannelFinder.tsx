@@ -521,7 +521,10 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   };
 
   const handleSort = (column: string, direction: 'asc' | 'desc') => {
-    const sorted = [...sortedChannels].sort((a, b) => {
+    // 🔄 CONDITIONAL SORTING: 문장형 필터 활성화 시 필터된 데이터만 정렬
+    // ⚠️ 문제 발생시 이 조건문 전체 제거하고 기존 로직만 사용
+    const dataToSort = sentenceFilterActive ? filteredChannels : sortedChannels;
+    const sorted = [...dataToSort].sort((a, b) => {
       let aValue: number = 0;
       let bValue: number = 0;
 
@@ -585,7 +588,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
       return direction === 'desc' ? bValue - aValue : aValue - bValue;
     });
 
-    setSortedChannels(sorted);
+    // 🔄 CONDITIONAL STATE UPDATE: 문장형 필터 상태에 따라 다른 상태 업데이트
+    // ⚠️ 문제 발생시 이 조건문 제거하고 setSortedChannels(sorted)만 사용
+    if (sentenceFilterActive) {
+      setFilteredChannels(sorted); // 필터된 데이터만 정렬 결과 반영
+    } else {
+      setSortedChannels(sorted);   // 기존 로직: 전체 데이터 정렬
+    }
+    
     setSortMenuOpen(null);
   };
 
