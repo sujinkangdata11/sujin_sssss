@@ -58,15 +58,15 @@ export const FILTER_TAG_CONFIG = {
     revenue: {
       label: '수익',
       values: [
-        { value: 10000, label: '1억원' },
-        { value: 5000, label: '5천만원' },
-        { value: 3000, label: '3천만원' },
-        { value: 1000, label: '1000만원' },
-        { value: 500, label: '500만원' },
-        { value: 300, label: '300만원' },
-        { value: 100, label: '100만원' },
-        { value: 50, label: '50만원' },
-        { value: 10, label: '10만원' }
+        { value: 76923, label: '1억원' },
+        { value: 38461, label: '5천만원' },
+        { value: 23077, label: '3천만원' },
+        { value: 7692, label: '1천만원' },
+        { value: 3846, label: '500만원' },
+        { value: 2308, label: '300만원' },
+        { value: 769, label: '100만원' },
+        { value: 385, label: '50만원' },
+        { value: 77, label: '10만원' }
       ]
     },
     period: {

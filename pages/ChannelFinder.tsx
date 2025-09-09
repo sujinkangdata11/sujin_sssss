@@ -20,6 +20,7 @@ import ChannelSidebar from '../components/ChannelFinder/components/ChannelSideba
 import TableSkeleton from '../components/ChannelFinder/components/TableSkeleton';
 import SidebarSkeleton from '../components/ChannelFinder/components/SidebarSkeleton';
 import FilterTagsSection, { FilterState } from '../components/ChannelFinder/components/FilterTagsSection';
+import { applyFilters } from '../components/ChannelFinder/filters/sentenceFilters';
 import styles from '../styles/ChannelFinder.module.css';
 
 
@@ -491,8 +492,15 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     loadChannelData();
   }, []);
 
-  // 국가 필터링
+  // 국가 필터링 - 문장형 필터 적용 시 비활성화
+  const [sentenceFilterActive, setSentenceFilterActive] = React.useState(false);
+  
   React.useEffect(() => {
+    // 문장형 필터가 활성화되어 있으면 국가 필터링 건너뛰기
+    if (sentenceFilterActive) {
+      return;
+    }
+    
     let filtered = [...sortedChannels];
     
     if (selectedCountry) {
@@ -506,7 +514,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     }
     
     setFilteredChannels(filtered);
-  }, [countrySearch, selectedCountry, sortedChannels]);
+  }, [countrySearch, selectedCountry, sortedChannels, sentenceFilterActive]);
 
   const handleHeaderClick = (column: string) => {
     setSortMenuOpen(sortMenuOpen === column ? null : column);
@@ -927,8 +935,27 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
             {/* 🏷️ 필터 태그 섹션 추가 */}
             <FilterTagsSection 
               onFilterApply={(filters: FilterState) => {
-                console.log('필터 적용:', filters);
-                // TODO: 실제 필터링 로직 구현
+                console.log('🔍 [INFO] 문장형 필터 적용:', filters);
+                console.log('🔧 [DEBUG] 필터 상세값:', JSON.stringify(filters, null, 2));
+                
+                // 🚀 실제 필터링 로직 적용
+                const filtered = applyFilters(sortedChannels, filters);
+                setFilteredChannels(filtered);
+                
+                // 문장형 필터 활성화 상태로 변경 (국가 필터링 비활성화)
+                setSentenceFilterActive(true);
+                
+                console.log('📊 [SUCCESS] 필터 완료:', {
+                  '원본데이터': sortedChannels.length,
+                  '필터된데이터': filtered.length,
+                  '적용된필터': Object.keys(filters).filter(key => filters[key as keyof FilterState])
+                });
+                
+                // 🔍 디버깅: 필터된 데이터 상위 10개 확인
+                console.log('🎯 필터된 채널 상위 10개:');
+                filtered.slice(0, 10).forEach((channel, index) => {
+                  console.log(`${index + 1}. ${channel.channelName} - 영상:${channel.videosCount}개, 예상수익:${Math.round((channel.totalViews / 1000 * 2) / Math.max(channel.videosCount, 1))}`);
+                });
               }}
             />
 
