@@ -442,7 +442,12 @@ th .resizeHandle.resizeHandleLeft {
 }
 
 .growth.positive {
-  color: #28a745;
+  color: #10b981;
+  font-weight: 500;
+}
+
+.monthlyRevenue {
+  color: #7c3aed !important;
   font-weight: 500;
 }
 

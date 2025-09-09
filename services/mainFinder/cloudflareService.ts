@@ -192,7 +192,9 @@ class CloudflareService {
           'subscriberHistory.count': subscriberHistory.count,
           'parseInt결과': parseInt(subscriberHistory.count || '0'),
           '전체채널구조': Object.keys(channel),
-          '스냅샷구조': Object.keys(snapshot)
+          '스냅샷구조': Object.keys(snapshot),
+          '전체채널데이터': channel,
+          '스냅샷데이터': snapshot
         });
       }
       

@@ -1152,7 +1152,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                       <td>{channel.category}</td>
                       <td className={styles.subscribers}>{formatSubscribers(channel.subscribers)}</td>
                       {/* 🔄 OLD: 매년증가 -> 🆕 NEW: 월 수익 표시 */}
-                      <td className={`${styles.growth} ${styles.positive}`}>{getTableMonthlyRevenue(channel)}</td>
+                      <td className={styles.monthlyRevenue}>{getTableMonthlyRevenue(channel)}</td>
                       <td className={`${styles.growth} ${styles.positive}`}>{formatGrowth(channel.monthlyGrowth)}</td>
                       <td className={`${styles.growth} ${styles.positive}`}>{formatGrowth(channel.dailyGrowth)}</td>
                       <td>{formatNumber(channel.subscribersPerVideo)}</td>
