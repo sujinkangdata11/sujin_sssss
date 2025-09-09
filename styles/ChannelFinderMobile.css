@@ -130,7 +130,7 @@
     max-width: 100vw !important;
     /* height: calc(100vh - 100px) !important; */
     max-height: calc(100vh - 100px) !important;
-    margin-top: 100px !important;
+    margin-top: 30px !important;
     background: white !important;
     border-radius: 20px 20px 0 0 !important;
     box-shadow: none !important;  /* 박스 쉐도우 제거 */
