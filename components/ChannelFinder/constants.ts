@@ -112,19 +112,19 @@ export const FILTER_TAG_CONFIG = {
   TAGS: [
     {
       id: 'videoRevenue',
-      template: '영상 개수 {videoCount} 이하 매월 {revenue}이상 버는 채널',
+      template: '영상 개수 {videoCount} 이하 매월 {revenue}만원 이상 버는 채널',
       placeholders: ['videoCount', 'revenue'],
       defaultValues: { videoCount: 100, revenue: 1000 }
     },
     {
       id: 'periodRevenue',
-      template: '개설 {period} 이하 매월 {revenue}이상 버는 채널',
+      template: '개설 {period} 이하 매월 {revenue}만원 이상 버는 채널',
       placeholders: ['period', 'revenue'],
       defaultValues: { period: 1, revenue: 1000 }
     },
     {
       id: 'monthlyRevenue',
-      template: '평균 월 {revenue}이상 버는 채널',
+      template: '평균 월 {revenue}만원 이상 버는 채널',
       placeholders: ['revenue'],
       defaultValues: { revenue: 1000 }
     },
