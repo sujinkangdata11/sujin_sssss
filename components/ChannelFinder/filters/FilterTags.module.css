@@ -40,7 +40,7 @@
   display: inline-flex;
   align-items: center;
   background: #F8F9FA;
-  border: none;
+  border: 1px solid transparent; /* 롤백용: 투명한 border로 크기 고정, 문제시 border: none으로 복원 가능 */
   border-radius: 20px;
   height: auto;
   min-height: 60px;
@@ -54,6 +54,7 @@
   z-index: 1;
   text-align: center;
   line-height: 1.3;
+  box-sizing: border-box; /* 롤백용: border를 내부로 그리기 위해 추가, 문제시 삭제 가능 */
 }
 
 .filterTag:hover {
@@ -65,7 +66,8 @@
 .filterTagActive {
   background: #f0f0f0;
   border: 1px solid #333;
-  transform: scale(0.98);
+  box-sizing: border-box; /* 롤백용: border를 내부로 그리기 위해 추가, 문제시 삭제 가능 */
+  /* transform: scale(0.98); */ /* 롤백용: 필터 흔들림 방지를 위해 주석 처리, 문제시 주석 해제하면 복원 가능 */
 }
 
 .filterTagContent {
@@ -128,7 +130,7 @@
 .filterTagDropdownActive {
   background: #f0f0f0;
   border-color: #333;
-  transform: scale(0.98);
+  /* transform: scale(0.98); */ /* 롤백용: 드롭다운 버튼 흔들림 방지를 위해 주석 처리, 문제시 주석 해제하면 복원 가능 */
   color: #7c3aed;
   font-weight: bold;
 }
@@ -233,3 +235,77 @@
     justify-self: start;
   }
 }
+
+/* 롤백용: 모바일 Portal 바텀시트 전용 스타일 - 문제시 이 섹션 전체 삭제 가능 */
+/* ==================== 📱 MOBILE PORTAL BOTTOM SHEET STYLES ==================== */
+
+/* 바텀시트 백드롭 오버레이 */
+.filterTagMobileBottomSheet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeInBackdrop 0.3s ease-out;
+}
+
+/* 바텀시트 메인 컨테이너 */
+.filterTagMobileMenu {
+  width: 100%;
+  max-width: 100vw;
+  max-height: 50vh;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  animation: slideUpFromBottom 0.3s ease-out;
+}
+
+/* 바텀시트 메뉴 아이템 */
+.filterTagMobileMenuItem {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f1f3f4;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #333;
+  transition: background 0.2s ease;
+}
+
+.filterTagMobileMenuItem:hover {
+  background: #f8f9fa;
+}
+
+.filterTagMobileMenuItem:first-child {
+  border-top: none;
+}
+
+.filterTagMobileMenuItem:last-child {
+  border-bottom: none;
+  padding-bottom: 60px; /* 롤백용: 마지막 아이템 패딩 추가, 문제시 삭제 가능 */
+}
+
+/* 애니메이션 키프레임 */
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpFromBottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ==================== END MOBILE PORTAL STYLES ==================== */
