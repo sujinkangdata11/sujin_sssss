@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import FilterTag from './FilterTag';
 import { FILTER_TAG_CONFIG } from '../constants';
-import styles from '../../../styles/ChannelFinder.module.css';
+import styles from '../filters/FilterTags.module.css';
 
 // 🎛️ 필터 태그 섹션 - 완전 설정 기반 시스템
 interface FilterTagsSectionProps {

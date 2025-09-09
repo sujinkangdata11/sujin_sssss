@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FILTER_TAG_CONFIG } from '../constants';
-import styles from '../../../styles/ChannelFinder.module.css';
+import styles from '../filters/FilterTags.module.css';
 
 // 🏷️ 태그 필터 컴포넌트 - 완전 재사용 가능한 설계
 interface FilterTagProps {
