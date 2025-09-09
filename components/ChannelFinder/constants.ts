@@ -25,7 +25,8 @@ export const RESPONSIVE_COLUMN_CONFIG = {
     rank: 1,           // 순위 - 필수
     channelName: 1,    // 채널명 - 필수
     subscribers: 1,    // 구독자수 - 필수
-    country: 1,        // 국가 - 필수
+    monthlyRevenue: 1, // 월 수익 - 필수 (모바일 표시)
+    country: 2,        // 국가 - 태블릿+
     category: 2,       // 카테고리 - 타블렛+
     monthlyGrowth: 2,  // 월간성장 - 타블렛+
     totalViews: 2,     // 총조회수 - 타블렛+

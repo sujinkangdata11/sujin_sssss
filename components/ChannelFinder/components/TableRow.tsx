@@ -63,7 +63,7 @@ const TableRow: React.FC<TableRowProps> = ({
       </td>
       <td className={getPriorityClass('category')}>{channel.category}</td>
       <td className={`subscribers ${getPriorityClass('subscribers')}`}>{formatSubscribers(channel.subscribers)}</td>
-      <td className={`growth positive ${getPriorityClass('yearlyGrowth')}`}>{formatGrowth(channel.yearlyGrowth)}</td>
+      <td className={`monthly-revenue ${getPriorityClass('monthlyRevenue')}`}>{getTableMonthlyRevenue(channel)}</td>
       <td className={`growth positive ${getPriorityClass('monthlyGrowth')}`}>{formatGrowth(channel.monthlyGrowth)}</td>
       <td className={`growth positive ${getPriorityClass('dailyGrowth')}`}>{formatGrowth(channel.dailyGrowth)}</td>
       <td className={getPriorityClass('subsPerVideo')}>{formatNumber(channel.subscribersPerVideo)}</td>

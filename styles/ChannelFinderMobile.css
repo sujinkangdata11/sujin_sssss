@@ -1,0 +1,67 @@
+/* 📱 ChannelFinder Mobile-Only Styles */
+/* 모바일 (768px 이하) 전용 스타일 */
+
+@media (max-width: 768px) {
+  /* 모바일에서 4개 칼럼만 표시: 순위(1), 채널명(2), 구독자수(4), 월 수익(5) */
+  /* 강력한 선택자로 모든 테이블 칼럼 타겟팅 */
+  * th:nth-child(3),  /* 카테고리 */
+  * td:nth-child(3),
+  * th:nth-child(6),  /* 월간성장 */
+  * td:nth-child(6),
+  * th:nth-child(7),  /* 일간성장 */
+  * td:nth-child(7),
+  * th:nth-child(8),  /* 구독자/영상 */
+  * td:nth-child(8),
+  * th:nth-child(9),  /* 운영기간 */
+  * td:nth-child(9),
+  * th:nth-child(10), /* 총조회수 */
+  * td:nth-child(10),
+  * th:nth-child(11), /* 평균조회수 */
+  * td:nth-child(11),
+  * th:nth-child(12), /* 총영상개수 */
+  * td:nth-child(12),
+  * th:nth-child(13), /* 업로드빈도 */
+  * td:nth-child(13),
+  * th:nth-child(14), /* 국가 - 모바일에서 숨김 */
+  * td:nth-child(14) {
+    display: none !important;
+  }
+
+  .contentWrapper {
+    padding: 0 30px !important;
+  }
+  
+  .tableContainer {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .statsHeader {
+    width: 100%;
+    margin: 0 0 1rem 0;
+    border-radius: 0;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    gap: 6px;
+    margin-top: 30px;
+  }
+
+  .paginationBtn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}

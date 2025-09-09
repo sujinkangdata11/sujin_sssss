@@ -22,6 +22,7 @@ import SidebarSkeleton from '../components/ChannelFinder/components/SidebarSkele
 import FilterTagsSection, { FilterState } from '../components/ChannelFinder/components/FilterTagsSection';
 import { applyFilters } from '../components/ChannelFinder/filters/sentenceFilters';
 import styles from '../styles/ChannelFinder.module.css';
+import '../styles/ChannelFinderMobile.css';
 
 
 // 국가 표시용 매핑 함수 (컴포넌트 내부에서 사용)
