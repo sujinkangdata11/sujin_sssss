@@ -29,7 +29,7 @@
   height: auto;
   min-height: 60px;
   padding: 0.8rem 1rem;
-  font-size: 15px;
+  font-size: 16px;
   color: #333;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -54,12 +54,22 @@
 
 .filterTagContent {
   position: relative;
-  display: inline-block;
+  display: block;
   text-align: left;
   white-space: pre-line;
   word-break: keep-all;
   line-height: 2;
-  width: 230px;
+  width: 300px;
+  padding-left: 50px;
+}
+
+.filterTagContent::before {
+  content: '💰';
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 30px;
 }
 
 .filterTagDropdown {
