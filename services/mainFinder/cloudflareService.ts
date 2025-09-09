@@ -59,13 +59,25 @@ class CloudflareService {
 
         const result = await response.json();
         
-        // 🔍 API 응답 구조 디버깅 로그
-        console.log('🔍 [DEBUG] API 원본 응답:', JSON.stringify(result, null, 2));
+        // 🔍 API 응답 구조 디버깅 로그 (요약만)
+        console.log('🔍 [DEBUG] API 응답 구조:', {
+          hasChannels: !!result.channels,
+          isArray: Array.isArray(result.channels),
+          channelsLength: result.channels?.length || 0,
+          responseKeys: Object.keys(result),
+          firstChannelKeys: result.channels?.[0] ? Object.keys(result.channels[0]) : []
+        });
 
-        // API 응답이 성공인지 확인 (다양한 형태 지원)
-        const isSuccess = result.success !== false && result.channels && Array.isArray(result.channels);
+        // API 응답이 성공인지 확인 (channels 배열만 확인)
+        const isSuccess = result.channels && Array.isArray(result.channels);
         
         if (!isSuccess) {
+          console.error('❌ [ERROR] API 파싱 실패:', {
+            hasChannels: !!result.channels,
+            isArray: Array.isArray(result.channels),
+            responseType: typeof result,
+            responseKeys: Object.keys(result)
+          });
           throw new Error(result.message || result.error || 'API에서 유효하지 않은 응답');
         }
 
