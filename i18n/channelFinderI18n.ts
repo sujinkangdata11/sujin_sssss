@@ -101,7 +101,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   ko: {
     header: {
-      mainTitle: "전세계 유튜브 채널 데이터",
+      mainTitle: "전세계 유튜브 데이터",
       searchPlaceholder: "채널 검색...",
       loadingMessage: "채널 데이터 로딩 중..."
     },
