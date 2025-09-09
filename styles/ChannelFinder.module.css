@@ -501,6 +501,18 @@ th .resizeHandle.resizeHandleLeft {
   pointer-events: auto;
 }
 
+/* 모바일에서는 기존 사이드바 애니메이션 차단 */
+@media (max-width: 768px) {
+  .sidebar {
+    animation: none !important;
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+}
+
 @keyframes slideIn {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
@@ -1466,7 +1478,7 @@ th .resizeHandle.resizeHandleLeft {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 3000;
+  z-index: 11000;
 }
 
 .exchangeRateModal {

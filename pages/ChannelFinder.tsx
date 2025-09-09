@@ -117,7 +117,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
       en: 1      // 미국달러 (기준)
     };
     const rate = defaultRates[language] || 1;
-    console.log('🔍 [DEBUG] 초기 환율 설정:', {
       language,
       rate,
       defaultRates
@@ -195,7 +194,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 40;
+  const itemsPerPage = 15;
   
   // 언어별 기본 환율 및 화폐 단위
   const currencySettings = {
@@ -238,7 +237,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
       fr: 0.92, de: 0.92, nl: 0.92, pt: 5.1, ru: 95, en: 1
     };
     const newRate = defaultRates[language] || 1;
-    console.log('🔍 [DEBUG] 언어 변경 effect:', {
       language,
       newRate,
       defaultRates
@@ -430,13 +428,11 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           dataSource: 'mock'
         });
         
-        console.log('📊 [INFO] 채널 데이터 로딩 시작...');
         
         // CloudflareService에서 데이터 가져오기
         const result = await cloudflareService.getChannelData();
         
         if (result.success && result.data.length > 0) {
-          console.log('✅ [SUCCESS] 채널 데이터 로드 성공:', result.data.length, '개');
           
           // 기본 정렬: 구독자 수 높은 순
           const sortedData = [...result.data].sort((a, b) => b.subscribers - a.subscribers);
@@ -468,7 +464,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           });
         }
         
-        console.log('📊 [INFO] 로딩 완료 -', result.message);
         
       } catch (error) {
         console.error('❌ [ERROR] 채널 데이터 로딩 실패:', error);
@@ -654,7 +649,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
       // 환율은 언어에 따라 결정되므로 여기서 변경하지 않음
     }
     
-    console.log('🔍 [DEBUG] handleChannelClick:', {
       channelCountry,
       selectedRpm: defaultRpm,
       currentExchangeRate: exchangeRate,
@@ -669,14 +663,12 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
   const handleCategoryFilter = async (category: string) => {
     try {
-      console.log('🔍 [INFO] 카테고리 필터링:', category);
       
       if (category === 'All') {
         // 전체 데이터 다시 로드
         const result = await cloudflareService.getChannelData();
         if (result.success) {
           setSortedChannels(result.data);
-          console.log('📊 [SUCCESS] 전체 채널 데이터 복원:', result.data.length, '개');
         } else {
           // 폴백: 더미 데이터 사용
           setSortedChannels(dummyChannels);
@@ -686,7 +678,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
         const currentData = sortedChannels.length > 0 ? sortedChannels : dummyChannels;
         const filtered = currentData.filter(channel => channel.category === category);
         setSortedChannels(filtered);
-        console.log('🔍 [SUCCESS] 카테고리 필터링 완료:', category, '-', filtered.length, '개');
       }
     } catch (error) {
       console.error('❌ [ERROR] 카테고리 필터링 실패:', error);
@@ -755,7 +746,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     // TotalUSD = ShortsUSD + LongUSD
     const totalUSD = Math.round(shortsRevenueUsd + longRevenueUsd);
     
-    console.log('🔍 [DEBUG] calculateTotalRevenueValue:', {
       channel: selectedChannel?.channelName,
       totalViews: selectedChannel?.totalViews,
       shortsPercentage,
@@ -791,7 +781,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     // KRW = TotalUSD * 각나라 환율 (환율모달창에서 변경가능)
     const localTotal = Math.round(totalRevenueUsd * exchangeRate);
     
-    console.log('🔍 [DEBUG] calculateLocalCurrencyRevenue:', {
       totalRevenueUsd,
       exchangeRate,
       localTotal,
@@ -946,8 +935,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
             {/* 🏷️ 필터 태그 섹션 추가 */}
             <FilterTagsSection 
               onFilterApply={(filters: FilterState) => {
-                console.log('🔍 [INFO] 문장형 필터 적용:', filters);
-                console.log('🔧 [DEBUG] 필터 상세값:', JSON.stringify(filters, null, 2));
                 
                 // 🚀 실제 필터링 로직 적용
                 const filtered = applyFilters(sortedChannels, filters);
@@ -956,16 +943,13 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                 // 문장형 필터 활성화 상태로 변경 (국가 필터링 비활성화)
                 setSentenceFilterActive(true);
                 
-                console.log('📊 [SUCCESS] 필터 완료:', {
                   '원본데이터': sortedChannels.length,
                   '필터된데이터': filtered.length,
                   '적용된필터': Object.keys(filters).filter(key => filters[key as keyof FilterState])
                 });
                 
                 // 🔍 디버깅: 필터된 데이터 상위 10개 확인
-                console.log('🎯 필터된 채널 상위 10개:');
                 filtered.slice(0, 10).forEach((channel, index) => {
-                  console.log(`${index + 1}. ${channel.channelName} - 영상:${channel.videosCount}개, 예상수익:${Math.round((channel.totalViews / 1000 * 2) / Math.max(channel.videosCount, 1))}`);
                 });
               }}
             />
@@ -1256,7 +1240,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
                 const exchangeData = currencyExchangeData[newCountry as keyof typeof currencyExchangeData];
                 if (exchangeData) {
                   setExchangeRate(exchangeData.exchangeRate);
-                  console.log('🔍 [DEBUG] 국가 RPM 변경으로 환율 업데이트:', {
                     country: newCountry,
                     newRate: exchangeData.exchangeRate,
                     currency: exchangeData.currency

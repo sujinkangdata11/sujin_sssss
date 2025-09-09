@@ -82,6 +82,8 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
   currencyExchangeData,
   cf
 }) => {
+  const [isClosing, setIsClosing] = useState(false);
+  
   // 로컬 드롭다운 상태
   const [localDropdownOpen, setLocalDropdownOpen] = useState(false);
   
@@ -106,6 +108,22 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
     console.error('ChannelSidebar: Missing required props', { selectedChannel, language });
     return null;
   }
+
+  // 모바일에서만 뒷배경 클릭 시 사이드바 닫기 (애니메이션 포함)
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    // ⚠️ IMPORTANT: React에서 window 객체 접근 시 주의사항
+    // - 항상 `typeof window !== 'undefined'` 체크 필수 (SSR 오류 방지)
+    // - 또는 useEffect 안에서만 window 접근
+    // - 직접 window 접근 시 무한 루프 및 서버 오류 발생 가능
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setIsClosing(true);
+      
+      // 애니메이션 완료 후 실제로 닫기
+      setTimeout(() => {
+        onClose();
+      }, 300);
+    }
+  };
 
   // 💰 USD 기준 월 수익 계산 함수 (환율 적용 X)
   const calculateMonthlyRevenue = () => {
@@ -193,8 +211,12 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
 
   try {
     return (
-      <div className={styles.sidebarOverlay}>
-      <div className={styles.sidebar}>
+      // FADE IN/OUT: 오버레이에도 mobile-closing 클래스 추가 (주의: 이상하면 이 부분만 되돌리기)
+      <div className={`${styles.sidebarOverlay} ${isClosing ? 'mobile-closing' : ''}`} onClick={handleOverlayClick}>
+        <div 
+          className={`${styles.sidebar} ${isClosing ? 'mobile-closing' : ''}`}
+          onClick={(e) => e.stopPropagation()}
+        >
         <div className={styles.sidebarHeader}>
           <h3>
             <button onClick={onClose} className={styles.backBtn}>←</button>
