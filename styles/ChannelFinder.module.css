@@ -16,7 +16,7 @@
 .statsHeader h2 {
   color: #333;
   margin: 0;
-  font-size: 45px;
+  font-size: 38px;
   font-weight: 700;
   letter-spacing: -1px;
   text-align: center;
@@ -41,7 +41,7 @@
   margin: 0 auto;
   background: white;
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  padding-top: 40px;
 }
 
 .channelTable {
@@ -227,7 +227,7 @@ th .resizeHandle.resizeHandleLeft {
 }
 
 .channelTable td {
-  padding: 12px 8px;
+  padding: 16px 8px;
   border-bottom: 1px solid #e9ecef;
   white-space: nowrap;
   color: #555;
