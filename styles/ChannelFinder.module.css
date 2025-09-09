@@ -1414,7 +1414,7 @@ th .resizeHandle.resizeHandleLeft {
 /* 타블렛 가로 (1024px 이하) */
 @media (max-width: 1024px) {
   .contentWrapper {
-    padding: 0 24px !important;
+    padding: 0 14px !important;
   }
   
   .statsHeader {
