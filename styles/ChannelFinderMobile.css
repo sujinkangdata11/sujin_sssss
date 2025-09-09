@@ -28,13 +28,15 @@
   }
 
   .contentWrapper {
-    padding: 0 30px !important;
+    padding: 0 24px !important;
   }
   
   .tableContainer {
     width: 100%;
     margin: 0;
     border-radius: 0;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: none !important;
   }
   
   .statsHeader {
@@ -44,6 +46,11 @@
     flex-direction: column;
     gap: 0.5rem;
     text-align: center;
+  }
+
+  /* 모바일에서 메인 제목 폰트 크기 조정 */
+  * h2 {
+    font-size: 34px !important;
   }
 
   .sidebar {
