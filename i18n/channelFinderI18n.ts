@@ -14,7 +14,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
         category: "Category", 
         subscribers: "Subscribers",
         yearlyGrowth: "Yearly Growth", // 🔄 OLD: 매년증가 컬럼 (삭제 예정)
-        monthlyRevenue: "Monthly Revenue", // 🆕 NEW: 월 수익 컬럼
+        monthlyRevenue: "Monthly\nRevenue", // 🆕 NEW: 월 수익 컬럼 (줄바꿈으로 모바일 최적화)
         monthlyGrowth: "Monthly Growth",
         dailyGrowth: "Daily Growth",
         subscriptionRate: "Subscription Rate",

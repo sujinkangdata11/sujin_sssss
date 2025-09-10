@@ -245,6 +245,16 @@
     background: #f8f9fa;
     border-color: #7c4dff;
   }
+  
+  /* 모바일 Arrow Lottie 스타일 */
+  .mobileArrowLottie {
+    grid-column: 2 / 3;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    justify-self: start;
+  }
 }
 
 /* 롤백용: 모바일 Portal 바텀시트 전용 스타일 - 문제시 이 섹션 전체 삭제 가능 */

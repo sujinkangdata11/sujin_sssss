@@ -2,6 +2,16 @@
 /* 모바일 (768px 이하) 전용 스타일 */
 
 @media (max-width: 768px) {
+  /* 모바일 테이블 헤더 높이 조정 (줄바꿈 텍스트를 위해) */
+  * th {
+    height: auto !important;
+    min-height: 50px !important;
+    padding: 8px 6px !important;
+    white-space: pre-line !important; /* 줄바꿈 문자(\n) 인식 */
+    vertical-align: middle !important;
+    line-height: 1.2 !important;
+  }
+
   /* 모바일에서 4개 칼럼만 표시: 순위(1), 채널명(2), 구독자수(4), 월 수익(5) */
   /* 강력한 선택자로 모든 테이블 칼럼 타겟팅 */
   * th:nth-child(3),  /* 카테고리 */
