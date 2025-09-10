@@ -151,9 +151,12 @@ const FilterTag: React.FC<FilterTagProps> = ({
               createPortal(
                 <div 
                   className={styles.filterTagMobileBottomSheet}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={() => setOpenDropdown(null)}
                 >
-                  <div className={styles.filterTagMobileMenu}>
+                  <div 
+                    className={styles.filterTagMobileMenu}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {option.values.map(optionValue => (
                       <div
                         key={optionValue.value}

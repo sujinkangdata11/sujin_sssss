@@ -128,6 +128,7 @@
 
 .sortMenu div:last-child {
   border-bottom: none;
+  padding-bottom: 60px; /* 모바일에서 하단 여백 확보 */
 }
 
 .sortMenu div:hover {
