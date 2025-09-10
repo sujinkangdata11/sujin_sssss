@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import FilterTag from './FilterTag';
 import { FILTER_TAG_CONFIG } from '../constants';
+import { Language } from '../../../types';
 import styles from '../filters/FilterTags.module.css';
 
 // 🎛️ 필터 태그 섹션 - 완전 설정 기반 시스템
 interface FilterTagsSectionProps {
+  language: Language;
   onFilterApply: (filters: FilterState) => void;
 }
 
@@ -12,7 +14,7 @@ export interface FilterState {
   [tagId: string]: Record<string, number>;
 }
 
-const FilterTagsSection: React.FC<FilterTagsSectionProps> = ({ onFilterApply }) => {
+const FilterTagsSection: React.FC<FilterTagsSectionProps> = ({ language, onFilterApply }) => {
   // 각 태그의 현재 값들을 관리
   const [filterValues, setFilterValues] = useState<FilterState>(() => {
     const initialState: FilterState = {};
@@ -56,6 +58,7 @@ const FilterTagsSection: React.FC<FilterTagsSectionProps> = ({ onFilterApply }) 
           <FilterTag
             key={tagConfig.id}
             tagConfig={tagConfig}
+            language={language}
             currentValues={filterValues[tagConfig.id]}
             isActive={activeFilter === tagConfig.id}
             onValueChange={(placeholder, value) => 

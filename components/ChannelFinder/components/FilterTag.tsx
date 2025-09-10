@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom'; // 롤백용: Portal 구현을 위한 추가, 에러시 삭제 가능
 import { FILTER_TAG_CONFIG } from '../constants';
+import { Language } from '../../../types';
+import { channelFinderTranslations } from '../../../i18n/channelFinderTranslations';
 import styles from '../filters/FilterTags.module.css';
 
 // 🏷️ 태그 필터 컴포넌트 - 완전 재사용 가능한 설계
 interface FilterTagProps {
   tagConfig: typeof FILTER_TAG_CONFIG.TAGS[0];
+  language: Language;
   currentValues: Record<string, number>;
   isActive: boolean;
   onValueChange: (placeholder: string, value: number) => void;
@@ -14,6 +17,7 @@ interface FilterTagProps {
 
 const FilterTag: React.FC<FilterTagProps> = ({
   tagConfig,
+  language,
   currentValues,
   isActive,
   onValueChange,
@@ -54,7 +58,10 @@ const FilterTag: React.FC<FilterTagProps> = ({
 
   // 템플릿에서 플레이스홀더를 실제 값으로 대체
   const renderTemplate = () => {
-    let template = tagConfig.template;
+    const translationKey = `filterTag_${tagConfig.id}` as keyof typeof channelFinderTranslations['ko'];
+    let template = (channelFinderTranslations[language]?.[translationKey] || 
+                   channelFinderTranslations['en']?.[translationKey] || 
+                   tagConfig.template).replace(/\\n/g, '\n');
     
     return tagConfig.placeholders.map((placeholder, index) => {
       const beforeText = template.split(`{${placeholder}}`)[0];
@@ -63,6 +70,46 @@ const FilterTag: React.FC<FilterTagProps> = ({
       const currentValue = currentValues[placeholder] || tagConfig.defaultValues[placeholder];
       const option = FILTER_TAG_CONFIG.OPTIONS[placeholder as keyof typeof FILTER_TAG_CONFIG.OPTIONS];
       const selectedOption = option.values.find(v => v.value === currentValue);
+      
+      // 번역된 옵션 값 가져오기 (금액, 조회수, 구독자, 기간, 영상개수)
+      const getTranslatedValue = (value: number, placeholder: string) => {
+        if (placeholder === 'revenue') {
+          const revenueKey = `revenue_${value}` as keyof typeof channelFinderTranslations['ko'];
+          return channelFinderTranslations[language]?.[revenueKey] || 
+                 channelFinderTranslations['en']?.[revenueKey] || 
+                 selectedOption?.label || 
+                 value.toString();
+        }
+        if (placeholder === 'views') {
+          const viewsKey = `views_${value}` as keyof typeof channelFinderTranslations['ko'];
+          return channelFinderTranslations[language]?.[viewsKey] || 
+                 channelFinderTranslations['en']?.[viewsKey] || 
+                 selectedOption?.label || 
+                 value.toString();
+        }
+        if (placeholder === 'subscribers') {
+          const subscribersKey = `subscribers_${value}` as keyof typeof channelFinderTranslations['ko'];
+          return channelFinderTranslations[language]?.[subscribersKey] || 
+                 channelFinderTranslations['en']?.[subscribersKey] || 
+                 selectedOption?.label || 
+                 value.toString();
+        }
+        if (placeholder === 'period') {
+          const periodKey = `period_${value}` as keyof typeof channelFinderTranslations['ko'];
+          return channelFinderTranslations[language]?.[periodKey] || 
+                 channelFinderTranslations['en']?.[periodKey] || 
+                 selectedOption?.label || 
+                 value.toString();
+        }
+        if (placeholder === 'videoCount') {
+          const videoCountKey = `videoCount_${value}` as keyof typeof channelFinderTranslations['ko'];
+          return channelFinderTranslations[language]?.[videoCountKey] || 
+                 channelFinderTranslations['en']?.[videoCountKey] || 
+                 selectedOption?.label || 
+                 value.toString();
+        }
+        return selectedOption?.label || value.toString();
+      };
       
       return (
         <span key={index}>
@@ -74,7 +121,7 @@ const FilterTag: React.FC<FilterTagProps> = ({
               setOpenDropdown(openDropdown === placeholder ? null : placeholder);
             }}
           >
-{selectedOption?.label || currentValue}
+{getTranslatedValue(currentValue, placeholder)}
 {/* 롤백용: 기존 드롭다운은 PC에서만, 모바일에서는 Portal 사용 - 문제시 이 조건문만 제거하면 원래대로 복원 */}
             {openDropdown === placeholder && !isMobile && (
               <div 
@@ -93,7 +140,7 @@ const FilterTag: React.FC<FilterTagProps> = ({
                       setTimeout(() => onApply(), 50);
                     }}
                   >
-                    {optionValue.label}
+                    {getTranslatedValue(optionValue.value, placeholder)}
                   </div>
                 ))}
               </div>
@@ -119,7 +166,7 @@ const FilterTag: React.FC<FilterTagProps> = ({
                           setTimeout(() => onApply(), 50);
                         }}
                       >
-                        {optionValue.label}
+                        {getTranslatedValue(optionValue.value, placeholder)}
                       </div>
                     ))}
                   </div>
@@ -141,7 +188,13 @@ const FilterTag: React.FC<FilterTagProps> = ({
       <span className={styles.filterTagContent}>
         {renderTemplate()}
         {/* 남은 텍스트 추가 */}
-        {tagConfig.template.split(`{${tagConfig.placeholders[tagConfig.placeholders.length - 1]}}`)[1]}
+{(() => {
+          const translationKey = `filterTag_${tagConfig.id}` as keyof typeof channelFinderTranslations['ko'];
+          const translatedTemplate = (channelFinderTranslations[language]?.[translationKey] || 
+                                     channelFinderTranslations['en']?.[translationKey] || 
+                                     tagConfig.template).replace(/\\n/g, '\n');
+          return translatedTemplate.split(`{${tagConfig.placeholders[tagConfig.placeholders.length - 1]}}`)[1];
+        })()}
       </span>
       <button 
         className={styles.filterTagApply}
