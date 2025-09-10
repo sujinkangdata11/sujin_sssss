@@ -246,6 +246,27 @@
     border-color: #7c4dff;
   }
   
+  /* 모바일 전용 4,5번 필터 독립적 이모지 클래스 */
+  .mobileFilter4 .filterTagContent::before {
+    content: '💵' !important;
+    position: absolute !important;
+    left: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-size: 30px !important;
+    display: block !important;
+  }
+  
+  .mobileFilter5 .filterTagContent::before {
+    content: '📈' !important;
+    position: absolute !important;
+    left: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-size: 30px !important;
+    display: block !important;
+  }
+  
   /* 모바일 Arrow Lottie 스타일 */
   .mobileArrowLottie {
     grid-column: 2 / 3;

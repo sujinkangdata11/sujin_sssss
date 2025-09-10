@@ -73,16 +73,45 @@ const FilterTagsSection: React.FC<FilterTagsSectionProps> = ({ language, onFilte
       <div className={styles.filterTagsContainer}>
         {FILTER_TAG_CONFIG.TAGS.map((tagConfig, index) => (
           <React.Fragment key={tagConfig.id}>
-            <FilterTag
-              tagConfig={tagConfig}
-              language={language}
-              currentValues={filterValues[tagConfig.id]}
-              isActive={activeFilter === tagConfig.id}
-              onValueChange={(placeholder, value) => 
-                handleValueChange(tagConfig.id, placeholder, value)
-              }
-              onApply={() => handleTagApply(tagConfig.id)}
-            />
+            {/* 4,5번 필터만 특별한 div로 감싸기 */}
+            {isMobile && index === 3 ? (
+              <div className={styles.mobileFilter4}>
+                <FilterTag
+                  tagConfig={tagConfig}
+                  language={language}
+                  currentValues={filterValues[tagConfig.id]}
+                  isActive={activeFilter === tagConfig.id}
+                  onValueChange={(placeholder, value) => 
+                    handleValueChange(tagConfig.id, placeholder, value)
+                  }
+                  onApply={() => handleTagApply(tagConfig.id)}
+                />
+              </div>
+            ) : isMobile && index === 4 ? (
+              <div className={styles.mobileFilter5}>
+                <FilterTag
+                  tagConfig={tagConfig}
+                  language={language}
+                  currentValues={filterValues[tagConfig.id]}
+                  isActive={activeFilter === tagConfig.id}
+                  onValueChange={(placeholder, value) => 
+                    handleValueChange(tagConfig.id, placeholder, value)
+                  }
+                  onApply={() => handleTagApply(tagConfig.id)}
+                />
+              </div>
+            ) : (
+              <FilterTag
+                tagConfig={tagConfig}
+                language={language}
+                currentValues={filterValues[tagConfig.id]}
+                isActive={activeFilter === tagConfig.id}
+                onValueChange={(placeholder, value) => 
+                  handleValueChange(tagConfig.id, placeholder, value)
+                }
+                onApply={() => handleTagApply(tagConfig.id)}
+              />
+            )}
             
             {/* 모바일에서 3번째 필터(index 2) 옆에 Lottie 추가 */}
             {index === 2 && isMobile && (
