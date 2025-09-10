@@ -945,6 +945,7 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
 
             {/* 🏷️ 필터 태그 섹션 추가 */}
             <FilterTagsSection 
+              language={language}
               onFilterApply={(filters: FilterState) => {
                 console.log('🔍 [INFO] 문장형 필터 적용:', filters);
                 console.log('🔧 [DEBUG] 필터 상세값:', JSON.stringify(filters, null, 2));

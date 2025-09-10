@@ -92,12 +92,17 @@ export const FILTER_TAG_CONFIG = {
         { value: 5000000, label: '500만' },
         { value: 1000000, label: '100만' },
         { value: 500000, label: '50만' },
-        { value: 100000, label: '10만' }
+        { value: 100000, label: '10만' },
+        { value: 50000, label: '5만' },
+        { value: 10000, label: '1만' }
       ]
     },
     subscribers: {
       label: '구독자',
       values: [
+        { value: 100000000, label: '1억' },
+        { value: 50000000, label: '5천만' },
+        { value: 30000000, label: '3천만' },
         { value: 10000000, label: '1천만' },
         { value: 5000000, label: '500만' },
         { value: 1000000, label: '100만' },
