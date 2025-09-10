@@ -3,7 +3,7 @@ import { Language } from '../types';
 export const channelFinderI18n: Record<Language, Record<string, any>> = {
   en: {
     header: {
-      mainTitle: "Global YouTube Channel Data",
+      mainTitle: "Global YouTube Data",
       searchPlaceholder: "Search channels...",
       loadingMessage: "Loading channel data..."
     },
@@ -199,7 +199,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   ja: {
     header: {
-      mainTitle: "世界のYouTubeチャンネルデータ",
+      mainTitle: "世界のYouTubeデータ",
       searchPlaceholder: "チャンネル検索...",
       loadingMessage: "チャンネルデータ読み込み中..."
     },
@@ -297,7 +297,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   zh: {
     header: {
-      mainTitle: "全球YouTube频道数据",
+      mainTitle: "全球YouTube数据",
       searchPlaceholder: "搜索频道...",
       loadingMessage: "正在加载频道数据..."
     },
@@ -395,7 +395,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   hi: {
     header: {
-      mainTitle: "वैश्विक YouTube चैनल डेटा",
+      mainTitle: "वैश्विक YouTube डेटा",
       searchPlaceholder: "चैनल खोजें...",
       loadingMessage: "चैनल डेटा लोड हो रहा है..."
     },
@@ -493,7 +493,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   es: {
     header: {
-      mainTitle: "Datos Globales de Canales de YouTube",
+      mainTitle: "Datos Globales de YouTube",
       searchPlaceholder: "Buscar canales...",
       loadingMessage: "Cargando datos del canal..."
     },
@@ -591,7 +591,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   fr: {
     header: {
-      mainTitle: "Données Mondiales des Chaînes YouTube",
+      mainTitle: "Données Mondiales YouTube",
       searchPlaceholder: "Rechercher des chaînes...",
       loadingMessage: "Chargement des données de chaîne..."
     },
@@ -689,7 +689,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   de: {
     header: {
-      mainTitle: "Globale YouTube-Kanaldaten",
+      mainTitle: "Globale YouTube-Daten",
       searchPlaceholder: "Kanäle suchen...",
       loadingMessage: "Kanaldaten werden geladen..."
     },
@@ -787,7 +787,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   nl: {
     header: {
-      mainTitle: "Wereldwijde YouTube Kanaalgegevens",
+      mainTitle: "Wereldwijde YouTube Gegevens",
       searchPlaceholder: "Zoek kanalen...",
       loadingMessage: "Kanaalgegevens laden..."
     },
@@ -885,7 +885,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   pt: {
     header: {
-      mainTitle: "Dados Globais de Canais do YouTube",
+      mainTitle: "Dados Globais do YouTube",
       searchPlaceholder: "Pesquisar canais...",
       loadingMessage: "Carregando dados do canal..."
     },
@@ -983,7 +983,7 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
   },
   ru: {
     header: {
-      mainTitle: "Глобальные данные YouTube каналов",
+      mainTitle: "Глобальные данные YouTube",
       searchPlaceholder: "Поиск каналов...",
       loadingMessage: "Загрузка данных канала..."
     },

@@ -58,7 +58,7 @@
 }
 
 .filterTag:hover {
-  background: #f8f9fa;
+  background: #F7F3FF; /* pressed 상태와 동일한 연한 보라색 배경 */
   border-color: #7c3aed; /* 롤백용: hover시 테두리 색상을 보라색으로 변경, 문제시 #333으로 복원 가능 */
 }
 
@@ -100,11 +100,11 @@
 }
 
 .filterTag:nth-child(4) .filterTagContent::before {
-  content: '📈';
+  content: '💵';
 }
 
 .filterTag:nth-child(5) .filterTagContent::before {
-  content: '🏦';
+  content: '📈';
 }
 
 .filterTagDropdown {
@@ -233,6 +233,17 @@
     grid-column: 2 / 3;
     grid-row: 3;
     justify-self: start;
+  }
+  
+  /* 모바일에서 hover 효과 제거 */
+  .filterTag:hover {
+    background: #F8F9FA;
+    border-color: transparent;
+  }
+  
+  .filterTagDropdown:hover {
+    background: #f8f9fa;
+    border-color: #7c4dff;
   }
 }
 
