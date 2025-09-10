@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom'; // 롤백용: Portal 구현을 위한 추가, 에러시 삭제 가능
+import { createPortal } from 'react-dom';
 import { FILTER_TAG_CONFIG } from '../constants';
 import { Language } from '../../../types';
 import { channelFinderTranslations } from '../../../i18n/channelFinderTranslations';
@@ -122,8 +122,7 @@ const FilterTag: React.FC<FilterTagProps> = ({
             }}
           >
 {getTranslatedValue(currentValue, placeholder)}
-{/* 롤백용: 기존 드롭다운은 PC에서만, 모바일에서는 Portal 사용 - 문제시 이 조건문만 제거하면 원래대로 복원 */}
-            {openDropdown === placeholder && !isMobile && (
+{openDropdown === placeholder && !isMobile && (
               <div 
                 className={styles.filterTagMenu}
                 ref={el => dropdownRefs.current[placeholder] = el}
@@ -136,8 +135,7 @@ const FilterTag: React.FC<FilterTagProps> = ({
                       e.stopPropagation();
                       onValueChange(placeholder, optionValue.value);
                       setOpenDropdown(null);
-                      // 값 변경 후 바로 필터 적용
-                      setTimeout(() => onApply(), 50);
+                      onApply();
                     }}
                   >
                     {getTranslatedValue(optionValue.value, placeholder)}
@@ -146,7 +144,6 @@ const FilterTag: React.FC<FilterTagProps> = ({
               </div>
             )}
             
-            {/* 롤백용: 모바일 전용 Portal 바텀시트 - 문제시 이 전체 블록을 삭제하고 위의 !isMobile 조건만 제거하면 복원 */}
             {openDropdown === placeholder && isMobile && typeof window !== 'undefined' && 
               createPortal(
                 <div 
@@ -165,8 +162,7 @@ const FilterTag: React.FC<FilterTagProps> = ({
                           e.stopPropagation();
                           onValueChange(placeholder, optionValue.value);
                           setOpenDropdown(null);
-                          // 값 변경 후 바로 필터 적용
-                          setTimeout(() => onApply(), 50);
+                          onApply();
                         }}
                       >
                         {getTranslatedValue(optionValue.value, placeholder)}
