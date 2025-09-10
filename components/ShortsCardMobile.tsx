@@ -11,6 +11,30 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [isCopied, setIsCopied] = React.useState(false);
   const [showTooltip, setShowTooltip] = React.useState(false);
+  
+  /* 모바일에서 카테고리 숨기기를 위한 화면 크기 감지 */
+  /* 768px 이하에서 카테고리를 숨김 (모바일/태블릿) */
+  const [hideCategory, setHideCategory] = React.useState(false);
+  
+  React.useEffect(() => {
+    /* window 객체 존재 여부 체크 (SSR 환경 대응) */
+    if (typeof window === 'undefined') return;
+    
+    /* 초기 화면 크기 체크 및 리사이즈 이벤트 리스너 등록 */
+    const checkScreenSize = () => {
+      /* 768px 이하에서 카테고리 숨김 (모바일 최적화) */
+      setHideCategory(window.innerWidth <= 768);
+    };
+    
+    /* 컴포넌트 마운트 시 초기 체크 */
+    checkScreenSize();
+    
+    /* 윈도우 리사이즈 시 재체크 - 디바이스 회전이나 창 크기 변경 대응 */
+    window.addEventListener('resize', checkScreenSize);
+    
+    /* 클린업: 메모리 누수 방지를 위해 이벤트 리스너 제거 */
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   // 다국어 번역 객체
   const translations = {
@@ -663,7 +687,9 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
       overflow: 'hidden',
       backgroundColor: 'white',
       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      maxWidth: '320px',
+      /* 모바일 2개 컬럼 표시를 위해 최대폭을 280px로 줄임 */
+      /* 기존 320px에서 280px로 변경하여 2개가 더 잘 맞도록 조정 */
+      maxWidth: '280px',
       width: '100%',
       display: 'flex',
       flexDirection: 'column',
@@ -741,19 +767,22 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
         }}>
           <div>
             <div style={{ fontSize: '10px', color: '#323545', marginBottom: '4px' }}>{t('subscribers')}</div>
-            <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#323545' }}>
+            {/* 구독자 수 폰트 크기를 15px로 증가 */}
+            <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#323545' }}>
               {short.subscriberCount ? formatNumber(short.subscriberCount) : 'N/A'}
             </div>
           </div>
           <div>
             <div style={{ fontSize: '10px', color: '#323545', marginBottom: '4px' }}>{t('views')}</div>
-            <div style={{ fontSize: '12px', fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
+            {/* 조회수 폰트 크기를 15px로 증가 */}
+            <div style={{ fontSize: '15px', fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
               {formatNumber(short.viewCount)}
             </div>
           </div>
           <div>
             <div style={{ fontSize: '10px', color: '#323545', marginBottom: '4px' }}>{t('uploaded')}</div>
-            <div style={{ fontSize: '12px', fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
+            {/* 업로드 시간 폰트 크기를 15px로 증가 */}
+            <div style={{ fontSize: '15px', fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
               {timeAgo(short.publishedAt)}
             </div>
           </div>
@@ -765,35 +794,44 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
         <div style={{ fontSize: '11px', lineHeight: '1.6', color: '#323545' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
             <span>{t('country')}</span>
-            <span style={{ fontWeight: 'bold', fontSize: '10px' }}>
+            {/* 국가 정보 폰트 크기를 15px로 증가 */}
+            <span style={{ fontWeight: 'bold', fontSize: '15px' }}>
               {detectCountryFromChannel()}
             </span>
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-            <span>{t('category')}</span>
-            <span style={{ fontWeight: 'bold', fontSize: '10px' }}>
-              {getCategoryName(short.categoryId)}
-            </span>
-          </div>
+          {/* 카테고리 정보 - 모바일에서 조건부 숨김 */}
+          {/* 768px 이하 화면에서는 공간 절약을 위해 카테고리 정보를 숨김 */}
+          {!hideCategory && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span>{t('category')}</span>
+              {/* 카테고리 정보 폰트 크기를 15px로 증가 */}
+              <span style={{ fontWeight: 'bold', fontSize: '15px' }}>
+                {getCategoryName(short.categoryId)}
+              </span>
+            </div>
+          )}
           
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
             <span>{t('totalVideos')}</span>
-            <span style={{ fontWeight: 'bold' }}>
+            {/* 총 영상 수 폰트 크기를 15px로 증가 */}
+            <span style={{ fontWeight: 'bold', fontSize: '15px' }}>
               {short.videoCount ? formatNumber(short.videoCount) + (language === 'ko' ? '개' : '') : 'N/A'}
             </span>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
             <span>{t('totalViews')}</span>
-            <span style={{ fontWeight: 'bold' }}>
+            {/* 총 조회수 폰트 크기를 15px로 증가 */}
+            <span style={{ fontWeight: 'bold', fontSize: '15px' }}>
               {short.channelViewCount ? formatNumber(short.channelViewCount) : 'N/A'}
             </span>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
             <span>{t('averageViews')}</span>
-            <span style={{ fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
+            {/* 평균 조회수 폰트 크기를 15px로 증가 */}
+            <span style={{ fontWeight: 'bold', color: 'rgb(124, 58, 237)', fontSize: '15px' }}>
               {averageViews > 0 ? formatNumber(averageViews) : 'N/A'}
             </span>
           </div>
@@ -802,7 +840,8 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
           {short.viewsPerSubscriber && (
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
               <span>{t('viewsPerSubscriber')}</span>
-              <span style={{ fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
+              {/* 구독자 대비 조회수 폰트 크기를 15px로 증가 */}
+              <span style={{ fontWeight: 'bold', color: 'rgb(124, 58, 237)', fontSize: '15px' }}>
                 {short.viewsPerSubscriber.toFixed(0)}%
               </span>
             </div>
@@ -811,7 +850,8 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
           {/* 참여율 - 퍼센트만 표시 */}
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
             <span>{t('engagementRate')}</span>
-            <span style={{ fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
+            {/* 참여율 폰트 크기를 15px로 증가 */}
+            <span style={{ fontWeight: 'bold', color: 'rgb(124, 58, 237)', fontSize: '15px' }}>
               {engagementRate.toFixed(2)}%
             </span>
           </div>
@@ -880,7 +920,8 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
               <button
                 onClick={() => setRpmRate(Math.max(0.01, rpmRate - 0.01))}
                 style={{ width: '18px', height: '18px', borderRadius: '50%', border: 'none', backgroundColor: '#f0f0f0', color: '#323545', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
-              <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#6C6D78', margin: '0', minWidth: '24px', textAlign: 'center' }}>{rpmRate.toFixed(2)}</div>
+              {/* RPM 값 폰트 크기를 15px로 증가 */}
+              <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#6C6D78', margin: '0', minWidth: '24px', textAlign: 'center' }}>{rpmRate.toFixed(2)}</div>
               <button
                 onClick={() => setRpmRate(rpmRate + 0.01)}
                 style={{ width: '18px', height: '18px', borderRadius: '50%', border: 'none', backgroundColor: '#f0f0f0', color: '#323545', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
@@ -889,17 +930,20 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
 
           <div>
             <div style={{ fontSize: '10px', color: '#323545', marginBottom: '6px', textAlign: 'center' }}>{t('duration')}</div>
-            <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#6C6D78', textAlign: 'center' }}>{calculateChannelDuration()}</div>
+            {/* 채널 운영 기간 폰트 크기를 15px로 증가 */}
+            <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#6C6D78', textAlign: 'center' }}>{calculateChannelDuration()}</div>
           </div>
 
           <div>
             <div style={{ fontSize: '10px', color: 'rgb(124, 58, 237)', marginBottom: '6px', textAlign: 'center' }}>{t('videoRevenue')}</div>
-            <div style={{ fontSize: '14px', fontWeight: 'bold', color: 'rgb(124, 58, 237)', textAlign: 'center' }}>{formatRevenue(calculateVideoRevenue())}</div>
+            {/* 영상 수익 폰트 크기를 15px로 증가 */}
+            <div style={{ fontSize: '15px', fontWeight: 'bold', color: 'rgb(124, 58, 237)', textAlign: 'center' }}>{formatRevenue(calculateVideoRevenue())}</div>
           </div>
 
           <div>
             <div style={{ fontSize: '10px', color: 'rgb(124, 58, 237)', marginBottom: '6px', textAlign: 'center' }}>{t('channelRevenue')}</div>
-            <div style={{ fontSize: '14px', fontWeight: 'bold', color: 'rgb(124, 58, 237)', textAlign: 'center' }}>{formatRevenue(calculateChannelRevenue())}</div>
+            {/* 채널 총 수익 폰트 크기를 15px로 증가 */}
+            <div style={{ fontSize: '15px', fontWeight: 'bold', color: 'rgb(124, 58, 237)', textAlign: 'center' }}>{formatRevenue(calculateChannelRevenue())}</div>
           </div>
         </div>
         

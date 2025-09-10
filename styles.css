@@ -1218,9 +1218,11 @@ select.form-input {
   padding: 0 var(--spacing-2);
 }
 
-@media (max-width: 480px) {
+/* 모바일에서 쇼츠 카드를 더 많이 표시하기 위해 기준을 320px로 낮춤 */
+/* 320px 이하에서만 1개 컬럼, 그 이상에서는 2개 컬럼 표시 */
+@media (max-width: 320px) {
   .results-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* 매우 작은 화면: 1개 컬럼 */
     gap: var(--spacing-4);
     padding: 0 var(--spacing-3);
   }
