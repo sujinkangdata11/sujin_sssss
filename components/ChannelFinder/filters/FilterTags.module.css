@@ -265,25 +265,33 @@
     border-color: #7c4dff;
   }
   
-  /* 모바일 전용 4,5번 필터 독립적 이모지 클래스 */
+  /* 모바일 전용 4번 필터 - ::before 이모지 완전 제거 */
+  /* 1번 필터와 동기화 차단을 위해 CSS 이모지 숨김 */
   .mobileFilter4 .filterTagContent::before {
-    content: '💵' !important;
-    position: absolute !important;
-    left: 10px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    font-size: 30px !important;
-    display: block !important;
+    display: none !important; /* CSS 이모지 완전 숨김 */
+    content: none !important; /* 내용도 제거 */
   }
   
+  /* 모바일 전용 5번 필터 독립적 이모지 클래스 */
   .mobileFilter5 .filterTagContent::before {
-    content: '📈' !important;
+    content: '📈' !important; /* 차트 이모지 */
     position: absolute !important;
     left: 10px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     font-size: 30px !important;
     display: block !important;
+    z-index: 10 !important; /* 다른 스타일보다 우선순위 높임 */
+  }
+  
+  /* 모바일에서 4번 필터 CSS 이모지 완전 차단 */
+  /* 모든 가능한 선택자 패턴으로 ::before 제거 보장 */
+  @media (max-width: 768px) {
+    .mobileFilter4 .filterTag .filterTagContent::before,
+    .mobileFilter4 > .filterTag .filterTagContent::before {
+      display: none !important; /* 모든 CSS 이모지 숨김 */
+      content: none !important; /* 내용 제거 */
+    }
   }
   
   /* 모바일 래퍼로 인한 active 상태 복원 */

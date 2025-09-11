@@ -31,7 +31,7 @@ const durationToSeconds = (duration: string): number => {
 };
 
 // Convert formatted duration (1:30) to seconds
-const formattedDurationToSeconds = (duration: string): number => {
+export const formattedDurationToSeconds = (duration: string): number => {
   const parts = duration.split(':').map(Number);
   if (parts.length === 2) {
     return parts[0] * 60 + parts[1]; // MM:SS
@@ -42,14 +42,7 @@ const formattedDurationToSeconds = (duration: string): number => {
 };
 
 // Filter videos by duration for shorts (4 minutes or less)
-const filterVideosByDuration = (videos: YouTubeShort[]): YouTubeShort[] => {
-  return videos.filter(video => {
-    if (!video.duration) return true; // If no duration info, include it
-    
-    const durationInSeconds = formattedDurationToSeconds(video.duration);
-    return durationInSeconds <= 240; // 4 minutes or less
-  });
-};
+// Duration filtering is now handled client-side in Home.tsx
 
 interface SearchOptions {
   regionCode?: string;
@@ -73,9 +66,8 @@ export const searchYouTubeShorts = async (
       key: apiKey,
     });
 
-    // Search for shorts only
-    searchQuery = query ? `${query} #shorts` : '#shorts';
-    searchParams.set('videoDuration', 'short');
+    // Search for all video types (shorts and long-form)
+    searchQuery = query || '';
 
     searchParams.set('q', searchQuery);
 
@@ -130,7 +122,7 @@ export const searchYouTubeShorts = async (
     }));
 
     // Filter by duration on client side (4 minutes or less for shorts)
-    return filterVideosByDuration(allVideos);
+    return allVideos; // Return all videos, filtering handled in Home.tsx
   } catch (error) {
     console.error(`Error searching YouTube:`, error);
     if (error instanceof Error) {

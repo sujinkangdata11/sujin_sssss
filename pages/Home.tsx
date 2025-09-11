@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { YouTubeShort, SortOption, Language } from '../types';
 import { COUNTRIES, getDateRanges, SUPPORTED_LANGUAGES } from '../constants';
 import { translateKeywordForCountries } from '../services/geminiService';
-import { searchYouTubeShorts, resolveChannelUrlsToIds, enhanceVideosWithSubscriberData } from '../services/youtubeService';
+import { searchYouTubeShorts, resolveChannelUrlsToIds, enhanceVideosWithSubscriberData, formattedDurationToSeconds } from '../services/youtubeService';
 import { translations } from '../i18n/translations';
 import CountrySelector from '../components/CountrySelector';
 import ShortsCard from '../components/ShortsCard';
@@ -46,6 +46,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('viewCount');
+  const [durationFilter, setDurationFilter] = useState<'all' | 'long' | 'short'>('all');
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [favoriteChannels, setFavoriteChannels] = useState<string[]>(['']);
   const [showTxtExample, setShowTxtExample] = useState(false);
@@ -686,7 +687,23 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   }, [getCurrentApiKey, geminiApiKey, keyword, selectedCountries, dateRange, language, nonEmptyFavoriteChannels, currentKeyIndex, youtubeApiKeys, youtubeApiKey, keyFailureReasons, t, recordKeyFailure, generateFailureSummary]);
 
   const sortedShorts = useMemo(() => {
-    return [...shorts].sort((a, b) => {
+    // Filter by duration first
+    let filteredShorts = [...shorts];
+    if (durationFilter !== 'all') {
+      filteredShorts = shorts.filter(video => {
+        if (!video.duration) return true; // Include videos without duration info
+        const durationInSeconds = formattedDurationToSeconds(video.duration);
+        if (durationFilter === 'short') {
+          return durationInSeconds <= 60; // 60 seconds or less
+        } else if (durationFilter === 'long') {
+          return durationInSeconds >= 90; // 1:30 minutes or more
+        }
+        return true;
+      });
+    }
+    
+    // Then sort the filtered results
+    return filteredShorts.sort((a, b) => {
       if (sortBy === 'viewCount') {
         return b.viewCount - a.viewCount;
       } else if (sortBy === 'viewsPerSubscriber') {
@@ -702,10 +719,26 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
       }
       return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     });
-  }, [shorts, sortBy]);
+  }, [shorts, sortBy, durationFilter]);
 
   const sortedRandomResults = useMemo(() => {
-    return [...randomSearchResults].sort((a, b) => {
+    // Filter by duration first
+    let filteredResults = [...randomSearchResults];
+    if (durationFilter !== 'all') {
+      filteredResults = randomSearchResults.filter(video => {
+        if (!video.duration) return true; // Include videos without duration info
+        const durationInSeconds = formattedDurationToSeconds(video.duration);
+        if (durationFilter === 'short') {
+          return durationInSeconds <= 60; // 60 seconds or less
+        } else if (durationFilter === 'long') {
+          return durationInSeconds >= 90; // 1:30 minutes or more
+        }
+        return true;
+      });
+    }
+    
+    // Then sort the filtered results
+    return filteredResults.sort((a, b) => {
       if (sortBy === 'viewCount') {
         return b.viewCount - a.viewCount;
       } else if (sortBy === 'viewsPerSubscriber') {
@@ -721,7 +754,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
       }
       return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     });
-  }, [randomSearchResults, sortBy]);
+  }, [randomSearchResults, sortBy, durationFilter]);
 
   return (
     <>
@@ -1165,8 +1198,19 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
                     <span className="results-count-number">{isRandomSearchOpen ? sortedRandomResults.length : sortedShorts.length}</span>
                     <span className="ml-1">{t('uniqueShortsMessage')}</span>
                 </p>
-              <div className="sort-toggle-group">
-                <button onClick={() => setSortBy('viewCount')} className={`sort-toggle-btn ${sortBy === 'viewCount' ? 'active' : 'inactive'}`}>{t('sortMostViews')}</button>
+              {/* Duration Filter Group */}
+              <div className="sort-toggle-group duration-filter-group">
+                <button onClick={() => setDurationFilter('all')} className={`sort-toggle-btn ${durationFilter === 'all' ? 'active' : 'inactive'}`}>ALL</button>
+                <button onClick={() => setDurationFilter('long')} className={`sort-toggle-btn ${durationFilter === 'long' ? 'active' : 'inactive'}`}>Long</button>
+                <button onClick={() => setDurationFilter('short')} className={`sort-toggle-btn ${durationFilter === 'short' ? 'active' : 'inactive'}`}>Short</button>
+              </div>
+
+              {/* Divider */}
+              <div className="mobile-divider-line"></div>
+
+              {/* Sort Filter Group */}
+              <div className="sort-toggle-group sort-filter-group">
+                <button onClick={() => setSortBy('viewCount')} className={`sort-toggle-btn ${sortBy === 'viewCount' ? 'active' : 'inactive'}`} style={{ marginLeft: '20px' }}>{t('sortMostViews')}</button>
                 <button onClick={() => setSortBy('date')} className={`sort-toggle-btn ${sortBy === 'date' ? 'active' : 'inactive'}`}>{t('sortNewest')}</button>
                 <button onClick={() => setSortBy('viewsPerSubscriber')} className={`sort-toggle-btn ${sortBy === 'viewsPerSubscriber' ? 'active' : 'inactive'}`}>{t('sortViewsPerSubscriber')}</button>
                 <button onClick={() => setSortBy('videoCount')} className={`sort-toggle-btn ${sortBy === 'videoCount' ? 'active' : 'inactive'}`}>{t('sortFewestVideos')}</button>

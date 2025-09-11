@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { YouTubeShort, Language } from '../types';
+import { calculateRpmRate } from '../utils/rpmCalculator';
 
 interface ShortsCardProps {
   short: YouTubeShort;
@@ -104,45 +105,7 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
   const t = (key: keyof typeof translations) => {
     return translations[key][language] || translations[key].en;
   };
-  const [rpmRate, setRpmRate] = React.useState(() => {
-    // 1차: 실제 채널 국가 정보 기반 RPM (2024년 실제 데이터)
-    if (short.channelCountry) {
-      const countryCode = short.channelCountry.toUpperCase();
-      const rpmMap: Record<string, number> = {
-        'US': 0.33,    // 미국
-        'CH': 0.21,    // 스위스
-        'AU': 0.19,    // 호주
-        'KR': 0.19,    // 한국
-        'GB': 0.17,    // 영국
-        'CA': 0.17,    // 캐나다
-        'DE': 0.16,    // 독일
-        'HK': 0.15,    // 홍콩
-        'JP': 0.14,    // 일본
-        'TW': 0.14,    // 대만
-        'AT': 0.14,    // 오스트리아
-        'NZ': 0.11,    // 뉴질랜드
-        'FR': 0.10,    // 프랑스
-        'BR': 0.05,    // 브라질
-        'MX': 0.04,    // 멕시코
-        'TR': 0.02,    // 터키
-        'PH': 0.02,    // 필리핀
-        'ID': 0.01,    // 인도네시아
-        'IN': 0.01,    // 인도
-        'VN': 0.02,    // 베트남
-        'PK': 0.03,    // 파키스탄
-        'ES': 0.08,    // 스페인
-        'UA': 0.04     // 우크라이나
-      };
-      return rpmMap[countryCode] || 0.08; // 기타 국가 기본값
-    }
-    
-    // 2차: 제목 언어로 추정
-    const hasKorean = /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(short.title);
-    if (hasKorean) return 0.19; // 한국
-    
-    // 3차: 글로벌 (국가 정보 없음)
-    return 0.10; // 글로벌 평균
-  });
+  const [rpmRate, setRpmRate] = React.useState(() => calculateRpmRate(short));
   // 참여율 계산 (좋아요+댓글)/조회수×10,000 (1만뷰 기준)
   const calculateEngagementRate = (): number => {
     if (short.viewCount === 0) return 0;
@@ -671,7 +634,6 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
       borderRadius: '12px',
       overflow: 'hidden',
       backgroundColor: 'white',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       width: '280px',
       minHeight: '950px',
       display: 'flex',

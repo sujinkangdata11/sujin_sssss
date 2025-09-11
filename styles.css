@@ -1157,8 +1157,8 @@ select.form-input {
 
 .sort-toggle-group {
   display: flex;
-  gap: var(--spacing-2);
-  background-color: #f3f4f6; /* light grey background */
+  gap: var(--spacing-1);
+  background-color: white; /* white background */
   padding: var(--spacing-1);
   border-radius: 0.75rem; /* 12px */
 }
@@ -1181,31 +1181,63 @@ select.form-input {
 
 .sort-toggle-btn.inactive {
   color: #000000; /* black text */
-  background: none;
+  background: #f9fafb;
 }
 
 .sort-toggle-btn.inactive:hover {
   background-color: #e5e7eb; /* light grey hover */
 }
 
-/* Mobile: 2x2 grid layout for sort buttons */
+/* Mobile: Separate groups for duration and sort filters */
 @media (max-width: 768px) {
-  .sort-toggle-group {
+  /* Duration filter - 3 buttons in 1 row */
+  .duration-filter-group {
+    display: flex;
+    gap: 4px;
+    background-color: transparent;
+    padding: 0;
+    width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .duration-filter-group button {
+    flex: 1; /* Equal width for all 3 buttons */
+  }
+  
+  /* Mobile divider line */
+  .mobile-divider-line {
+    height: 1px;
+    background-color: #d1d5db;
+    margin: 8px 0;
+    width: 100%;
+  }
+  
+  /* Sort filter - 2x2 grid */
+  .sort-filter-group {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4px;
-    row-gap: 4px;
-    background-color: transparent; /* Remove grey background on mobile */
-    padding: 0; /* Remove padding on mobile */
-    width: 100%; /* 화면의 100% 너비 */
+    background-color: transparent;
+    padding: 0;
+    width: 100%;
+  }
+  
+  /* Remove desktop spacing on mobile */
+  .sort-filter-group button {
+    margin-left: 0 !important;
   }
   
   .sort-toggle-btn.inactive {
-    background-color: #f3f4f6; /* Individual grey background for inactive buttons */
+    background-color: #f9fafb; /* Match updated inactive color */
   }
   
   .sort-toggle-btn {
     padding: var(--spacing-3) var(--spacing-4); /* 12px top/bottom, 16px left/right */
+  }
+  
+  /* Remove the old ::after divider */
+  .sort-toggle-group::after {
+    display: none;
   }
 }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { YouTubeShort, Language } from '../types';
+import { calculateRpmRate } from '../utils/rpmCalculator';
 
 interface ShortsCardMobileProps {
   short: YouTubeShort;
@@ -118,45 +119,7 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
     return translations[key][language] || translations[key].en;
   };
 
-  const [rpmRate, setRpmRate] = React.useState(() => {
-    // 1차: 실제 채널 국가 정보 기반 RPM (2024년 실제 데이터)
-    if (short.channelCountry) {
-      const countryCode = short.channelCountry.toUpperCase();
-      const rpmMap: Record<string, number> = {
-        'US': 0.33,    // 미국
-        'CH': 0.21,    // 스위스
-        'AU': 0.19,    // 호주
-        'KR': 0.19,    // 한국
-        'GB': 0.17,    // 영국
-        'CA': 0.17,    // 캐나다
-        'DE': 0.16,    // 독일
-        'HK': 0.15,    // 홍콩
-        'JP': 0.14,    // 일본
-        'TW': 0.14,    // 대만
-        'AT': 0.14,    // 오스트리아
-        'NZ': 0.11,    // 뉴질랜드
-        'FR': 0.10,    // 프랑스
-        'BR': 0.05,    // 브라질
-        'MX': 0.04,    // 멕시코
-        'TR': 0.02,    // 터키
-        'PH': 0.02,    // 필리핀
-        'ID': 0.01,    // 인도네시아
-        'IN': 0.01,    // 인도
-        'VN': 0.02,    // 베트남
-        'PK': 0.03,    // 파키스탄
-        'ES': 0.08,    // 스페인
-        'UA': 0.04     // 우크라이나
-      };
-      return rpmMap[countryCode] || 0.08; // 기타 국가 기본값
-    }
-    
-    // 2차: 제목 언어로 추정
-    const hasKorean = /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(short.title);
-    if (hasKorean) return 0.19; // 한국
-    
-    // 3차: 글로벌 (국가 정보 없음)
-    return 0.10; // 글로벌 평균
-  });
+  const [rpmRate, setRpmRate] = React.useState(() => calculateRpmRate(short));
 
   // 참여율 계산 (좋아요+댓글)/조회수×10,000 (1만뷰 기준)
   const calculateEngagementRate = (): number => {
@@ -686,7 +649,6 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
       borderRadius: '12px',
       overflow: 'hidden',
       backgroundColor: 'white',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       /* 모바일 2개 컬럼 표시를 위해 최대폭을 280px로 줄임 */
       /* 기존 320px에서 280px로 변경하여 2개가 더 잘 맞도록 조정 */
       maxWidth: '280px',
@@ -721,7 +683,7 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
             color: 'white',
             padding: '2px 6px',
             borderRadius: '4px',
-            fontSize: '10px',
+            fontSize: '13px',
             fontWeight: 'bold'
           }}>
             {short.duration}
@@ -766,21 +728,21 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
           textAlign: 'center'
         }}>
           <div>
-            <div style={{ fontSize: '10px', color: '#323545', marginBottom: '4px' }}>{t('subscribers')}</div>
+            <div style={{ fontSize: '13px', color: '#323545', marginBottom: '4px' }}>{t('subscribers')}</div>
             {/* 구독자 수 폰트 크기를 15px로 증가 */}
             <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#323545' }}>
               {short.subscriberCount ? formatNumber(short.subscriberCount) : 'N/A'}
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '10px', color: '#323545', marginBottom: '4px' }}>{t('views')}</div>
+            <div style={{ fontSize: '13px', color: '#323545', marginBottom: '4px' }}>{t('views')}</div>
             {/* 조회수 폰트 크기를 15px로 증가 */}
             <div style={{ fontSize: '15px', fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
               {formatNumber(short.viewCount)}
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '10px', color: '#323545', marginBottom: '4px' }}>{t('uploaded')}</div>
+            <div style={{ fontSize: '13px', color: '#323545', marginBottom: '4px' }}>{t('uploaded')}</div>
             {/* 업로드 시간 폰트 크기를 15px로 증가 */}
             <div style={{ fontSize: '15px', fontWeight: 'bold', color: 'rgb(124, 58, 237)' }}>
               {timeAgo(short.publishedAt)}
@@ -791,7 +753,7 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
         <hr style={{ border: 'none', borderTop: '1px solid #eee', margin: '12px 0' }} />
 
         {/* 분석 정보 - 모바일 최적화 */}
-        <div style={{ fontSize: '11px', lineHeight: '1.6', color: '#323545' }}>
+        <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#323545' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
             <span>{t('country')}</span>
             {/* 국가 정보 폰트 크기를 15px로 증가 */}
@@ -888,7 +850,7 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
               color: 'white',
               padding: '8px 12px',
               borderRadius: '8px',
-              fontSize: '10px',
+              fontSize: '13px',
               whiteSpace: 'nowrap',
               zIndex: 1000,
               boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
@@ -915,7 +877,7 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
           )}
           
           <div>
-            <div style={{ fontSize: '10px', color: '#323545', marginBottom: '6px', textAlign: 'center' }}>{t('rpm')}</div>
+            <div style={{ fontSize: '13px', color: '#323545', marginBottom: '6px', textAlign: 'center' }}>{t('rpm')}</div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <button
                 onClick={() => setRpmRate(Math.max(0.01, rpmRate - 0.01))}
@@ -929,19 +891,19 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
           </div>
 
           <div>
-            <div style={{ fontSize: '10px', color: '#323545', marginBottom: '6px', textAlign: 'center' }}>{t('duration')}</div>
+            <div style={{ fontSize: '13px', color: '#323545', marginBottom: '6px', textAlign: 'center' }}>{t('duration')}</div>
             {/* 채널 운영 기간 폰트 크기를 15px로 증가 */}
             <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#6C6D78', textAlign: 'center' }}>{calculateChannelDuration()}</div>
           </div>
 
           <div>
-            <div style={{ fontSize: '10px', color: 'rgb(124, 58, 237)', marginBottom: '6px', textAlign: 'center' }}>{t('videoRevenue')}</div>
+            <div style={{ fontSize: '13px', color: 'rgb(124, 58, 237)', marginBottom: '6px', textAlign: 'center' }}>{t('videoRevenue')}</div>
             {/* 영상 수익 폰트 크기를 15px로 증가 */}
             <div style={{ fontSize: '15px', fontWeight: 'bold', color: 'rgb(124, 58, 237)', textAlign: 'center' }}>{formatRevenue(calculateVideoRevenue())}</div>
           </div>
 
           <div>
-            <div style={{ fontSize: '10px', color: 'rgb(124, 58, 237)', marginBottom: '6px', textAlign: 'center' }}>{t('channelRevenue')}</div>
+            <div style={{ fontSize: '13px', color: 'rgb(124, 58, 237)', marginBottom: '6px', textAlign: 'center' }}>{t('channelRevenue')}</div>
             {/* 채널 총 수익 폰트 크기를 15px로 증가 */}
             <div style={{ fontSize: '15px', fontWeight: 'bold', color: 'rgb(124, 58, 237)', textAlign: 'center' }}>{formatRevenue(calculateChannelRevenue())}</div>
           </div>
