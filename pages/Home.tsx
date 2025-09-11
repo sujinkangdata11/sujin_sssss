@@ -4,6 +4,7 @@ import { YouTubeShort, SortOption, Language } from '../types';
 import { COUNTRIES, getDateRanges, SUPPORTED_LANGUAGES } from '../constants';
 import { translateKeywordForCountries } from '../services/geminiService';
 import { searchYouTubeShorts, resolveChannelUrlsToIds, enhanceVideosWithSubscriberData, formattedDurationToSeconds } from '../services/youtubeService';
+import { scheduleHandleCollection } from '../services/channelHandleCollector';
 import { translations } from '../i18n/translations';
 import CountrySelector from '../components/CountrySelector';
 import ShortsCard from '../components/ShortsCard';
@@ -656,6 +657,11 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
         );
         setBatchProgress(null); // Clear progress when done
         setShorts(enhancementResult.videos);
+        console.log('🎯 [DEBUG] setShorts 완료, 채널수집 함수 호출 시도');
+        
+        // 검색 완료 5초 후 채널 핸들명 수집
+        scheduleHandleCollection(enhancementResult.videos);
+        console.log('🎯 [DEBUG] scheduleHandleCollection 호출 완료');
         
         // Show warning if subscriber data couldn't be fetched
         if (enhancementResult.hasSubscriberDataError && enhancementResult.videos.length > 0) {
@@ -1169,6 +1175,13 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
               setRandomSearchResults(results);
               setRandomSearchLoading(loading);
               setRandomSearchError(error);
+              
+              // 랜덤 검색 완료 시에도 채널 핸들명 수집
+              if (results.length > 0) {
+                console.log('🎯 [DEBUG] 랜덤검색 완료, 채널수집 함수 호출 시도');
+                scheduleHandleCollection(results);
+                console.log('🎯 [DEBUG] 랜덤검색 scheduleHandleCollection 호출 완료');
+              }
             }}
           />
         )}
