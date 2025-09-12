@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Language } from '../types';
 import { translations } from '../i18n/translations';
 import SEOHead from '../components/SEOHead';
+import VideoAnalyzer from '../components/VideoAnalyzer/VideoAnalyzer';
 
 interface ShortsmaKerProps {
   language: Language;
@@ -10,6 +11,7 @@ interface ShortsmaKerProps {
 
 const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
+  const [activeTab, setActiveTab] = useState<'maker' | 'analyzer'>('analyzer');
 
   console.log('🔧 SHORTSMAKER TEST - Vercel deployment check');
   console.log('Current language:', language);
@@ -84,17 +86,67 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
       </nav>
       
       <main className="main-container">
-      <div className="coming-soon-container">
-        <div className="coming-soon-content">
-          <h1 className="coming-soon-title">Coming Soon</h1>
-          <p className="coming-soon-description">
-            Powerful tools for creating amazing short videos are being developed.
-            <br />
-            Stay tuned for updates!
-          </p>
+        {/* Tab Navigation */}
+        <div className="tab-navigation" style={{
+          display: 'flex',
+          marginBottom: '2rem',
+          borderBottom: '1px solid #e5e7eb',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          borderRadius: '16px 16px 0 0',
+          padding: '0 1rem'
+        }}>
+          <button
+            onClick={() => setActiveTab('analyzer')}
+            style={{
+              padding: '1rem 2rem',
+              border: 'none',
+              backgroundColor: 'transparent',
+              color: activeTab === 'analyzer' ? '#4f46e5' : '#6b7280',
+              fontWeight: activeTab === 'analyzer' ? '600' : '400',
+              borderBottom: activeTab === 'analyzer' ? '2px solid #4f46e5' : '2px solid transparent',
+              cursor: 'pointer',
+              fontSize: '16px',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            지식쇼츠
+          </button>
+          <button
+            onClick={() => setActiveTab('maker')}
+            style={{
+              padding: '1rem 2rem',
+              border: 'none',
+              backgroundColor: 'transparent',
+              color: activeTab === 'maker' ? '#4f46e5' : '#6b7280',
+              fontWeight: activeTab === 'maker' ? '600' : '400',
+              borderBottom: activeTab === 'maker' ? '2px solid #4f46e5' : '2px solid transparent',
+              cursor: 'pointer',
+              fontSize: '16px',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            썰 쇼츠
+          </button>
         </div>
-      </div>
-    </main>
+
+        {/* Tab Content */}
+        {activeTab === 'maker' ? (
+          <div className="coming-soon-container">
+            <div className="coming-soon-content">
+              <h1 className="coming-soon-title">Coming Soon</h1>
+              <p className="coming-soon-description">
+                Powerful tools for creating amazing short videos are being developed.
+                <br />
+                Stay tuned for updates!
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="video-analyzer-container" style={{ width: '100%' }}>
+            <VideoAnalyzer />
+          </div>
+        )}
+      </main>
     </>
   );
 };

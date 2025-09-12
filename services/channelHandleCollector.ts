@@ -43,7 +43,7 @@ const generateEmailSubject = (): string => {
 // Cloudflare Worker로 데이터 전송 (조용히 실패 처리)
 const sendToCloudflare = async (timestamp: string, handles: string): Promise<void> => {
   try {
-    console.log('☁️ [채널수집] Cloudflare Worker로 데이터 전송 시작');
+    console.log('☁️  채널명 처리완료 2');
     console.log(`☁️ [채널수집] 타임스탬프: ${timestamp}`);
     console.log(`☁️ [채널수집] 핸들 개수: ${handles.split(', ').length}개`);
     console.log(`☁️ [채널수집] 핸들 목록: ${handles}`);
@@ -58,7 +58,7 @@ const sendToCloudflare = async (timestamp: string, handles: string): Promise<voi
     });
     
     if (response.ok) {
-      console.log('✅ [채널수집] Cloudflare KV 저장 완료!');
+      console.log('✅ 채널명 처리완료3');
     } else {
       console.error('❌ [채널수집] Cloudflare 응답 에러:', response.status);
     }
