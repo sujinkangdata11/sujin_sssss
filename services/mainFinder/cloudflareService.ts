@@ -44,7 +44,7 @@ class CloudflareService {
 
       // 2. 실제 API 호출 시도
       try {
-        console.log('🌐 [DEBUG] API 호출 시도:', this.baseUrl);
+        console.log('🌐 [DEBUG] API 호출 시도');
         const response = await fetch(`${this.baseUrl}/api/channels?limit=10000`, {
           method: 'GET',
           headers: {
@@ -242,8 +242,8 @@ class CloudflareService {
         // 👁️ V그룹 - RPM 계산용 조회수 분석 (Views Analysis)
         shortsTotalViews: snapshot.vesv || 0,  // vesv → 숏폼 예상 조회수 (estimatedShortsViews)
         longTotalViews: snapshot.velv || 0,    // velv → 롱폼 예상 조회수 (estimatedLongformViews)
-        shortsViewsPercentage: snapshot.vsvp || 20,  // vsvp → 숏폼 조회수 비율 (shortsViewsPercentage)
-        longformViewsPercentage: snapshot.vlvp || 80, // vlvp → 롱폼 조회수 비율 (longformViewsPercentage)
+        shortsViewsPercentage: snapshot.vsvp !== undefined && snapshot.vsvp !== null ? snapshot.vsvp : 20,  // vsvp → 숏폼 조회수 비율 (shortsViewsPercentage)
+        longformViewsPercentage: snapshot.vlvp !== undefined && snapshot.vlvp !== null ? snapshot.vlvp : 80, // vlvp → 롱폼 조회수 비율 (longformViewsPercentage)
         
         // 📈 구독자 성장 히스토리
         subscriberHistory: channel.subscriberHistory || []

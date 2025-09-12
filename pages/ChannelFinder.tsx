@@ -125,8 +125,8 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     return rate;
   });
   // 선택된 채널의 숏폼/롱폼 비율 (실제 데이터 사용)
-  const shortsPercentage = selectedChannel?.shortsViewsPercentage || 20;
-  const longPercentage = selectedChannel?.longformViewsPercentage || 80;
+  const shortsPercentage = selectedChannel?.shortsViewsPercentage !== undefined && selectedChannel?.shortsViewsPercentage !== null ? selectedChannel.shortsViewsPercentage : 20;
+  const longPercentage = selectedChannel?.longformViewsPercentage !== undefined && selectedChannel?.longformViewsPercentage !== null ? selectedChannel.longformViewsPercentage : 80;
 
   // 숫자를 영어 단위로 변환하는 함수
   const formatToEnglishUnits = (num: number): string => {
