@@ -61,6 +61,7 @@ const getCountryDisplayName = (language: Language, countryKey: string): string =
     'Taiwan': { en: 'Taiwan', ko: '대만', ja: '台湾', zh: '台湾', hi: 'ताइवान', es: 'Taiwán', fr: 'Taïwan', de: 'Taiwan', nl: 'Taiwan', pt: 'Taiwan', ru: 'Тайвань' },
     'Turkey': { en: 'Turkey', ko: '터키', ja: 'トルコ', zh: '土耳其', hi: 'तुर्की', es: 'Turquía', fr: 'Turquie', de: 'Türkei', nl: 'Turkije', pt: 'Turquia', ru: 'Турция' },
     'United Kingdom': { en: 'United Kingdom', ko: '영국', ja: 'イギリス', zh: '英国', hi: 'यूनाइटेड किंगडम', es: 'Reino Unido', fr: 'Royaume-Uni', de: 'Vereinigtes Königreich', nl: 'Verenigd Koninkrijk', pt: 'Reino Unido', ru: 'Великобритания' },
+    'Argentina': { en: 'Argentina', ko: '아르헨티나', ja: 'アルゼンチン', zh: '阿根廷', hi: 'अर्जेंटीना', es: 'Argentina', fr: 'Argentine', de: 'Argentinien', nl: 'Argentinië', pt: 'Argentina', ru: 'Аргентина' },
     '기타': { en: 'Others', ko: '기타', ja: 'その他', zh: '其他', hi: 'अन्य', es: 'Otros', fr: 'Autres', de: 'Andere', nl: 'Anderen', pt: 'Outros', ru: 'Прочие' }
   };
   

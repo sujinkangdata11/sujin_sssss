@@ -299,7 +299,9 @@ class CloudflareService {
       'PE': 'Peru',
       'AR': 'Argentina',
       'CL': 'Chile',
-      'CO': 'Colombia'
+      'CO': 'Colombia',
+      'HK': 'Hong Kong',
+      'ID': 'Indonesia'
     };
     
     return countryMap[countryCode || ''] || countryCode || '기타';

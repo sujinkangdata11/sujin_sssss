@@ -32,5 +32,6 @@
   "Taiwan": { "shorts": 0.14, "long": 0.69 },
   "Turkey": { "shorts": 0.02, "long": 0.29 },
   "United Kingdom": { "shorts": 0.17, "long": 7.12 },
+  "Argentina": { "shorts": 0.06, "long": 2.0 },
   "기타": { "shorts": 0.10, "long": 1.00 }
 }
