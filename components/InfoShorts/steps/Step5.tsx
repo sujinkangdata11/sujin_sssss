@@ -655,7 +655,18 @@ const Step5: React.FC<Step5Props> = ({
                       fontSize: '14px',
                       cursor: isProcessingSilence ? 'not-allowed' : 'pointer',
                       width: '150px',
-                      fontWeight: 'bold'
+                      height: '45px',
+                      fontWeight: 'bold',
+                      transition: 'all 0.1s ease'
+                    }}
+                    onMouseDown={(e) => {
+                      (e.target as HTMLElement).style.height = '45px';
+                    }}
+                    onMouseUp={(e) => {
+                      (e.target as HTMLElement).style.height = '45px';
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.target as HTMLElement).style.height = '45px';
                     }}
                   >
                     {isProcessingSilence ? '🔄 처리 중...' : '✂️ 무음 제거 실행'}
@@ -762,11 +773,22 @@ const Step5: React.FC<Step5Props> = ({
                       fontSize: '14px',
                       cursor: isGeneratingSRT ? 'not-allowed' : 'pointer',
                       width: '200px',
+                      height: '45px',
                       fontWeight: 'bold',
                       textAlign: 'center',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      transition: 'all 0.1s ease'
+                    }}
+                    onMouseDown={(e) => {
+                      (e.target as HTMLElement).style.height = '45px';
+                    }}
+                    onMouseUp={(e) => {
+                      (e.target as HTMLElement).style.height = '45px';
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.target as HTMLElement).style.height = '45px';
                     }}
                   >
                     {isGeneratingSRT ? (

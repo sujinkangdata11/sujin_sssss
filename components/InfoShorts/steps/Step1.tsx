@@ -88,13 +88,23 @@ const Step1: React.FC<Step1Props> = ({
       })(),
       transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
     }}>
+      {/* 개발중 안내 메시지 */}
+      <div style={{ 
+        fontSize: '15px',
+        color: '#dc3545',
+        textAlign: 'center',
+        marginBottom: '20px',
+        paddingTop: '20px'
+      }}>
+        이 기능은 현재 개발중입니다. 9월 30일에 완료됩니다
+      </div>
+      
       {/* 제목 - 가로 중앙 정렬 */}
       <div style={{ 
         fontSize: 'clamp(24px, 5vw, 32px)', 
         fontWeight: 'bold', 
         color: '#333d4b', 
-        textAlign: 'center',
-        paddingTop: '20px'
+        textAlign: 'center'
       }}>
         쇼츠링크를 입력하세요
       </div>

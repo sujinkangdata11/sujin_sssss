@@ -141,7 +141,10 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
 
       {/* Next Button */}
       <button
-        onClick={() => setCurrentStep(Math.min(totalSteps, currentStep + 1))}
+        onClick={() => {
+          setCurrentStep(Math.min(totalSteps, currentStep + 1));
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         disabled={currentStep === totalSteps}
         style={{
           padding: '8px 16px',
