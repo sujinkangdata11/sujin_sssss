@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import styles from '../InfoShorts.module.css';
+
+// YouTube iframe API 타입 선언
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 interface Step3Props {
   currentStep: number;
@@ -73,6 +81,8 @@ const Step3: React.FC<Step3Props> = ({
   ChevronDown,
   step2ErrorMessage
 }) => {
+  const step3VideoRef = useRef<HTMLIFrameElement>(null);
+  const [step3Player, setStep3Player] = React.useState<any>(null);
   // 스피너 CSS를 head에 추가
   React.useEffect(() => {
     const styleElement = document.createElement('style');
@@ -83,6 +93,48 @@ const Step3: React.FC<Step3Props> = ({
       document.head.removeChild(styleElement);
     };
   }, []);
+
+  // YouTube iframe API 로드 및 플레이어 초기화
+  useEffect(() => {
+    if (!youtubeVideoId) return;
+
+    // YouTube iframe API 스크립트 로드
+    const loadYouTubeAPI = () => {
+      if (!window.YT) {
+        const script = document.createElement('script');
+        script.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(script);
+        
+        window.onYouTubeIframeAPIReady = () => {
+          initializePlayer();
+        };
+      } else {
+        initializePlayer();
+      }
+    };
+
+    const initializePlayer = () => {
+      if (step3VideoRef.current && window.YT && window.YT.Player) {
+        const player = new window.YT.Player(step3VideoRef.current, {
+          events: {
+            onReady: (event: any) => {
+              setStep3Player(event.target);
+            }
+          }
+        });
+      }
+    };
+
+    loadYouTubeAPI();
+  }, [youtubeVideoId]);
+
+  // Step3 전용 시간 점프 함수
+  const jumpToTimeInStep3Video = (timeInSeconds: number) => {
+    if (step3Player && step3Player.seekTo) {
+      step3Player.seekTo(timeInSeconds, true);
+      step3Player.playVideo();
+    }
+  };
 
   return (
     <div className="step-card" style={{
@@ -142,9 +194,10 @@ const Step3: React.FC<Step3Props> = ({
       }}>
         {youtubeVideoId ? (
           <iframe
+            ref={step3VideoRef}
             width="190"
             height="369"
-            src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0`}
+            src={`https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1&autoplay=0&mute=0&controls=1&modestbranding=1&rel=0`}
             title="YouTube Shorts Video"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -324,8 +377,18 @@ const Step3: React.FC<Step3Props> = ({
                         key={i}
                         role="button"
                         onClick={() =>
-                          setRequestedTimecode(timeToSecs(time))
-                        }>
+                          jumpToTimeInStep3Video(timeToSecs(time))
+                        }
+                        style={{
+                          cursor: 'pointer',
+                          transition: 'background-color 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#f3f4f6';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}>
                         <td>
                           <time>{time}</time>
                         </td>
@@ -346,7 +409,19 @@ const Step3: React.FC<Step3Props> = ({
                       key={i}
                       className="timecode-card"
                       role="button"
-                      onClick={() => setRequestedTimecode(timeToSecs(time))}>
+                      onClick={() => jumpToTimeInStep3Video(timeToSecs(time))}
+                      style={{
+                        cursor: 'pointer',
+                        transition: 'background-color 0.2s ease',
+                        borderRadius: '8px',
+                        padding: '0.5rem'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f3f4f6';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }}>
                       <div className="card-header">
                         <time className="card-time">{time}</time>
                       </div>
@@ -370,7 +445,20 @@ const Step3: React.FC<Step3Props> = ({
                       key={i}
                       className="list-item"
                       role="button"
-                      onClick={() => setRequestedTimecode(timeToSecs(time))}>
+                      onClick={() => jumpToTimeInStep3Video(timeToSecs(time))}
+                      style={{
+                        cursor: 'pointer',
+                        transition: 'background-color 0.2s ease',
+                        borderRadius: '4px',
+                        padding: '0.5rem',
+                        margin: '0.2rem 0'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f3f4f6';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }}>
                       <time className="list-time">{time}</time>
                       <span className="list-text">{text}</span>
                     </div>

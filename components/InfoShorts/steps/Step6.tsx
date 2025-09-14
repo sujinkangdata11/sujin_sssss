@@ -410,11 +410,25 @@ const Step6: React.FC<Step6Props> = ({
             }}>
               {currentVoices.map(([voiceKey, displayName]) => {
               const getEmoji = (voiceKey: string) => {
-                // 여성 음성
-                if (voiceKey === 'jimin' || voiceKey === 'sujin' || voiceKey === 'yena' || voiceKey === 'eunji' || voiceKey === 'yejin' || voiceKey === 'minjin' || voiceKey === 'jihyun' || voiceKey === 'eunsu' || voiceKey === 'yedam') return '👩';
-                // 남성 음성
-                if (voiceKey === 'youngsu' || voiceKey === 'changhee' || voiceKey === 'minjun' || voiceKey === 'jihun' || voiceKey === 'yejun' || voiceKey === 'hunyoung') return '👨';
-                return '🎤';
+                // 개별 음성별 특색있는 이모지
+                switch (voiceKey) {
+                  case 'youngsu': return '🌟'; // 에너지 넘치는 젊은 남성
+                  case 'changhee': return '🧑‍💼'; // 차분하고 신뢰감 있는 남성
+                  case 'jimin': return '🌸'; // 밝고 발랄한 여성
+                  case 'sujin': return '💝'; // 친근하고 따뜻한 여성
+                  case 'minjun': return '🎓'; // 학생, 활기차고 친근한
+                  case 'yena': return '✨'; // 여성 음성
+                  case 'jihun': return '🎸'; // 남성 음성
+                  case 'eunji': return '🌺'; // 여성 음성
+                  case 'yejun': return '🎯'; // 남성 음성
+                  case 'hunyoung': return '🔥'; // 남성 음성
+                  case 'yejin': return '🦋'; // 여성 음성
+                  case 'minjin': return '💫'; // 여성 음성
+                  case 'jihyun': return '🌙'; // 여성 음성
+                  case 'eunsu': return '🌻'; // 여성 음성
+                  case 'yedam': return '🎀'; // 여성 음성
+                  default: return '🎤';
+                }
               };
               
               return (
