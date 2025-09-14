@@ -237,6 +237,7 @@ const InfoShorts: React.FC = () => {
   // Step6 키워드 추출 관련 상태들
   const [isExtractingKeywords, setIsExtractingKeywords] = useState<boolean>(false);
   const [extractedKeywords, setExtractedKeywords] = useState<string>('');
+  const [keywordExtractionError, setKeywordExtractionError] = useState<string>('');
   
   // Step2 영상 분석 관련 상태들
   const [isLoadingGenerate, setIsLoadingGenerate] = useState<boolean>(false);
@@ -662,14 +663,17 @@ ${referenceContent}
 
   // 키워드 추출 함수
   const handleKeywordExtraction = async () => {
+    // 에러 메시지 초기화
+    setKeywordExtractionError('');
+    
     // 3번째 칼럼의 분석 결과 확인
     if (!analysisResult && (!timecodeList || timecodeList.length === 0)) {
-      alert('먼저 3번째 칼럼에서 영상 분석을 실행해주세요.');
+      setKeywordExtractionError('먼저 3번째 칼럼에서 영상 분석을 실행해주세요.');
       return;
     }
 
     if (!apiKey.trim()) {
-      alert('Gemini API 키를 입력해주세요.');
+      setKeywordExtractionError('Gemini API 키를 입력해주세요.');
       return;
     }
 
@@ -1490,6 +1494,7 @@ ${referenceContent}
           isExtractingKeywords={isExtractingKeywords}
           extractedKeywords={extractedKeywords}
           scrollToColumn={scrollToColumn}
+          keywordExtractionError={keywordExtractionError}
         />
 
       {/* ================================================ */}
@@ -1502,6 +1507,14 @@ ${referenceContent}
         setCurrentStep={handleStepChange}
         totalSteps={7}
         youtubeVideoId={youtubeVideoId}
+        stepCompletionStates={{
+          step1: youtubeVideoId !== null,
+          step2: apiKey.trim().length > 0,
+          step3: timecodeList && timecodeList.length > 0,
+          step4: analysisResult && analysisResult.trim().length > 0,
+          step5: analysisResult2 && analysisResult2.trim().length > 0,
+          step6: generatedAudio !== null
+        }}
       />
     </main>
   );

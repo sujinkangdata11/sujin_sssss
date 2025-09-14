@@ -5,13 +5,22 @@ interface FloatingNavigationProps {
   setCurrentStep: (step: number) => void;
   totalSteps: number;
   youtubeVideoId?: string;
+  stepCompletionStates?: {
+    step1?: boolean;
+    step2?: boolean;
+    step3?: boolean;
+    step4?: boolean;
+    step5?: boolean;
+    step6?: boolean;
+  };
 }
 
 const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
   currentStep,
   setCurrentStep,
   totalSteps,
-  youtubeVideoId
+  youtubeVideoId,
+  stepCompletionStates = {}
 }) => {
   const [showFloating, setShowFloating] = useState(false);
 
@@ -36,6 +45,26 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
     '음성 생성',
     '관련 영상'
   ];
+
+  // 다음 버튼의 활성화 상태 확인
+  const isNextButtonActive = () => {
+    switch (currentStep) {
+      case 1:
+        return stepCompletionStates.step1 || false;
+      case 2:
+        return stepCompletionStates.step2 || false;
+      case 3:
+        return stepCompletionStates.step3 || false;
+      case 4:
+        return stepCompletionStates.step4 || false;
+      case 5:
+        return stepCompletionStates.step5 || false;
+      case 6:
+        return stepCompletionStates.step6 || false;
+      default:
+        return false;
+    }
+  };
 
   return (
     <div style={{
@@ -68,7 +97,7 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
         disabled={currentStep === 1}
         style={{
           padding: '8px 16px',
-          width: '123px',
+          width: '90px',
           height: '52px',
           background: currentStep === 1 ? '#f3f4f6' : 'rgb(209, 213, 219)',
           color: currentStep === 1 ? '#9ca3af' : 'white',
@@ -151,7 +180,8 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
           padding: '8px 16px',
           width: '90px',
           height: '52px',
-          background: currentStep === totalSteps ? '#f3f4f6' : '#7c3aed',
+          background: currentStep === totalSteps ? '#f3f4f6' : 
+                     isNextButtonActive() ? 'rgb(124, 58, 237)' : 'rgb(204, 174, 255)',
           color: currentStep === totalSteps ? '#9ca3af' : 'white',
           border: 'none',
           borderRadius: '12px',
@@ -166,12 +196,14 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
         }}
         onMouseOver={(e) => {
           if (currentStep !== totalSteps) {
-            (e.target as HTMLElement).style.background = '#6d28d9';
+            const hoverColor = isNextButtonActive() ? '#6d28d9' : 'rgb(190, 160, 240)';
+            (e.target as HTMLElement).style.background = hoverColor;
           }
         }}
         onMouseOut={(e) => {
           if (currentStep !== totalSteps) {
-            (e.target as HTMLElement).style.background = '#7c3aed';
+            const originalColor = isNextButtonActive() ? 'rgb(124, 58, 237)' : 'rgb(204, 174, 255)';
+            (e.target as HTMLElement).style.background = originalColor;
           }
         }}
       >

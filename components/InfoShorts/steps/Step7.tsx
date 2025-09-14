@@ -12,6 +12,7 @@ interface Step7Props {
   isExtractingKeywords: boolean;
   extractedKeywords: string;
   scrollToColumn: (columnRef: React.RefObject<HTMLDivElement>) => void;
+  keywordExtractionError: string;
 }
 
 const Step7: React.FC<Step7Props> = ({
@@ -24,7 +25,8 @@ const Step7: React.FC<Step7Props> = ({
   youtubeVideoId,
   isExtractingKeywords,
   extractedKeywords,
-  scrollToColumn
+  scrollToColumn,
+  keywordExtractionError
 }) => {
 
   return (
@@ -57,24 +59,54 @@ const Step7: React.FC<Step7Props> = ({
       })(),
       transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
     }}>
-      <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#333d4b', marginBottom: '2rem', paddingTop: '20px' }}>
-        6. 관련 영상 더 찾기
-      </div>
       
-      <div className="sixth-column" ref={sixthColumnRef}>
+      <div className="sixth-column" ref={sixthColumnRef} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: '0 auto',
+        minWidth: '800px',
+        maxWidth: '800px'
+      }}>
         <div style={{ marginBottom: '15px' }}>
-          <h3 style={{ fontWeight: 'bold', color: '#333', fontSize: '16px', margin: 0 }}>관련 영상 더 찾기</h3>
+          <h3 style={{ fontWeight: 'bold', color: '#333', fontSize: '18px', margin: 0 }}>관련 영상 더 찾기</h3>
         </div>
         
-        <div style={{ marginBottom: '15px' }}>
+        <div style={{ 
+          marginBottom: '15px', 
+          display: 'flex', 
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column'
+        }}>
           <button
             className="button generateButton"
             onClick={handleKeywordExtraction}
             disabled={!apiKey.trim() || !youtubeVideoId || isExtractingKeywords}
-            style={{ width: '100%', marginBottom: '15px', fontSize: '16px' }}
+            style={{ 
+              width: '170px', 
+              marginBottom: '10px', 
+              fontSize: '15px', 
+              border: 'none',
+              backgroundColor: 'rgb(124, 58, 237)',
+              color: 'white',
+              borderRadius: '12px'
+            }}
           >
-            {isExtractingKeywords ? '🔄 키워드 추출 중...' : '🔍 영상의 키워드 추출'}
+            {isExtractingKeywords ? '키워드 추출 중...' : '영상 키워드 추출'}
           </button>
+          
+          {keywordExtractionError && (
+            <div style={{
+              color: 'red',
+              fontSize: '15px',
+              marginBottom: '15px',
+              textAlign: 'center'
+            }}>
+              {keywordExtractionError}
+            </div>
+          )}
           
           <div style={{
             marginTop: '10px',
@@ -88,11 +120,11 @@ const Step7: React.FC<Step7Props> = ({
           }}>
             <h4 style={{ 
               marginBottom: '10px', 
-              color: '#333', 
+              color: 'rgb(153, 153, 153)', 
               fontSize: '16px',
               fontWeight: 'bold'
             }}>
-              추출된 키워드:
+              키워드 리스트
             </h4>
             <div style={{ 
               minHeight: '80px'
@@ -144,7 +176,7 @@ const Step7: React.FC<Step7Props> = ({
                 ))
               ) : (
                 <div style={{ 
-                  color: '#999',
+                  color: 'rgb(153, 153, 153)',
                   fontSize: '16px',
                   lineHeight: '1.5'
                 }}>
@@ -155,28 +187,41 @@ const Step7: React.FC<Step7Props> = ({
           </div>
         </div>
         
-        <button
-          className="button generateButton"
-          onClick={() => {
-            alert('관련 영상 검색 (준비 중)');
-            setTimeout(() => scrollToColumn(sixthColumnRef), 100);
-          }}
-          style={{ fontSize: '16px' }}
-        >
-          🔍 홈으로 가서 관련 영상 더 찾기
-        </button>
-        
         <div style={{
           marginTop: '10px',
-          padding: '10px',
+          padding: '15px',
           backgroundColor: '#fff3cd',
           border: '1px solid #ffeaa7',
           borderRadius: '12px',
           fontSize: '14px',
           color: '#856404',
-          lineHeight: '1.5'
+          lineHeight: '1.5',
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '400px'
         }}>
-          ⚠️ 홈으로 이동하면 이곳의 내용이 전부 새로고침됩니다. 중요한 정보는 다운로드와 복사해놓으세요
+          <div style={{ marginBottom: '15px', fontSize: '15px' }}>
+            ⚠️ 페이지를 이동하면 이곳의 내용이 전부 새로고침됩니다.<br/>중요한 정보는 다운로드와 복사해놓으세요
+          </div>
+          <button
+            className="button generateButton"
+            onClick={() => {
+              window.open('/', '_blank');
+            }}
+            style={{ 
+              fontSize: '15px', 
+              width: '200px',
+              backgroundColor: 'rgb(241, 223, 167)',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '10px',
+              cursor: 'pointer'
+            }}
+          >
+            쇼츠 파인더에서 영상찾기
+          </button>
         </div>
       </div>
     </div>
