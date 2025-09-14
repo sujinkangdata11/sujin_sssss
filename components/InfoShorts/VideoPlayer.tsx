@@ -196,14 +196,6 @@ export default function VideoPlayer({
                 );
               })}
             </div>
-            <div className="videoTime">
-              <button>
-                <span className="icon" onClick={togglePlay}>
-                  {isPlaying ? 'pause' : 'play_arrow'}
-                </span>
-              </button>
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </div>
           </div>
         </>
       ) : (

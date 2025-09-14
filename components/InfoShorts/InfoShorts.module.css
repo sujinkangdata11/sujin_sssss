@@ -1,0 +1,257 @@
+/* InfoShorts 컴포넌트 전용 CSS 모듈 */
+
+.infoShortsContainer {
+  width: 100%;
+  padding: 20px;
+  height: fit-content !important;
+  min-height: fit-content;
+  background: var(--background, #ffffff);
+  color: var(--text, #1A1C1E);
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.light {
+  --background: #ffffff;
+  --text: #1A1C1E;
+  --border: #C6C6C9;
+  --highlight: #fff;
+  --track: #86878A;
+  --link: #2872E3;
+}
+
+.dark {
+  --background: #1A1C1E;
+  --text: #fff;
+  --border: #37393C;
+  --highlight: #000;
+  --track: #37393C;
+  --link: #87A9FF;
+}
+
+.mainTitle {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.urlInputForm {
+  display: flex;
+  gap: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.urlInput {
+  width: 400px;
+  padding: 15px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  background: var(--background);
+  color: var(--text);
+  font-family: inherit;
+}
+
+.urlInput:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 0 3px rgba(40, 114, 227, 0.1);
+}
+
+.loadButton {
+  padding: 15px 25px;
+  background: var(--link);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.loadButton:hover {
+  background: #1e5cb3;
+  transform: translateY(-1px);
+}
+
+.loadButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 20px;
+  max-width: 1600px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.card {
+  background: var(--background);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardContent {
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.primaryButton {
+  padding: 12px 20px;
+  background: var(--link);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.primaryButton:hover {
+  background: #1e5cb3;
+}
+
+.primaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  padding: 12px 20px;
+  background: transparent;
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.secondaryButton:hover {
+  background: var(--border);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--background);
+  color: var(--text);
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 0 3px rgba(40, 114, 227, 0.1);
+}
+
+.select {
+  padding: 10px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  color: var(--text);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: var(--track);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 15px 0;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--link);
+  transition: width 0.3s ease;
+}
+
+.statusText {
+  font-size: 14px;
+  color: var(--text);
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+
+.errorText {
+  color: #e53e3e;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.loadingSpinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid var(--link);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fifth-column {
+  min-width: 800px !important;
+}

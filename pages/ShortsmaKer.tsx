@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Language } from '../types';
 import { translations } from '../i18n/translations';
 import SEOHead from '../components/SEOHead';
-import VideoAnalyzer from '../components/VideoAnalyzer/VideoAnalyzer';
+import InfoShorts from '../components/InfoShorts/InfoShorts';
 
 interface ShortsmaKerProps {
   language: Language;
@@ -89,6 +89,7 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
         {/* Tab Navigation */}
         <div className="tab-navigation" style={{
           display: 'flex',
+          justifyContent: 'center',
           marginBottom: '2rem',
           borderBottom: '1px solid #e5e7eb',
           backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -98,7 +99,7 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
           <button
             onClick={() => setActiveTab('analyzer')}
             style={{
-              padding: '1rem 2rem',
+              padding: '1rem 0.5rem',
               border: 'none',
               backgroundColor: 'transparent',
               color: activeTab === 'analyzer' ? '#4f46e5' : '#6b7280',
@@ -106,7 +107,8 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
               borderBottom: activeTab === 'analyzer' ? '2px solid #4f46e5' : '2px solid transparent',
               cursor: 'pointer',
               fontSize: '16px',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              marginRight: '1rem'
             }}
           >
             지식쇼츠
@@ -114,7 +116,7 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
           <button
             onClick={() => setActiveTab('maker')}
             style={{
-              padding: '1rem 2rem',
+              padding: '1rem 0.5rem',
               border: 'none',
               backgroundColor: 'transparent',
               color: activeTab === 'maker' ? '#4f46e5' : '#6b7280',
@@ -142,8 +144,8 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
             </div>
           </div>
         ) : (
-          <div className="video-analyzer-container" style={{ width: '100%' }}>
-            <VideoAnalyzer />
+          <div className="info-shorts-container" style={{ width: '100%' }}>
+            <InfoShorts />
           </div>
         )}
       </main>
