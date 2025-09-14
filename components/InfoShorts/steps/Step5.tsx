@@ -1,214 +1,69 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from '../InfoShorts.module.css';
-import { VOICE_CONFIGS } from '../tts/voiceMapping';
 
 interface Step5Props {
   currentStep: number;
   previousStep: number;
   navigationDirection: 'next' | 'prev' | null;
-  fifthColumnRef: React.RefObject<HTMLDivElement>;
-  analysisResult2: string;
+  fourthColumnRef: React.RefObject<HTMLDivElement>;
   selectedLanguage2: string;
-  selectedVoice: string;
-  setSelectedVoice: (voice: string) => void;
+  setSelectedLanguage2: (language: string) => void;
   ChevronDown: ({ isOpen }: { isOpen: boolean }) => JSX.Element;
-  scriptText: string;
-  setScriptText: (text: string) => void;
-  ssmlEnabled: boolean;
-  setSsmlEnabled: (enabled: boolean) => void;
-  voiceSpeed: number;
-  setVoiceSpeed: (speed: number) => void;
-  voicePitch: number;
-  setVoicePitch: (pitch: number) => void;
-  handleGenerateAudio: () => void;
-  isGeneratingAudio: boolean;
-  LoadingMessage: ({ type }: { type?: 'default' | 'voice' | 'srt' }) => JSX.Element;
-  generatedAudio: ArrayBuffer | null;
-  currentTime: number;
-  duration: number;
-  isPlaying: boolean;
-  handleAudioPlay: () => void;
-  handleAudioSeek: (time: number) => void;
-  AudioPlayer: React.FC<any>;
-  processedAudio: ArrayBuffer | null;
-  processedCurrentTime: number;
-  processedDuration: number;
-  processedAudioPlaying: boolean;
-  handleProcessedAudioPlay: () => void;
-  handleProcessedAudioSeek: (time: number) => void;
-  silenceThreshold: number;
-  setSilenceThreshold: (threshold: number) => void;
-  handleSilenceRemoval: () => void;
-  isProcessingSilence: boolean;
-  selectedAudioSource: string;
-  setSelectedAudioSource: (source: string) => void;
-  wordsPerSubtitle: number;
-  setWordsPerSubtitle: (count: number) => void;
-  handleDownloadSRT: () => void;
-  isGeneratingSRT: boolean;
+  analysisTypes2: Record<string, string>;
+  expandedAnalysis2: string;
+  setExpandedAnalysis2: (type: string) => void;
+  scrollToColumn: (columnRef: React.RefObject<HTMLDivElement>) => void;
+  c: (...args: any[]) => string;
+  customAnalysisPrompt2: string;
+  setCustomAnalysisPrompt2: (prompt: string) => void;
+  handleAnalyzeContent2: (type: string) => void;
   apiKey: string;
-  ttsErrorMessage: string;
-  srtErrorMessage: string;
+  isLoadingScript: boolean;
+  LoadingMessage: ({ type }: { type?: 'default' | 'voice' | 'srt' }) => JSX.Element;
+  analysisResult2: string;
+  selectedAnalysisType2: string;
+  DownloadCopyButtons: ({ content, filename }: { content: string; filename: string }) => JSX.Element;
+  uploadedFiles: Record<string, File | null>;
+  handleFileUpload: (fileKey: string, file: File) => void;
+  handleFileDelete: (fileKey: string) => void;
+  handleRewriteWithExamples: () => void;
+  isLoadingRewrite: boolean;
+  rewrittenResult: string;
 }
 
 const Step5: React.FC<Step5Props> = ({
   currentStep,
   previousStep,
   navigationDirection,
-  fifthColumnRef,
-  analysisResult2,
+  fourthColumnRef,
   selectedLanguage2,
-  selectedVoice,
-  setSelectedVoice,
+  setSelectedLanguage2,
   ChevronDown,
-  scriptText,
-  setScriptText,
-  ssmlEnabled,
-  setSsmlEnabled,
-  voiceSpeed,
-  setVoiceSpeed,
-  voicePitch,
-  setVoicePitch,
-  handleGenerateAudio,
-  isGeneratingAudio,
-  LoadingMessage,
-  generatedAudio,
-  currentTime,
-  duration,
-  isPlaying,
-  handleAudioPlay,
-  handleAudioSeek,
-  AudioPlayer,
-  processedAudio,
-  processedCurrentTime,
-  processedDuration,
-  processedAudioPlaying,
-  handleProcessedAudioPlay,
-  handleProcessedAudioSeek,
-  silenceThreshold,
-  setSilenceThreshold,
-  handleSilenceRemoval,
-  isProcessingSilence,
-  selectedAudioSource,
-  setSelectedAudioSource,
-  wordsPerSubtitle,
-  setWordsPerSubtitle,
-  handleDownloadSRT,
-  isGeneratingSRT,
+  analysisTypes2,
+  expandedAnalysis2,
+  setExpandedAnalysis2,
+  scrollToColumn,
+  c,
+  customAnalysisPrompt2,
+  setCustomAnalysisPrompt2,
+  handleAnalyzeContent2,
   apiKey,
-  ttsErrorMessage,
-  srtErrorMessage
+  isLoadingScript,
+  LoadingMessage,
+  analysisResult2,
+  selectedAnalysisType2,
+  DownloadCopyButtons,
+  uploadedFiles,
+  handleFileUpload,
+  handleFileDelete,
+  handleRewriteWithExamples,
+  isLoadingRewrite,
+  rewrittenResult
 }) => {
-  const [voicePage, setVoicePage] = React.useState(0);
-  const [voiceSearch, setVoiceSearch] = React.useState('');
-  const [isPreviewPlaying, setIsPreviewPlaying] = React.useState<string | null>(null);
-  const [previewAudio, setPreviewAudio] = React.useState<HTMLAudioElement | null>(null);
-
-  // voiceMapping.ts에서 실제 음성 데이터를 사용
-  const voiceOptions = React.useMemo(() => {
-    const options: Record<string, string> = {};
-    
-    // 한국어 이름과 특성 매핑
-    const koreanNames: Record<string, string> = {
-      'youngsu': '영수 - 회사 공식',
-      'changhee': '창희 - 차분함', 
-      'minjun': '민준 - 권위감',
-      'jihun': '지훈 - 전문가',
-      'yejun': '예준 - 에너지',
-      'hunyoung': '훈영 - 교사',
-      'jimin': '지민 - 활발함',
-      'sujin': '수진 - 기업가',
-      'yena': '예나 - 교수',
-      'eunji': '은지 - 귀여움',
-      'yejin': '예진 - 영리함',
-      'minjin': '민진 - 관계성',
-      'jihyun': '지현 - 속도감',
-      'eunsu': '은수 - 영감',
-      'yedam': '예담 - 유머'
-    };
-
-    // VOICE_CONFIGS에서 사용 가능한 음성만 추출
-    Object.keys(VOICE_CONFIGS).forEach(voiceKey => {
-      options[voiceKey] = koreanNames[voiceKey] || voiceKey;
-    });
-
-    return options;
-  }, []);
-
-  const voicesPerPage = 6;
-  
-  // 검색 필터링 (한국어 이름과 영어 키 모두 검색 가능)
-  const filteredVoices = Object.entries(voiceOptions).filter(([voiceKey, displayName]) =>
-    voiceKey.toLowerCase().includes(voiceSearch.toLowerCase()) ||
-    displayName.toLowerCase().includes(voiceSearch.toLowerCase())
-  );
-  
-  const totalPages = Math.ceil(filteredVoices.length / voicesPerPage);
-  const currentVoices = filteredVoices.slice(
-    voicePage * voicesPerPage,
-    (voicePage + 1) * voicesPerPage
-  );
-
-  // 검색어가 바뀔 때 페이지를 첫 페이지로 리셋
-  React.useEffect(() => {
-    setVoicePage(0);
-  }, [voiceSearch]);
-
-  // 음성 미리보기 재생 함수
-  const handleVoicePreview = async (voiceKey: string) => {
-    try {
-      if (isPreviewPlaying === voiceKey && previewAudio) {
-        // 정지
-        previewAudio.pause();
-        setIsPreviewPlaying(null);
-        setPreviewAudio(null);
-        return;
-      }
-
-      // 기존 미리보기 정지
-      if (previewAudio) {
-        previewAudio.pause();
-        setPreviewAudio(null);
-      }
-
-      // 미리보기 음성 파일 경로 (voices 폴더에서 가져올 예정)
-      const voicePreviewUrl = `/voices/${voiceKey}.wav`;
-      
-      const audio = new Audio(voicePreviewUrl);
-      
-      audio.onended = () => {
-        setIsPreviewPlaying(null);
-        setPreviewAudio(null);
-      };
-      
-      audio.onerror = () => {
-        setIsPreviewPlaying(null);
-        setPreviewAudio(null);
-        console.warn(`${voiceKey} 미리보기 파일을 찾을 수 없습니다.`);
-      };
-      
-      setPreviewAudio(audio);
-      setIsPreviewPlaying(voiceKey);
-      await audio.play();
-      
-    } catch (error) {
-      console.error('미리듣기 재생 오류:', error);
-      setIsPreviewPlaying(null);
-      setPreviewAudio(null);
-    }
-  };
-
-  // 컴포넌트 언마운트 시 미리보기 오디오 정리
-  React.useEffect(() => {
-    return () => {
-      if (previewAudio) {
-        previewAudio.pause();
-        setPreviewAudio(null);
-        setIsPreviewPlaying(null);
-      }
-    };
-  }, [previewAudio]);
-
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<{ type: string; prompt: string } | null>(null);
+  const [selectedMode, setSelectedMode] = useState<string>('정보력 만렙');
   return (
     <div className="step-card" style={{
       position: 'absolute',
@@ -240,280 +95,76 @@ const Step5: React.FC<Step5Props> = ({
       transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
     }}>
 
-      {/* 스크립트 설정 블럭 + 음성 타입 선택 블럭을 가로로 배치 */}
+      {/* 상단: 분석 옵션 선택 */}
       <div style={{
         display: 'flex',
-        gap: '20px',
-        width: '820px',
-        margin: '0 auto 20px auto'
+        justifyContent: 'center',
+        width: '100%',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        marginBottom: '2rem'
       }}>
-        {/* 스크립트 설정 블럭 */}
-        <div style={{
-          background: 'white',
-          borderRadius: '16px',
-          padding: '20px',
-          width: '400px'
+        <div className="button-column-step4" ref={fourthColumnRef} style={{
+          background: '#eaedf1',
+          borderRadius: '20px',
+          padding: '2rem',
+          width: '800px',
+          height: '550px',
+          overflow: 'hidden'
         }}>
-          <h3 style={{ 
-            fontSize: '18px', 
-            fontWeight: 'bold', 
-            color: '#333d4b', 
-            marginBottom: '16px',
-            textAlign: 'center'
-          }}>
-            스크립트 설정
-          </h3>
-          <div>
-            <textarea
-              value={scriptText}
-              onChange={(e) => setScriptText(e.target.value)}
-              rows={12}
-              style={{
-                width: '100%',
-                padding: '12px',
-                border: '1px solid #ccc',
-                borderRadius: '12px',
-                fontSize: '18px',
-                backgroundColor: 'white',
-                color: '#333',
-                resize: 'vertical',
-                lineHeight: '1.8'
-              }}
-              placeholder="음성으로 변환할 텍스트를 입력하세요..."
-            />
-          </div>
-        </div>
+          <div className="modeSelector">
+            <div>
+              <h2 style={{ fontWeight: 'bold', color: '#333d4b', fontSize: '18px', textAlign: 'center', marginBottom: '1.5rem' }}>대사 작성 유형을 선택하세요</h2>
 
-        {/* 음성 타입 선택 블럭 */}
-        <div className="fifth-column" ref={fifthColumnRef} style={{
-          width: '400px',
-          background: '#f8f9fa',
-          borderRadius: '16px',
-          padding: '20px'
-        }}>
-          <div style={{ position: 'relative' }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 'bold', 
-              color: '#333d4b', 
-              marginBottom: '16px',
-              textAlign: 'center'
-            }}>
-              음성 타입 선택
-            </h3>
-            
-            {/* 검색 입력 필드 */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
-              <input
-                type="text"
-                value={voiceSearch}
-                onChange={(e) => setVoiceSearch(e.target.value)}
-                placeholder="음성 이름 검색... (예: 영수, 수진)"
-                style={{
-                  width: '270px',
-                  height: '45px',
-                  padding: '0 15px',
-                  border: '1px solid #ccc',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  backgroundColor: 'white',
-                  color: '#333',
-                  outline: 'none'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#7c3aed';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(124, 58, 237, 0.1)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#ccc';
-                  e.target.style.boxShadow = 'none';
-                }}
-              />
-            </div>
-            
-            {/* 왼쪽 화살표 */}
-            <button
-              onClick={() => setVoicePage(prev => Math.max(0, prev - 1))}
-              disabled={voicePage === 0}
-              style={{
-                position: 'absolute',
-                left: '10px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'none',
-                border: 'none',
-                fontSize: '40px',
-                color: voicePage === 0 ? '#ccc' : '#333',
-                cursor: voicePage === 0 ? 'not-allowed' : 'pointer',
-                padding: '8px',
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-              onMouseOver={(e) => {
-                if (voicePage > 0) {
-                  (e.target as HTMLElement).style.backgroundColor = '#f0f0f0';
-                }
-              }}
-              onMouseOut={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = 'transparent';
-              }}
-            >
-              ‹
-            </button>
-            
-            {/* 오른쪽 화살표 */}
-            <button
-              onClick={() => setVoicePage(prev => Math.min(totalPages - 1, prev + 1))}
-              disabled={voicePage === totalPages - 1}
-              style={{
-                position: 'absolute',
-                right: '10px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'none',
-                border: 'none',
-                fontSize: '40px',
-                color: voicePage === totalPages - 1 ? '#ccc' : '#333',
-                cursor: voicePage === totalPages - 1 ? 'not-allowed' : 'pointer',
-                padding: '8px',
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-              onMouseOver={(e) => {
-                if (voicePage < totalPages - 1) {
-                  (e.target as HTMLElement).style.backgroundColor = '#f0f0f0';
-                }
-              }}
-              onMouseOut={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = 'transparent';
-              }}
-            >
-              ›
-            </button>
-            
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '10px',
-              justifyContent: 'center',
-              maxWidth: '400px',
-              margin: '0 auto',
-              minHeight: '260px'
-            }}>
-              {currentVoices.map(([voiceKey, displayName]) => {
-              const getEmoji = (voiceKey: string) => {
-                // 여성 음성
-                if (voiceKey === 'jimin' || voiceKey === 'sujin' || voiceKey === 'yena' || voiceKey === 'eunji' || voiceKey === 'yejin' || voiceKey === 'minjin' || voiceKey === 'jihyun' || voiceKey === 'eunsu' || voiceKey === 'yedam') return '👩';
-                // 남성 음성
-                if (voiceKey === 'youngsu' || voiceKey === 'changhee' || voiceKey === 'minjun' || voiceKey === 'jihun' || voiceKey === 'yejun' || voiceKey === 'hunyoung') return '👨';
-                return '🎤';
-              };
-              
-              return (
-                <div
-                  key={voiceKey}
-                  style={{
-                    position: 'relative',
-                    width: '126px',
-                    height: '126px'
-                  }}
-                >
-                  <button
-                    onClick={() => setSelectedVoice(voiceKey)}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '12px',
-                      border: selectedVoice === voiceKey ? '2px solid #7c3aed' : '1px solid #ccc',
-                      background: selectedVoice === voiceKey ? '#f3f0ff' : 'white',
-                      color: selectedVoice === voiceKey ? '#7c3aed' : '#333',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: selectedVoice === voiceKey ? 'bold' : 'normal',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      textAlign: 'center',
-                      transition: 'all 0.2s ease',
-                      padding: '10px'
-                    }}
-                    onMouseOver={(e) => {
-                      if (selectedVoice !== voiceKey) {
-                        (e.target as HTMLElement).style.backgroundColor = '#f8f9fa';
-                      }
-                    }}
-                    onMouseOut={(e) => {
-                      if (selectedVoice !== voiceKey) {
-                        (e.target as HTMLElement).style.backgroundColor = 'white';
-                      }
-                    }}
-                  >
-                    <span style={{ fontSize: '28px', marginBottom: '4px' }}>
-                      {getEmoji(voiceKey)}
-                    </span>
-                    <span style={{ fontSize: '12px' }}>{displayName}</span>
-                  </button>
-                  
-                  {/* 미리보기 플레이/정지 버튼 */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleVoicePreview(voiceKey);
-                    }}
-                    style={{
-                      position: 'absolute',
-                      top: '4px',
-                      right: '4px',
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '50%',
-                      border: '1px solid #ccc',
-                      background: 'white',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '10px',
-                      transition: 'all 0.2s ease',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                    }}
-                    onMouseOver={(e) => {
-                      (e.target as HTMLElement).style.backgroundColor = '#f0f0f0';
-                      (e.target as HTMLElement).style.borderColor = '#999';
-                    }}
-                    onMouseOut={(e) => {
-                      (e.target as HTMLElement).style.backgroundColor = 'white';
-                      (e.target as HTMLElement).style.borderColor = '#ccc';
-                    }}
-                  >
-                    {isPreviewPlaying === voiceKey ? '⏸️' : '▶️'}
-                  </button>
-                </div>
-              );
-            })}
+              <div className="modeList">
+                {Object.entries(analysisTypes2).map(([type, prompt]) => (
+                  <div key={type}>
+                    <button
+                      className={c('button', {
+                        active: type === selectedMode,
+                      })}
+                      onClick={() => {
+                        setSelectedMode(type);
+                        setModalContent({ type, prompt });
+                        setShowModal(true);
+                      }}
+                      style={{width: '200px', height: '200px', fontSize: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+                    >
+                      <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                        <span className="emoji" style={{ fontSize: '35px', marginBottom: '8px' }}>
+                          {type === '커스텀' ? '🔧' : type === '3초 후킹' ? '⚡' : type === '정보력 만렙' ? '🧠' : type === '바이럴 대사' ? '💬' : '📝'}
+                        </span>
+                        <span>{type}</span>
+                      </span>
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 음성 생성 버튼 */}
-      <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
+      {/* 하단: 분석하기 버튼 */}
+      <div style={{ 
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+        marginBottom: '2rem'
+      }}>
         <button
           className="button generateButton"
-          onClick={handleGenerateAudio}
-          disabled={!scriptText.trim() || isGeneratingAudio}
+          onClick={() => {
+            if (selectedMode) {
+              handleAnalyzeContent2(selectedMode);
+            } else {
+              alert('분석 타입을 선택해주세요.');
+            }
+          }}
+          disabled={!selectedMode || (selectedMode === '커스텀' && !customAnalysisPrompt2.trim())}
           style={{
             borderRadius: '12px',
-            background: 'rgb(124, 58, 237)',
+            background: '#7c3aed',
             transition: 'all 0.2s ease',
             width: '120px',
             fontSize: '15px',
@@ -526,7 +177,7 @@ const Step5: React.FC<Step5Props> = ({
             cursor: 'pointer'
           }}
         >
-          {isGeneratingAudio ? (
+          {isLoadingScript ? (
             <div style={{
               width: '16px',
               height: '16px',
@@ -536,297 +187,361 @@ const Step5: React.FC<Step5Props> = ({
               animation: 'spin 1s linear infinite'
             }} />
           ) : (
-            '음성생성'
+            '대사만들기'
           )}
         </button>
       </div>
-      
-      {/* TTS 에러 메시지 표시 */}
-      {ttsErrorMessage && (
-        <div style={{
-          marginTop: '10px',
-          textAlign: 'center',
-          color: '#dc3545',
-          fontSize: '14px',
-          fontStyle: 'italic'
+
+      {/* 로딩 메시지 */}
+      {isLoadingScript && (
+        <div style={{ 
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+          marginBottom: '1rem'
         }}>
-          {ttsErrorMessage}
+          <div style={{ textAlign: 'center' }}>
+            <LoadingMessage />
+          </div>
         </div>
       )}
 
-      {/* 음성 생성 결과 블럭 */}
-      <div style={{
-        width: '800px',
-        margin: '20px auto 0 auto'
-      }}>
-
-            {isGeneratingAudio && <LoadingMessage type="voice" />}
-
-            {generatedAudio && (
-              <AudioPlayer
-                title="생성된 음성"
-                audioBuffer={generatedAudio}
-                isPlaying={isPlaying}
-                currentTime={currentTime}
-                duration={duration}
-                onPlay={handleAudioPlay}
-                onSeek={handleAudioSeek}
-                downloadFileName={`generated-${selectedVoice}-audio.wav`}
-              />
-            )}
-
-            {generatedAudio && (
-              <div style={{
-                marginTop: '20px',
-                padding: '20px',
-                background: '#e8f4f8',
-                border: '1px solid #bee5eb',
-                borderRadius: '12px'
-              }}>
-                <div style={{
-                  fontSize: '18px',
-                  fontWeight: 'bold',
-                  color: '#0c5460',
-                  marginBottom: '15px'
-                }}>
-                  🎛️ 무음 제거 (선택사항)
-                </div>
-
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '14px',
-                    color: '#0c5460',
-                    marginBottom: '5px',
-                    fontWeight: 'bold'
-                  }}>
-                    무음 감지 데시벨: {silenceThreshold}dB
-                  </label>
-                  <input
-                    type="range"
-                    min="-60"
-                    max="-10"
-                    step="1"
-                    value={silenceThreshold}
-                    onChange={(e) => setSilenceThreshold(parseInt(e.target.value))}
-                    style={{
-                      width: '55%',
-                      height: '4px',
-                      borderRadius: '2px',
-                      background: '#bee5eb',
-                      outline: 'none',
-                      appearance: 'none'
-                    }}
-                  />
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontSize: '12px',
-                    color: '#6c757d',
-                    marginTop: '5px',
-                    width: '55%',
-                    margin: '5px auto 0 auto'
-                  }}>
-                    <span>-60dB</span>
-                    <span>-10dB</span>
-                  </div>
-                  
-                  {/* 안내 메시지 */}
-                  <div style={{
-                    textAlign: 'center',
-                    fontSize: '12px',
-                    color: '#6c757d',
-                    marginTop: '10px'
-                  }}>
-                    0으로 갈수록 음성이 많이 삭제됩니다
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
-                  <button
-                    onClick={handleSilenceRemoval}
-                    disabled={isProcessingSilence}
-                    style={{
-                      padding: '10px 16px',
-                      background: isProcessingSilence ? '#6c757d' : 'rgb(98, 193, 177)',
-                      color: 'white',
-                      border: 'none',
+      {/* 결과 출력 영역 */}
+      {analysisResult2 && (
+        <div style={{ 
+          width: '100%',
+          marginTop: '2rem'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: '10px',
+            marginBottom: '20px'
+          }}>
+            <DownloadCopyButtons 
+              content={analysisResult2}
+              filename={`대사쓰기_${selectedAnalysisType2}`}
+            />
+          </div>
+          
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <div className="output-box-step4">
+            <div style={{
+              whiteSpace: 'pre-wrap',
+              lineHeight: '1.7',
+              fontSize: '15px',
+              color: '#333'
+            }}>
+              {analysisResult2.replace(/\\n/g, '\n')}
+            </div>
+            </div>
+          </div>
+          
+          <div style={{
+            marginTop: '15px',
+            padding: '20px',
+            background: '#e8f4f8',
+            border: '1px solid #bee5eb',
+            borderRadius: '12px',
+            color: '#0c5460',
+            fontSize: '13px',
+            width: '800px',
+            margin: '15px auto 0 auto'
+          }}>
+            <div style={{ marginBottom: '15px', fontSize: '16px', lineHeight: '1.5' }}>
+              이 대사를 내 스타일로 바꾸고 싶다면,<br/>
+              잘된 예시 3개를 올려주세요
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+              {['example1', 'example2', 'example3'].map((fileKey, index) => (
+                <div key={fileKey} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {!uploadedFiles[fileKey] ? (
+                    <label style={{
+                      padding: '8px 12px',
+                      background: 'white',
+                      border: '1px solid #bee5eb',
                       borderRadius: '12px',
-                      fontSize: '14px',
-                      cursor: isProcessingSilence ? 'not-allowed' : 'pointer',
-                      width: '150px',
-                      height: '45px',
-                      fontWeight: 'bold',
-                      transition: 'all 0.1s ease'
-                    }}
-                    onMouseDown={(e) => {
-                      (e.target as HTMLElement).style.height = '45px';
-                    }}
-                    onMouseUp={(e) => {
-                      (e.target as HTMLElement).style.height = '45px';
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.target as HTMLElement).style.height = '45px';
-                    }}
-                  >
-                    {isProcessingSilence ? '🔄 처리 중...' : '✂️ 무음 제거 실행'}
-                  </button>
-                </div>
-
-                {processedAudio && (
-                  <AudioPlayer
-                    title="무음제거된 음성"
-                    audioBuffer={processedAudio}
-                    isPlaying={processedAudioPlaying}
-                    currentTime={processedCurrentTime}
-                    duration={processedDuration}
-                    onPlay={handleProcessedAudioPlay}
-                    onSeek={handleProcessedAudioSeek}
-                    downloadFileName={`processed-${selectedVoice}-audio.wav`}
-                    progressColor="rgb(98, 193, 177)"
-                  />
-                )}
-              </div>
-            )}
-
-            {(generatedAudio || processedAudio) && (
-              <div style={{
-                marginTop: '20px',
-                padding: '20px',
-                background: '#fff3cd',
-                border: '1px solid #ffeaa7',
-                borderRadius: '12px'
-              }}>
-                <div style={{
-                  fontSize: '18px',
-                  fontWeight: 'bold',
-                  color: '#856404',
-                  marginBottom: '15px'
-                }}>
-                  📝 SRT 자막생성(베타,개발중)
-                </div>
-
-                <div style={{
-                  display: 'flex',
-                  gap: '15px',
-                  alignItems: 'center',
-                  marginBottom: '15px',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label style={{ fontSize: '14px', color: '#856404', fontWeight: 'bold' }}>
-                      사용할 오디오:
-                    </label>
-                    <select
-                      value={selectedAudioSource}
-                      onChange={(e) => setSelectedAudioSource(e.target.value)}
-                      style={{
-                        padding: '6px 10px',
-                        border: '1px solid #ffeaa7',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        backgroundColor: 'white',
-                        color: '#856404'
-                      }}
-                    >
-                      <option value="original">원본 음성</option>
-                      {processedAudio && <option value="processed">무음제거된 음성</option>}
-                    </select>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <label style={{ fontSize: '14px', color: '#856404', fontWeight: 'bold' }}>
-                      자막당 단어 수:
-                    </label>
-                    <select
-                      value={wordsPerSubtitle}
-                      onChange={(e) => setWordsPerSubtitle(parseInt(e.target.value))}
-                      style={{
-                        width: '60px',
-                        padding: '6px',
-                        border: '1px solid #ffeaa7',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        textAlign: 'center',
-                        backgroundColor: 'white',
-                        color: '#856404'
-                      }}
-                    >
-                      <option value={1}>1</option>
-                      <option value={2}>2</option>
-                      <option value={3}>3</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px' }}>
-                  <button
-                    onClick={handleDownloadSRT}
-                    disabled={isGeneratingSRT || (!generatedAudio && !processedAudio)}
-                    style={{
-                      padding: '10px 16px',
-                      background: '#fd7e14',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '12px',
-                      fontSize: '14px',
-                      cursor: isGeneratingSRT ? 'not-allowed' : 'pointer',
-                      width: '200px',
-                      height: '45px',
-                      fontWeight: 'bold',
-                      textAlign: 'center',
+                      color: '#0c5460',
+                      fontSize: '15px',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s',
                       display: 'flex',
+                      textAlign: 'center',
+                      height: '48px',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      transition: 'all 0.1s ease'
+                      width: '410px'
                     }}
-                    onMouseDown={(e) => {
-                      (e.target as HTMLElement).style.height = '45px';
-                    }}
-                    onMouseUp={(e) => {
-                      (e.target as HTMLElement).style.height = '45px';
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.target as HTMLElement).style.height = '45px';
-                    }}
-                  >
-                    {isGeneratingSRT ? (
-                      <div style={{
-                        width: '16px',
-                        height: '16px',
-                        border: '2px solid transparent',
-                        borderTop: '2px solid white',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite'
-                      }} />
-                    ) : (
-                      <span style={{ textAlign: 'center' }}>📥 SRT 자막 다운로드</span>
-                    )}
-                  </button>
+                    onMouseOver={(e) => (e.target as HTMLElement).style.backgroundColor = '#f0f9ff'}
+                    onMouseOut={(e) => (e.target as HTMLElement).style.backgroundColor = 'white'}>
+                      📁 잘된 예시{index + 1}.txt 업로드
+                      <input
+                        type="file"
+                        accept=".txt"
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            handleFileUpload(fileKey, file);
+                          }
+                        }}
+                      />
+                    </label>
+                  ) : (
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between',
+                      padding: '8px 12px',
+                      background: '#f0f9ff',
+                      border: '1px solid #bee5eb',
+                      borderRadius: '12px',
+                      height: '48px',
+                      width: '410px'
+                    }}>
+                      <span style={{ 
+                        color: '#0c5460', 
+                        fontSize: '15px',
+                        flex: 1,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        📄 {uploadedFiles[fileKey]?.name}
+                      </span>
+                      <button
+                        onClick={() => handleFileDelete(fileKey)}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#dc3545',
+                          fontSize: '15px',
+                          cursor: 'pointer',
+                          marginLeft: '8px',
+                          padding: '2px 6px',
+                          borderRadius: '3px'
+                        }}
+                        onMouseOver={(e) => (e.target as HTMLElement).style.backgroundColor = '#ffebee'}
+                        onMouseOut={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
                 </div>
-
-                {isGeneratingSRT && (
-                  <div style={{ marginTop: '10px', textAlign: 'center' }}>
-                    <LoadingMessage type="srt" />
-                  </div>
-                )}
-                
-                {/* SRT 에러 메시지 표시 */}
-                {srtErrorMessage && (
-                  <div style={{ 
-                    marginTop: '10px', 
-                    textAlign: 'center', 
-                    color: '#dc3545',
-                    fontSize: '14px',
-                    fontStyle: 'italic'
-                  }}>
-                    {srtErrorMessage}
-                  </div>
-                )}
+              ))}
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <button
+              onClick={handleRewriteWithExamples}
+              style={{
+                marginTop: '12px',
+                marginBottom: '20px',
+                padding: '10px 16px',
+                background: 'rgb(124, 58, 237)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '15px',
+                cursor: 'pointer',
+                width: '410px',
+                transition: 'background-color 0.2s',
+                height: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center'
+              }}
+              onMouseOver={(e) => (e.target as HTMLElement).style.backgroundColor = 'rgb(100, 45, 190)'}
+              onMouseOut={(e) => (e.target as HTMLElement).style.backgroundColor = 'rgb(124, 58, 237)'}
+              disabled={Object.values(uploadedFiles).every(file => file === null)}
+            >
+              {isLoadingRewrite ? (
+                <div style={{
+                  width: '16px',
+                  height: '16px',
+                  border: '2px solid transparent',
+                  borderTop: '2px solid white',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }} />
+              ) : (
+                '📝 이 예시를 기준으로 재작성하기'
+              )}
+            </button>
+            </div>
+            
+            {isLoadingRewrite && (
+              <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                <LoadingMessage />
               </div>
             )}
-      </div>
+            
+            {rewrittenResult && (
+              <div>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  gap: '10px',
+                  marginBottom: '20px'
+                }}>
+                  <DownloadCopyButtons 
+                    content={rewrittenResult}
+                    filename="재작성된_대사"
+                  />
+                </div>
+                
+                <div style={{
+                  padding: '15px',
+                  background: '#f0fff4',
+                  border: '1px solid #90ee90',
+                  borderRadius: '6px',
+                  color: '#333'
+                }}>
+                  <h4 style={{ marginBottom: '10px', color: '#2d5016' }}>
+                    재작성된 대사:
+                  </h4>
+                  <div style={{ 
+                    whiteSpace: 'pre-wrap', 
+                    lineHeight: '1.7',
+                    fontSize: '15px',
+                    color: '#333'
+                  }}>
+                    {rewrittenResult.replace(/\\n/g, '\n')}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal via Portal */}
+      {showModal && modalContent && createPortal(
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10000
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '16px',
+            padding: '2rem',
+            maxWidth: '600px',
+            width: '90%',
+            maxHeight: '80vh',
+            overflow: 'auto'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1.5rem'
+            }}>
+              <h3 style={{ 
+                margin: 0, 
+                color: '#333d4b', 
+                fontSize: '18px',
+                fontWeight: 'bold'
+              }}>
+                {modalContent.type} 대사 작성
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  color: '#666',
+                  padding: '0',
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div style={{
+              backgroundColor: '#f9fafb',
+              border: '1px solid #e5e7eb',
+              borderRadius: '8px',
+              padding: '1rem',
+              fontSize: '14px',
+              color: '#333',
+              lineHeight: '1.6',
+              whiteSpace: 'pre-wrap',
+              textAlign: 'left'
+            }}>
+              {modalContent.type === '커스텀' ? (
+                <div>
+                  <textarea
+                    placeholder="커스텀 대사 작성을 위한 프롬포트를 입력하세요..."
+                    value={customAnalysisPrompt2}
+                    onChange={(e) => setCustomAnalysisPrompt2(e.target.value)}
+                    rows={6}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                      resize: 'vertical',
+                      lineHeight: '1.5'
+                    }}
+                  />
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'flex-end', 
+                    marginTop: '1rem' 
+                  }}>
+                    <button
+                      onClick={() => {
+                        if (customAnalysisPrompt2.trim()) {
+                          setShowModal(false);
+                        }
+                      }}
+                      disabled={!customAnalysisPrompt2.trim()}
+                      style={{
+                        padding: '10px 20px',
+                        backgroundColor: customAnalysisPrompt2.trim() ? '#7c3aed' : '#d1d5db',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: customAnalysisPrompt2.trim() ? 'pointer' : 'not-allowed',
+                        fontSize: '14px'
+                      }}
+                    >
+                      적용하기
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  {modalContent.prompt.replace(/\\n/g, '\n')}
+                </div>
+              )}
+            </div>
+            
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

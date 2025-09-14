@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createPortal } from 'react-dom';
 import styles from '../InfoShorts.module.css';
 
@@ -6,52 +6,84 @@ interface Step3Props {
   currentStep: number;
   previousStep: number;
   navigationDirection: 'next' | 'prev' | null;
-  whiteColumnRef: React.RefObject<HTMLDivElement>;
-  selectedLanguage: string;
-  setSelectedLanguage: (language: string) => void;
-  ChevronDown: ({ isOpen }: { isOpen: boolean }) => JSX.Element;
-  analysisTypes: Record<string, string>;
-  expandedAnalysis: string;
-  setExpandedAnalysis: (type: string) => void;
+  youtubeVideoId: string;
+  buttonColumnRef: React.RefObject<HTMLDivElement>;
+  modes: any;
+  selectedMode: string;
+  setSelectedMode: (mode: string) => void;
+  showModal: boolean;
+  setShowModal: (show: boolean) => void;
+  modalContent: { mode: string; prompt: any } | null;
+  setModalContent: (content: { mode: string; prompt: any } | null) => void;
   scrollToColumn: (columnRef: React.RefObject<HTMLDivElement>) => void;
-  c: (...args: any[]) => string;
-  customAnalysisPrompt: string;
-  setCustomAnalysisPrompt: (prompt: string) => void;
-  handleAnalyzeContent: (type: string) => void;
+  isCustomMode: boolean;
+  customPrompt: string;
+  setCustomPrompt: (prompt: string) => void;
   apiKey: string;
-  isLoadingAnalysis: boolean;
+  setApiKey: (key: string) => void;
+  onModeSelect: (mode: string) => Promise<void>;
+  isLoadingGenerate: boolean;
   LoadingMessage: ({ type }: { type?: 'default' | 'voice' | 'srt' }) => JSX.Element;
-  analysisResult: string;
-  selectedAnalysisType: string;
-  DownloadCopyButtons: ({ content, filename }: { content: string; filename: string }) => JSX.Element;
+  timecodeList: any[];
+  activeMode: string;
+  scrollRef: React.RefObject<HTMLElement>;
+  setRequestedTimecode: (timecode: number) => void;
+  timeToSecs: (time: string) => number;
+  c: (...args: any[]) => string;
+  ChevronDown: ({ isOpen }: { isOpen: boolean }) => JSX.Element;
+  step2ErrorMessage: string;
 }
+
+// 스피너 애니메이션 CSS 추가
+const spinnerStyle = `
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
 
 const Step3: React.FC<Step3Props> = ({
   currentStep,
   previousStep,
   navigationDirection,
-  whiteColumnRef,
-  selectedLanguage,
-  setSelectedLanguage,
-  ChevronDown,
-  analysisTypes,
-  expandedAnalysis,
-  setExpandedAnalysis,
+  youtubeVideoId,
+  buttonColumnRef,
+  modes,
+  selectedMode,
+  setSelectedMode,
+  showModal,
+  setShowModal,
+  modalContent,
+  setModalContent,
   scrollToColumn,
-  c,
-  customAnalysisPrompt,
-  setCustomAnalysisPrompt,
-  handleAnalyzeContent,
+  isCustomMode,
+  customPrompt,
+  setCustomPrompt,
   apiKey,
-  isLoadingAnalysis,
+  setApiKey,
+  onModeSelect,
+  isLoadingGenerate,
   LoadingMessage,
-  analysisResult,
-  selectedAnalysisType,
-  DownloadCopyButtons
+  timecodeList,
+  activeMode,
+  scrollRef,
+  setRequestedTimecode,
+  timeToSecs,
+  c,
+  ChevronDown,
+  step2ErrorMessage
 }) => {
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalContent, setModalContent] = useState<{ type: string; prompt: string } | null>(null);
-  const [selectedMode, setSelectedMode] = useState<string>('과학적 관점');
+  // 스피너 CSS를 head에 추가
+  React.useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.textContent = spinnerStyle;
+    document.head.appendChild(styleElement);
+    
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
+
   return (
     <div className="step-card" style={{
       position: 'absolute',
@@ -69,21 +101,72 @@ const Step3: React.FC<Step3Props> = ({
       pointerEvents: currentStep === 3 ? 'auto' : 'none',
       transform: (() => {
         const stepNumber = 3;
+        
+        // 현재 활성 카드
         if (currentStep === stepNumber) return 'translateX(0)';
+        
+        // 애니메이션 중인 카드들
         if (navigationDirection) {
+          // 이전에 보이던 카드 (나가는 카드)
           if (previousStep === stepNumber) {
             return navigationDirection === 'next' ? 'translateX(-100%)' : 'translateX(100%)';
           }
+          // 새로 들어올 카드가 이 카드라면 (들어오는 카드)
           if (currentStep === stepNumber) {
             return navigationDirection === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
           }
         }
+        
+        // 기본 숨김 상태 - 화면 밖에 대기
         return stepNumber > (currentStep || 1) ? 'translateX(100%)' : 'translateX(-100%)';
       })(),
       transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
     }}>
+      {/* 비디오 컨테이너 - 절대 위치로 제목 옆에 배치 */}
+      <div style={{
+        position: 'absolute',
+        top: '20px',
+        left: '20px',
+        background: 'black',
+        border: '2px solid #000',
+        borderRadius: '12px',
+        padding: '4px',
+        width: '198px',
+        height: '377px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontSize: '16px',
+        zIndex: 10
+      }}>
+        {youtubeVideoId ? (
+          <iframe
+            width="190"
+            height="369"
+            src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0`}
+            title="YouTube Shorts Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{
+              borderRadius: '8px',
+              aspectRatio: '9/16',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+          />
+        ) : (
+          <div style={{ textAlign: 'center', fontSize: '12px' }}>
+            <div style={{ marginBottom: '0.5rem', fontSize: '16px' }}>📱</div>
+            <div>쇼츠 링크 필요</div>
+          </div>
+        )}
+      </div>
 
-      {/* 상단: 분석 옵션 선택 */}
+
+      {/* 상단: 영상 분석 옵션 */}
       <div style={{
         display: 'flex',
         justifyContent: 'center',
@@ -92,37 +175,32 @@ const Step3: React.FC<Step3Props> = ({
         margin: '0 auto',
         marginBottom: '2rem'
       }}>
-        <div className="button-column-step3" ref={whiteColumnRef} style={{
+        <div className="button-column-step2" ref={buttonColumnRef} style={{
           background: '#eaedf1',
           borderRadius: '20px',
           padding: '2rem',
-          width: '800px',
-          height: '550px',
-          overflow: 'hidden'
+          width: '600px',
+          height: '350px'
         }}>
           <div className="modeSelector">
             <div>
-              <h2 style={{ fontWeight: 'bold', color: '#333d4b', fontSize: '18px', textAlign: 'center', marginBottom: '1.5rem' }}>관점 분석 유형을 선택하세요</h2>
-
-              <div className="modeList">
-                {Object.entries(analysisTypes).map(([type, prompt]) => (
-                  <div key={type}>
+              <h2 style={{ fontWeight: 'bold', color: '#333d4b', fontSize: '18px', textAlign: 'center', marginBottom: '1rem' }}>영상 분석 프롬포트를 선택하세요</h2>
+              <div className="modeList-step2">
+                {Object.entries(modes).map(([mode, {emoji, prompt}]: [string, any]) => (
+                  <div key={mode}>
                     <button
                       className={c('button', {
-                        active: type === selectedMode,
+                        active: mode === selectedMode,
                       })}
                       onClick={() => {
-                        setSelectedMode(type);
-                        setModalContent({ type, prompt });
+                        setSelectedMode(mode);
+                        setModalContent({ mode, prompt });
                         setShowModal(true);
                       }}
-                      style={{width: '200px', height: '200px', fontSize: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}
-                    >
+                      style={{width: '200px', height: '200px', fontSize: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                       <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                        <span className="emoji" style={{ fontSize: '35px', marginBottom: '8px' }}>
-                          {type === '커스텀' ? '🔧' : type === '역사적 관점' ? '🏛️' : type === '과학적 관점' ? '🧪' : type === '바이럴 쇼츠용' ? '🔥' : '📝'}
-                        </span>
-                        <span>{type}</span>
+                        <span className="emoji" style={{ fontSize: '35px', marginBottom: '8px' }}>{emoji}</span>
+                        <span>{mode}</span>
                       </span>
                     </button>
                   </div>
@@ -142,14 +220,8 @@ const Step3: React.FC<Step3Props> = ({
       }}>
         <button
           className="button generateButton"
-          onClick={() => {
-            if (selectedMode) {
-              handleAnalyzeContent(selectedMode);
-            } else {
-              alert('분석 타입을 선택해주세요.');
-            }
-          }}
-          disabled={!selectedMode || (selectedMode === '커스텀' && !customAnalysisPrompt.trim())}
+          onClick={() => onModeSelect(selectedMode)}
+          disabled={!apiKey.trim() || !youtubeVideoId || (isCustomMode && !customPrompt.trim())}
           style={{
             borderRadius: '12px',
             background: '#7c3aed',
@@ -164,8 +236,18 @@ const Step3: React.FC<Step3Props> = ({
             color: 'white',
             cursor: 'pointer'
           }}
+          onMouseEnter={(e) => {
+            if (!isLoadingGenerate) {
+              e.target.style.background = '#6d28d9';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isLoadingGenerate) {
+              e.target.style.background = '#7c3aed';
+            }
+          }}
         >
-          {isLoadingAnalysis ? (
+          {isLoadingGenerate ? (
             <div style={{
               width: '16px',
               height: '16px',
@@ -181,7 +263,7 @@ const Step3: React.FC<Step3Props> = ({
       </div>
 
       {/* 로딩 메시지 */}
-      {isLoadingAnalysis && (
+      {isLoadingGenerate && (
         <div style={{ 
           display: 'flex',
           justifyContent: 'center',
@@ -193,35 +275,110 @@ const Step3: React.FC<Step3Props> = ({
           </div>
         </div>
       )}
+      
+      {/* Step2 에러 메시지 */}
+      {step2ErrorMessage && (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+          marginBottom: '1rem'
+        }}>
+          <div style={{
+            textAlign: 'center',
+            color: '#dc3545',
+            fontSize: '14px',
+            fontStyle: 'italic'
+          }}>
+            {step2ErrorMessage}
+          </div>
+        </div>
+      )}
 
       {/* 결과 출력 영역 */}
-      {analysisResult && (
+      {timecodeList && activeMode && (
         <div style={{ 
+          display: 'flex',
+          justifyContent: 'center',
           width: '100%',
           marginTop: '2rem'
         }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            gap: '10px',
-            marginBottom: '20px'
-          }}>
-            <DownloadCopyButtons 
-              content={analysisResult}
-              filename={`분석결과_${selectedAnalysisType}`}
-            />
-          </div>
-          
-          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <div className="output-box-step3">
-            <div style={{
-              whiteSpace: 'pre-wrap',
-              lineHeight: '1.7',
-              fontSize: '15px',
-              color: '#333'
-            }}>
-              {analysisResult.replace(/\\n/g, '\n')}
-            </div>
+          <div className="output-box-step2">
+            <div className={c('tools', {inactive: !youtubeVideoId})}>
+              <section
+                className={c('output', {['mode' + activeMode]: activeMode})}
+                ref={scrollRef}>
+            {timecodeList && activeMode ? (
+              activeMode === 'Table' ? (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Description</th>
+                      <th>Objects</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {timecodeList.map(({time, text, objects}, i) => (
+                      <tr
+                        key={i}
+                        role="button"
+                        onClick={() =>
+                          setRequestedTimecode(timeToSecs(time))
+                        }>
+                        <td>
+                          <time>{time}</time>
+                        </td>
+                        <td>{text}</td>
+                        <td>
+                          {objects?.map(obj => (
+                            <span key={obj}>{obj}</span>
+                          ))}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : activeMode === 'Cards' ? (
+                <div className="timecode-cards">
+                  {timecodeList.map(({time, text, objects}, i) => (
+                    <div
+                      key={i}
+                      className="timecode-card"
+                      role="button"
+                      onClick={() => setRequestedTimecode(timeToSecs(time))}>
+                      <div className="card-header">
+                        <time className="card-time">{time}</time>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">{text}</p>
+                        {objects && objects.length > 0 && (
+                          <div className="card-objects">
+                            {objects.map(obj => (
+                              <span key={obj} className="object-tag">{obj}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="simple-list">
+                  {timecodeList.map(({time, text}, i) => (
+                    <div
+                      key={i}
+                      className="list-item"
+                      role="button"
+                      onClick={() => setRequestedTimecode(timeToSecs(time))}>
+                      <time className="list-time">{time}</time>
+                      <span className="list-text">{text}</span>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : null}
+              </section>
             </div>
           </div>
         </div>
@@ -262,7 +419,7 @@ const Step3: React.FC<Step3Props> = ({
                 fontSize: '18px',
                 fontWeight: 'bold'
               }}>
-                {modalContent.type} 분석
+                {modalContent.mode} 프롬포트
               </h3>
               <button
                 onClick={() => setShowModal(false)}
@@ -296,12 +453,12 @@ const Step3: React.FC<Step3Props> = ({
               whiteSpace: 'pre-wrap',
               textAlign: 'left'
             }}>
-              {modalContent.type === '커스텀' ? (
+              {modalContent.mode === '커스텀' ? (
                 <div>
                   <textarea
                     placeholder="커스텀 분석을 위한 프롬포트를 입력하세요..."
-                    value={customAnalysisPrompt}
-                    onChange={(e) => setCustomAnalysisPrompt(e.target.value)}
+                    value={customPrompt}
+                    onChange={(e) => setCustomPrompt(e.target.value)}
                     rows={6}
                     style={{
                       width: '100%',
@@ -321,18 +478,18 @@ const Step3: React.FC<Step3Props> = ({
                   }}>
                     <button
                       onClick={() => {
-                        if (customAnalysisPrompt.trim()) {
+                        if (customPrompt.trim()) {
                           setShowModal(false);
                         }
                       }}
-                      disabled={!customAnalysisPrompt.trim()}
+                      disabled={!customPrompt.trim()}
                       style={{
                         padding: '10px 20px',
-                        backgroundColor: customAnalysisPrompt.trim() ? '#7c3aed' : '#d1d5db',
+                        backgroundColor: customPrompt.trim() ? '#7c3aed' : '#d1d5db',
                         color: 'white',
                         border: 'none',
                         borderRadius: '8px',
-                        cursor: customAnalysisPrompt.trim() ? 'pointer' : 'not-allowed',
+                        cursor: customPrompt.trim() ? 'pointer' : 'not-allowed',
                         fontSize: '14px'
                       }}
                     >
@@ -342,7 +499,10 @@ const Step3: React.FC<Step3Props> = ({
                 </div>
               ) : (
                 <div>
-                  {modalContent.prompt.replace(/\\n/g, '\n')}
+                  {typeof modalContent.prompt === 'function' ? 
+                    'Custom prompt with user input' : 
+                    modalContent.prompt
+                  }
                 </div>
               )}
             </div>

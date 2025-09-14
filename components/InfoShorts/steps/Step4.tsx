@@ -6,64 +6,52 @@ interface Step4Props {
   currentStep: number;
   previousStep: number;
   navigationDirection: 'next' | 'prev' | null;
-  fourthColumnRef: React.RefObject<HTMLDivElement>;
-  selectedLanguage2: string;
-  setSelectedLanguage2: (language: string) => void;
+  whiteColumnRef: React.RefObject<HTMLDivElement>;
+  selectedLanguage: string;
+  setSelectedLanguage: (language: string) => void;
   ChevronDown: ({ isOpen }: { isOpen: boolean }) => JSX.Element;
-  analysisTypes2: Record<string, string>;
-  expandedAnalysis2: string;
-  setExpandedAnalysis2: (type: string) => void;
+  analysisTypes: Record<string, string>;
+  expandedAnalysis: string;
+  setExpandedAnalysis: (type: string) => void;
   scrollToColumn: (columnRef: React.RefObject<HTMLDivElement>) => void;
   c: (...args: any[]) => string;
-  customAnalysisPrompt2: string;
-  setCustomAnalysisPrompt2: (prompt: string) => void;
-  handleAnalyzeContent2: (type: string) => void;
+  customAnalysisPrompt: string;
+  setCustomAnalysisPrompt: (prompt: string) => void;
+  handleAnalyzeContent: (type: string) => void;
   apiKey: string;
-  isLoadingScript: boolean;
+  isLoadingAnalysis: boolean;
   LoadingMessage: ({ type }: { type?: 'default' | 'voice' | 'srt' }) => JSX.Element;
-  analysisResult2: string;
-  selectedAnalysisType2: string;
+  analysisResult: string;
+  selectedAnalysisType: string;
   DownloadCopyButtons: ({ content, filename }: { content: string; filename: string }) => JSX.Element;
-  uploadedFiles: Record<string, File | null>;
-  handleFileUpload: (fileKey: string, file: File) => void;
-  handleFileDelete: (fileKey: string) => void;
-  handleRewriteWithExamples: () => void;
-  isLoadingRewrite: boolean;
-  rewrittenResult: string;
 }
 
 const Step4: React.FC<Step4Props> = ({
   currentStep,
   previousStep,
   navigationDirection,
-  fourthColumnRef,
-  selectedLanguage2,
-  setSelectedLanguage2,
+  whiteColumnRef,
+  selectedLanguage,
+  setSelectedLanguage,
   ChevronDown,
-  analysisTypes2,
-  expandedAnalysis2,
-  setExpandedAnalysis2,
+  analysisTypes,
+  expandedAnalysis,
+  setExpandedAnalysis,
   scrollToColumn,
   c,
-  customAnalysisPrompt2,
-  setCustomAnalysisPrompt2,
-  handleAnalyzeContent2,
+  customAnalysisPrompt,
+  setCustomAnalysisPrompt,
+  handleAnalyzeContent,
   apiKey,
-  isLoadingScript,
+  isLoadingAnalysis,
   LoadingMessage,
-  analysisResult2,
-  selectedAnalysisType2,
-  DownloadCopyButtons,
-  uploadedFiles,
-  handleFileUpload,
-  handleFileDelete,
-  handleRewriteWithExamples,
-  isLoadingRewrite,
-  rewrittenResult
+  analysisResult,
+  selectedAnalysisType,
+  DownloadCopyButtons
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<{ type: string; prompt: string } | null>(null);
-  const [selectedMode, setSelectedMode] = useState<string>('정보력 만렙');
+  const [selectedMode, setSelectedMode] = useState<string>('과학적 관점');
   return (
     <div className="step-card" style={{
       position: 'absolute',
@@ -104,7 +92,7 @@ const Step4: React.FC<Step4Props> = ({
         margin: '0 auto',
         marginBottom: '2rem'
       }}>
-        <div className="button-column-step4" ref={fourthColumnRef} style={{
+        <div className="button-column-step3" ref={whiteColumnRef} style={{
           background: '#eaedf1',
           borderRadius: '20px',
           padding: '2rem',
@@ -114,10 +102,10 @@ const Step4: React.FC<Step4Props> = ({
         }}>
           <div className="modeSelector">
             <div>
-              <h2 style={{ fontWeight: 'bold', color: '#333d4b', fontSize: '18px', textAlign: 'center', marginBottom: '1.5rem' }}>대사 작성 유형을 선택하세요</h2>
+              <h2 style={{ fontWeight: 'bold', color: '#333d4b', fontSize: '18px', textAlign: 'center', marginBottom: '1.5rem' }}>관점 분석 유형을 선택하세요</h2>
 
               <div className="modeList">
-                {Object.entries(analysisTypes2).map(([type, prompt]) => (
+                {Object.entries(analysisTypes).map(([type, prompt]) => (
                   <div key={type}>
                     <button
                       className={c('button', {
@@ -132,7 +120,7 @@ const Step4: React.FC<Step4Props> = ({
                     >
                       <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                         <span className="emoji" style={{ fontSize: '35px', marginBottom: '8px' }}>
-                          {type === '커스텀' ? '🔧' : type === '3초 후킹' ? '⚡' : type === '정보력 만렙' ? '🧠' : type === '바이럴 대사' ? '💬' : '📝'}
+                          {type === '커스텀' ? '🔧' : type === '역사적 관점' ? '🏛️' : type === '과학적 관점' ? '🧪' : type === '바이럴 쇼츠용' ? '🔥' : '📝'}
                         </span>
                         <span>{type}</span>
                       </span>
@@ -156,12 +144,12 @@ const Step4: React.FC<Step4Props> = ({
           className="button generateButton"
           onClick={() => {
             if (selectedMode) {
-              handleAnalyzeContent2(selectedMode);
+              handleAnalyzeContent(selectedMode);
             } else {
               alert('분석 타입을 선택해주세요.');
             }
           }}
-          disabled={!selectedMode || (selectedMode === '커스텀' && !customAnalysisPrompt2.trim())}
+          disabled={!selectedMode || (selectedMode === '커스텀' && !customAnalysisPrompt.trim())}
           style={{
             borderRadius: '12px',
             background: '#7c3aed',
@@ -177,7 +165,7 @@ const Step4: React.FC<Step4Props> = ({
             cursor: 'pointer'
           }}
         >
-          {isLoadingScript ? (
+          {isLoadingAnalysis ? (
             <div style={{
               width: '16px',
               height: '16px',
@@ -187,13 +175,13 @@ const Step4: React.FC<Step4Props> = ({
               animation: 'spin 1s linear infinite'
             }} />
           ) : (
-            '대사만들기'
+            '분석하기'
           )}
         </button>
       </div>
 
       {/* 로딩 메시지 */}
-      {isLoadingScript && (
+      {isLoadingAnalysis && (
         <div style={{ 
           display: 'flex',
           justifyContent: 'center',
@@ -207,7 +195,7 @@ const Step4: React.FC<Step4Props> = ({
       )}
 
       {/* 결과 출력 영역 */}
-      {analysisResult2 && (
+      {analysisResult && (
         <div style={{ 
           width: '100%',
           marginTop: '2rem'
@@ -219,201 +207,22 @@ const Step4: React.FC<Step4Props> = ({
             marginBottom: '20px'
           }}>
             <DownloadCopyButtons 
-              content={analysisResult2}
-              filename={`대사쓰기_${selectedAnalysisType2}`}
+              content={analysisResult}
+              filename={`분석결과_${selectedAnalysisType}`}
             />
           </div>
           
           <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <div className="output-box-step4">
+            <div className="output-box-step3">
             <div style={{
               whiteSpace: 'pre-wrap',
               lineHeight: '1.7',
               fontSize: '15px',
               color: '#333'
             }}>
-              {analysisResult2.replace(/\\n/g, '\n')}
+              {analysisResult.replace(/\\n/g, '\n')}
             </div>
             </div>
-          </div>
-          
-          <div style={{
-            marginTop: '15px',
-            padding: '20px',
-            background: '#e8f4f8',
-            border: '1px solid #bee5eb',
-            borderRadius: '12px',
-            color: '#0c5460',
-            fontSize: '13px',
-            width: '800px',
-            margin: '15px auto 0 auto'
-          }}>
-            <div style={{ marginBottom: '15px', fontSize: '16px', lineHeight: '1.5' }}>
-              이 대사를 내 스타일로 바꾸고 싶다면,<br/>
-              잘된 예시 3개를 올려주세요
-            </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
-              {['example1', 'example2', 'example3'].map((fileKey, index) => (
-                <div key={fileKey} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  {!uploadedFiles[fileKey] ? (
-                    <label style={{
-                      padding: '8px 12px',
-                      background: 'white',
-                      border: '1px solid #bee5eb',
-                      borderRadius: '12px',
-                      color: '#0c5460',
-                      fontSize: '15px',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s',
-                      display: 'flex',
-                      textAlign: 'center',
-                      height: '48px',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '410px'
-                    }}
-                    onMouseOver={(e) => (e.target as HTMLElement).style.backgroundColor = '#f0f9ff'}
-                    onMouseOut={(e) => (e.target as HTMLElement).style.backgroundColor = 'white'}>
-                      📁 잘된 예시{index + 1}.txt 업로드
-                      <input
-                        type="file"
-                        accept=".txt"
-                        style={{ display: 'none' }}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            handleFileUpload(fileKey, file);
-                          }
-                        }}
-                      />
-                    </label>
-                  ) : (
-                    <div style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'space-between',
-                      padding: '8px 12px',
-                      background: '#f0f9ff',
-                      border: '1px solid #bee5eb',
-                      borderRadius: '12px',
-                      height: '48px',
-                      width: '410px'
-                    }}>
-                      <span style={{ 
-                        color: '#0c5460', 
-                        fontSize: '15px',
-                        flex: 1,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        📄 {uploadedFiles[fileKey]?.name}
-                      </span>
-                      <button
-                        onClick={() => handleFileDelete(fileKey)}
-                        style={{
-                          background: 'transparent',
-                          border: 'none',
-                          color: '#dc3545',
-                          fontSize: '15px',
-                          cursor: 'pointer',
-                          marginLeft: '8px',
-                          padding: '2px 6px',
-                          borderRadius: '3px'
-                        }}
-                        onMouseOver={(e) => (e.target as HTMLElement).style.backgroundColor = '#ffebee'}
-                        onMouseOut={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <button
-              onClick={handleRewriteWithExamples}
-              style={{
-                marginTop: '12px',
-                marginBottom: '20px',
-                padding: '10px 16px',
-                background: 'rgb(124, 58, 237)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '15px',
-                cursor: 'pointer',
-                width: '410px',
-                transition: 'background-color 0.2s',
-                height: '48px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center'
-              }}
-              onMouseOver={(e) => (e.target as HTMLElement).style.backgroundColor = 'rgb(100, 45, 190)'}
-              onMouseOut={(e) => (e.target as HTMLElement).style.backgroundColor = 'rgb(124, 58, 237)'}
-              disabled={Object.values(uploadedFiles).every(file => file === null)}
-            >
-              {isLoadingRewrite ? (
-                <div style={{
-                  width: '16px',
-                  height: '16px',
-                  border: '2px solid transparent',
-                  borderTop: '2px solid white',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite'
-                }} />
-              ) : (
-                '📝 이 예시를 기준으로 재작성하기'
-              )}
-            </button>
-            </div>
-            
-            {isLoadingRewrite && (
-              <div style={{ marginTop: '10px', textAlign: 'center' }}>
-                <LoadingMessage />
-              </div>
-            )}
-            
-            {rewrittenResult && (
-              <div>
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  gap: '10px',
-                  marginBottom: '20px'
-                }}>
-                  <DownloadCopyButtons 
-                    content={rewrittenResult}
-                    filename="재작성된_대사"
-                  />
-                </div>
-                
-                <div style={{
-                  padding: '15px',
-                  background: '#f0fff4',
-                  border: '1px solid #90ee90',
-                  borderRadius: '6px',
-                  color: '#333'
-                }}>
-                  <h4 style={{ marginBottom: '10px', color: '#2d5016' }}>
-                    재작성된 대사:
-                  </h4>
-                  <div style={{ 
-                    whiteSpace: 'pre-wrap', 
-                    lineHeight: '1.7',
-                    fontSize: '15px',
-                    color: '#333'
-                  }}>
-                    {rewrittenResult.replace(/\\n/g, '\n')}
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       )}
@@ -453,7 +262,7 @@ const Step4: React.FC<Step4Props> = ({
                 fontSize: '18px',
                 fontWeight: 'bold'
               }}>
-                {modalContent.type} 대사 작성
+                {modalContent.type} 분석
               </h3>
               <button
                 onClick={() => setShowModal(false)}
@@ -490,9 +299,9 @@ const Step4: React.FC<Step4Props> = ({
               {modalContent.type === '커스텀' ? (
                 <div>
                   <textarea
-                    placeholder="커스텀 대사 작성을 위한 프롬포트를 입력하세요..."
-                    value={customAnalysisPrompt2}
-                    onChange={(e) => setCustomAnalysisPrompt2(e.target.value)}
+                    placeholder="커스텀 분석을 위한 프롬포트를 입력하세요..."
+                    value={customAnalysisPrompt}
+                    onChange={(e) => setCustomAnalysisPrompt(e.target.value)}
                     rows={6}
                     style={{
                       width: '100%',
@@ -512,18 +321,18 @@ const Step4: React.FC<Step4Props> = ({
                   }}>
                     <button
                       onClick={() => {
-                        if (customAnalysisPrompt2.trim()) {
+                        if (customAnalysisPrompt.trim()) {
                           setShowModal(false);
                         }
                       }}
-                      disabled={!customAnalysisPrompt2.trim()}
+                      disabled={!customAnalysisPrompt.trim()}
                       style={{
                         padding: '10px 20px',
-                        backgroundColor: customAnalysisPrompt2.trim() ? '#7c3aed' : '#d1d5db',
+                        backgroundColor: customAnalysisPrompt.trim() ? '#7c3aed' : '#d1d5db',
                         color: 'white',
                         border: 'none',
                         borderRadius: '8px',
-                        cursor: customAnalysisPrompt2.trim() ? 'pointer' : 'not-allowed',
+                        cursor: customAnalysisPrompt.trim() ? 'pointer' : 'not-allowed',
                         fontSize: '14px'
                       }}
                     >
