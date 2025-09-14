@@ -29,6 +29,7 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
   }, [youtubeVideoId]);
   const stepNames = [
     '링크 입력',
+    '준비 단계',
     '영상 분석', 
     '관점 분석',
     '대사 쓰기',

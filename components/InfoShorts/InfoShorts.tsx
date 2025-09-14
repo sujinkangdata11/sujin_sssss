@@ -38,6 +38,7 @@ import Step3 from './steps/Step3';
 import Step4 from './steps/Step4';
 import Step5 from './steps/Step5';
 import Step6 from './steps/Step6';
+import Step7 from './steps/Step7';
 import FloatingNavigation from './components/FloatingNavigation';
 
 // 텍스트 다운로드 및 복사 버튼 컴포넌트
@@ -1275,8 +1276,17 @@ ${referenceContent}
             videoColumnRef={videoColumnRef}
           />
         
-        {/* Step 2: Video Analysis */}
+        {/* Step 2: API Key Setup */}
         <Step2
+            currentStep={currentStep}
+            previousStep={previousStep}
+            navigationDirection={navigationDirection}
+            apiKey={apiKey}
+            setApiKey={setApiKey}
+          />
+        
+        {/* Step 3: Video Analysis */}
+        <Step3
             currentStep={currentStep}
             previousStep={previousStep}
             navigationDirection={navigationDirection}
@@ -1308,8 +1318,8 @@ ${referenceContent}
             step2ErrorMessage={step2ErrorMessage}
           />
         
-        {/* Step 3: Perspective Analysis */}
-        <Step3
+        {/* Step 4: Perspective Analysis */}
+        <Step4
             currentStep={currentStep}
             previousStep={previousStep}
             navigationDirection={navigationDirection}
@@ -1333,8 +1343,8 @@ ${referenceContent}
             DownloadCopyButtons={DownloadCopyButtons}
           />
         
-        {/* Step 4: Script Writing */}
-        <Step4
+        {/* Step 5: Script Writing */}
+        <Step5
             currentStep={currentStep}
             previousStep={previousStep}
             navigationDirection={navigationDirection}
@@ -1364,8 +1374,8 @@ ${referenceContent}
             rewrittenResult={rewrittenResult}
           />
         
-        {/* Step 5: Voice Generation */}
-        <Step5 
+        {/* Step 6: Voice Generation */}
+        <Step6 
           currentStep={currentStep}
           previousStep={previousStep}
           navigationDirection={navigationDirection}
@@ -1468,8 +1478,8 @@ ${referenceContent}
           srtErrorMessage={srtErrorMessage}
         />
         
-        {/* Step 6: Related Videos */}
-        <Step6
+        {/* Step 7: Related Videos */}
+        <Step7
           currentStep={currentStep}
           previousStep={previousStep}
           navigationDirection={navigationDirection}
@@ -1490,7 +1500,7 @@ ${referenceContent}
       <FloatingNavigation 
         currentStep={currentStep}
         setCurrentStep={handleStepChange}
-        totalSteps={6}
+        totalSteps={7}
         youtubeVideoId={youtubeVideoId}
       />
     </main>
