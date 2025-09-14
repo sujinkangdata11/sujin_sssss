@@ -96,7 +96,7 @@ const Step1: React.FC<Step1Props> = ({
         marginBottom: '20px',
         paddingTop: '20px'
       }}>
-        이 기능은 현재 개발중입니다. 9월 30일에 완료됩니다
+        개발중 ㅣ 사용가능 ㅣ 9월 30일 완료예정
       </div>
       
       {/* 제목 - 가로 중앙 정렬 */}
