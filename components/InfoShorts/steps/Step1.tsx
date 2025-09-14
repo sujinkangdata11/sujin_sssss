@@ -47,6 +47,7 @@ const Step1: React.FC<Step1Props> = ({
   }, [youtubeVideoId]);
 
   return (
+    <>
     <div className="step-card" style={{
       position: 'absolute',
       top: 0,
@@ -214,6 +215,20 @@ const Step1: React.FC<Step1Props> = ({
         </div>
       )}
     </div>
+    
+    {/* 카드 밖 탐험하기 텍스트 */}
+    {currentStep === 1 && (
+      <div style={{
+        marginTop: '20px',
+        textAlign: 'center',
+        fontSize: '18px',
+        fontWeight: 'bold',
+        color: '#333'
+      }}>
+        탐험하기
+      </div>
+    )}
+    </>
   );
 };
 
