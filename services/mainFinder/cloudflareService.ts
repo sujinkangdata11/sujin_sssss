@@ -18,7 +18,7 @@ interface CloudflareResponse {
 }
 
 class CloudflareService {
-  private baseUrl = 'https://vidhunt-api.evvi-aa-aa.workers.dev'; // 실제 API URL
+  private baseUrl = 'https://listup.anime-toon-7923.workers.dev'; // 새로운 API URL
 
   // 🚀 채널 데이터 가져오기 (서버에서 + Mock 데이터 지원)
   async getChannelData(): Promise<{
@@ -45,7 +45,7 @@ class CloudflareService {
       // 2. 실제 API 호출 시도
       try {
         console.log('🌐 [DEBUG] API 호출 시도');
-        const response = await fetch(`${this.baseUrl}/api/channels?limit=10000`, {
+        const response = await fetch(`${this.baseUrl}/api/channels?limit=200000`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -1209,8 +1209,8 @@ class CloudflareService {
         operatingPeriod: Math.round((snapshot.gage || 0) / 30), // gage → 채널 나이(일) → 운영기간(월) 변환 (channelAgeInDays)
         uploadFrequency: snapshot.gupw || 0, // gupw → 주당 업로드 수 (uploadsPerWeek)
         
-        // 🌍 국가 정보
-        country: this.mapCountryCode(snapshot.country) || "기타",
+        // 🌍 국가 정보 (실제 국가 코드 사용)
+        country: snapshot.country || null,
         youtubeUrl: `https://www.youtube.com/channel/${channel.channelId}`,
         
         // 👁️ V그룹 - RPM 계산용 조회수 분석 (Views Analysis)
@@ -1220,7 +1220,10 @@ class CloudflareService {
         longformViewsPercentage: snapshot.vlvp !== undefined && snapshot.vlvp !== null ? snapshot.vlvp : 80, // vlvp → 롱폼 조회수 비율 (longformViewsPercentage)
         
         // 📈 구독자 성장 히스토리
-        subscriberHistory: channel.subscriberHistory || []
+        subscriberHistory: channel.subscriberHistory || [],
+
+        // 🎬 최근 썸네일 히스토리 (7일치)
+        recentThumbnailsHistory: channel.recentThumbnailsHistory || []
       };
     });
   }

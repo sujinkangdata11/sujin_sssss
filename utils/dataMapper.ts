@@ -27,6 +27,7 @@ export interface ChannelFinderData {
   shortsViewsPercentage?: number;
   longformViewsPercentage?: number;
   subscriberHistory?: Array<{ count: string; month: string }>;
+  recentThumbnailsHistory?: Array<{ date: string; url: string; title: string }>;
 }
 
 // 필터 상태 타입
@@ -54,20 +55,50 @@ export const convertToRankingData = (
   const maxResults = Math.min(50, filteredData.length);
   const topResults = filteredData.slice(0, maxResults);
 
-  // 4. RankingData 형태로 변환
-  return topResults.map((channel, index) => ({
-    rank: index + 1,
-    change: generateRankChange(), // 랜덤한 변동 표시
-    title: '', // 제목 데이터 없음
-    tags: [], // 태그 없음
-    date: '', // 날짜 없음
-    views: formatViews(getRelevantViews(channel, filters.criteria)),
-    channel: {
-      name: formatChannelName(channel.channelName),
-      subs: formatSubscribers(channel.subscribers),
-      avatar: channel.thumbnailUrl || '👤' // 실제 프로필 이미지 또는 기본 아바타
+  // 4. RankingData 형태로 변환 - 각 채널의 7일치 썸네일을 모두 개별 항목으로 생성
+  const allRankingItems: any[] = [];
+
+  topResults.forEach((channel, channelIndex) => {
+    const recentThumbnails = channel.recentThumbnailsHistory || [];
+
+    if (recentThumbnails.length > 0) {
+      // 각 썸네일마다 개별 랭킹 항목 생성
+      recentThumbnails.forEach((thumbnail, thumbnailIndex) => {
+        allRankingItems.push({
+          rank: allRankingItems.length + 1,
+          change: generateRankChange(),
+          title: thumbnail.title || generateVideoTitle(channel),
+          tags: generateTags(channel.category),
+          date: thumbnail.date || generateDate(filters.period, filters.date),
+          views: formatViews(channel.totalViews), // 항상 조회수만 표시
+          thumbnail: thumbnail.url,
+          channel: {
+            name: formatChannelName(channel.channelName),
+            subs: formatSubscribers(channel.subscribers),
+            avatar: channel.thumbnailUrl || '👤'
+          }
+        });
+      });
+    } else {
+      // 썸네일이 없는 경우 채널 기본 정보만
+      allRankingItems.push({
+        rank: allRankingItems.length + 1,
+        change: generateRankChange(),
+        title: generateVideoTitle(channel),
+        tags: generateTags(channel.category),
+        date: generateDate(filters.period, filters.date),
+        views: formatViews(channel.totalViews), // 항상 조회수만 표시
+        thumbnail: null,
+        channel: {
+          name: formatChannelName(channel.channelName),
+          subs: formatSubscribers(channel.subscribers),
+          avatar: channel.thumbnailUrl || '👤'
+        }
+      });
     }
-  }));
+  });
+
+  return allRankingItems;
 };
 
 // 필터 적용 함수
@@ -80,16 +111,12 @@ const applyFilters = (
 
   // 채널명(핸들명) 필터
   if (filters.category === '전체') {
-    // [전체] 선택시: channelList에 있는 채널들만 표시
-    if (channelList && channelList.length > 0) {
-      filtered = filtered.filter(channel =>
-        channelList.includes(channel.channelHandle || '')
-      );
-    }
+    // [전체] 선택시: 모든 채널 표시 (필터링 안함)
+    // channelList 조건 제거하여 모든 실제 데이터 표시
   } else {
     // 특정 채널 선택시: 해당 채널만 표시
     filtered = filtered.filter(channel => {
-      // @ 핸들명으로 필터링 (예: @TED)
+      // @ 핸들명으로 필터링 (예: @wchinapost)
       if (filters.category.startsWith('@')) {
         return channel.channelHandle === filters.category;
       }
@@ -98,37 +125,48 @@ const applyFilters = (
     });
   }
 
+  console.log('🔍 [DEBUG] 필터링 전 데이터:', filtered.length + '개');
+  console.log('🔍 [DEBUG] 선택된 국가:', filters.country);
+  console.log('🔍 [DEBUG] 데이터의 국가들:', [...new Set(filtered.map(ch => ch.country))]);
+
   // 국가 필터
   if (filters.country !== '🌍 전세계') {
     const countryMap: Record<string, string> = {
-      '🇰🇷 한국': 'South Korea',
-      '🇺🇸 미국': 'United States',
-      '🇯🇵 일본': 'Japan',
-      '🇨🇳 중국': 'CN', // 실제 데이터에서 중국이 CN으로 저장되었을 가능성
-      '🇮🇳 인도': 'India',
-      '🇧🇷 브라질': 'Brazil',
-      '🇩🇪 독일': 'Germany',
-      '🇫🇷 프랑스': 'France',
-      '🇬🇧 영국': 'United Kingdom',
-      '🇨🇦 캐나다': 'Canada',
-      '🇦🇺 호주': 'Australia',
-      '🇷🇺 러시아': 'Russia',
-      '🇮🇩 인도네시아': 'Indonesia',
-      '🇲🇽 멕시코': 'Mexico',
-      '🇮🇹 이탈리아': 'Italy',
-      '🇪🇸 스페인': 'Spain'
+      '🇰🇷 한국': 'KR',
+      '🇺🇸 미국': 'US',
+      '🇯🇵 일본': 'JP',
+      '🇨🇳 중국': 'CN',
+      '🇮🇳 인도': 'IN',
+      '🇧🇷 브라질': 'BR',
+      '🇩🇪 독일': 'DE',
+      '🇫🇷 프랑스': 'FR',
+      '🇬🇧 영국': 'GB',
+      '🇨🇦 캐나다': 'CA',
+      '🇦🇺 호주': 'AU',
+      '🇷🇺 러시아': 'RU',
+      '🇮🇩 인도네시아': 'ID',
+      '🇲🇽 멕시코': 'MX',
+      '🇮🇹 이탈리아': 'IT',
+      '🇪🇸 스페인': 'ES'
     };
-    const targetCountry = countryMap[filters.country];
-    console.log('🔍 국가 필터링:', filters.country, '→', targetCountry);
 
-    // 실제 데이터에 있는 모든 국가 확인
-    const allCountries = [...new Set(data.map(ch => ch.country))];
-    console.log('🌍 실제 데이터의 모든 국가:', allCountries);
+    if (filters.country === '🌐 기타') {
+      // "기타" 선택시: 매핑되지 않은 국가 또는 null/undefined인 채널들
+      const mappedCountryCodes = Object.values(countryMap);
+      filtered = filtered.filter(channel =>
+        !channel.country ||
+        channel.country === '' ||
+        !mappedCountryCodes.includes(channel.country)
+      );
+    } else {
+      const targetCountry = countryMap[filters.country];
+      console.log('🔍 국가 필터링:', filters.country, '→', targetCountry);
 
-    if (targetCountry) {
-      const beforeFilter = filtered.length;
-      filtered = filtered.filter(channel => channel.country === targetCountry);
-      console.log('🔍 필터 결과:', beforeFilter, '→', filtered.length, '개');
+      if (targetCountry) {
+        const beforeFilter = filtered.length;
+        filtered = filtered.filter(channel => channel.country === targetCountry);
+        console.log('🔍 필터 결과:', beforeFilter, '→', filtered.length, '개');
+      }
     }
   }
 
@@ -225,25 +263,39 @@ const generateDate = (period: string, dateOffset: number): string => {
   return `${year}.${month}.${day}`;
 };
 
-// 조회수 포맷팅
+// 조회수 포맷팅 (한국 단위)
 const formatViews = (views: number): string => {
-  if (views >= 1000000000) {
-    return `+${(views / 1000000000).toFixed(1)}B`;
-  } else if (views >= 1000000) {
-    return `+${(views / 1000000).toFixed(1)}M`;
-  } else if (views >= 1000) {
-    return `+${(views / 1000).toFixed(1)}K`;
+  if (views >= 100000000) { // 1억 이상
+    const eok = Math.floor(views / 100000000);
+    const man = Math.floor((views % 100000000) / 10000);
+    return man > 0 ? `+${eok}억${man}만` : `+${eok}억`;
+  } else if (views >= 10000) { // 1만 이상
+    const man = Math.floor(views / 10000);
+    const cheon = Math.floor((views % 10000) / 1000);
+    return cheon > 0 ? `+${man}만${cheon}천` : `+${man}만`;
+  } else if (views >= 1000) { // 1천 이상
+    const cheon = Math.floor(views / 1000);
+    const baek = Math.floor((views % 1000) / 100);
+    return baek > 0 ? `+${cheon}천${baek}백` : `+${cheon}천`;
   } else {
     return `+${views}`;
   }
 };
 
-// 구독자수 포맷팅
+// 구독자수 포맷팅 (한국 단위)
 const formatSubscribers = (subscribers: number): string => {
-  if (subscribers >= 1000000) {
-    return `${(subscribers / 1000000).toFixed(1)}M`;
-  } else if (subscribers >= 1000) {
-    return `${(subscribers / 1000).toFixed(0)}K`;
+  if (subscribers >= 100000000) { // 1억 이상
+    const eok = Math.floor(subscribers / 100000000);
+    const man = Math.floor((subscribers % 100000000) / 10000);
+    return man > 0 ? `${eok}억${man}만` : `${eok}억`;
+  } else if (subscribers >= 10000) { // 1만 이상
+    const man = Math.floor(subscribers / 10000);
+    const cheon = Math.floor((subscribers % 10000) / 1000);
+    return cheon > 0 ? `${man}만${cheon}천` : `${man}만`;
+  } else if (subscribers >= 1000) { // 1천 이상
+    const cheon = Math.floor(subscribers / 1000);
+    const baek = Math.floor((subscribers % 1000) / 100);
+    return baek > 0 ? `${cheon}천${baek}백` : `${cheon}천`;
   } else {
     return subscribers.toString();
   }

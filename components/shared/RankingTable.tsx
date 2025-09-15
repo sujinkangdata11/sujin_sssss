@@ -7,6 +7,7 @@ export interface RankingData {
   tags: string[];
   date: string;
   views: string;
+  thumbnail?: string; // 비디오 썸네일 추가
   channel: {
     name: string;
     subs: string;
@@ -139,9 +140,22 @@ const RankingTable: React.FC<RankingTableProps> = ({
               justifyContent: 'center',
               fontSize: '8px',
               color: '#6b7280',
-              marginBottom: '4px'
+              marginBottom: '4px',
+              overflow: 'hidden'
             }}>
-              썸네일
+              {item.thumbnail ? (
+                <img
+                  src={item.thumbnail}
+                  alt={item.title}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
+                />
+              ) : (
+                '썸네일'
+              )}
             </div>
 
             <div>
@@ -150,9 +164,13 @@ const RankingTable: React.FC<RankingTableProps> = ({
                 fontWeight: '500',
                 color: '#111827',
                 marginBottom: '2px',
-                lineHeight: '1.3'
+                lineHeight: '1.3',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                width: '180px'
               }}>
-                {item.title.length > 20 ? `${item.title.substring(0, 20)}...` : item.title}
+                {item.title}
               </div>
               <div style={{
                 fontSize: '13px',

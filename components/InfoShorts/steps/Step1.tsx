@@ -155,9 +155,10 @@ const Step1: React.FC<Step1Props> = ({
       date: currentFilters.selectedDate
     };
 
-    const newRankingData = convertToRankingData(data, filterState, infoshortsChannels);
+    const newRankingData = convertToRankingData(data, filterState, channelData.map(channel => channel.channelHandle || channel.channelName).filter(Boolean));
     setRankingData(newRankingData);
     console.log('🔄 랭킹 데이터 업데이트:', newRankingData.length + '개');
+    console.log('🔍 [DEBUG] 변환된 데이터 예시:', newRankingData.slice(0, 1));
   };
 
   // 필터 변경 핸들러 (useCallback으로 메모이제이션)
@@ -182,7 +183,7 @@ const Step1: React.FC<Step1Props> = ({
       content: (
         <YouTubeFilter
           onFilterChange={handleFilterChange}
-          channelList={infoshortsChannels}
+          channelList={channelData.map(channel => channel.channelHandle || channel.channelName).filter(Boolean)}
         />
       )
     },
@@ -249,6 +250,7 @@ const Step1: React.FC<Step1Props> = ({
           )}
           <RankingTable
             data={(() => {
+              // 실제 API 데이터 우선, 없으면 더미 데이터
               const data = rankingData.length > 0 ? rankingData : dummyRankingData;
               const startIndex = (currentRankingPage - 1) * 10;
               const endIndex = startIndex + 10;
@@ -256,7 +258,7 @@ const Step1: React.FC<Step1Props> = ({
             })()}
             currentPage={currentRankingPage}
             onPageChange={setCurrentRankingPage}
-            totalPages={5}
+            totalPages={Math.ceil((rankingData.length > 0 ? rankingData.length : dummyRankingData.length) / 10)}
           />
         </div>
       ),

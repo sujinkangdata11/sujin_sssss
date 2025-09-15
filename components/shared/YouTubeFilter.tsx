@@ -192,7 +192,8 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
               '🇮🇩 인도네시아',
               '🇲🇽 멕시코',
               '🇮🇹 이탈리아',
-              '🇪🇸 스페인'
+              '🇪🇸 스페인',
+              '🌐 기타'
             ].map((country) => (
               <div
                 key={country}
@@ -309,13 +310,10 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                   );
                 }
               } else if (selectedPeriod === '주간') {
-                // 주간: 주별 표시 (최대 4개)
-                const currentMonth = today.getMonth() + 1;
+                // 주간: 9월 2주, 3주만 표시 (과거 데이터 없음)
                 const weeks = [
-                  `${currentMonth}월 2주`,
-                  `${currentMonth}월 1주`,
-                  `${currentMonth - 1}월 4주`,
-                  `${currentMonth - 1}월 3주`
+                  '9월 3주',
+                  '9월 2주'
                 ];
 
                 weeks.forEach((week, i) => {
@@ -332,8 +330,8 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                   );
                 });
               } else if (selectedPeriod === '월간') {
-                // 월간: 월별 표시 (최대 5개)
-                const months = ['9월', '8월', '7월', '6월', '5월'];
+                // 월간: 9월만 표시 (과거 데이터 없음)
+                const months = ['9월'];
 
                 months.forEach((month, i) => {
                   dates.push(
@@ -349,8 +347,8 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                   );
                 });
               } else if (selectedPeriod === '연간') {
-                // 연간: 연도별 표시 (최대 4개)
-                const years = ['2025년', '2024년', '2023년', '2022년'];
+                // 연간: 2025년만 표시 (과거 데이터 없음)
+                const years = ['2025년'];
 
                 years.forEach((year, i) => {
                   dates.push(
