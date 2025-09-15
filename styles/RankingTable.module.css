@@ -1,0 +1,305 @@
+/* RankingTable 컴포넌트 스타일 */
+
+.tableContainer {
+  background-color: white;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+
+.paginationHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.paginationButton {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.paginationText {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.tableGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.tableBlock {
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 0.1fr 1fr 0.7fr 0.7fr 1fr;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #d1d5db;
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.headerCell {
+  text-align: center;
+}
+
+.headerCellChannel {
+  text-align: center;
+  margin-left: -20px;
+}
+
+.headerCellOthers {
+  text-align: center;
+  margin-left: -30px;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 0.1fr 1fr 0.7fr 0.7fr 1fr;
+  gap: 8px;
+  padding: 8px 0;
+  align-items: center;
+}
+
+.tableRowBorder {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rankCell {
+  text-align: center;
+}
+
+.rankNumber {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.channelCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.profileImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 6px;
+  color: #6b7280;
+}
+
+.channelName {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111827;
+  text-align: center;
+}
+
+.subscribersCell {
+  font-size: 15px;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: center;
+}
+
+.viewsCell {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ef4444;
+  text-align: center;
+}
+
+.titleCell {
+  display: flex;
+  flex-direction: column;
+}
+
+.thumbnail {
+  width: 180px;
+  height: 100px;
+  background-color: #d1d5db;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.titleText {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.dateText {
+  font-size: 13px;
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .tableGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 0.1fr 0.8fr 0.6fr 0.6fr 1fr;
+    gap: 6px;
+  }
+
+  .profileImage {
+    width: 60px;
+    height: 60px;
+  }
+
+  .thumbnail {
+    width: 140px;
+    height: 80px;
+  }
+
+  .paginationText {
+    font-size: 18px;
+  }
+
+  .tableHeader {
+    font-size: 14px;
+  }
+
+  .channelName,
+  .subscribersCell,
+  .viewsCell,
+  .titleText {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tableBlock {
+    padding: 8px;
+  }
+
+  .tableHeader,
+  .tableRow {
+    gap: 4px;
+  }
+
+  .profileImage {
+    width: 50px;
+    height: 50px;
+  }
+
+  .thumbnail {
+    width: 120px;
+    height: 70px;
+  }
+
+  .paginationHeader {
+    gap: 15px;
+  }
+
+  .paginationText {
+    font-size: 16px;
+  }
+
+  .paginationButton {
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tableContainer {
+    margin: 12px 0;
+  }
+
+  .tableGrid {
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .tableBlock {
+    padding: 6px;
+  }
+
+  .profileImage {
+    width: 40px;
+    height: 40px;
+    font-size: 5px;
+  }
+
+  .thumbnail {
+    width: 100px;
+    height: 60px;
+    font-size: 7px;
+  }
+
+  .tableHeader {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  .channelName,
+  .subscribersCell,
+  .viewsCell,
+  .titleText {
+    font-size: 12px;
+  }
+
+  .dateText {
+    font-size: 11px;
+  }
+
+  .rankNumber {
+    font-size: 12px;
+  }
+
+  .paginationText {
+    font-size: 14px;
+  }
+
+  .headerCellChannel {
+    margin-left: -10px;
+  }
+
+  .headerCellOthers {
+    margin-left: -15px;
+  }
+}

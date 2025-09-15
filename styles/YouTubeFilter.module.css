@@ -1,0 +1,130 @@
+/* YouTubeFilter 컴포넌트 스타일 */
+
+.filterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.filterColumn {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: #f9fafb;
+}
+
+.filterHeader {
+  font-size: 15px;
+  font-weight: normal;
+  color: #333;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.filterOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.filterOptionsNormal {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filterButton {
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.filterButton:hover {
+  opacity: 0.8;
+}
+
+.filterButtonNormal {
+  font-weight: 400;
+  background-color: white;
+  color: #333;
+}
+
+.filterButtonSelected {
+  font-weight: 600;
+  background-color: rgba(124, 58, 237, 0.1);
+  color: rgb(124, 58, 237);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .filterGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .filterColumn {
+    padding: 8px;
+  }
+
+  .filterHeader {
+    font-size: 14px;
+  }
+
+  .filterButton {
+    font-size: 14px;
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filterGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .filterColumn {
+    padding: 6px;
+  }
+
+  .filterHeader {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .filterButton {
+    font-size: 13px;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filterGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .filterContainer {
+    gap: 12px;
+  }
+}

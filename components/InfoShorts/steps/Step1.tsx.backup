@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../InfoShorts.module.css';
 import VideoPlayer from '../VideoPlayer';
 import ExplorationBlocks, { ExplorationBlock } from '../../shared/ExplorationBlocks';
@@ -6,7 +6,6 @@ import YouTubeFilter, { FilterState } from '../../shared/YouTubeFilter';
 import RankingTable, { RankingData } from '../../shared/RankingTable';
 import { cloudflareService } from '../../../services/mainFinder/cloudflareService';
 import { convertToRankingData, DataFilterState } from '../../../utils/dataMapper';
-import { infoshortsChannels } from '../../../data/channels/infoshorts-channels';
 
 interface Step1Props {
   currentStep: number;
@@ -111,37 +110,22 @@ const Step1: React.FC<Step1Props> = ({
 
   // 실제 채널 데이터 로드
   const loadChannelData = async () => {
-    console.log('🚀 [DEBUG] 채널 데이터 로드 시작...');
     setIsLoading(true);
     try {
-      console.log('🚀 [DEBUG] cloudflareService.getChannelData() 호출...');
       const response = await cloudflareService.getChannelData();
-      console.log('🚀 [DEBUG] API 응답:', response);
-
       if (response.success) {
         setChannelData(response.data);
         console.log('✅ 채널 데이터 로드 성공:', response.data.length + '개');
-        console.log('📊 [DEBUG] 첫 번째 채널 데이터:', response.data[0]);
 
-        // 초기 필터로 랭킹 데이터 생성 (기본 필터 값 사용)
-        const initialFilter: FilterState = {
-          selectedCategory: '전체',
-          selectedCriteria: '조회수',
-          selectedCountry: '🌍 전세계',
-          selectedPeriod: '일간',
-          selectedDate: 0
-        };
-        updateRankingData(response.data, initialFilter);
+        // 초기 필터로 랭킹 데이터 생성
+        updateRankingData(response.data, filters);
       } else {
         console.error('❌ 채널 데이터 로드 실패:', response.message);
-        console.log('🔄 [DEBUG] 더미 데이터로 폴백');
       }
     } catch (error) {
       console.error('❌ 채널 데이터 로드 오류:', error);
-      console.log('🔄 [DEBUG] 더미 데이터로 폴백');
     } finally {
       setIsLoading(false);
-      console.log('🚀 [DEBUG] 로딩 완료, isLoading:', false);
     }
   };
 
@@ -155,13 +139,13 @@ const Step1: React.FC<Step1Props> = ({
       date: currentFilters.selectedDate
     };
 
-    const newRankingData = convertToRankingData(data, filterState, infoshortsChannels);
+    const newRankingData = convertToRankingData(data, filterState);
     setRankingData(newRankingData);
     console.log('🔄 랭킹 데이터 업데이트:', newRankingData.length + '개');
   };
 
-  // 필터 변경 핸들러 (useCallback으로 메모이제이션)
-  const handleFilterChange = useCallback((newFilters: FilterState) => {
+  // 필터 변경 핸들러
+  const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);
     console.log('필터 변경됨:', newFilters);
 
@@ -169,7 +153,7 @@ const Step1: React.FC<Step1Props> = ({
     if (channelData.length > 0) {
       updateRankingData(channelData, newFilters);
     }
-  }, [channelData]);
+  };
 
   // 탐험 블럭들 데이터
   const explorationBlocks: ExplorationBlock[] = [
@@ -178,12 +162,10 @@ const Step1: React.FC<Step1Props> = ({
       title: '탐험하기',
       onClick: () => {
         console.log('YouTube 필터링 클릭됨');
+        // 여기에 필터링 기능 구현
       },
       content: (
-        <YouTubeFilter
-          onFilterChange={handleFilterChange}
-          channelList={infoshortsChannels}
-        />
+        <YouTubeFilter onFilterChange={handleFilterChange} />
       )
     },
     {
@@ -196,40 +178,36 @@ const Step1: React.FC<Step1Props> = ({
           gap: '20px',
           width: '100%'
         }}>
-          {/* 이전 버튼: 데이터1이면 흰색, 아니면 원래 색 */}
           <button style={{
             padding: '8px 16px',
-            border: currentRankingPage > 1 ? '1px solid #d1d5db' : '1px solid white',
+            border: '1px solid #d1d5db',
             borderRadius: '8px',
             backgroundColor: 'white',
-            cursor: currentRankingPage > 1 ? 'pointer' : 'default',
+            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            color: currentRankingPage > 1 ? '#000' : 'white'
+            justifyContent: 'center'
           }}
           onClick={() => currentRankingPage > 1 && setCurrentRankingPage(currentRankingPage - 1)}
+          disabled={currentRankingPage <= 1}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
-
           <span style={{ fontSize: '20px', fontWeight: 'bold' }}>데이터 {currentRankingPage}</span>
-
-          {/* 다음 버튼: 마지막 페이지면 흰색, 아니면 원래 색 */}
           <button style={{
             padding: '8px 16px',
-            border: currentRankingPage < 5 ? '1px solid #d1d5db' : '1px solid white',
+            border: '1px solid #d1d5db',
             borderRadius: '8px',
             backgroundColor: 'white',
-            cursor: currentRankingPage < 5 ? 'pointer' : 'default',
+            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            color: currentRankingPage < 5 ? '#000' : 'white'
+            justifyContent: 'center'
           }}
-          onClick={() => currentRankingPage < 5 && setCurrentRankingPage(currentRankingPage + 1)}
+          onClick={() => currentRankingPage < 2 && setCurrentRankingPage(currentRankingPage + 1)}
+          disabled={currentRankingPage >= 2}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
               <path d="M9 18l6-6-6-6" />
@@ -239,26 +217,15 @@ const Step1: React.FC<Step1Props> = ({
       ),
       onClick: () => {
         console.log('새 블럭 클릭됨');
+        // 여기에 새 블럭 기능 구현
       },
       content: (
-        <div>
-          {isLoading && (
-            <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
-              🔄 데이터 로딩 중...
-            </div>
-          )}
-          <RankingTable
-            data={(() => {
-              const data = rankingData.length > 0 ? rankingData : dummyRankingData;
-              const startIndex = (currentRankingPage - 1) * 10;
-              const endIndex = startIndex + 10;
-              return data.slice(startIndex, endIndex);
-            })()}
-            currentPage={currentRankingPage}
-            onPageChange={setCurrentRankingPage}
-            totalPages={5}
-          />
-        </div>
+        <RankingTable
+          data={rankingData.length > 0 ? rankingData : dummyRankingData}
+          currentPage={currentRankingPage}
+          onPageChange={setCurrentRankingPage}
+          totalPages={2}
+        />
       ),
       customStyle: {
         padding: '0 0 clamp(1rem, 4vw, 2rem) 0',
