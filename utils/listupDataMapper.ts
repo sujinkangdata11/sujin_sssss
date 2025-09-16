@@ -208,86 +208,57 @@ export function convertListupToRankingData(
       });
 
       if (matchedChannels.length > 0) {
-        // 매칭된 채널의 모든 데이터를 변환
-        filteredData = matchedChannels.map((channel, index) => {
-          const snapshot = channel.snapshots?.[0] || {};
-          const staticData = channel.staticData || {};
+        // 매칭된 채널의 모든 썸네일 데이터를 변환 (각 썸네일마다 하나의 행)
+        filteredData = [];
 
-          const channelName = formatChannelName(staticData.title || snapshot.title || 'Unknown Channel');
-          const tags = generateTags(staticData.topicCategories || snapshot.topicCategories || []);
-          const change = calculateChange(index);
+        matchedChannels.forEach((channel) => {
+          if (channel.recentThumbnailsHistory && channel.recentThumbnailsHistory.length > 0) {
+            // 날짜 기준으로 정렬 (최신순)
+            const sortedThumbnails = channel.recentThumbnailsHistory.sort((a, b) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime()
+            );
 
-          // 날짜 필터에 맞는 썸네일 찾기 (채널 필터용)
-          const getFilteredThumbnailForChannel = () => {
-            if (!channel.recentThumbnailsHistory || channel.recentThumbnailsHistory.length === 0) {
-              return null;
-            }
+            // 각 썸네일을 개별 행으로 변환
+            sortedThumbnails.forEach((thumbnail, thumbnailIndex) => {
+              const snapshot = channel.snapshots?.[0] || {};
+              const staticData = channel.staticData || {};
 
-            const currentDate = new Date();
+              const channelName = formatChannelName(staticData.title || snapshot.title || 'Unknown Channel');
+              const tags = generateTags(staticData.topicCategories || snapshot.topicCategories || []);
+              const change = calculateChange(thumbnailIndex);
 
-            if (filters.period === '일간') {
-              const target = new Date(currentDate);
-              target.setDate(currentDate.getDate() - filters.date);
-              const targetDate = target.toISOString().split('T')[0];
-              return channel.recentThumbnailsHistory.find(thumbnail =>
-                thumbnail.date === targetDate
-              ) || channel.recentThumbnailsHistory[0];
-            } else if (filters.period === '주간') {
-              const weekRanges = [[1, 7], [8, 15], [16, 22], [23, 31]];
-              const [startDay, endDay] = weekRanges[filters.date] || [1, 7];
-              const currentMonth = currentDate.getMonth() + 1;
-              const currentYear = currentDate.getFullYear();
+              // 최신 구독자 수 가져오기
+              const getLatestSubscriberCount = () => {
+                if (!channel.subscriberHistory || channel.subscriberHistory.length === 0) {
+                  return parseInt(snapshot.subscriberCount || '0');
+                }
 
-              return channel.recentThumbnailsHistory.find(thumbnail => {
-                const thumbnailDate = new Date(thumbnail.date);
-                const day = thumbnailDate.getDate();
-                const month = thumbnailDate.getMonth() + 1;
-                const year = thumbnailDate.getFullYear();
-                return year === currentYear && month === currentMonth &&
-                       day >= startDay && day <= endDay;
-              }) || channel.recentThumbnailsHistory[0];
-            } else if (filters.period === '월간') {
-              const target = new Date(currentDate);
-              target.setMonth(currentDate.getMonth() - filters.date);
-              const targetMonth = target.toISOString().slice(0, 7);
-              return channel.recentThumbnailsHistory.find(thumbnail =>
-                thumbnail.date.startsWith(targetMonth)
-              ) || channel.recentThumbnailsHistory[0];
-            }
+                const sortedHistory = channel.subscriberHistory.sort((a, b) => {
+                  return new Date(b.month + '-01').getTime() - new Date(a.month + '-01').getTime();
+                });
 
-            return channel.recentThumbnailsHistory[0];
-          };
+                return parseInt(sortedHistory[0].count || '0');
+              };
 
-          // 최신 구독자 수 가져오기
-          const getLatestSubscriberCount = () => {
-            if (!channel.subscriberHistory || channel.subscriberHistory.length === 0) {
-              return parseInt(snapshot.subscriberCount || '0');
-            }
+              const latestSubCount = getLatestSubscriberCount();
 
-            const sortedHistory = channel.subscriberHistory.sort((a, b) => {
-              return new Date(b.month + '-01').getTime() - new Date(a.month + '-01').getTime();
+              // 각 썸네일 데이터를 배열에 추가
+              filteredData.push({
+                rank: filteredData.length + 1,
+                change: change,
+                title: thumbnail.title || channelName,
+                tags: tags,
+                date: thumbnail.date,
+                views: thumbnail.viewCount || '0',
+                thumbnail: thumbnail.url, // 영상 썸네일
+                channel: {
+                  name: channelName,
+                  subs: formatSubscriberCount(latestSubCount),
+                  avatar: snapshot.thumbnailDefault || staticData.thumbnailDefault || getChannelAvatar(staticData.title || snapshot.title || '') // 채널 프로필 이미지 (동일)
+                }
+              });
             });
-
-            return parseInt(sortedHistory[0].count || '0');
-          };
-
-          const matchedThumbnail = getFilteredThumbnailForChannel();
-          const latestSubCount = getLatestSubscriberCount();
-
-          return {
-            rank: index + 1,
-            change: change,
-            title: matchedThumbnail?.title || channelName,
-            tags: tags,
-            date: matchedThumbnail?.date || new Date().toISOString().split('T')[0].replace(/-/g, '.'),
-            views: matchedThumbnail?.viewCount || '0',
-            thumbnail: matchedThumbnail?.url, // 썸네일 이미지 추가
-            channel: {
-              name: channelName,
-              subs: formatSubscriberCount(latestSubCount),
-              avatar: matchedThumbnail?.url || snapshot.thumbnailDefault || staticData.thumbnailDefault || getChannelAvatar(staticData.title || snapshot.title || '')
-            }
-          };
+          }
         });
 
         console.log('📺 [SUCCESS] 채널 필터링 완료:', filters.channel, '결과:', filteredData.length + '개');
