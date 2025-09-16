@@ -70,7 +70,7 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             maxHeight: '300px',
             overflowY: 'auto'
           }}>
-            {(channelList ? ['전체', ...channelList] : [
+            {(channelList ? ['전체', ...Array.from(new Set(channelList))] : [
               '전체',
               'Film & Animation',
               'Autos & Vehicles',
@@ -87,9 +87,9 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
               'Education',
               'Science & Technology',
               'Nonprofits & Activism'
-            ]).map((category) => (
+            ]).map((category, index) => (
               <div
-                key={category}
+                key={`category-${index}-${category}`}
                 onClick={() => setSelectedCategory(category)}
                 style={{
                   height: '40px',

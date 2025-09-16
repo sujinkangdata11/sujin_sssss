@@ -18,8 +18,8 @@ class ListupService {
     try {
       console.log('🎬 [INFO] 쇼츠메이커 탐험 데이터 가져오는 중...');
 
-      // API 호출
-      const response = await fetch(`${this.baseUrl}/api/channels?limit=200000`, {
+      // API 호출 (292개 데이터 확보를 위해 limit 조정)
+      const response = await fetch(`${this.baseUrl}/api/channels?limit=500`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -46,8 +46,8 @@ class ListupService {
         firstChannelKeys: result.channels?.[0] ? Object.keys(result.channels[0]) : []
       });
 
-      // CloudflareService와 동일하게 channels 속성 확인
-      const isSuccess = result.channels && Array.isArray(result.channels);
+      // API 응답이 data 속성에 채널 배열을 가지고 있는지 확인
+      const isSuccess = result.data && Array.isArray(result.data);
 
       if (!isSuccess) {
         console.error('❌ [ERROR] Listup API 파싱 실패:', {
@@ -62,13 +62,13 @@ class ListupService {
       }
 
       console.log('✅ [SUCCESS] Listup API 응답 성공:', {
-        데이터수: result.channels?.length || 0,
+        데이터수: result.data?.length || 0,
         응답키들: Object.keys(result),
-        첫번째데이터키들: result.channels?.[0] ? Object.keys(result.channels[0]) : []
+        첫번째데이터키들: result.data?.[0] ? Object.keys(result.data[0]) : []
       });
 
       // Listup 데이터를 ChannelFinder 형태로 변환
-      const transformedData = this.transformListupDataToChannelFinder(result.channels || []);
+      const transformedData = this.transformListupDataToChannelFinder(result.data || []);
 
       return {
         success: true,

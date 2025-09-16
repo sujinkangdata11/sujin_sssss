@@ -120,7 +120,7 @@ const Step1: React.FC<Step1Props> = ({
 
       if (response.success) {
         setChannelData(response.data);
-        console.log('✅ 채널 데이터 로드 성공:', response.data.length + '개');
+        console.log('✅ 채널 데이터 로드 성공:', response.data.length + '개 데이터 연동');
         console.log('📊 [DEBUG] 첫 번째 채널 데이터:', response.data[0]);
 
         // 초기 필터로 랭킹 데이터 생성 (기본 필터 값 사용)
@@ -161,7 +161,7 @@ const Step1: React.FC<Step1Props> = ({
 
     const newRankingData = convertListupToRankingData(data, filterState, availableChannels);
     setRankingData(newRankingData);
-    console.log('🔄 쇼츠메이커 랭킹 데이터 업데이트:', newRankingData.length + '개');
+    console.log('🔄 쇼츠메이커 랭킹 데이터 업데이트:', newRankingData.length + '개 데이터 연동');
     console.log('🔍 [DEBUG] 변환된 데이터 예시:', newRankingData.slice(0, 1));
   };
 
@@ -254,6 +254,19 @@ const Step1: React.FC<Step1Props> = ({
               🔄 데이터 로딩 중...
             </div>
           )}
+          {/* 실시간 데이터 연동 상태 표시 */}
+          <div style={{
+            textAlign: 'center',
+            padding: '10px',
+            color: rankingData.length > 0 ? '#28a745' : '#dc3545',
+            fontSize: '14px',
+            fontWeight: 'bold'
+          }}>
+            {rankingData.length > 0
+              ? `✅ ${rankingData.length}개 데이터 연동`
+              : '❌ 더미 데이터 사용중'
+            }
+          </div>
           <RankingTable
             data={(() => {
               // 실제 API 데이터 우선, 없으면 더미 데이터
