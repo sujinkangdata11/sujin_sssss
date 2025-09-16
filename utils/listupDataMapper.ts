@@ -164,15 +164,6 @@ export function convertListupToRankingData(
       const matchedThumbnail = getFilteredThumbnail();
       const latestSubCount = getLatestSubscriberCount();
 
-      console.log('🎬 [DEBUG] 썸네일 매칭 결과:', {
-        채널명: channelName,
-        필터: `${filters.period} ${filters.date}`,
-        매칭된썸네일: matchedThumbnail ? {
-          date: matchedThumbnail.date,
-          title: matchedThumbnail.title,
-          viewCount: matchedThumbnail.viewCount
-        } : null
-      });
 
       return {
         rank: index + 1,
@@ -185,7 +176,7 @@ export function convertListupToRankingData(
         channel: {
           name: channelName,
           subs: formatSubscriberCount(latestSubCount),
-          avatar: matchedThumbnail?.url || snapshot.thumbnailDefault || staticData.thumbnailDefault || getChannelAvatar(staticData.title || snapshot.title || '')
+          avatar: snapshot.thumbnailDefault || staticData.thumbnailDefault || getChannelAvatar(staticData.title || snapshot.title || '')
         }
       };
     });
@@ -368,7 +359,7 @@ function getChannelAvatar(channelName: string): string {
 
 // 📊 조회수 텍스트를 숫자로 변환 (정렬용)
 function parseViews(viewsText: string): number {
-  const cleanText = viewsText.replace('+', '').replace(',', '');
+  const cleanText = viewsText.replace(/[+,]/g, ''); // 모든 콤마와 + 제거
 
   if (cleanText.includes('M')) {
     return parseFloat(cleanText.replace('M', '')) * 1000000;
