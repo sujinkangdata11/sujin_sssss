@@ -44,7 +44,8 @@ const Step1: React.FC<Step1Props> = ({
     selectedCriteria: '조회수',
     selectedCountry: '🌍 전세계',
     selectedPeriod: '일간',
-    selectedDate: 0
+    selectedDate: 0,
+    selectedChannel: '전체'
   });
 
   // 랭킹 테이블 페이지네이션 상태
@@ -129,7 +130,8 @@ const Step1: React.FC<Step1Props> = ({
           selectedCriteria: '조회수',
           selectedCountry: '🌍 전세계',
           selectedPeriod: '일간',
-          selectedDate: 0
+          selectedDate: 0,
+          selectedChannel: '전체'
         };
         updateRankingData(response.data, initialFilter);
       } else {
@@ -152,7 +154,8 @@ const Step1: React.FC<Step1Props> = ({
       criteria: currentFilters.selectedCriteria,
       country: currentFilters.selectedCountry,
       period: currentFilters.selectedPeriod,
-      date: currentFilters.selectedDate
+      date: currentFilters.selectedDate,
+      channel: currentFilters.selectedChannel
     };
 
     const availableChannels = channelData.map(channel =>
@@ -180,7 +183,21 @@ const Step1: React.FC<Step1Props> = ({
   const explorationBlocks: ExplorationBlock[] = [
     {
       id: 'youtube-filter',
-      title: '탐험하기',
+      title: (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span>탐험하기</span>
+          <span style={{
+            fontSize: '12px',
+            color: rankingData.length > 0 ? '#28a745' : '#dc3545',
+            fontWeight: 'bold'
+          }}>
+            {rankingData.length > 0
+              ? `✅ ${rankingData.length}개 데이터 연동`
+              : '❌ 더미 데이터 사용중'
+            }
+          </span>
+        </div>
+      ),
       onClick: () => {
         console.log('YouTube 필터링 클릭됨');
       },
@@ -254,19 +271,6 @@ const Step1: React.FC<Step1Props> = ({
               🔄 데이터 로딩 중...
             </div>
           )}
-          {/* 실시간 데이터 연동 상태 표시 */}
-          <div style={{
-            textAlign: 'center',
-            padding: '10px',
-            color: rankingData.length > 0 ? '#28a745' : '#dc3545',
-            fontSize: '14px',
-            fontWeight: 'bold'
-          }}>
-            {rankingData.length > 0
-              ? `✅ ${rankingData.length}개 데이터 연동`
-              : '❌ 더미 데이터 사용중'
-            }
-          </div>
           <RankingTable
             data={(() => {
               // 실제 API 데이터 우선, 없으면 더미 데이터

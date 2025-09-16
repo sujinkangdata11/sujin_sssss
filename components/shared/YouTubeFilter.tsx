@@ -11,6 +11,7 @@ export interface FilterState {
   selectedCountry: string;
   selectedPeriod: string;
   selectedDate: number;
+  selectedChannel?: string;
 }
 
 const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelList }) => {
@@ -19,6 +20,7 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
   const [selectedCountry, setSelectedCountry] = useState('🌍 전세계');
   const [selectedPeriod, setSelectedPeriod] = useState('일간');
   const [selectedDate, setSelectedDate] = useState(0);
+  const [selectedChannel, setSelectedChannel] = useState('전체');
 
   // 기간 선택이 변경될 때 날짜 선택 리셋
   useEffect(() => {
@@ -33,10 +35,11 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
         selectedCriteria,
         selectedCountry,
         selectedPeriod,
-        selectedDate
+        selectedDate,
+        selectedChannel
       });
     }
-  }, [selectedCategory, selectedCriteria, selectedCountry, selectedPeriod, selectedDate, onFilterChange]);
+  }, [selectedCategory, selectedCriteria, selectedCountry, selectedPeriod, selectedDate, selectedChannel, onFilterChange]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -90,7 +93,15 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             ]).map((category, index) => (
               <div
                 key={`category-${index}-${category}`}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => {
+                  setSelectedCategory(category);
+                  // 채널 목록에서 선택한 경우 해당 채널로 필터링
+                  if (channelList && channelList.includes(category) && category !== '전체') {
+                    setSelectedChannel(category);
+                  } else {
+                    setSelectedChannel('전체');
+                  }
+                }}
                 style={{
                   height: '40px',
                   minHeight: '40px',
