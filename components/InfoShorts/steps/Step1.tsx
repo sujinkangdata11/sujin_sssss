@@ -5,7 +5,7 @@ import ExplorationBlocks, { ExplorationBlock } from '../../shared/ExplorationBlo
 import YouTubeFilter, { FilterState } from '../../shared/YouTubeFilter';
 import RankingTable, { RankingData } from '../../shared/RankingTable';
 import { listupService } from '../../../services/listupService';
-import { convertToRankingData, DataFilterState } from '../../../utils/dataMapper';
+import { convertListupToRankingData, ShortsFilterState, ListupChannelData } from '../../../utils/listupDataMapper';
 import { infoshortsChannels } from '../../../data/channels/infoshorts-channels';
 
 interface Step1Props {
@@ -51,7 +51,7 @@ const Step1: React.FC<Step1Props> = ({
   const [currentRankingPage, setCurrentRankingPage] = useState(1);
 
   // 실제 데이터 상태 관리
-  const [channelData, setChannelData] = useState<any[]>([]);
+  const [channelData, setChannelData] = useState<ListupChannelData[]>([]);
   const [rankingData, setRankingData] = useState<RankingData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -145,9 +145,9 @@ const Step1: React.FC<Step1Props> = ({
     }
   };
 
-  // 필터에 따른 랭킹 데이터 업데이트
-  const updateRankingData = (data: any[], currentFilters: FilterState) => {
-    const filterState: DataFilterState = {
+  // 필터에 따른 랭킹 데이터 업데이트 (쇼츠메이커용)
+  const updateRankingData = (data: ListupChannelData[], currentFilters: FilterState) => {
+    const filterState: ShortsFilterState = {
       category: currentFilters.selectedCategory,
       criteria: currentFilters.selectedCriteria,
       country: currentFilters.selectedCountry,
@@ -155,9 +155,13 @@ const Step1: React.FC<Step1Props> = ({
       date: currentFilters.selectedDate
     };
 
-    const newRankingData = convertToRankingData(data, filterState, channelData.map(channel => channel.channelHandle || channel.channelName).filter(Boolean));
+    const availableChannels = channelData.map(channel =>
+      channel.staticData?.title || channel.snapshots?.[0]?.title || ''
+    ).filter(Boolean);
+
+    const newRankingData = convertListupToRankingData(data, filterState, availableChannels);
     setRankingData(newRankingData);
-    console.log('🔄 랭킹 데이터 업데이트:', newRankingData.length + '개');
+    console.log('🔄 쇼츠메이커 랭킹 데이터 업데이트:', newRankingData.length + '개');
     console.log('🔍 [DEBUG] 변환된 데이터 예시:', newRankingData.slice(0, 1));
   };
 
@@ -183,7 +187,9 @@ const Step1: React.FC<Step1Props> = ({
       content: (
         <YouTubeFilter
           onFilterChange={handleFilterChange}
-          channelList={channelData.map(channel => channel.channelHandle || channel.channelName).filter(Boolean)}
+          channelList={channelData.flatMap(channel =>
+            channel.snapshots?.map(snapshot => snapshot.title).filter(Boolean) || []
+          )}
         />
       )
     },

@@ -33,20 +33,28 @@ class ListupService {
 
       const result = await response.json();
 
+      console.log('🔍 [DEBUG] Listup API 전체 응답:', result);
       console.log('🔍 [DEBUG] Listup API 응답 구조:', {
         hasData: !!result.data,
+        hasChannels: !!result.channels,
         isArray: Array.isArray(result.data),
+        isChannelsArray: Array.isArray(result.channels),
         dataLength: result.data?.length || 0,
+        channelsLength: result.channels?.length || 0,
         responseKeys: Object.keys(result),
-        firstItemKeys: result.data?.[0] ? Object.keys(result.data[0]) : []
+        firstItemKeys: result.data?.[0] ? Object.keys(result.data[0]) : [],
+        firstChannelKeys: result.channels?.[0] ? Object.keys(result.channels[0]) : []
       });
 
-      const isSuccess = result.data && Array.isArray(result.data);
+      // CloudflareService와 동일하게 channels 속성 확인
+      const isSuccess = result.channels && Array.isArray(result.channels);
 
       if (!isSuccess) {
         console.error('❌ [ERROR] Listup API 파싱 실패:', {
           hasData: !!result.data,
+          hasChannels: !!result.channels,
           isArray: Array.isArray(result.data),
+          isChannelsArray: Array.isArray(result.channels),
           responseType: typeof result,
           responseKeys: Object.keys(result)
         });
@@ -54,15 +62,18 @@ class ListupService {
       }
 
       console.log('✅ [SUCCESS] Listup API 응답 성공:', {
-        데이터수: result.data?.length || 0,
+        데이터수: result.channels?.length || 0,
         응답키들: Object.keys(result),
-        첫번째데이터키들: result.data?.[0] ? Object.keys(result.data[0]) : []
+        첫번째데이터키들: result.channels?.[0] ? Object.keys(result.channels[0]) : []
       });
+
+      // Listup 데이터를 ChannelFinder 형태로 변환
+      const transformedData = this.transformListupDataToChannelFinder(result.channels || []);
 
       return {
         success: true,
-        data: result.data || [],
-        message: result.message || `${result.data?.length || 0}개 탐험 데이터 로드 완료`
+        data: transformedData,
+        message: result.message || `${transformedData.length}개 탐험 데이터 로드 완료`
       };
 
     } catch (error) {
@@ -91,6 +102,20 @@ class ListupService {
       console.error('Listup Health check 실패:', error);
       return { online: false };
     }
+  }
+
+  // 🔄 Listup 데이터를 ChannelFinder 형태로 변환
+  private transformListupDataToChannelFinder(listupChannels: any[]): any[] {
+    console.log('🔄 [INFO] Listup 데이터 변환 시작:', listupChannels.length);
+
+    return listupChannels.map((channel, index) => ({
+      channelId: channel.channelId || `listup_${index}`,
+      staticData: channel.staticData || {},
+      snapshots: channel.snapshots || [],
+      recentThumbnailsHistory: channel.recentThumbnailsHistory || [],
+      dailyViewsHistory: channel.dailyViewsHistory || [],
+      subscriberHistory: channel.subscriberHistory || []
+    }));
   }
 
   // 🔧 설정 관리
