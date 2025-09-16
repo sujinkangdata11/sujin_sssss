@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { getCountryDisplayList, getCountryCodeByDisplayName } from '../../utils/listupCountry';
 
 export interface YouTubeFilterProps {
   onFilterChange?: (filters: FilterState) => void;
   channelList?: string[];
+  availableDates?: {
+    daily: string[];
+    weekly: string[];
+    monthly: string[];
+  };
 }
 
 export interface FilterState {
@@ -10,21 +16,21 @@ export interface FilterState {
   selectedCriteria: string;
   selectedCountry: string;
   selectedPeriod: string;
-  selectedDate: number;
+  selectedDate: string; // 실제 날짜 값 (예: "2025-09-14")
   selectedChannel?: string;
 }
 
-const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelList }) => {
+const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelList, availableDates }) => {
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [selectedCriteria, setSelectedCriteria] = useState('조회수');
   const [selectedCountry, setSelectedCountry] = useState('🌍 전세계');
   const [selectedPeriod, setSelectedPeriod] = useState('일간');
-  const [selectedDate, setSelectedDate] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(''); // 실제 날짜 값
   const [selectedChannel, setSelectedChannel] = useState('전체');
 
   // 기간 선택이 변경될 때 날짜 선택 리셋
   useEffect(() => {
-    setSelectedDate(0);
+    setSelectedDate(''); // 빈 문자열로 리셋
   }, [selectedPeriod]);
 
   // 필터 변경 시 부모 컴포넌트에 알림
@@ -187,25 +193,7 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             maxHeight: '300px',
             overflowY: 'auto'
           }}>
-            {[
-              '🌍 전세계',
-              '🇰🇷 한국',
-              '🇺🇸 미국',
-              '🇯🇵 일본',
-              '🇮🇳 인도',
-              '🇧🇷 브라질',
-              '🇩🇪 독일',
-              '🇫🇷 프랑스',
-              '🇬🇧 영국',
-              '🇨🇦 캐나다',
-              '🇦🇺 호주',
-              '🇷🇺 러시아',
-              '🇮🇩 인도네시아',
-              '🇲🇽 멕시코',
-              '🇮🇹 이탈리아',
-              '🇪🇸 스페인',
-              '🌐 기타'
-            ].map((country) => (
+            {getCountryDisplayList().map((country) => (
               <div
                 key={country}
                 onClick={() => setSelectedCountry(country)}
@@ -294,57 +282,61 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
           }}>
             {(() => {
               const dates = [];
-              const today = new Date();
 
               if (selectedPeriod === '일간') {
-                // 일간: 날짜별 표시
+                // 일간: 실제 데이터가 있는 날짜들만 표시
+                const dailyDates = availableDates?.daily || [];
                 const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-                for (let i = 0; i < 7; i++) {
-                  const date = new Date(today);
-                  date.setDate(today.getDate() - i);
+
+                dailyDates.slice(0, 10).forEach((dateStr, i) => { // 최대 10개까지만
+                  const date = new Date(dateStr);
                   const year = date.getFullYear();
                   const month = String(date.getMonth() + 1).padStart(2, '0');
                   const day = String(date.getDate()).padStart(2, '0');
                   const weekday = weekdays[date.getDay()];
-                  const dateString = `${year}.${month}.${day}.(${weekday})`;
+                  const displayString = `${year}.${month}.${day}.(${weekday})`;
 
                   dates.push(
-                    <div key={i} onClick={() => setSelectedDate(i)} style={{
+                    <div key={i} onClick={() => {
+                      setSelectedDate(dateStr); // 실제 날짜 값 직접 저장
+                    }} style={{
                       height: '40px', minHeight: '40px', maxHeight: '40px', display: 'flex',
-                      alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: selectedDate === i ? '600' : '400',
-                      backgroundColor: selectedDate === i ? 'rgba(124, 58, 237, 0.1)' : 'white',
-                      color: selectedDate === i ? 'rgb(124, 58, 237)' : '#333', borderRadius: '10px',
+                      alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: selectedDate === dateStr ? '600' : '400',
+                      backgroundColor: selectedDate === dateStr ? 'rgba(124, 58, 237, 0.1)' : 'white',
+                      color: selectedDate === dateStr ? 'rgb(124, 58, 237)' : '#333', borderRadius: '10px',
                       cursor: 'pointer', boxSizing: 'border-box'
                     }}>
-                      {dateString}
+                      {displayString}
                     </div>
                   );
-                }
+                });
               } else if (selectedPeriod === '주간') {
-                // 주간: 9월 2주, 3주만 표시 (과거 데이터 없음)
+                // 주간: 9월 1주, 2주, 3주, 4주
                 const weeks = [
-                  '9월 3주',
-                  '9월 2주'
+                  { label: '9월 1주', range: '2025-09-01~2025-09-07' },
+                  { label: '9월 2주', range: '2025-09-08~2025-09-15' },
+                  { label: '9월 3주', range: '2025-09-16~2025-09-22' },
+                  { label: '9월 4주', range: '2025-09-23~2025-09-30' }
                 ];
 
                 weeks.forEach((week, i) => {
                   dates.push(
-                    <div key={i} onClick={() => setSelectedDate(i)} style={{
+                    <div key={i} onClick={() => setSelectedDate(week.range)} style={{
                       height: '40px', minHeight: '40px', maxHeight: '40px', display: 'flex',
-                      alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: selectedDate === i ? '600' : '400',
-                      backgroundColor: selectedDate === i ? 'rgba(124, 58, 237, 0.1)' : 'white',
-                      color: selectedDate === i ? 'rgb(124, 58, 237)' : '#333', borderRadius: '10px',
+                      alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: selectedDate === week.range ? '600' : '400',
+                      backgroundColor: selectedDate === week.range ? 'rgba(124, 58, 237, 0.1)' : 'white',
+                      color: selectedDate === week.range ? 'rgb(124, 58, 237)' : '#333', borderRadius: '10px',
                       cursor: 'pointer', boxSizing: 'border-box'
                     }}>
-                      {week}
+                      {week.label}
                     </div>
                   );
                 });
               } else if (selectedPeriod === '월간') {
-                // 월간: 9월만 표시 (과거 데이터 없음)
-                const months = ['9월'];
+                // 월간: 실제 데이터가 있는 월들만 표시
+                const monthlyDates = availableDates?.monthly || [];
 
-                months.forEach((month, i) => {
+                monthlyDates.forEach((month, i) => {
                   dates.push(
                     <div key={i} onClick={() => setSelectedDate(i)} style={{
                       height: '40px', minHeight: '40px', maxHeight: '40px', display: 'flex',
@@ -358,7 +350,7 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                   );
                 });
               } else if (selectedPeriod === '연간') {
-                // 연간: 2025년만 표시 (과거 데이터 없음)
+                // 연간: 2025년만 표시
                 const years = ['2025년'];
 
                 years.forEach((year, i) => {

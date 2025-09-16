@@ -44,7 +44,7 @@ const Step1: React.FC<Step1Props> = ({
     selectedCriteria: '조회수',
     selectedCountry: '🌍 전세계',
     selectedPeriod: '일간',
-    selectedDate: 0,
+    selectedDate: '', // 빈 문자열로 초기화
     selectedChannel: '전체'
   });
 
@@ -55,6 +55,15 @@ const Step1: React.FC<Step1Props> = ({
   const [channelData, setChannelData] = useState<ListupChannelData[]>([]);
   const [rankingData, setRankingData] = useState<RankingData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [availableDates, setAvailableDates] = useState<{
+    daily: string[];
+    weekly: string[];
+    monthly: string[];
+  }>({
+    daily: [],
+    weekly: [],
+    monthly: []
+  });
 
   // 더미 랭킹 데이터 (백업용)
   const dummyRankingData: RankingData[] = [
@@ -110,6 +119,50 @@ const Step1: React.FC<Step1Props> = ({
     }
   ];
 
+  // 실제 데이터에서 사용 가능한 날짜들 추출
+  const extractAvailableDates = (channels: ListupChannelData[]) => {
+    const allDates = new Set<string>();
+
+    channels.forEach(channel => {
+      if (channel.recentThumbnailsHistory) {
+        channel.recentThumbnailsHistory.forEach(thumbnail => {
+          allDates.add(thumbnail.date);
+        });
+      }
+    });
+
+    const sortedDates = Array.from(allDates).sort((a, b) => b.localeCompare(a)); // 최신순 정렬
+
+    // 일간: 실제 날짜들
+    const daily = sortedDates;
+
+    // 주간: 날짜들을 주별로 그룹화
+    const weeklyGroups = new Map<string, string[]>();
+    daily.forEach(date => {
+      const dateObj = new Date(date);
+      const weekNum = Math.ceil(dateObj.getDate() / 7);
+      const month = dateObj.getMonth() + 1;
+      const weekKey = `${month}월 ${weekNum}주`;
+
+      if (!weeklyGroups.has(weekKey)) {
+        weeklyGroups.set(weekKey, []);
+      }
+      weeklyGroups.get(weekKey)?.push(date);
+    });
+    const weekly = Array.from(weeklyGroups.keys());
+
+    // 월간: 년-월 형태로 그룹화
+    const monthlyGroups = new Set<string>();
+    daily.forEach(date => {
+      const yearMonth = date.slice(0, 7); // YYYY-MM
+      const month = parseInt(yearMonth.split('-')[1]);
+      monthlyGroups.add(`${month}월`);
+    });
+    const monthly = Array.from(monthlyGroups);
+
+    return { daily, weekly, monthly };
+  };
+
   // 실제 채널 데이터 로드
   const loadChannelData = async () => {
     console.log('🚀 [DEBUG] 채널 데이터 로드 시작...');
@@ -123,6 +176,11 @@ const Step1: React.FC<Step1Props> = ({
         setChannelData(response.data);
         console.log('✅ 채널 데이터 로드 성공:', response.data.length + '개 데이터 연동');
         console.log('📊 [DEBUG] 첫 번째 채널 데이터:', response.data[0]);
+
+        // 사용 가능한 날짜들 추출
+        const dates = extractAvailableDates(response.data);
+        setAvailableDates(dates);
+        console.log('📅 [DEBUG] 사용 가능한 날짜들:', dates);
 
         // 초기 필터로 랭킹 데이터 생성 (기본 필터 값 사용)
         const initialFilter: FilterState = {
@@ -171,7 +229,10 @@ const Step1: React.FC<Step1Props> = ({
   // 필터 변경 핸들러 (useCallback으로 메모이제이션)
   const handleFilterChange = useCallback((newFilters: FilterState) => {
     setFilters(newFilters);
-    console.log('필터 변경됨:', newFilters);
+    console.log('필터 변경됨:', {
+      선택된날짜: newFilters.selectedDate,
+      필터: newFilters
+    });
 
     // 실제 데이터가 있으면 필터 적용
     if (channelData.length > 0) {
@@ -207,6 +268,7 @@ const Step1: React.FC<Step1Props> = ({
           channelList={channelData.flatMap(channel =>
             channel.snapshots?.map(snapshot => snapshot.title).filter(Boolean) || []
           )}
+          availableDates={availableDates}
         />
       )
     },

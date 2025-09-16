@@ -1,6 +1,7 @@
 // 🎬 Listup API 전용 데이터 매퍼 - Listup API 데이터를 랭킹 테이블로 변환
 
 import { RankingData } from '../components/shared/RankingTable';
+import { getCountryCodeByDisplayName } from './listupCountry';
 
 // Listup API에서 받는 데이터 타입
 export interface ListupChannelData {
@@ -64,7 +65,18 @@ export function convertListupToRankingData(
   }
 
   try {
-    // 1. 기본 데이터 변환
+    // 📅 날짜 매칭 디버깅 시작
+    console.log('🔍 [DEBUG] 실제 filters 객체:', filters);
+    console.log('🔍 [DEBUG] filters.selectedDate:', filters.selectedDate);
+    console.log('🔍 [DEBUG] filters의 모든 키:', Object.keys(filters));
+
+    console.log('📅 [DEBUG] 날짜 매칭 시작:', {
+      선택한기간: filters.period,
+      선택한날짜: filters.date || '없음',
+      전체채널수: listupChannels.length
+    });
+
+    // 1. 기본 데이터 변환 (null 값 필터링)
     const rankingData: RankingData[] = listupChannels.map((channel, index) => {
       const snapshot = channel.snapshots?.[0] || {};
       const staticData = channel.staticData || {};
@@ -88,63 +100,30 @@ export function convertListupToRankingData(
       // 변화 추세 계산
       const change = calculateChange(index);
 
-      // 날짜 필터에 맞는 썸네일 찾기
+      // 날짜 필터에 맞는 썸네일 찾기 (날짜 값 기반)
       const getFilteredThumbnail = () => {
         if (!channel.recentThumbnailsHistory || channel.recentThumbnailsHistory.length === 0) {
           return null;
         }
 
-        const currentDate = new Date();
-        let targetDate: string;
-
-        // 필터 조건에 따른 날짜 계산
-        if (filters.period === '일간') {
-          // 일간: 현재 날짜에서 selectedDate만큼 뺀 날짜
-          const target = new Date(currentDate);
-          target.setDate(currentDate.getDate() - filters.date);
-          targetDate = target.toISOString().split('T')[0]; // YYYY-MM-DD 형태
-        } else if (filters.period === '주간') {
-          // 주간 필터링 범위 (고정)
-          // - 1주차: 1일~7일 (selectedDate: 0)
-          // - 2주차: 8일~15일 (selectedDate: 1)
-          // - 3주차: 16일~22일 (selectedDate: 2)
-          // - 4주차: 23일~월말까지 (selectedDate: 3)
-          const weekRanges = [
-            [1, 7],   // 1주차
-            [8, 15],  // 2주차
-            [16, 22], // 3주차
-            [23, 31]  // 4주차 (월말까지)
-          ];
-
-          const [startDay, endDay] = weekRanges[filters.date] || [1, 7];
-          const currentMonth = currentDate.getMonth() + 1;
-          const currentYear = currentDate.getFullYear();
-
-          // 해당 주차 범위 내의 썸네일 찾기
-          return channel.recentThumbnailsHistory.find(thumbnail => {
-            const thumbnailDate = new Date(thumbnail.date);
-            const day = thumbnailDate.getDate();
-            const month = thumbnailDate.getMonth() + 1;
-            const year = thumbnailDate.getFullYear();
-
-            return year === currentYear && month === currentMonth &&
-                   day >= startDay && day <= endDay;
-          }) || channel.recentThumbnailsHistory[0];
-        } else if (filters.period === '월간') {
-          // 월간: 현재 월에서 selectedDate만큼 뺀 월
-          const target = new Date(currentDate);
-          target.setMonth(currentDate.getMonth() - filters.date);
-          const targetMonth = target.toISOString().slice(0, 7); // YYYY-MM 형태
-
-          return channel.recentThumbnailsHistory.find(thumbnail =>
-            thumbnail.date.startsWith(targetMonth)
-          ) || channel.recentThumbnailsHistory[0];
+        // 선택된 날짜 값이 있으면 매칭
+        if (filters.date) {
+          if (filters.date.includes('~')) {
+            // 주간: 날짜 범위 체크
+            const [startDate, endDate] = filters.date.split('~');
+            return channel.recentThumbnailsHistory.find(thumb =>
+              thumb.date >= startDate && thumb.date <= endDate
+            ) || null;
+          } else {
+            // 일간: 정확한 날짜 매칭
+            return channel.recentThumbnailsHistory.find(thumb =>
+              thumb.date === filters.date
+            ) || null;
+          }
         }
 
-        // 일간의 경우 정확한 날짜 매칭
-        return channel.recentThumbnailsHistory.find(thumbnail =>
-          thumbnail.date === targetDate
-        ) || channel.recentThumbnailsHistory[0];
+        // 폴백: 첫 번째 썸네일
+        return channel.recentThumbnailsHistory[0] || null;
       };
 
       // 최신 구독자 수 가져오기 (subscriberHistory에서)
@@ -162,8 +141,23 @@ export function convertListupToRankingData(
       };
 
       const matchedThumbnail = getFilteredThumbnail();
-      const latestSubCount = getLatestSubscriberCount();
 
+      // 디버깅: 처음 5개 채널의 매칭 상황 확인
+      if (index < 5) {
+        console.log(`📊 [DEBUG] 채널 ${index + 1} 매칭 상황:`, {
+          채널명: staticData.title || snapshot.title || 'Unknown',
+          타겟날짜: filters.date || '없음',
+          매칭결과: matchedThumbnail ? matchedThumbnail.date : '매칭없음',
+          전체날짜들: channel.recentThumbnailsHistory?.slice(0, 3).map(t => t.date) || []
+        });
+      }
+
+      // 매칭되는 썸네일이 없으면 이 채널은 제외
+      if (!matchedThumbnail) {
+        return null;
+      }
+
+      const latestSubCount = getLatestSubscriberCount();
 
       return {
         rank: index + 1,
@@ -179,6 +173,15 @@ export function convertListupToRankingData(
           avatar: snapshot.thumbnailDefault || staticData.thumbnailDefault || getChannelAvatar(staticData.title || snapshot.title || '')
         }
       };
+    }).filter(Boolean); // null 값 제거
+
+    // 📊 매칭 결과 요약
+    const nullCount = listupChannels.length - rankingData.length;
+    console.log('📊 [DEBUG] 매칭 결과 요약:', {
+      전체채널: listupChannels.length + '개',
+      매칭성공: rankingData.length + '개',
+      매칭실패: nullCount + '개',
+      성공률: Math.round((rankingData.length / listupChannels.length) * 100) + '%'
     });
 
     // 2. 필터 적용
@@ -266,10 +269,33 @@ export function convertListupToRankingData(
       );
     }
 
-    // 국가 필터 (기본적으로 전세계)
+    // 국가 필터
     if (filters.country !== '🌍 전세계') {
-      // 국가별 필터링 로직 (현재는 모든 데이터 유지)
-      console.log('🌍 [INFO] 국가 필터 적용:', filters.country);
+      const targetCountryCode = getCountryCodeByDisplayName(filters.country);
+      console.log('🌍 [DEBUG] 국가 필터 적용:', {
+        선택된국가: filters.country,
+        타겟국가코드: targetCountryCode
+      });
+
+      if (targetCountryCode) {
+        filteredData = filteredData.filter(item => {
+          // 해당 채널의 국가 코드를 확인
+          const channelData = listupChannels.find(ch =>
+            (ch.staticData?.title || ch.snapshots?.[0]?.title) === item.channel.name
+          );
+          const channelCountry = channelData?.snapshots?.[0]?.country;
+
+          // null 값 처리
+          const normalizedCountry = channelCountry || 'null';
+
+          return normalizedCountry === targetCountryCode;
+        });
+
+        console.log('🌍 [INFO] 국가 필터링 완료:', {
+          국가코드: targetCountryCode,
+          필터후결과: filteredData.length + '개'
+        });
+      }
     }
 
     // 3. 정렬 (조회수 기준)
