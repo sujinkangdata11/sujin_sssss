@@ -18,7 +18,7 @@ interface CloudflareResponse {
 }
 
 class CloudflareService {
-  private baseUrl = 'https://listup.anime-toon-7923.workers.dev'; // 새로운 API URL
+  private baseUrl = 'https://vidhunt-api.evvi-aa-aa.workers.dev'; // 채널파인더 API URL
 
   // 🚀 채널 데이터 가져오기 (서버에서 + Mock 데이터 지원)
   async getChannelData(): Promise<{
@@ -1209,8 +1209,8 @@ class CloudflareService {
         operatingPeriod: Math.round((snapshot.gage || 0) / 30), // gage → 채널 나이(일) → 운영기간(월) 변환 (channelAgeInDays)
         uploadFrequency: snapshot.gupw || 0, // gupw → 주당 업로드 수 (uploadsPerWeek)
         
-        // 🌍 국가 정보 (실제 국가 코드 사용)
-        country: snapshot.country || null,
+        // 🌍 국가 정보 (코드를 영어명으로 변환)
+        country: this.mapCountryCode(snapshot.country) || '기타',
         youtubeUrl: `https://www.youtube.com/channel/${channel.channelId}`,
         
         // 👁️ V그룹 - RPM 계산용 조회수 분석 (Views Analysis)
@@ -1255,11 +1255,11 @@ class CloudflareService {
     return "Entertainment"; // 기본값
   }
 
-  // 국가 코드를 전체 이름으로 매핑
+  // 🌍 국가 코드를 영어명으로 매핑 (ChannelFinder와 호환)
   private mapCountryCode(countryCode?: string): string {
     const countryMap: Record<string, string> = {
       'US': 'United States',
-      'KR': 'South Korea', 
+      'KR': 'South Korea',
       'JP': 'Japan',
       'CN': 'China',
       'IN': 'India',
@@ -1278,10 +1278,29 @@ class CloudflareService {
       'CL': 'Chile',
       'CO': 'Colombia',
       'HK': 'Hong Kong',
-      'ID': 'Indonesia'
+      'ID': 'Indonesia',
+      'NL': 'Netherlands',
+      'SE': 'Sweden',
+      'NO': 'Norway',
+      'DK': 'Denmark',
+      'FI': 'Finland',
+      'CH': 'Switzerland',
+      'AT': 'Austria',
+      'BE': 'Belgium',
+      'PT': 'Portugal',
+      'IE': 'Ireland',
+      'IL': 'Israel',
+      'EG': 'Egypt',
+      'ZA': 'South Africa',
+      'SG': 'Singapore',
+      'TW': 'Taiwan',
+      'TR': 'Turkey',
+      'PH': 'Philippines',
+      'PK': 'Pakistan',
+      'NZ': 'New Zealand'
     };
-    
-    return countryMap[countryCode || ''] || countryCode || '기타';
+
+    return countryMap[countryCode || ''] || '기타';
   }
 
   // 🔧 설정 관리

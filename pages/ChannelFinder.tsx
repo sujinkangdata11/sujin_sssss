@@ -25,47 +25,113 @@ import styles from '../styles/ChannelFinder.module.css';
 import '../styles/ChannelFinderMobile.css';
 
 
-// 국가 표시용 매핑 함수 (컴포넌트 내부에서 사용)
-const getCountryDisplayName = (language: Language, countryKey: string): string => {
-  const countryTranslations: { [key: string]: { [key in Language]: string } } = {
-    'United States': { en: 'United States', ko: '미국', ja: 'アメリカ', zh: '美国', hi: 'अमेरिका', es: 'Estados Unidos', fr: 'États-Unis', de: 'USA', nl: 'Verenigde Staten', pt: 'Estados Unidos', ru: 'США' },
-    'Australia': { en: 'Australia', ko: '호주', ja: 'オーストラリア', zh: '澳大利亚', hi: 'ऑस्ट्रेलिया', es: 'Australia', fr: 'Australie', de: 'Australien', nl: 'Australië', pt: 'Austrália', ru: 'Австралия' },
-    'Austria': { en: 'Austria', ko: '오스트리아', ja: 'オーストリア', zh: '奥地利', hi: 'ऑस्ट्रिया', es: 'Austria', fr: 'Autriche', de: 'Österreich', nl: 'Oostenrijk', pt: 'Áustria', ru: 'Австрия' },
-    'Belgium': { en: 'Belgium', ko: '벨기에', ja: 'ベルギー', zh: '比利时', hi: 'बेल्जियम', es: 'Bélgica', fr: 'Belgique', de: 'Belgien', nl: 'België', pt: 'Bélgica', ru: 'Бельгия' },
-    'Brazil': { en: 'Brazil', ko: '브라질', ja: 'ブラジル', zh: '巴西', hi: 'ब्राजील', es: 'Brasil', fr: 'Brésil', de: 'Brasilien', nl: 'Brazilië', pt: 'Brasil', ru: 'Бразилия' },
-    'Canada': { en: 'Canada', ko: '캐나다', ja: 'カナダ', zh: '加拿大', hi: 'कनाडा', es: 'Canadá', fr: 'Canada', de: 'Kanada', nl: 'Canada', pt: 'Canadá', ru: 'Канада' },
-    'Denmark': { en: 'Denmark', ko: '덴마크', ja: 'デンマーク', zh: '丹麦', hi: 'डेनमार्क', es: 'Dinamarca', fr: 'Danemark', de: 'Dänemark', nl: 'Denemarken', pt: 'Dinamarca', ru: 'Дания' },
-    'Egypt': { en: 'Egypt', ko: '이집트', ja: 'エジプト', zh: '埃及', hi: 'मिस्र', es: 'Egipto', fr: 'Égypte', de: 'Ägypten', nl: 'Egypte', pt: 'Egito', ru: 'Египет' },
-    'Finland': { en: 'Finland', ko: '핀란드', ja: 'フィンランド', zh: '芬兰', hi: 'फिनलैंड', es: 'Finlandia', fr: 'Finlande', de: 'Finnland', nl: 'Finland', pt: 'Finlândia', ru: 'Финляндия' },
-    'France': { en: 'France', ko: '프랑스', ja: 'フランス', zh: '法国', hi: 'फ्रांस', es: 'Francia', fr: 'France', de: 'Frankreich', nl: 'Frankrijk', pt: 'França', ru: 'Франция' },
-    'Germany': { en: 'Germany', ko: '독일', ja: 'ドイツ', zh: '德国', hi: 'जर्मनी', es: 'Alemania', fr: 'Allemagne', de: 'Deutschland', nl: 'Duitsland', pt: 'Alemanha', ru: 'Германия' },
-    'Hong Kong': { en: 'Hong Kong', ko: '홍콩', ja: '香港', zh: '香港', hi: 'हांग कांग', es: 'Hong Kong', fr: 'Hong Kong', de: 'Hongkong', nl: 'Hong Kong', pt: 'Hong Kong', ru: 'Гонконг' },
-    'India': { en: 'India', ko: '인도', ja: 'インド', zh: '印度', hi: 'भारत', es: 'India', fr: 'Inde', de: 'Indien', nl: 'India', pt: 'Índia', ru: 'Индия' },
-    'Indonesia': { en: 'Indonesia', ko: '인도네시아', ja: 'インドネシア', zh: '印度尼西亚', hi: 'इंडोनेशिया', es: 'Indonesia', fr: 'Indonésie', de: 'Indonesien', nl: 'Indonesië', pt: 'Indonésia', ru: 'Индонезия' },
-    'Ireland': { en: 'Ireland', ko: '아일랜드', ja: 'アイルランド', zh: '爱尔兰', hi: 'आयरलैंड', es: 'Irlanda', fr: 'Irlande', de: 'Irland', nl: 'Ierland', pt: 'Irlanda', ru: 'Ирландия' },
-    'Israel': { en: 'Israel', ko: '이스라엘', ja: 'イスラエル', zh: '以色列', hi: 'इज़राइल', es: 'Israel', fr: 'Israël', de: 'Israel', nl: 'Israël', pt: 'Israel', ru: 'Израиль' },
-    'Japan': { en: 'Japan', ko: '일본', ja: '日本', zh: '日本', hi: 'जापान', es: 'Japón', fr: 'Japon', de: 'Japan', nl: 'Japan', pt: 'Japão', ru: 'Япония' },
-    'Mexico': { en: 'Mexico', ko: '멕시코', ja: 'メキシコ', zh: '墨西哥', hi: 'मेक्सिको', es: 'México', fr: 'Mexique', de: 'Mexiko', nl: 'Mexico', pt: 'México', ru: 'Мексика' },
-    'Netherlands': { en: 'Netherlands', ko: '네덜란드', ja: 'オランダ', zh: '荷兰', hi: 'नीदरलैंड', es: 'Países Bajos', fr: 'Pays-Bas', de: 'Niederlande', nl: 'Nederland', pt: 'Países Baixos', ru: 'Нидерланды' },
-    'New Zealand': { en: 'New Zealand', ko: '뉴질랜드', ja: 'ニュージーランド', zh: '新西兰', hi: 'न्यूज़ीलैंड', es: 'Nueva Zelanda', fr: 'Nouvelle-Zélande', de: 'Neuseeland', nl: 'Nieuw-Zeeland', pt: 'Nova Zelândia', ru: 'Новая Зеландия' },
-    'Norway': { en: 'Norway', ko: '노르웨이', ja: 'ノルウェー', zh: '挪威', hi: 'नॉर्वे', es: 'Noruega', fr: 'Norvège', de: 'Norwegen', nl: 'Noorwegen', pt: 'Noruega', ru: 'Норвегия' },
-    'Pakistan': { en: 'Pakistan', ko: '파키스탄', ja: 'パキスタン', zh: '巴基斯坦', hi: 'पाकिस्तान', es: 'Pakistán', fr: 'Pakistan', de: 'Pakistan', nl: 'Pakistan', pt: 'Paquistão', ru: 'Пакистан' },
-    'Philippines': { en: 'Philippines', ko: '필리핀', ja: 'フィリピン', zh: '菲律宾', hi: 'फिलीपींस', es: 'Filipinas', fr: 'Philippines', de: 'Philippinen', nl: 'Filipijnen', pt: 'Filipinas', ru: 'Филиппины' },
-    'Portugal': { en: 'Portugal', ko: '포르투갈', ja: 'ポルトガル', zh: '葡萄牙', hi: 'पुर्तगाल', es: 'Portugal', fr: 'Portugal', de: 'Portugal', nl: 'Portugal', pt: 'Portugal', ru: 'Португалия' },
-    'Singapore': { en: 'Singapore', ko: '싱가포르', ja: 'シンガポール', zh: '新加坡', hi: 'सिंगापुर', es: 'Singapur', fr: 'Singapour', de: 'Singapur', nl: 'Singapore', pt: 'Singapura', ru: 'Сингапур' },
-    'South Africa': { en: 'South Africa', ko: '남아프리카공화국', ja: '南アフリカ', zh: '南非', hi: 'दक्षिण अफ्रीका', es: 'Sudáfrica', fr: 'Afrique du Sud', de: 'Südafrika', nl: 'Zuid-Afrika', pt: 'África do Sul', ru: 'ЮАР' },
-    'South Korea': { en: 'South Korea', ko: '한국', ja: '韓国', zh: '韩国', hi: 'दक्षिण कोरिया', es: 'Corea del Sur', fr: 'Corée du Sud', de: 'Südkorea', nl: 'Zuid-Korea', pt: 'Coreia do Sul', ru: 'Южная Корея' },
-    'Spain': { en: 'Spain', ko: '스페인', ja: 'スペイン', zh: '西班牙', hi: 'स्पेन', es: 'España', fr: 'Espagne', de: 'Spanien', nl: 'Spanje', pt: 'Espanha', ru: 'Испания' },
-    'Sweden': { en: 'Sweden', ko: '스웨덴', ja: 'スウェーデン', zh: '瑞典', hi: 'स्वीडन', es: 'Suecia', fr: 'Suède', de: 'Schweden', nl: 'Zweden', pt: 'Suécia', ru: 'Швеция' },
-    'Switzerland': { en: 'Switzerland', ko: '스위스', ja: 'スイス', zh: '瑞士', hi: 'स्विट्जरलैंड', es: 'Suiza', fr: 'Suisse', de: 'Schweiz', nl: 'Zwitserland', pt: 'Suíça', ru: 'Швейцария' },
-    'Taiwan': { en: 'Taiwan', ko: '대만', ja: '台湾', zh: '台湾', hi: 'ताइवान', es: 'Taiwán', fr: 'Taïwan', de: 'Taiwan', nl: 'Taiwan', pt: 'Taiwan', ru: 'Тайвань' },
-    'Turkey': { en: 'Turkey', ko: '터키', ja: 'トルコ', zh: '土耳其', hi: 'तुर्की', es: 'Turquía', fr: 'Turquie', de: 'Türkei', nl: 'Turkije', pt: 'Turquia', ru: 'Турция' },
-    'United Kingdom': { en: 'United Kingdom', ko: '영국', ja: 'イギリス', zh: '英国', hi: 'यूनाइटेड किंगडम', es: 'Reino Unido', fr: 'Royaume-Uni', de: 'Vereinigtes Königreich', nl: 'Verenigd Koninkrijk', pt: 'Reino Unido', ru: 'Великобритания' },
-    'Argentina': { en: 'Argentina', ko: '아르헨티나', ja: 'アルゼンチン', zh: '阿根廷', hi: 'अर्जेंटीना', es: 'Argentina', fr: 'Argentine', de: 'Argentinien', nl: 'Argentinië', pt: 'Argentina', ru: 'Аргентина' },
-    '기타': { en: 'Others', ko: '기타', ja: 'その他', zh: '其他', hi: 'अन्य', es: 'Otros', fr: 'Autres', de: 'Andere', nl: 'Anderen', pt: 'Outros', ru: 'Прочие' }
+// 🌍 통합 국가 매핑 함수 - US = United States = 미국 모든 형태 지원
+const getCountryDisplayName = (language: Language, countryInput: string): string => {
+  // 국가 코드 → 영어명 → 다국어명 통합 매핑
+  const unifiedCountryMap: { [key: string]: { englishName: string; translations: { [key in Language]: string } } } = {
+    // 코드와 영어명 모두 지원 (US, United States 둘 다 동일하게 처리)
+    'US': {
+      englishName: 'United States',
+      translations: { en: 'United States', ko: '미국', ja: 'アメリカ', zh: '美国', hi: 'अमेरिका', es: 'Estados Unidos', fr: 'États-Unis', de: 'USA', nl: 'Verenigde Staten', pt: 'Estados Unidos', ru: 'США' }
+    },
+    'United States': {
+      englishName: 'United States',
+      translations: { en: 'United States', ko: '미국', ja: 'アメリカ', zh: '美国', hi: 'अमेरिका', es: 'Estados Unidos', fr: 'États-Unis', de: 'USA', nl: 'Verenigde Staten', pt: 'Estados Unidos', ru: 'США' }
+    },
+    'KR': {
+      englishName: 'South Korea',
+      translations: { en: 'South Korea', ko: '한국', ja: '韓国', zh: '韩国', hi: 'दक्षिण कोरिया', es: 'Corea del Sur', fr: 'Corée du Sud', de: 'Südkorea', nl: 'Zuid-Korea', pt: 'Coreia do Sul', ru: 'Южная Корея' }
+    },
+    'South Korea': {
+      englishName: 'South Korea',
+      translations: { en: 'South Korea', ko: '한국', ja: '韓国', zh: '韩国', hi: 'दक्षिण कोरिया', es: 'Corea del Sur', fr: 'Corée du Sud', de: 'Südkorea', nl: 'Zuid-Korea', pt: 'Coreia do Sul', ru: 'Южная Корея' }
+    },
+    'JP': {
+      englishName: 'Japan',
+      translations: { en: 'Japan', ko: '일본', ja: '日本', zh: '日本', hi: 'जापान', es: 'Japón', fr: 'Japon', de: 'Japan', nl: 'Japan', pt: 'Japão', ru: 'Япония' }
+    },
+    'Japan': {
+      englishName: 'Japan',
+      translations: { en: 'Japan', ko: '일본', ja: '日本', zh: '日本', hi: 'जापान', es: 'Japón', fr: 'Japon', de: 'Japan', nl: 'Japan', pt: 'Japão', ru: 'Япония' }
+    },
+    'CN': {
+      englishName: 'China',
+      translations: { en: 'China', ko: '중국', ja: '中国', zh: '中国', hi: 'चीन', es: 'China', fr: 'Chine', de: 'China', nl: 'China', pt: 'China', ru: 'Китай' }
+    },
+    'China': {
+      englishName: 'China',
+      translations: { en: 'China', ko: '중국', ja: '中国', zh: '中国', hi: 'चीन', es: 'China', fr: 'Chine', de: 'China', nl: 'China', pt: 'China', ru: 'Китай' }
+    },
+    'GB': {
+      englishName: 'United Kingdom',
+      translations: { en: 'United Kingdom', ko: '영국', ja: 'イギリス', zh: '英国', hi: 'यूनाइटेड किंगडम', es: 'Reino Unido', fr: 'Royaume-Uni', de: 'Vereinigtes Königreich', nl: 'Verenigd Koninkrijk', pt: 'Reino Unido', ru: 'Великобритания' }
+    },
+    'United Kingdom': {
+      englishName: 'United Kingdom',
+      translations: { en: 'United Kingdom', ko: '영국', ja: 'イギリス', zh: '英国', hi: 'यूनाइटेड किंगडम', es: 'Reino Unido', fr: 'Royaume-Uni', de: 'Vereinigtes Königreich', nl: 'Verenigd Koninkrijk', pt: 'Reino Unido', ru: 'Великобритания' }
+    },
+    'CA': {
+      englishName: 'Canada',
+      translations: { en: 'Canada', ko: '캐나다', ja: 'カナダ', zh: '加拿大', hi: 'कनाडा', es: 'Canadá', fr: 'Canada', de: 'Kanada', nl: 'Canada', pt: 'Canadá', ru: 'Канада' }
+    },
+    'Canada': {
+      englishName: 'Canada',
+      translations: { en: 'Canada', ko: '캐나다', ja: 'カナダ', zh: '加拿大', hi: 'कनाडा', es: 'Canadá', fr: 'Canada', de: 'Kanada', nl: 'Canada', pt: 'Canadá', ru: 'Канада' }
+    },
+    'AU': {
+      englishName: 'Australia',
+      translations: { en: 'Australia', ko: '호주', ja: 'オーストラリア', zh: '澳大利亚', hi: 'ऑस्ट्रेलिया', es: 'Australia', fr: 'Australie', de: 'Australien', nl: 'Australië', pt: 'Austrália', ru: 'Австралия' }
+    },
+    'Australia': {
+      englishName: 'Australia',
+      translations: { en: 'Australia', ko: '호주', ja: 'オーストラリア', zh: '澳大利亚', hi: 'ऑस्ट्रेलिया', es: 'Australia', fr: 'Australie', de: 'Australien', nl: 'Australië', pt: 'Austrália', ru: 'Австралия' }
+    },
+    'DE': {
+      englishName: 'Germany',
+      translations: { en: 'Germany', ko: '독일', ja: 'ドイツ', zh: '德国', hi: 'जर्मनी', es: 'Alemania', fr: 'Allemagne', de: 'Deutschland', nl: 'Duitsland', pt: 'Alemanha', ru: 'Германия' }
+    },
+    'Germany': {
+      englishName: 'Germany',
+      translations: { en: 'Germany', ko: '독일', ja: 'ドイツ', zh: '德国', hi: 'जर्मनी', es: 'Alemania', fr: 'Allemagne', de: 'Deutschland', nl: 'Duitsland', pt: 'Alemanha', ru: 'Германия' }
+    },
+    'FR': {
+      englishName: 'France',
+      translations: { en: 'France', ko: '프랑스', ja: 'フランス', zh: '法国', hi: 'फ्रांस', es: 'Francia', fr: 'France', de: 'Frankreich', nl: 'Frankrijk', pt: 'França', ru: 'Франция' }
+    },
+    'France': {
+      englishName: 'France',
+      translations: { en: 'France', ko: '프랑스', ja: 'フランス', zh: '法国', hi: 'फ्रांस', es: 'Francia', fr: 'France', de: 'Frankreich', nl: 'Frankrijk', pt: 'França', ru: 'Франция' }
+    },
+    'BR': {
+      englishName: 'Brazil',
+      translations: { en: 'Brazil', ko: '브라질', ja: 'ブラジル', zh: '巴西', hi: 'ब्राजील', es: 'Brasil', fr: 'Brésil', de: 'Brasilien', nl: 'Brazilië', pt: 'Brasil', ru: 'Бразилия' }
+    },
+    'Brazil': {
+      englishName: 'Brazil',
+      translations: { en: 'Brazil', ko: '브라질', ja: 'ブラジル', zh: '巴西', hi: 'ब्राजील', es: 'Brasil', fr: 'Brésil', de: 'Brasilien', nl: 'Brazilië', pt: 'Brasil', ru: 'Бразилия' }
+    },
+    'IN': {
+      englishName: 'India',
+      translations: { en: 'India', ko: '인도', ja: 'インド', zh: '印度', hi: 'भारत', es: 'India', fr: 'Inde', de: 'Indien', nl: 'India', pt: 'Índia', ru: 'Индия' }
+    },
+    'India': {
+      englishName: 'India',
+      translations: { en: 'India', ko: '인도', ja: 'インド', zh: '印度', hi: 'भारत', es: 'India', fr: 'Inde', de: 'Indien', nl: 'India', pt: 'Índia', ru: 'Индия' }
+    },
+    // 기타 국가들
+    '기타': {
+      englishName: '기타',
+      translations: { en: 'Others', ko: '기타', ja: 'その他', zh: '其他', hi: 'अन्य', es: 'Otros', fr: 'Autres', de: 'Andere', nl: 'Anderen', pt: 'Outros', ru: 'Прочие' }
+    }
   };
-  
-  return countryTranslations[countryKey]?.[language] || countryKey;
+
+  const country = unifiedCountryMap[countryInput];
+  if (country) {
+    return country.translations[language] || country.englishName;
+  }
+
+  // 매핑되지 않은 경우 기타로 처리
+  return unifiedCountryMap['기타'].translations[language];
 };
 
 

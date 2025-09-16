@@ -4,7 +4,7 @@ import VideoPlayer from '../VideoPlayer';
 import ExplorationBlocks, { ExplorationBlock } from '../../shared/ExplorationBlocks';
 import YouTubeFilter, { FilterState } from '../../shared/YouTubeFilter';
 import RankingTable, { RankingData } from '../../shared/RankingTable';
-import { cloudflareService } from '../../../services/mainFinder/cloudflareService';
+import { listupService } from '../../../services/listupService';
 import { convertToRankingData, DataFilterState } from '../../../utils/dataMapper';
 import { infoshortsChannels } from '../../../data/channels/infoshorts-channels';
 
@@ -114,8 +114,8 @@ const Step1: React.FC<Step1Props> = ({
     console.log('🚀 [DEBUG] 채널 데이터 로드 시작...');
     setIsLoading(true);
     try {
-      console.log('🚀 [DEBUG] cloudflareService.getChannelData() 호출...');
-      const response = await cloudflareService.getChannelData();
+      console.log('🚀 [DEBUG] listupService.getExplorationData() 호출...');
+      const response = await listupService.getExplorationData();
       console.log('🚀 [DEBUG] API 응답:', response);
 
       if (response.success) {
