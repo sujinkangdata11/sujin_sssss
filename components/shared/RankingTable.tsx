@@ -53,7 +53,11 @@ const RankingTable: React.FC<RankingTableProps> = ({
       </div>
 
       {/* 데이터 행들 */}
-      {blockData.map((item, i) => (
+      {blockData.map((item, i) => {
+        // 순위 계산: 페이지 기반 + 블럭 내 인덱스
+        const displayRank = (currentPage - 1) * 10 + (blockTitle === '1-5위' ? i + 1 : i + 6);
+
+        return (
         <div key={i} style={{
           display: 'grid',
           gridTemplateColumns: '0.1fr 1fr 0.7fr 0.7fr 1fr',
@@ -64,7 +68,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
         }}>
           {/* 순위 */}
           <div style={{ textAlign: 'center' }}>
-            <span style={{ fontSize: '14px', fontWeight: '600' }}>{item.rank}</span>
+            <span style={{ fontSize: '14px', fontWeight: '600' }}>{displayRank}</span>
           </div>
 
           {/* 채널 */}
@@ -182,7 +186,8 @@ const RankingTable: React.FC<RankingTableProps> = ({
             </div>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 
