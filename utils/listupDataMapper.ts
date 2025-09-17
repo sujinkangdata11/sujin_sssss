@@ -30,6 +30,8 @@ export interface ListupChannelData {
   dailyViewsHistory?: Array<{
     date: string;
     views: number;
+    totalViews?: string; // 채널 총 조회수 (매일 갱신)
+    dailyIncrease?: string; // 일간 증가량
   }>;
   subscriberHistory?: Array<{
     count: string;
@@ -176,13 +178,32 @@ export function convertListupToRankingData(
 
       const latestSubCount = getLatestSubscriberCount();
 
+      // 📊 채널 총 조회수 가져오기 (dailyViewsHistory에서 최신 totalViews)
+      const getLatestTotalViews = () => {
+        if (!channel.dailyViewsHistory || channel.dailyViewsHistory.length === 0) {
+          // dailyViewsHistory가 없으면 snapshot의 viewCount 사용 (채널 전체 조회수)
+          return snapshot.viewCount || '0';
+        }
+
+        // dailyViewsHistory를 최신 날짜순으로 정렬
+        const sortedHistory = channel.dailyViewsHistory.sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+
+        // 최신 totalViews 반환 (이게 총 조회수)
+        return sortedHistory[0].totalViews || '0';
+      };
+
+      const totalChannelViews = getLatestTotalViews();
+
       return {
         rank: index + 1,
         change: change,
         title: matchedThumbnail?.title || channelName,
         tags: tags,
         date: matchedThumbnail?.date || new Date().toISOString().split('T')[0].replace(/-/g, '.'),
-        views: matchedThumbnail?.viewCount || '0',
+        views: matchedThumbnail?.viewCount || '0', // 개별 영상 조회수
+        totalChannelViews: totalChannelViews, // 채널 총 조회수 (dailyViewsHistory 최신 totalViews)
         thumbnail: matchedThumbnail?.url, // 썸네일 이미지 추가
         channel: {
           name: channelName,
@@ -246,20 +267,23 @@ export function convertListupToRankingData(
               const tags = generateTags(staticData.topicCategories || snapshot.topicCategories || []);
               const change = calculateChange(thumbnailIndex);
 
-              // 최신 구독자 수 가져오기
-              const getLatestSubscriberCount = () => {
-                if (!channel.subscriberHistory || channel.subscriberHistory.length === 0) {
-                  return parseInt(snapshot.subscriberCount || '0');
+              // 구독자 수는 snapshot에서 가져오기
+              const subscriberCount = parseInt(snapshot.subscriberCount || '0');
+
+              // 📊 채널 총 조회수 가져오기 (dailyViewsHistory에서 최신 totalViews)
+              const getLatestTotalViews = () => {
+                if (!channel.dailyViewsHistory || channel.dailyViewsHistory.length === 0) {
+                  return snapshot.viewCount || '0';
                 }
 
-                const sortedHistory = channel.subscriberHistory.sort((a, b) => {
-                  return new Date(b.month + '-01').getTime() - new Date(a.month + '-01').getTime();
+                const sortedHistory = channel.dailyViewsHistory.sort((a, b) => {
+                  return new Date(b.date).getTime() - new Date(a.date).getTime();
                 });
 
-                return parseInt(sortedHistory[0].count || '0');
+                return sortedHistory[0].totalViews || '0';
               };
 
-              const latestSubCount = getLatestSubscriberCount();
+              const totalChannelViews = getLatestTotalViews();
 
               // 각 썸네일 데이터를 배열에 추가
               filteredData.push({
@@ -268,11 +292,12 @@ export function convertListupToRankingData(
                 title: thumbnail.title || channelName,
                 tags: tags,
                 date: thumbnail.date,
-                views: thumbnail.viewCount || '0',
+                views: thumbnail.viewCount || '0', // 개별 영상 조회수
+                totalChannelViews: totalChannelViews, // 채널 총 조회수 (dailyViewsHistory 최신 totalViews)
                 thumbnail: thumbnail.url, // 영상 썸네일
                 channel: {
                   name: channelName,
-                  subs: formatSubscriberCount(latestSubCount),
+                  subs: formatSubscriberCount(subscriberCount), // snapshot의 subscriberCount 사용
                   avatar: snapshot.thumbnailDefault || staticData.thumbnailDefault || getChannelAvatar(staticData.title || snapshot.title || '') // 채널 프로필 이미지 (동일)
                 }
               });
