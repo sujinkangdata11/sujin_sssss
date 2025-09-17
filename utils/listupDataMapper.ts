@@ -100,30 +100,47 @@ export function convertListupToRankingData(
       // 변화 추세 계산
       const change = calculateChange(index);
 
-      // 날짜 필터에 맞는 썸네일 찾기 (날짜 값 기반)
+      // 날짜 필터에 맞는 썸네일 찾기 (조회수 최고값 우선)
       const getFilteredThumbnail = () => {
         if (!channel.recentThumbnailsHistory || channel.recentThumbnailsHistory.length === 0) {
           return null;
         }
+
+        // 해당 기간의 모든 썸네일 수집
+        let candidateThumbnails = channel.recentThumbnailsHistory;
 
         // 선택된 날짜 값이 있으면 매칭
         if (filters.date) {
           if (filters.date.includes('~')) {
             // 주간: 날짜 범위 체크
             const [startDate, endDate] = filters.date.split('~');
-            return channel.recentThumbnailsHistory.find(thumb =>
+            candidateThumbnails = channel.recentThumbnailsHistory.filter(thumb =>
               thumb.date >= startDate && thumb.date <= endDate
-            ) || null;
+            );
+          } else if (filters.date.length === 7) {
+            // 월간: YYYY-MM 형태 (예: "2025-09") - 해당 월의 모든 영상
+            candidateThumbnails = channel.recentThumbnailsHistory.filter(thumb =>
+              thumb.date.startsWith(filters.date)
+            );
           } else {
             // 일간: 정확한 날짜 매칭
-            return channel.recentThumbnailsHistory.find(thumb =>
+            candidateThumbnails = channel.recentThumbnailsHistory.filter(thumb =>
               thumb.date === filters.date
-            ) || null;
+            );
           }
         }
 
-        // 폴백: 첫 번째 썸네일
-        return channel.recentThumbnailsHistory[0] || null;
+        // 매칭된 썸네일이 없으면 null 반환
+        if (candidateThumbnails.length === 0) {
+          return null;
+        }
+
+        // ⭐ 핵심: 해당 기간에서 조회수가 가장 높은 썸네일 선택
+        return candidateThumbnails.sort((a, b) => {
+          const aViews = parseViews(a.viewCount || '0');
+          const bViews = parseViews(b.viewCount || '0');
+          return bViews - aViews;
+        })[0];
       };
 
       // 최신 구독자 수 가져오기 (subscriberHistory에서)
@@ -175,7 +192,7 @@ export function convertListupToRankingData(
       };
     }).filter(Boolean); // null 값 제거
 
-    // 📊 매칭 결과 요약
+    // 📊 매칭 결과 요약 + 고조회수 데이터 확인
     const nullCount = listupChannels.length - rankingData.length;
     console.log('📊 [DEBUG] 매칭 결과 요약:', {
       전체채널: listupChannels.length + '개',
@@ -183,6 +200,14 @@ export function convertListupToRankingData(
       매칭실패: nullCount + '개',
       성공률: Math.round((rankingData.length / listupChannels.length) * 100) + '%'
     });
+
+    // 🔥 고조회수 영상 TOP 10 확인 (정렬 전)
+    const topViews = rankingData
+      .map(item => ({ title: item.title.substring(0, 30), views: item.views, parsed: parseViews(item.views) }))
+      .sort((a, b) => b.parsed - a.parsed)
+      .slice(0, 10);
+
+    console.log('🔥 [DEBUG] 고조회수 TOP 10 (정렬 전 확인):', topViews);
 
     // 2. 필터 적용
     let filteredData = rankingData;

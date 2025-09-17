@@ -43,8 +43,8 @@ const Step1: React.FC<Step1Props> = ({
     selectedCategory: '전체',
     selectedCriteria: '조회수',
     selectedCountry: '🌍 전세계',
-    selectedPeriod: '일간',
-    selectedDate: '', // 빈 문자열로 초기화
+    selectedPeriod: '월간', // 디폴트: 월간
+    selectedDate: '2025-09', // 디폴트: 9월
     selectedChannel: '전체'
   });
 

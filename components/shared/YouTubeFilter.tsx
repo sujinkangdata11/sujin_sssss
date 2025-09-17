@@ -24,13 +24,17 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [selectedCriteria, setSelectedCriteria] = useState('조회수');
   const [selectedCountry, setSelectedCountry] = useState('🌍 전세계');
-  const [selectedPeriod, setSelectedPeriod] = useState('일간');
-  const [selectedDate, setSelectedDate] = useState(''); // 실제 날짜 값
+  const [selectedPeriod, setSelectedPeriod] = useState('월간'); // 디폴트: 월간
+  const [selectedDate, setSelectedDate] = useState('2025-09'); // 디폴트: 9월
   const [selectedChannel, setSelectedChannel] = useState('전체');
 
   // 기간 선택이 변경될 때 날짜 선택 리셋
   useEffect(() => {
-    setSelectedDate(''); // 빈 문자열로 리셋
+    if (selectedPeriod === '월간') {
+      setSelectedDate('2025-09'); // 월간일 때는 9월로 설정
+    } else {
+      setSelectedDate(''); // 다른 기간은 빈 문자열로 리셋
+    }
   }, [selectedPeriod]);
 
   // 필터 변경 시 부모 컴포넌트에 알림
@@ -311,13 +315,20 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                   );
                 });
               } else if (selectedPeriod === '주간') {
-                // 주간: 9월 1주, 2주, 3주, 4주
-                const weeks = [
-                  { label: '9월 1주', range: '2025-09-01~2025-09-07' },
-                  { label: '9월 2주', range: '2025-09-08~2025-09-15' },
-                  { label: '9월 3주', range: '2025-09-16~2025-09-22' },
-                  { label: '9월 4주', range: '2025-09-23~2025-09-30' }
+                // 주간: 현재 날짜 기준으로 과거 주차만 표시
+                const today = new Date();
+                const currentDate = today.getDate();
+                const currentWeek = Math.ceil(currentDate / 7);
+
+                const allWeeks = [
+                  { label: '9월 1주', range: '2025-09-01~2025-09-07', weekNumber: 1 },
+                  { label: '9월 2주', range: '2025-09-08~2025-09-15', weekNumber: 2 },
+                  { label: '9월 3주', range: '2025-09-16~2025-09-22', weekNumber: 3 },
+                  { label: '9월 4주', range: '2025-09-23~2025-09-30', weekNumber: 4 }
                 ];
+
+                // 현재 주차까지만 필터링
+                const weeks = allWeeks.filter(week => week.weekNumber <= currentWeek);
 
                 weeks.forEach((week, i) => {
                   dates.push(
@@ -333,19 +344,21 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                   );
                 });
               } else if (selectedPeriod === '월간') {
-                // 월간: 실제 데이터가 있는 월들만 표시
-                const monthlyDates = availableDates?.monthly || [];
+                // 월간: 9월만 표시
+                const months = [
+                  { label: '9월', range: '2025-09' }
+                ];
 
-                monthlyDates.forEach((month, i) => {
+                months.forEach((month, i) => {
                   dates.push(
-                    <div key={i} onClick={() => setSelectedDate(i)} style={{
+                    <div key={i} onClick={() => setSelectedDate(month.range)} style={{
                       height: '40px', minHeight: '40px', maxHeight: '40px', display: 'flex',
-                      alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: selectedDate === i ? '600' : '400',
-                      backgroundColor: selectedDate === i ? 'rgba(124, 58, 237, 0.1)' : 'white',
-                      color: selectedDate === i ? 'rgb(124, 58, 237)' : '#333', borderRadius: '10px',
+                      alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: selectedDate === month.range ? '600' : '400',
+                      backgroundColor: selectedDate === month.range ? 'rgba(124, 58, 237, 0.1)' : 'white',
+                      color: selectedDate === month.range ? 'rgb(124, 58, 237)' : '#333', borderRadius: '10px',
                       cursor: 'pointer', boxSizing: 'border-box'
                     }}>
-                      {month}
+                      {month.label}
                     </div>
                   );
                 });
