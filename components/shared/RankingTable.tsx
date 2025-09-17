@@ -19,6 +19,7 @@ export interface RankingData {
   vlvp?: number; // 롱폼 조회수 비율 (snapshots[].vlvp)
   vesv?: string; // 숏폼 예상 조회수 (snapshots[].vesv)
   velv?: string; // 롱폼 예상 조회수 (snapshots[].velv)
+  channelId?: string; // 채널 ID (channelId)
   channel: {
     name: string;
     subs: string;
@@ -220,8 +221,8 @@ const RankingTable: React.FC<RankingTableProps> = ({
     const shortsTotalViews = item.vesv ? parseInt(item.vesv.toString()) : Math.floor(totalViews * (shortsViewsPercentage / 100));
     const longTotalViews = item.velv ? parseInt(item.velv.toString()) : Math.floor(totalViews * (longformViewsPercentage / 100));
 
-    // YouTube URL 생성 (채널명 기반 검색 URL)
-    const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(item.channel.name)}`;
+    // YouTube URL 생성 (채널 ID 기반 직접 링크)
+    const youtubeUrl = `https://www.youtube.com/channel/${item.channelId}`;
 
     return {
       id: `rank_${item.rank}`,

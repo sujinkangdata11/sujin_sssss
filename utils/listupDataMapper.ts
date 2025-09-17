@@ -211,6 +211,7 @@ export function convertListupToRankingData(
         vlvp: snapshot.vlvp, // 롱폼 조회수 비율
         vesv: snapshot.vesv?.toString(), // 숏폼 예상 조회수
         velv: snapshot.velv?.toString(), // 롱폼 예상 조회수
+        channelId: channel.channelId, // 채널 ID
         thumbnail: matchedThumbnail?.url, // 썸네일 이미지 추가
         channel: {
           name: channelName,
@@ -321,6 +322,7 @@ export function convertListupToRankingData(
                 vlvp: snapshot.vlvp, // 롱폼 조회수 비율
                 vesv: snapshot.vesv?.toString(), // 숏폼 예상 조회수
                 velv: snapshot.velv?.toString(), // 롱폼 예상 조회수
+                channelId: channel.channelId, // 채널 ID
                 thumbnail: thumbnail.url, // 영상 썸네일
                 channel: {
                   name: channelName,
