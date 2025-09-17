@@ -1,4 +1,11 @@
 // 🎬 Listup API 통신 서비스 (쇼츠메이커-탐험하기 전용)
+
+// 🗄️ 지식쇼츠 전용 캐싱 인터페이스 (localStorage 기반, 1일 TTL)
+interface ListupCacheEntry {
+  data: any[];
+  expiry: number;
+}
+
 interface ListupResponse {
   success: boolean;
   message: string;
@@ -7,6 +14,44 @@ interface ListupResponse {
 
 class ListupService {
   private baseUrl = 'https://listup.anime-toon-7923.workers.dev';
+  private cachePrefix = 'listup_';
+  private cacheTTL = 24 * 60 * 60 * 1000; // 1일
+
+  // 🗄️ 캐시에서 데이터 가져오기
+  private getCacheData(key: string): any[] | null {
+    try {
+      const item = localStorage.getItem(this.cachePrefix + key);
+      if (!item) return null;
+
+      const entry: ListupCacheEntry = JSON.parse(item);
+
+      // 만료 확인
+      if (Date.now() > entry.expiry) {
+        localStorage.removeItem(this.cachePrefix + key);
+        console.log('🗑️ [INFO] 만료된 캐시 삭제:', key);
+        return null;
+      }
+
+      return entry.data;
+    } catch (error) {
+      console.error('❌ [ERROR] 캐시 읽기 실패:', error);
+      return null;
+    }
+  }
+
+  // 🗄️ 캐시에 데이터 저장하기
+  private setCacheData(key: string, data: any[]): void {
+    try {
+      const entry: ListupCacheEntry = {
+        data,
+        expiry: Date.now() + this.cacheTTL
+      };
+      localStorage.setItem(this.cachePrefix + key, JSON.stringify(entry));
+      console.log('💾 [INFO] 데이터를 캐시에 저장:', key, '(TTL: 1일)');
+    } catch (error) {
+      console.error('❌ [ERROR] 캐시 저장 실패:', error);
+    }
+  }
 
   // 🚀 쇼츠메이커 탐험 데이터 가져오기
   async getExplorationData(): Promise<{
@@ -18,7 +63,19 @@ class ListupService {
     try {
       console.log('🎬 [INFO] 쇼츠메이커 탐험 데이터 가져오는 중...');
 
-      // API 호출 (292개 데이터 확보를 위해 limit 조정)
+      // 1. 캐시 확인 먼저
+      const cachedData = this.getCacheData('exploration_data');
+      if (cachedData) {
+        console.log('📦 [INFO] 캐시된 데이터 사용 (1일 TTL)');
+        return {
+          success: true,
+          data: cachedData,
+          message: `${cachedData.length}개 캐시된 탐험 데이터 로드 완료`,
+          fromCache: true
+        };
+      }
+
+      // 2. API 호출 (292개 데이터 확보를 위해 limit 조정)
       const response = await fetch(`${this.baseUrl}/api/channels?limit=500`, {
         method: 'GET',
         headers: {
@@ -70,10 +127,14 @@ class ListupService {
       // Listup 데이터를 ChannelFinder 형태로 변환
       const transformedData = this.transformListupDataToChannelFinder(result.data || []);
 
+      // 3. 변환된 데이터를 캐시에 저장
+      this.setCacheData('exploration_data', transformedData);
+
       return {
         success: true,
         data: transformedData,
-        message: result.message || `${transformedData.length}개 탐험 데이터 로드 완료`
+        message: result.message || `${transformedData.length}개 탐험 데이터 로드 완료`,
+        fromCache: false
       };
 
     } catch (error) {
@@ -116,6 +177,21 @@ class ListupService {
       dailyViewsHistory: channel.dailyViewsHistory || [],
       subscriberHistory: channel.subscriberHistory || []
     }));
+  }
+
+  // 🗑️ 캐시 삭제 (개발/디버깅용)
+  clearCache(): void {
+    try {
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith(this.cachePrefix)) {
+          localStorage.removeItem(key);
+        }
+      });
+      console.log('🗑️ [INFO] 지식쇼츠 캐시 전체 삭제 완료');
+    } catch (error) {
+      console.error('❌ [ERROR] 캐시 삭제 실패:', error);
+    }
   }
 
   // 🔧 설정 관리
