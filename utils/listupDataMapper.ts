@@ -96,8 +96,10 @@ export function convertListupToRankingData(
       // 채널명 포맷팅
       const channelName = formatChannelName(staticData.title || snapshot.title || 'Unknown Channel');
 
-      // 태그 생성 (카테고리 기반)
-      const tags = generateTags(staticData.topicCategories || snapshot.topicCategories || []);
+      // 카테고리 추출 (채널파인더와 동일한 로직)
+      const category = extractCategory(staticData.topicCategories || snapshot.topicCategories || []);
+      // 태그 생성 (카테고리 기반으로 단순화)
+      const tags = generateTags(category);
 
       // 변화 추세 계산
       const change = calculateChange(index);
@@ -204,6 +206,11 @@ export function convertListupToRankingData(
         date: matchedThumbnail?.date || new Date().toISOString().split('T')[0].replace(/-/g, '.'),
         views: matchedThumbnail?.viewCount || '0', // 개별 영상 조회수
         totalChannelViews: totalChannelViews, // 채널 총 조회수 (dailyViewsHistory 최신 totalViews)
+        country: snapshot.country || staticData.country || null, // 국가 정보 (snapshots.country)
+        vsvp: snapshot.vsvp, // 숏폼 조회수 비율
+        vlvp: snapshot.vlvp, // 롱폼 조회수 비율
+        vesv: snapshot.vesv?.toString(), // 숏폼 예상 조회수
+        velv: snapshot.velv?.toString(), // 롱폼 예상 조회수
         thumbnail: matchedThumbnail?.url, // 썸네일 이미지 추가
         channel: {
           name: channelName,
@@ -264,11 +271,26 @@ export function convertListupToRankingData(
               const staticData = channel.staticData || {};
 
               const channelName = formatChannelName(staticData.title || snapshot.title || 'Unknown Channel');
-              const tags = generateTags(staticData.topicCategories || snapshot.topicCategories || []);
+              // 카테고리 추출 (채널파인더와 동일한 로직)
+              const category = extractCategory(staticData.topicCategories || snapshot.topicCategories || []);
+              // 태그 생성 (카테고리 기반으로 단순화)
+              const tags = generateTags(category);
               const change = calculateChange(thumbnailIndex);
 
-              // 구독자 수는 snapshot에서 가져오기
-              const subscriberCount = parseInt(snapshot.subscriberCount || '0');
+              // 📊 최신 구독자 수 가져오기 (subscriberHistory에서 최신 count)
+              const getLatestSubscriberCount = () => {
+                if (!channel.subscriberHistory || channel.subscriberHistory.length === 0) {
+                  return parseInt(snapshot.subscriberCount || '0');
+                }
+
+                const sortedHistory = channel.subscriberHistory.sort((a, b) => {
+                  return new Date(b.month + '-01').getTime() - new Date(a.month + '-01').getTime();
+                });
+
+                return parseInt(sortedHistory[0].count || '0');
+              };
+
+              const subscriberCount = getLatestSubscriberCount();
 
               // 📊 채널 총 조회수 가져오기 (dailyViewsHistory에서 최신 totalViews)
               const getLatestTotalViews = () => {
@@ -294,6 +316,11 @@ export function convertListupToRankingData(
                 date: thumbnail.date,
                 views: thumbnail.viewCount || '0', // 개별 영상 조회수
                 totalChannelViews: totalChannelViews, // 채널 총 조회수 (dailyViewsHistory 최신 totalViews)
+                country: snapshot.country || staticData.country || null, // 국가 정보 (snapshots.country)
+                vsvp: snapshot.vsvp, // 숏폼 조회수 비율
+                vlvp: snapshot.vlvp, // 롱폼 조회수 비율
+                vesv: snapshot.vesv?.toString(), // 숏폼 예상 조회수
+                velv: snapshot.velv?.toString(), // 롱폼 예상 조회수
                 thumbnail: thumbnail.url, // 영상 썸네일
                 channel: {
                   name: channelName,
@@ -381,33 +408,48 @@ function formatChannelName(title: string): string {
   return title;
 }
 
-// 🏷️ 태그 생성
-function generateTags(categories: string[]): string[] {
-  if (!categories || categories.length === 0) {
-    return ['#general'];
-  }
+// 🏷️ 카테고리 추출 (채널파인더에서 완전 복사)
+function extractCategory(topicCategories?: string[]): string {
+  if (!topicCategories || topicCategories.length === 0) return "General";
 
-  return categories.slice(0, 2).map(cat => {
-    // 카테고리를 태그 형태로 변환
-    const tagMap: Record<string, string> = {
-      'entertainment': '#entertainment',
-      'music': '#music',
-      'gaming': '#gaming',
-      'education': '#education',
-      'sports': '#sports',
-      'technology': '#tech',
-      'lifestyle': '#lifestyle',
-      'comedy': '#comedy'
-    };
+  const categoryMap: Record<string, string> = {
+    'entertainment': 'Entertainment',
+    'lifestyle': 'Lifestyle',
+    'society': 'Society',
+    'music': 'Music',
+    'education': 'Education',
+    'gaming': 'Gaming',
+    'sports': 'Sports',
+    'technology': 'Technology'
+  };
 
-    const lowerCat = cat.toLowerCase();
-    for (const [key, tag] of Object.entries(tagMap)) {
-      if (lowerCat.includes(key)) {
-        return tag;
+  for (const topic of topicCategories) {
+    const lowerTopic = topic.toLowerCase();
+    for (const [key, value] of Object.entries(categoryMap)) {
+      if (lowerTopic.includes(key)) {
+        return value;
       }
     }
-    return `#${lowerCat.substring(0, 8)}`;
-  });
+  }
+
+  return "Entertainment"; // 기본값
+}
+
+// 🏷️ 태그 생성 (카테고리 기반으로 단순화)
+function generateTags(category: string): string[] {
+  const tagMap: Record<string, string> = {
+    'Entertainment': '#entertainment',
+    'Music': '#music',
+    'Gaming': '#gaming',
+    'Education': '#education',
+    'Sports': '#sports',
+    'Technology': '#tech',
+    'Lifestyle': '#lifestyle',
+    'Society': '#society',
+    'General': '#general'
+  };
+
+  return [tagMap[category] || '#general'];
 }
 
 // 📈 변화 추세 계산

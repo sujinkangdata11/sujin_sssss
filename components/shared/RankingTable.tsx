@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import ExplorationSidebar from './ExplorationSidebar';
+import ExplorationExchangeRateModal from './ExplorationExchangeRateModal';
+import { getCountryRpm, getExplorationInitialRpm, getExplorationCountryDisplayName, calculateExplorationRevenue } from '../../utils/explorationRpmUtils';
+import { Language } from '../../types';
+import { getChannelFinderTranslation, channelFinderI18n, formatLocalizedNumber } from '../../i18n/channelFinderI18n';
 
 export interface RankingData {
   rank: number;
@@ -10,6 +14,11 @@ export interface RankingData {
   views: string; // 개별 영상 조회수
   thumbnail?: string; // 비디오 썸네일 추가
   totalChannelViews?: string; // 채널 총 조회수 (dailyViewsHistory의 최신 totalViews)
+  country?: string; // 국가 정보 (snapshots[].country)
+  vsvp?: number; // 숏폼 조회수 비율 (snapshots[].vsvp)
+  vlvp?: number; // 롱폼 조회수 비율 (snapshots[].vlvp)
+  vesv?: string; // 숏폼 예상 조회수 (snapshots[].vesv)
+  velv?: string; // 롱폼 예상 조회수 (snapshots[].velv)
   channel: {
     name: string;
     subs: string;
@@ -34,33 +43,116 @@ const RankingTable: React.FC<RankingTableProps> = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RankingData | null>(null);
 
-  // 임시: 최소한의 Props만 전달 (추후 완전 구현)
-  const dummyProps = {
+  // 📊 RPM 상태 관리 (채널파인더와 동일한 로직)
+  const initialRpm = getExplorationInitialRpm('ko'); // 기본값: 한국
+  const [shortsRpm, setShortsRpm] = useState(initialRpm.shorts);
+  const [longRpm, setLongRpm] = useState(initialRpm.long);
+  const [currentCountry, setCurrentCountry] = useState('South Korea');
+
+  // 💱 환율 상태 관리 (채널파인더에서 완전 복사)
+  const [exchangeRate, setExchangeRate] = useState(1300);
+  const [exchangeRateModalOpen, setExchangeRateModalOpen] = useState(false);
+  const [tempExchangeRate, setTempExchangeRate] = useState(1300);
+
+  // 💰 수익 계산 함수들 (채널파인더에서 완전 복사)
+  const calculateTotalRevenueValue = () => {
+    if (!selectedItem) return 0;
+
+    // 총 조회수 파싱
+    const parseViews = (viewsText: string): number => {
+      const cleanText = viewsText.replace(/[+,]/g, '');
+      if (cleanText.includes('M')) {
+        return parseFloat(cleanText.replace('M', '')) * 1000000;
+      } else if (cleanText.includes('K')) {
+        return parseFloat(cleanText.replace('K', '')) * 1000;
+      }
+      return parseInt(cleanText) || 1000000;
+    };
+
+    const totalViews = selectedItem.totalChannelViews
+      ? parseViews(selectedItem.totalChannelViews)
+      : parseViews(selectedItem.views) * 100;
+
+    // ShortsViews = TotalViews * 숏폼비율 (vsvp)
+    const shortsViews = totalViews * ((selectedItem.vsvp ?? 75) / 100);
+    // LongViews = TotalViews * 롱폼비율 (vlvp)
+    const longViews = totalViews * ((selectedItem.vlvp ?? 25) / 100);
+
+    // ShortsUSD = (ShortsViews/1000) * 각 나라 숏폼 RPM (환율 적용 X)
+    const shortsRevenueUsd = (shortsViews / 1000) * shortsRpm;
+    // LongUSD = (LongViews/1000) * 각 나라 롱폼 RPM (환율 적용 X)
+    const longRevenueUsd = (longViews / 1000) * longRpm;
+
+    // TotalUSD = ShortsUSD + LongUSD
+    return Math.round(shortsRevenueUsd + longRevenueUsd);
+  };
+
+  const calculateTotalRevenue = () => {
+    const dollarText = getChannelFinderTranslation(channelFinderI18n, 'ko', 'currencies.USD') || '달러';
+    if (!selectedItem) return formatLocalizedNumber(0, 'ko', dollarText);
+
+    const totalUsd = calculateTotalRevenueValue();
+    return formatLocalizedNumber(totalUsd, 'ko', dollarText);
+  };
+
+  const calculateLocalCurrencyRevenue = () => {
+    if (!selectedItem) return formatLocalizedNumber(0, 'ko', '원');
+
+    // TotalUSD 값을 가져와서 환율만 곱하기
+    const totalRevenueUsd = calculateTotalRevenueValue(); // USD 숫자값 (환율 적용 X)
+
+    // KRW = TotalUSD * 환율 (환율모달창에서 변경가능)
+    const localTotal = Math.round(totalRevenueUsd * exchangeRate);
+
+    return formatLocalizedNumber(localTotal, 'ko', '원');
+  };
+
+  // 환율 모달 관련 함수들 (채널파인더에서 완전 복사)
+  const openExchangeRateModal = () => {
+    setTempExchangeRate(exchangeRate);
+    setExchangeRateModalOpen(true);
+  };
+
+  const closeExchangeRateModal = () => {
+    setExchangeRateModalOpen(false);
+  };
+
+  const applyExchangeRate = () => {
+    setExchangeRate(tempExchangeRate);
+    setExchangeRateModalOpen(false);
+  };
+
+  // 🎯 실제 RPM 기반 Props (채널파인더와 동일한 구조)
+  const explorationProps = {
     formatSubscribers: (count: number) => count.toLocaleString(),
     formatOperatingPeriod: (period: number) => `${period}개월`,
     formatGrowth: (growth: number) => `${growth > 0 ? '+' : ''}${growth}%`,
-    getCountryDisplayName: (language: any, country: string) => country,
+    getCountryDisplayName: (language: any, country: string) => getExplorationCountryDisplayName(language, country),
     chartData: [],
     growthTooltips: [],
     hoveredPoint: null,
     hoveredStat: null,
     setHoveredStat: () => {},
-    shortsPercentage: 70,
-    longPercentage: 30,
-    shortsRpm: 0.5,
-    longRpm: 2.0,
+    shortsPercentage: selectedItem?.vsvp ?? 75, // 실제 API 데이터 사용 (vsvp), 0도 정상값
+    longPercentage: selectedItem?.vlvp ?? 25, // 실제 API 데이터 사용 (vlvp), 0도 정상값
+    shortsRpm: shortsRpm, // 실제 국가별 쇼츠 RPM
+    longRpm: longRpm, // 실제 국가별 롱폼 RPM
     exchangeRate: 1300,
-    currentCountry: 'KR',
+    currentCountry: currentCountry, // 실제 선택된 국가
     dropdownState: { isOpen: false, type: null },
     openDropdown: () => {},
     countryOptions: [],
     onCountrySelect: () => {},
-    adjustShortsRpm: () => {},
-    adjustLongRpm: () => {},
-    calculateTotalRevenue: () => '$0',
-    calculateLocalCurrencyRevenue: () => '0원',
-    openExchangeRateModal: () => {},
-    setExchangeRate: () => {},
+    adjustShortsRpm: (isIncrease: boolean) => {
+      setShortsRpm(prev => isIncrease ? Math.min(prev + 0.01, 10) : Math.max(prev - 0.01, 0));
+    },
+    adjustLongRpm: (isIncrease: boolean) => {
+      setLongRpm(prev => isIncrease ? Math.min(prev + 0.1, 50) : Math.max(prev - 0.1, 0));
+    },
+    calculateTotalRevenue: calculateTotalRevenue,
+    calculateLocalCurrencyRevenue: calculateLocalCurrencyRevenue,
+    openExchangeRateModal: openExchangeRateModal,
+    setExchangeRate: setExchangeRate,
     formatViews: (views: number) => views.toLocaleString(),
     formatVideosCount: (count: number) => `${count}개`,
     formatUploadFrequency: (freq: number) => `주 ${freq}회`,
@@ -72,13 +164,20 @@ const RankingTable: React.FC<RankingTableProps> = ({
   const handleItemClick = (item: RankingData) => {
     setSelectedItem(item);
     setIsSidebarOpen(true);
+
+    // 📊 선택된 채널의 국가에 따라 RPM 자동 설정 (채널파인더와 동일한 로직)
+    const channelCountry = item.country === 'null' || item.country === null || !item.country ? '기타' : item.country;
+    const rpm = getCountryRpm(channelCountry);
+    setShortsRpm(rpm.shorts);
+    setLongRpm(rpm.long);
+    setCurrentCountry(channelCountry);
   };
 
   // RankingData를 ChannelData로 변환 (실제 API 데이터 기반)
   const convertToChannelData = (item: RankingData) => {
     if (!item) return null;
 
-    // 구독자 수 파싱 (M, K 형태 처리)
+    // 구독자 수 파싱 (subscriberHistory 최신 count, M/K 형태 처리)
     const parseSubscriberCount = (subText: string): number => {
       const cleanText = subText.replace(/[,]/g, '');
       if (cleanText.includes('M')) {
@@ -113,11 +212,13 @@ const RankingTable: React.FC<RankingTableProps> = ({
     const subscribersPerVideo = Math.floor(subscribers / videosCount);
     const uploadFrequency = Math.min(3.5, Math.max(0.2, videosCount / 100)); // 주당 업로드 빈도 추정
 
-    // 쇼츠 vs 롱폼 비율 (쇼츠가 더 많다고 가정)
-    const shortsViewsPercentage = 75;
-    const longformViewsPercentage = 25;
-    const shortsTotalViews = Math.floor(totalViews * (shortsViewsPercentage / 100));
-    const longTotalViews = Math.floor(totalViews * (longformViewsPercentage / 100));
+    // 📊 실제 API 데이터 사용 (vsvp, vlvp) - 채널파인더와 동일한 로직
+    const shortsViewsPercentage = item.vsvp !== undefined && item.vsvp !== null ? item.vsvp : 75; // 기본값 75%
+    const longformViewsPercentage = item.vlvp !== undefined && item.vlvp !== null ? item.vlvp : 25; // 기본값 25%
+
+    // vesv, velv 값이 있으면 사용, 없으면 총 조회수 기반 계산
+    const shortsTotalViews = item.vesv ? parseInt(item.vesv.toString()) : Math.floor(totalViews * (shortsViewsPercentage / 100));
+    const longTotalViews = item.velv ? parseInt(item.velv.toString()) : Math.floor(totalViews * (longformViewsPercentage / 100));
 
     // YouTube URL 생성 (채널명 기반 검색 URL)
     const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(item.channel.name)}`;
@@ -126,7 +227,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
       id: `rank_${item.rank}`,
       rank: item.rank,
       channelName: item.channel.name,
-      category: item.tags?.[0]?.replace('#', '').toUpperCase() || 'ENTERTAINMENT',
+      category: item.tags?.[0]?.replace('#', '').toLowerCase() === 'general' ? 'GENERAL' : item.tags?.[0]?.replace('#', '').toUpperCase() || 'ENTERTAINMENT',
       subscribers: subscribers,
       yearlyGrowth: 15.0 + Math.random() * 20, // 15-35% 범위로 랜덤
       monthlyGrowth: 2.0 + Math.random() * 8, // 2-10% 범위로 랜덤
@@ -137,7 +238,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
       avgViews: avgViews,
       videosCount: videosCount,
       uploadFrequency: uploadFrequency,
-      country: 'KR', // 기본값 (추후 실제 API에서 국가 정보 연동 가능)
+      country: item.country === 'null' || item.country === null || !item.country ? '기타' : item.country, // snapshots.country 사용, null은 "기타"
       youtubeUrl: youtubeUrl,
       shortsTotalViews: shortsTotalViews,
       longTotalViews: longTotalViews,
@@ -351,9 +452,20 @@ const RankingTable: React.FC<RankingTableProps> = ({
           selectedChannel={convertToChannelData(selectedItem)}
           language={'ko'}
           onClose={handleCloseSidebar}
-          {...dummyProps}
+          {...explorationProps}
         />
       )}
+
+      {/* 환율 모달 컴포넌트 */}
+      <ExplorationExchangeRateModal
+        isOpen={exchangeRateModalOpen}
+        tempExchangeRate={tempExchangeRate}
+        onTempRateChange={setTempExchangeRate}
+        onClose={closeExchangeRateModal}
+        onApply={applyExchangeRate}
+        language={'ko' as Language}
+        currencySymbol="원"
+      />
     </div>
   );
 };
