@@ -85,6 +85,7 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
   cf
 }) => {
   const [isClosing, setIsClosing] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   // 로컬 드롭다운 상태
   const [localDropdownOpen, setLocalDropdownOpen] = useState(false);
@@ -257,6 +258,117 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
         </div>
 
         <div className={styles.sidebarContent}>
+          {/* 첫 번째 블럭: YouTube 비디오 임베드 */}
+          <div className={styles.channelInfo}>
+            <div className={styles.infoItem} style={{ display: 'block', width: '100%' }}>
+              {selectedChannel.videoUrl && (() => {
+                // YouTube URL에서 video ID 추출
+                const getYouTubeVideoId = (url: string) => {
+                  const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/;
+                  const match = url.match(regex);
+                  return match ? match[1] : null;
+                };
+
+                const videoId = getYouTubeVideoId(selectedChannel.videoUrl);
+
+                if (videoId) {
+                  return (
+                    <div style={{
+                      width: '100%',
+                      position: 'relative',
+                      paddingBottom: 'calc(177.78% - 100px)', // 9:16 비율에서 100px 줄임
+                      height: 0,
+                      overflow: 'hidden',
+                      borderRadius: '8px'
+                    }}>
+                      <iframe
+                        src={`https://www.youtube.com/embed/${videoId}`}
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          border: 'none',
+                          borderRadius: '8px'
+                        }}
+                        allowFullScreen
+                        title="YouTube video player"
+                      />
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div style={{
+                      padding: '20px',
+                      textAlign: 'center',
+                      backgroundColor: '#f3f4f6',
+                      borderRadius: '8px',
+                      color: '#666'
+                    }}>
+                      비디오를 불러올 수 없습니다
+                    </div>
+                  );
+                }
+              })()}
+
+              {/* 영상링크 복사하기 버튼 */}
+              {selectedChannel.videoUrl && (
+                <div style={{
+                  marginTop: '12px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedChannel.videoUrl!).then(() => {
+                        setIsCopied(true);
+                        setTimeout(() => setIsCopied(false), 2000); // 2초 후 원래 텍스트로 복원
+                      }).catch(() => {
+                        alert('링크 복사에 실패했습니다.');
+                      });
+                    }}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: isCopied ? '#EBFAF5' : 'rgb(124, 58, 237)',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      color: isCopied ? '#2DAB84' : 'white',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      if (!isCopied) {
+                        e.currentTarget.style.backgroundColor = 'rgb(109, 40, 217)';
+                      }
+                    }}
+                    onMouseOut={(e) => {
+                      if (!isCopied) {
+                        e.currentTarget.style.backgroundColor = 'rgb(124, 58, 237)';
+                      }
+                    }}
+                  >
+                    {isCopied ? '✅ 영상링크 복사완료' : '📋 영상링크 복사하기'}
+                  </button>
+                </div>
+              )}
+
+              {!selectedChannel.videoUrl && (
+                <div style={{
+                  padding: '20px',
+                  textAlign: 'center',
+                  backgroundColor: '#f3f4f6',
+                  borderRadius: '8px',
+                  color: '#666'
+                }}>
+                  선택된 비디오가 없습니다
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className={styles.channelInfo}>
             <div className={styles.infoItem}>
               <span className={styles.label}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.channelName')}</span>

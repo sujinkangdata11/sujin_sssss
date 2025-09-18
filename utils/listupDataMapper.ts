@@ -236,6 +236,7 @@ export function convertListupToRankingData(
         })(), // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
         gupw: snapshot.gupw, // 주당 업로드 수 (실제 API 데이터) - 업로드 빈도
         thumbnail: matchedThumbnail?.url, // 썸네일 이미지 추가
+        videoUrl: matchedThumbnail?.videoUrl, // 비디오 URL 추가 (YouTube 임베드용)
         channel: {
           name: channelName,
           subs: formatSubscriberCount(latestSubCount),
@@ -359,6 +360,7 @@ export function convertListupToRankingData(
                 })(), // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
                 gupw: snapshot.gupw, // 주당 업로드 수 (실제 API 데이터) - 업로드 빈도
                 thumbnail: thumbnail.url, // 영상 썸네일
+                videoUrl: thumbnail.videoUrl, // 비디오 URL 추가 (YouTube 임베드용)
                 channel: {
                   name: channelName,
                   subs: formatSubscriberCount(subscriberCount), // snapshot의 subscriberCount 사용

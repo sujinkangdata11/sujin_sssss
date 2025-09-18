@@ -21,6 +21,7 @@ export interface ChannelData {
   uploadFrequency: number; // videos per week
   country: string;
   youtubeUrl: string;
+  videoUrl?: string; // 선택된 비디오의 YouTube URL (임베드용)
   // 수익 계산용 데이터 (조회수)
   shortsTotalViews: number;  // 숏폼 총 조회수
   longTotalViews: number;    // 롱폼 총 조회수

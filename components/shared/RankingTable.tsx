@@ -14,6 +14,7 @@ export interface RankingData {
   date: string;
   views: string; // 개별 영상 조회수
   thumbnail?: string; // 비디오 썸네일 추가
+  videoUrl?: string; // 비디오 URL 추가 (YouTube 임베드용)
   totalChannelViews?: string; // 채널 총 조회수 (dailyViewsHistory의 최신 totalViews)
   country?: string; // 국가 정보 (snapshots[].country)
   vsvp?: number; // 숏폼 조회수 비율 (snapshots[].vsvp)
@@ -297,6 +298,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
       uploadFrequency: uploadFrequency,
       country: item.country === 'null' || item.country === null || !item.country ? '기타' : item.country, // snapshots.country 사용, null은 "기타"
       youtubeUrl: youtubeUrl,
+      videoUrl: item.videoUrl, // 선택된 비디오의 YouTube URL (임베드용)
       shortsTotalViews: shortsTotalViews,
       longTotalViews: longTotalViews,
       shortsViewsPercentage: shortsViewsPercentage,
