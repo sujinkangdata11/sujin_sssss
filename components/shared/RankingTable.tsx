@@ -4,6 +4,7 @@ import ExplorationExchangeRateModal from './ExplorationExchangeRateModal';
 import { getCountryRpm, getExplorationInitialRpm, getExplorationCountryDisplayName, calculateExplorationRevenue, getChannelFinderRpmByCountry, calculateExplorationMonthlyRevenue } from '../../utils/explorationRpmUtils';
 import { Language } from '../../types';
 import { getChannelFinderTranslation, channelFinderI18n, formatLocalizedNumber } from '../../i18n/channelFinderI18n';
+import countryRpmDefaults from '../../data/countryRpmDefaults.json';
 
 export interface RankingData {
   rank: number;
@@ -52,14 +53,21 @@ const RankingTable: React.FC<RankingTableProps> = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RankingData | null>(null);
 
+  // 📊 채널파인더와 동일한 국가 옵션 생성
+  const countryOptions = Object.keys(countryRpmDefaults).map(country => ({
+    value: country,
+    label: getExplorationCountryDisplayName('ko', country)
+  }));
+
   // 📊 RPM 상태 관리 (채널파인더와 동일한 로직)
   const initialRpm = getExplorationInitialRpm('ko'); // 기본값: 한국
   const [shortsRpm, setShortsRpm] = useState(initialRpm.shorts);
   const [longRpm, setLongRpm] = useState(initialRpm.long);
   const [currentCountry, setCurrentCountry] = useState('South Korea');
 
-  // 💱 환율 상태 관리 (채널파인더에서 완전 복사)
+  // 💱 환율 상태 관리 (채널파인더와 완전 동일)
   const [exchangeRate, setExchangeRate] = useState(1300);
+  const [localExchangeRate, setLocalExchangeRate] = useState(1300);
   const [exchangeRateModalOpen, setExchangeRateModalOpen] = useState(false);
   const [tempExchangeRate, setTempExchangeRate] = useState(1300);
 
@@ -111,7 +119,8 @@ const RankingTable: React.FC<RankingTableProps> = ({
   };
 
   const applyExchangeRate = () => {
-    setExchangeRate(tempExchangeRate);
+    setExchangeRate(tempExchangeRate); // exchangeRate를 업데이트하도록 수정
+    setLocalExchangeRate(tempExchangeRate); // 기존 로직도 유지
     setExchangeRateModalOpen(false);
   };
 
@@ -125,7 +134,34 @@ const RankingTable: React.FC<RankingTableProps> = ({
       const monthUnit = getChannelFinderTranslation(channelFinderI18n, 'ko', 'units.months');
       return `${years}${yearUnit} ${remainingMonths}${monthUnit}`;
     },
-    formatGrowth: (growth: number) => `${growth > 0 ? '+' : ''}${growth}%`,
+    formatGrowth: (growth: number) => {
+      // 채널파인더 방식: 포맷팅 로직 완전 복사
+      const formatGrowthNumber = (num: number): string => {
+        if (num >= 100000000) { // 억 단위
+          const eok = Math.floor(num / 100000000);
+          const man = Math.floor((num % 100000000) / 10000);
+          if (man >= 1000) {
+            const roundedMan = Math.round(man / 1000) * 1000;
+            return `${eok}억 ${roundedMan / 1000}천만`;
+          } else if (man > 0) {
+            return `${eok}억 ${man}만`;
+          } else {
+            return `${eok}억`;
+          }
+        } else if (num >= 10000) { // 만 단위
+          const man = Math.floor(num / 10000);
+          const remainder = num % 10000;
+          if (remainder > 0) {
+            return `${man}만 ${remainder.toLocaleString()}`;
+          } else {
+            return `${man}만`;
+          }
+        } else {
+          return num.toLocaleString();
+        }
+      };
+      return '+' + formatGrowthNumber(growth);
+    },
     getCountryDisplayName: (language: any, country: string) => getExplorationCountryDisplayName(language, country),
     chartData: [],
     growthTooltips: [],
@@ -136,12 +172,18 @@ const RankingTable: React.FC<RankingTableProps> = ({
     longPercentage: selectedItem?.vlvp ?? 25, // 실제 API 데이터 사용 (vlvp), 0도 정상값
     shortsRpm: shortsRpm, // 채널파인더 방식: 국가별 자동 선택된 쇼츠 RPM
     longRpm: longRpm, // 채널파인더 방식: 국가별 자동 선택된 롱폼 RPM
-    exchangeRate: 1300,
+    exchangeRate: exchangeRate,
     currentCountry: currentCountry, // 실제 선택된 국가
     dropdownState: { isOpen: false, type: null },
     openDropdown: () => {},
-    countryOptions: [],
-    onCountrySelect: () => {},
+    countryOptions: countryOptions,
+    onCountrySelect: (country: string) => {
+      setCurrentCountry(country);
+      // 채널파인더와 동일한 방식: 국가 선택 시 RPM 자동 업데이트
+      const newRpm = getChannelFinderRpmByCountry(country);
+      setShortsRpm(newRpm.shorts);
+      setLongRpm(newRpm.long);
+    },
     adjustShortsRpm: (isIncrease: boolean) => {
       setShortsRpm(prev => isIncrease ? Math.min(prev + 0.01, 10) : Math.max(prev - 0.01, 0));
     },

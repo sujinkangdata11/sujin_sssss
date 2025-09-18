@@ -268,9 +268,9 @@ export const calculateExplorationMonthlyRevenue = (
   const rpmValues = EXPLORATION_COUNTRY_RPM_VALUES[countryName] || EXPLORATION_COUNTRY_RPM_VALUES["United States"];
   const { shortsRpm, longRpm } = rpmValues;
 
-  // 3. 조회수 분할 (실제 API 데이터 사용)
-  const vsvp = channel.shortsViewsPercentage || 20;
-  const vlvp = channel.longformViewsPercentage || 80;
+  // 3. 조회수 분할 (실제 API 데이터 사용 - 채널파인더와 동일한 필드명)
+  const vsvp = channel.vsvp || 20;
+  const vlvp = channel.vlvp || 80;
 
   const shortsViews = channel.totalViews * (vsvp / 100);
   const longViews = channel.totalViews * (vlvp / 100);
