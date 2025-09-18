@@ -61,10 +61,11 @@ const RankingTable: React.FC<RankingTableProps> = ({
   }));
 
   // 📊 RPM 상태 관리 (채널파인더와 동일한 로직)
-  const initialRpm = getExplorationInitialRpm('ko'); // 기본값: 한국
+  const initialCountry = 'South Korea';
+  const initialRpm = getChannelFinderRpmByCountry(initialCountry); // 한국 RPM으로 초기화
   const [shortsRpm, setShortsRpm] = useState(initialRpm.shorts);
   const [longRpm, setLongRpm] = useState(initialRpm.long);
-  const [currentCountry, setCurrentCountry] = useState('South Korea');
+  const [currentCountry, setCurrentCountry] = useState(initialCountry);
 
   // 💱 환율 상태 관리 (채널파인더와 완전 동일)
   const [exchangeRate, setExchangeRate] = useState(1300);
@@ -127,7 +128,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
 
   // 🎯 실제 RPM 기반 Props (채널파인더와 동일한 구조)
   const explorationProps = {
-    formatSubscribers: (count: number) => count.toLocaleString(),
+    formatSubscribers: (count: number) => formatLocalizedNumber(count, 'ko', '명'),
     formatOperatingPeriod: (period: number) => {
       const years = Math.floor(period / 12);
       const remainingMonths = period % 12;
@@ -195,7 +196,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
     calculateLocalCurrencyRevenue: () => calculateLocalCurrencyRevenue(selectedItem?.vsvp ?? 75, selectedItem?.vlvp ?? 25, shortsRpm, longRpm),
     openExchangeRateModal: openExchangeRateModal,
     setExchangeRate: setExchangeRate,
-    formatViews: (views: number) => views.toLocaleString(),
+    formatViews: (views: number) => formatLocalizedNumber(views, 'ko', ''),
     formatVideosCount: (count: number) => `${count}개`,
     formatUploadFrequency: (videosPerWeek: number, language: Language) => {
       const weekUnit = getChannelFinderTranslation(channelFinderI18n, 'ko', 'units.perWeek');
@@ -217,7 +218,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
     setIsSidebarOpen(true);
 
     // 📊 채널파인더 방식: 채널 국가에 따라 정확한 RPM 자동 설정
-    const channelCountry = item.country === 'null' || item.country === null || !item.country ? 'United States' : item.country;
+    const channelCountry = item.country === 'null' || item.country === null || !item.country ? '기타' : item.country;
     const channelFinderRpm = getChannelFinderRpmByCountry(channelCountry);
     setShortsRpm(channelFinderRpm.shorts);
     setLongRpm(channelFinderRpm.long);
@@ -413,7 +414,21 @@ const RankingTable: React.FC<RankingTableProps> = ({
             color: '#6b7280',
             textAlign: 'center'
           }}>
-            {item.channel.subs}
+            {(() => {
+              // 구독자수를 한국 숫자 단위로 포맷팅
+              const parseSubscriberCount = (subText: string): number => {
+                const cleanText = subText.replace(/[,]/g, '');
+                if (cleanText.includes('M')) {
+                  return parseFloat(cleanText.replace('M', '')) * 1000000;
+                } else if (cleanText.includes('K')) {
+                  return parseFloat(cleanText.replace('K', '')) * 1000;
+                }
+                return parseInt(cleanText) || 0;
+              };
+
+              const subsCount = parseSubscriberCount(item.channel.subs);
+              return formatLocalizedNumber(subsCount, 'ko', '명');
+            })()}
           </div>
 
           {/* 조회수 */}
@@ -423,7 +438,21 @@ const RankingTable: React.FC<RankingTableProps> = ({
             color: '#ef4444',
             textAlign: 'center'
           }}>
-            {item.views}
+            {(() => {
+              // 조회수를 한국 숫자 단위로 포맷팅
+              const parseViews = (viewsText: string): number => {
+                const cleanText = viewsText.replace(/[+,]/g, '');
+                if (cleanText.includes('M')) {
+                  return parseFloat(cleanText.replace('M', '')) * 1000000;
+                } else if (cleanText.includes('K')) {
+                  return parseFloat(cleanText.replace('K', '')) * 1000;
+                }
+                return parseInt(cleanText) || 0;
+              };
+
+              const viewsCount = parseViews(item.views);
+              return formatLocalizedNumber(viewsCount, 'ko', '회');
+            })()}
           </div>
 
           {/* 제목 */}

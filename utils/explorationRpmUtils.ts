@@ -240,8 +240,8 @@ const EXPLORATION_CURRENCY_EXCHANGE_RATES = {
 
 // 🎯 채널파인더 방식: 채널 국가에 따른 자동 RPM 선택
 export const getChannelFinderRpmByCountry = (country: string): { shorts: number; long: number } => {
-  const countryName = country || 'United States';
-  const rpmValues = EXPLORATION_COUNTRY_RPM_VALUES[countryName] || EXPLORATION_COUNTRY_RPM_VALUES["United States"];
+  const countryName = country || '기타';
+  const rpmValues = EXPLORATION_COUNTRY_RPM_VALUES[countryName] || EXPLORATION_COUNTRY_RPM_VALUES["기타"];
   return {
     shorts: rpmValues.shortsRpm,
     long: rpmValues.longRpm
