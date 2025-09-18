@@ -265,9 +265,50 @@ const Step1: React.FC<Step1Props> = ({
       content: (
         <YouTubeFilter
           onFilterChange={handleFilterChange}
-          channelList={channelData.flatMap(channel =>
-            channel.snapshots?.map(snapshot => snapshot.title).filter(Boolean) || []
-          )}
+          channelList={(() => {
+            // 채널 데이터를 구독자 수 순으로 정렬한 후 채널명 추출
+            const channelsWithSubs = channelData
+              .map(channel => {
+                const snapshot = channel.snapshots?.[0];
+                const title = snapshot?.title || '';
+
+                // 구독자 수 추출 - 디버깅과 함께
+                let subscriberCount = 0;
+
+                console.log(`채널 ${title} 디버깅:`, {
+                  subscriberHistory: channel.subscriberHistory,
+                  snapshotSubscriberCount: snapshot?.subscriberCount,
+                  channelKeys: Object.keys(channel)
+                });
+
+                if (channel.subscriberHistory && channel.subscriberHistory.length > 0) {
+                  // subscriberHistory에서 최신 데이터의 count 사용
+                  console.log(`${title} subscriberHistory:`, channel.subscriberHistory);
+                  const latestSub = channel.subscriberHistory.sort((a, b) => {
+                    // month 기준으로 최신 순 정렬 (2025-09 형태)
+                    return b.month.localeCompare(a.month);
+                  })[0];
+                  console.log(`${title} 최신 구독자 데이터:`, latestSub);
+                  subscriberCount = parseInt(latestSub.count?.toString().replace(/,/g, '') || '0');
+                } else if (snapshot?.subscriberCount) {
+                  // 백업: snapshot의 subscriberCount 사용
+                  console.log(`${title} snapshot subscriberCount 사용:`, snapshot.subscriberCount);
+                  subscriberCount = parseInt(snapshot.subscriberCount.toString().replace(/,/g, '') || '0');
+                } else {
+                  console.log(`${title} 구독자 데이터를 찾을 수 없음`);
+                }
+
+                console.log(`채널: ${title}, 구독자: ${subscriberCount}`);
+
+                return { title, subscriberCount };
+              })
+              .filter(channel => channel.title)
+              .sort((a, b) => b.subscriberCount - a.subscriberCount) // 구독자 수 많은 순
+              .map(channel => channel.title);
+
+            console.log('구독자 순 정렬된 채널 목록:', channelsWithSubs.slice(0, 10));
+            return channelsWithSubs;
+          })()}
           availableDates={availableDates}
         />
       )

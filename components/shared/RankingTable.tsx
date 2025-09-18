@@ -285,7 +285,12 @@ const RankingTable: React.FC<RankingTableProps> = ({
       monthlyGrowth: item.gspm || 0, // gspm 실제 데이터만 사용
       dailyGrowth: item.gspd || 0, // gspd 실제 데이터만 사용
       subscribersPerVideo: subscribersPerVideo,
-      operatingPeriod: Math.round((item.gage || 0) / 30), // gage → 채널 나이(일) → 운영기간(월) 변환 (channelAgeInDays)
+      operatingPeriod: (() => {
+        const gage = item.gage || 0;
+        const months = Math.round(gage / 30); // 채널파인더와 동일: 일 → 월 변환
+        console.log(`채널 ${item.channel.name}: gage=${gage}일, 운영기간=${months}개월`);
+        return months;
+      })(), // gage → 채널 나이(일) → 운영기간(월) 변환 (채널파인더 공식)
       totalViews: totalViews,
       avgViews: avgViews,
       videosCount: videosCount,

@@ -230,7 +230,10 @@ export function convertListupToRankingData(
         gspy: snapshot.gspy, // 년간 구독자 증가수 (실제 API 데이터)
         gspd: snapshot.gspd, // 일일 구독자 증가수 (실제 API 데이터)
         gsub: snapshot.gsub, // 구독 전환율 (실제 API 데이터) - 핵심!
-        gage: snapshot.gage, // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
+        gage: (() => {
+          console.log(`${snapshot.title} snapshot.gage:`, snapshot.gage);
+          return snapshot.gage;
+        })(), // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
         gupw: snapshot.gupw, // 주당 업로드 수 (실제 API 데이터) - 업로드 빈도
         thumbnail: matchedThumbnail?.url, // 썸네일 이미지 추가
         channel: {
@@ -343,6 +346,18 @@ export function convertListupToRankingData(
                 vesv: snapshot.vesv?.toString(), // 숏폼 예상 조회수
                 velv: snapshot.velv?.toString(), // 롱폼 예상 조회수
                 channelId: channel.channelId, // 채널 ID
+                // 📊 ChannelFinder 호환 실제 API 필드들 (20년차 개발자 접근법)
+                gavg: snapshot.gavg, // 평균 조회수 (실제 API 데이터)
+                gvcc: snapshot.videoCount, // 총 영상수 (실제 API 데이터) - JSON의 videoCount 필드 사용
+                gspm: snapshot.gspm, // 월간 구독자 증가수 (실제 API 데이터)
+                gspy: snapshot.gspy, // 년간 구독자 증가수 (실제 API 데이터)
+                gspd: snapshot.gspd, // 일일 구독자 증가수 (실제 API 데이터)
+                gsub: snapshot.gsub, // 구독 전환율 (실제 API 데이터) - 핵심!
+                gage: (() => {
+                  console.log(`[특정채널] ${snapshot.title} snapshot.gage:`, snapshot.gage);
+                  return snapshot.gage;
+                })(), // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
+                gupw: snapshot.gupw, // 주당 업로드 수 (실제 API 데이터) - 업로드 빈도
                 thumbnail: thumbnail.url, // 영상 썸네일
                 channel: {
                   name: channelName,
