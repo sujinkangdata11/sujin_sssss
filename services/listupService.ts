@@ -169,14 +169,47 @@ class ListupService {
   private transformListupDataToChannelFinder(listupChannels: any[]): any[] {
     console.log('🔄 [INFO] Listup 데이터 변환 시작:', listupChannels.length);
 
-    return listupChannels.map((channel, index) => ({
-      channelId: channel.channelId || `listup_${index}`,
-      staticData: channel.staticData || {},
-      snapshots: channel.snapshots || [],
-      recentThumbnailsHistory: channel.recentThumbnailsHistory || [],
-      dailyViewsHistory: channel.dailyViewsHistory || [],
-      subscriberHistory: channel.subscriberHistory || []
-    }));
+    return listupChannels.map((channel, index) => {
+      // snapshots 배열에서 최신 데이터 추출 (보통 첫 번째 항목이 최신)
+      const latestSnapshot = channel.snapshots?.[0] || {};
+
+
+
+      return {
+        channelId: channel.channelId || `listup_${index}`,
+        staticData: channel.staticData || {},
+        snapshots: channel.snapshots || [],
+        recentThumbnailsHistory: channel.recentThumbnailsHistory || [],
+        dailyViewsHistory: channel.dailyViewsHistory || [],
+        subscriberHistory: channel.subscriberHistory || [],
+        // 🎯 ChannelFinder 호환을 위해 최상위 레벨에 주요 필드들 추출
+        rank: index + 1,
+        channel: {
+          name: latestSnapshot.title || latestSnapshot.customUrl || `Channel ${index + 1}`,
+          subs: latestSnapshot.subscriberCount || '0',
+          avatar: latestSnapshot.thumbnailDefault || ''
+        },
+        tags: ['GENERAL'], // 기본 태그
+        date: new Date().toISOString().split('T')[0],
+        views: latestSnapshot.viewCount || '0',
+        country: latestSnapshot.country || '기타',
+        // 🔥 핵심: gage 값을 최상위 레벨로 추출
+        gage: latestSnapshot.gage || 0,
+        // 기타 G그룹 필드들도 추출
+        gavg: latestSnapshot.gavg || 0,
+        gvcc: latestSnapshot.videoCount || 0,
+        gspm: latestSnapshot.gspm || 0,
+        gspy: latestSnapshot.gspy || 0,
+        gspd: latestSnapshot.gspd || 0,
+        gsub: latestSnapshot.gsub || 0,
+        gupw: latestSnapshot.gupw || 0,
+        // V그룹 필드들
+        vsvp: latestSnapshot.vsvp || 75,
+        vlvp: latestSnapshot.vlvp || 25,
+        vesv: latestSnapshot.vesv || '0',
+        velv: latestSnapshot.velv || '0'
+      };
+    });
   }
 
   // 🗑️ 캐시 삭제 (개발/디버깅용)

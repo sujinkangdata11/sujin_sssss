@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ExplorationSidebar from './ExplorationSidebar';
 import ExplorationExchangeRateModal from './ExplorationExchangeRateModal';
-import { getCountryRpm, getExplorationInitialRpm, getExplorationCountryDisplayName, calculateExplorationRevenue } from '../../utils/explorationRpmUtils';
+import { getCountryRpm, getExplorationInitialRpm, getExplorationCountryDisplayName, calculateExplorationRevenue, getChannelFinderRpmByCountry, calculateExplorationMonthlyRevenue } from '../../utils/explorationRpmUtils';
 import { Language } from '../../types';
 import { getChannelFinderTranslation, channelFinderI18n, formatLocalizedNumber } from '../../i18n/channelFinderI18n';
 
@@ -20,6 +20,14 @@ export interface RankingData {
   vesv?: string; // 숏폼 예상 조회수 (snapshots[].vesv)
   velv?: string; // 롱폼 예상 조회수 (snapshots[].velv)
   channelId?: string; // 채널 ID (channelId)
+  // 📊 ChannelFinder 호환 실제 API 필드들
+  gavg?: number;        // 평균 조회수 (averageViewsPerVideo)
+  gvcc?: number;        // 총 영상수 (videosCount)
+  gspm?: number;        // 월간 구독자 증가수 (subsGainedPerMonth)
+  gspy?: number;        // 년간 구독자 증가수 (subsGainedPerYear)
+  gspd?: number;        // 일일 구독자 증가수 (subsGainedPerDay)
+  gsub?: number;        // 구독 전환율 (subscriberConversionRate) - 핵심!
+  gage?: number;        // 채널 나이(일) (channelAgeInDays) - 운영기간 계산용
   channel: {
     name: string;
     subs: string;
@@ -55,54 +63,38 @@ const RankingTable: React.FC<RankingTableProps> = ({
   const [exchangeRateModalOpen, setExchangeRateModalOpen] = useState(false);
   const [tempExchangeRate, setTempExchangeRate] = useState(1300);
 
-  // 💰 수익 계산 함수들 (채널파인더에서 완전 복사)
-  const calculateTotalRevenueValue = () => {
+  // 💰 채널파인더 방식: 비율 상태들 (실시간 조정 가능)
+  const [shortsPercentage, setShortsPercentage] = useState(20);
+  const [longPercentage, setLongPercentage] = useState(80);
+  // 중복 제거 확인용 주석
+
+  // 💰 채널파인더 방식: 수익 계산 함수들 (ExplorationSidebar에서 사용하는 동일한 selectedChannel 데이터 사용)
+  const calculateTotalRevenueValue = (shortsPercentage: number, longPercentage: number, shortsRpm: number, longRpm: number) => {
     if (!selectedItem) return 0;
 
-    // 총 조회수 파싱
-    const parseViews = (viewsText: string): number => {
-      const cleanText = viewsText.replace(/[+,]/g, '');
-      if (cleanText.includes('M')) {
-        return parseFloat(cleanText.replace('M', '')) * 1000000;
-      } else if (cleanText.includes('K')) {
-        return parseFloat(cleanText.replace('K', '')) * 1000;
-      }
-      return parseInt(cleanText) || 1000000;
-    };
+    const selectedChannel = convertToChannelData(selectedItem);
+    if (!selectedChannel) return 0;
 
-    const totalViews = selectedItem.totalChannelViews
-      ? parseViews(selectedItem.totalChannelViews)
-      : parseViews(selectedItem.views) * 100;
+    // ExplorationSidebar와 완전 동일한 계산 (개별 수익의 합)
+    const shortsRevenue = Math.round((selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm);
+    const longRevenue = Math.round((selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm);
 
-    // ShortsViews = TotalViews * 숏폼비율 (vsvp)
-    const shortsViews = totalViews * ((selectedItem.vsvp ?? 75) / 100);
-    // LongViews = TotalViews * 롱폼비율 (vlvp)
-    const longViews = totalViews * ((selectedItem.vlvp ?? 25) / 100);
-
-    // ShortsUSD = (ShortsViews/1000) * 각 나라 숏폼 RPM (환율 적용 X)
-    const shortsRevenueUsd = (shortsViews / 1000) * shortsRpm;
-    // LongUSD = (LongViews/1000) * 각 나라 롱폼 RPM (환율 적용 X)
-    const longRevenueUsd = (longViews / 1000) * longRpm;
-
-    // TotalUSD = ShortsUSD + LongUSD
-    return Math.round(shortsRevenueUsd + longRevenueUsd);
+    return shortsRevenue + longRevenue;
   };
 
-  const calculateTotalRevenue = () => {
+  const calculateTotalRevenue = (shortsPercentage: number, longPercentage: number, shortsRpm: number, longRpm: number) => {
     const dollarText = getChannelFinderTranslation(channelFinderI18n, 'ko', 'currencies.USD') || '달러';
     if (!selectedItem) return formatLocalizedNumber(0, 'ko', dollarText);
 
-    const totalUsd = calculateTotalRevenueValue();
+    const totalUsd = calculateTotalRevenueValue(shortsPercentage, longPercentage, shortsRpm, longRpm);
     return formatLocalizedNumber(totalUsd, 'ko', dollarText);
   };
 
-  const calculateLocalCurrencyRevenue = () => {
+  const calculateLocalCurrencyRevenue = (shortsPercentage: number, longPercentage: number, shortsRpm: number, longRpm: number) => {
     if (!selectedItem) return formatLocalizedNumber(0, 'ko', '원');
 
-    // TotalUSD 값을 가져와서 환율만 곱하기
-    const totalRevenueUsd = calculateTotalRevenueValue(); // USD 숫자값 (환율 적용 X)
-
-    // KRW = TotalUSD * 환율 (환율모달창에서 변경가능)
+    // 채널파인더 방식으로 USD 계산 후 환율 적용
+    const totalRevenueUsd = calculateTotalRevenueValue(shortsPercentage, longPercentage, shortsRpm, longRpm);
     const localTotal = Math.round(totalRevenueUsd * exchangeRate);
 
     return formatLocalizedNumber(localTotal, 'ko', '원');
@@ -126,7 +118,13 @@ const RankingTable: React.FC<RankingTableProps> = ({
   // 🎯 실제 RPM 기반 Props (채널파인더와 동일한 구조)
   const explorationProps = {
     formatSubscribers: (count: number) => count.toLocaleString(),
-    formatOperatingPeriod: (period: number) => `${period}개월`,
+    formatOperatingPeriod: (period: number) => {
+      const years = Math.floor(period / 12);
+      const remainingMonths = period % 12;
+      const yearUnit = getChannelFinderTranslation(channelFinderI18n, 'ko', 'units.years');
+      const monthUnit = getChannelFinderTranslation(channelFinderI18n, 'ko', 'units.months');
+      return `${years}${yearUnit} ${remainingMonths}${monthUnit}`;
+    },
     formatGrowth: (growth: number) => `${growth > 0 ? '+' : ''}${growth}%`,
     getCountryDisplayName: (language: any, country: string) => getExplorationCountryDisplayName(language, country),
     chartData: [],
@@ -136,8 +134,8 @@ const RankingTable: React.FC<RankingTableProps> = ({
     setHoveredStat: () => {},
     shortsPercentage: selectedItem?.vsvp ?? 75, // 실제 API 데이터 사용 (vsvp), 0도 정상값
     longPercentage: selectedItem?.vlvp ?? 25, // 실제 API 데이터 사용 (vlvp), 0도 정상값
-    shortsRpm: shortsRpm, // 실제 국가별 쇼츠 RPM
-    longRpm: longRpm, // 실제 국가별 롱폼 RPM
+    shortsRpm: shortsRpm, // 채널파인더 방식: 국가별 자동 선택된 쇼츠 RPM
+    longRpm: longRpm, // 채널파인더 방식: 국가별 자동 선택된 롱폼 RPM
     exchangeRate: 1300,
     currentCountry: currentCountry, // 실제 선택된 국가
     dropdownState: { isOpen: false, type: null },
@@ -150,13 +148,22 @@ const RankingTable: React.FC<RankingTableProps> = ({
     adjustLongRpm: (isIncrease: boolean) => {
       setLongRpm(prev => isIncrease ? Math.min(prev + 0.1, 50) : Math.max(prev - 0.1, 0));
     },
-    calculateTotalRevenue: calculateTotalRevenue,
-    calculateLocalCurrencyRevenue: calculateLocalCurrencyRevenue,
+    calculateTotalRevenue: () => calculateTotalRevenue(selectedItem?.vsvp ?? 75, selectedItem?.vlvp ?? 25, shortsRpm, longRpm),
+    calculateLocalCurrencyRevenue: () => calculateLocalCurrencyRevenue(selectedItem?.vsvp ?? 75, selectedItem?.vlvp ?? 25, shortsRpm, longRpm),
     openExchangeRateModal: openExchangeRateModal,
     setExchangeRate: setExchangeRate,
     formatViews: (views: number) => views.toLocaleString(),
     formatVideosCount: (count: number) => `${count}개`,
-    formatUploadFrequency: (freq: number) => `주 ${freq}회`,
+    formatUploadFrequency: (videosPerWeek: number, language: Language) => {
+      const weekUnit = getChannelFinderTranslation(channelFinderI18n, 'ko', 'units.perWeek');
+
+      if (videosPerWeek >= 7) {
+        const perDay = Math.round(videosPerWeek / 7);
+        return `하루 ${perDay}개`;
+      } else {
+        return `${videosPerWeek}${weekUnit}`;
+      }
+    },
     currencyExchangeData: {},
     cf: (key: string) => key
   };
@@ -166,11 +173,11 @@ const RankingTable: React.FC<RankingTableProps> = ({
     setSelectedItem(item);
     setIsSidebarOpen(true);
 
-    // 📊 선택된 채널의 국가에 따라 RPM 자동 설정 (채널파인더와 동일한 로직)
-    const channelCountry = item.country === 'null' || item.country === null || !item.country ? '기타' : item.country;
-    const rpm = getCountryRpm(channelCountry);
-    setShortsRpm(rpm.shorts);
-    setLongRpm(rpm.long);
+    // 📊 채널파인더 방식: 채널 국가에 따라 정확한 RPM 자동 설정
+    const channelCountry = item.country === 'null' || item.country === null || !item.country ? 'United States' : item.country;
+    const channelFinderRpm = getChannelFinderRpmByCountry(channelCountry);
+    setShortsRpm(channelFinderRpm.shorts);
+    setLongRpm(channelFinderRpm.long);
     setCurrentCountry(channelCountry);
   };
 
@@ -207,11 +214,12 @@ const RankingTable: React.FC<RankingTableProps> = ({
       ? parseViews(item.totalChannelViews)
       : parseViews(item.views) * 100; // fallback: 개별 영상 조회수 * 100
 
-    // 실제 데이터 기반 추정값 계산
-    const avgViews = Math.floor(totalViews * 0.3); // 총 조회수의 30%를 평균으로 추정
-    const videosCount = Math.floor(subscribers / 5000) || 200; // 구독자 수 기반 영상 수 추정
-    const subscribersPerVideo = Math.floor(subscribers / videosCount);
-    const uploadFrequency = Math.min(3.5, Math.max(0.2, videosCount / 100)); // 주당 업로드 빈도 추정
+    // 📊 ChannelFinder 방식: 실제 API 데이터만 사용 (20년차 개발자 접근법)
+    const avgViews = item.gavg || 0; // gavg 실제 데이터만 사용
+    const videosCount = item.gvcc || 0; // gvcc 실제 데이터만 사용
+    // 📊 ChannelFinder 방식: gsub 필드 사용 (구독 전환율)
+    const subscribersPerVideo = item.gsub || 0;
+    const uploadFrequency = item.gupw || 0; // gupw → 주당 업로드 수 (실제 API 데이터)
 
     // 📊 실제 API 데이터 사용 (vsvp, vlvp) - 채널파인더와 동일한 로직
     const shortsViewsPercentage = item.vsvp !== undefined && item.vsvp !== null ? item.vsvp : 75; // 기본값 75%
@@ -230,11 +238,12 @@ const RankingTable: React.FC<RankingTableProps> = ({
       channelName: item.channel.name,
       category: item.tags?.[0]?.replace('#', '').toLowerCase() === 'general' ? 'GENERAL' : item.tags?.[0]?.replace('#', '').toUpperCase() || 'ENTERTAINMENT',
       subscribers: subscribers,
-      yearlyGrowth: 15.0 + Math.random() * 20, // 15-35% 범위로 랜덤
-      monthlyGrowth: 2.0 + Math.random() * 8, // 2-10% 범위로 랜덤
-      dailyGrowth: 0.1 + Math.random() * 2, // 0.1-2.1% 범위로 랜덤
+      // 📊 ChannelFinder 방식: 실제 API 데이터만 사용 (랜덤값 제거)
+      yearlyGrowth: item.gspy || 0, // gspy 실제 데이터만 사용
+      monthlyGrowth: item.gspm || 0, // gspm 실제 데이터만 사용
+      dailyGrowth: item.gspd || 0, // gspd 실제 데이터만 사용
       subscribersPerVideo: subscribersPerVideo,
-      operatingPeriod: Math.floor(12 + Math.random() * 36), // 12-48개월 랜덤
+      operatingPeriod: Math.round((item.gage || 0) / 30), // gage → 채널 나이(일) → 운영기간(월) 변환 (channelAgeInDays)
       totalViews: totalViews,
       avgViews: avgViews,
       videosCount: videosCount,

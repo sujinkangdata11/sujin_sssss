@@ -185,7 +185,157 @@ export const getExplorationInitialRpm = (language: Language): { shorts: number; 
   return countryRpmDefaults[defaultCountry];
 };
 
-// 💰 수익 계산 함수 (채널파인더에서 복사)
+// 💰 채널파인더 방식 국가별 RPM 데이터 (tableMonthlyRevenue.ts에서 복사)
+const EXPLORATION_COUNTRY_RPM_VALUES = {
+  "United States": { shortsRpm: 0.33, longRpm: 10.81 },
+  "Australia": { shortsRpm: 0.19, longRpm: 11.95 },
+  "Austria": { shortsRpm: 0.14, longRpm: 5.10 },
+  "Belgium": { shortsRpm: 0.15, longRpm: 4.67 },
+  "Brazil": { shortsRpm: 0.04, longRpm: 0.58 },
+  "Canada": { shortsRpm: 0.17, longRpm: 9.62 },
+  "Denmark": { shortsRpm: 0.18, longRpm: 5.29 },
+  "Egypt": { shortsRpm: 0.00, longRpm: 0.11 },
+  "Finland": { shortsRpm: 0.11, longRpm: 3.10 },
+  "France": { shortsRpm: 0.10, longRpm: 1.50 },
+  "Germany": { shortsRpm: 0.16, longRpm: 6.20 },
+  "Hong Kong": { shortsRpm: 0.15, longRpm: 5.21 },
+  "India": { shortsRpm: 0.01, longRpm: 0.46 },
+  "Indonesia": { shortsRpm: 0.01, longRpm: 0.41 },
+  "Ireland": { shortsRpm: 0.18, longRpm: 6.01 },
+  "Israel": { shortsRpm: 0.14, longRpm: 3.87 },
+  "Japan": { shortsRpm: 0.14, longRpm: 2.90 },
+  "Mexico": { shortsRpm: 0.04, longRpm: 0.62 },
+  "Netherlands": { shortsRpm: 0.18, longRpm: 5.86 },
+  "New Zealand": { shortsRpm: 0.11, longRpm: 9.29 },
+  "Norway": { shortsRpm: 0.20, longRpm: 6.66 },
+  "Pakistan": { shortsRpm: 0.00, longRpm: 0.20 },
+  "Philippines": { shortsRpm: 0.02, longRpm: 0.15 },
+  "Portugal": { shortsRpm: 0.10, longRpm: 2.84 },
+  "Singapore": { shortsRpm: 0.18, longRpm: 5.37 },
+  "South Africa": { shortsRpm: 0.07, longRpm: 2.00 },
+  "South Korea": { shortsRpm: 0.18, longRpm: 0.96 },
+  "Spain": { shortsRpm: 0.14, longRpm: 3.91 },
+  "Sweden": { shortsRpm: 0.13, longRpm: 3.67 },
+  "Switzerland": { shortsRpm: 0.20, longRpm: 7.63 },
+  "Taiwan": { shortsRpm: 0.14, longRpm: 0.69 },
+  "Turkey": { shortsRpm: 0.02, longRpm: 0.29 },
+  "United Kingdom": { shortsRpm: 0.17, longRpm: 7.12 },
+  "기타": { shortsRpm: 0.10, longRpm: 1.00 }
+};
+
+// 💰 채널파인더 방식 환율 데이터 (tableMonthlyRevenue.ts에서 복사)
+const EXPLORATION_CURRENCY_EXCHANGE_RATES = {
+  en: { rate: 1, symbol: '$', name: 'USD' },
+  ko: { rate: 1300, symbol: '원', name: 'KRW' },
+  ja: { rate: 150, symbol: '円', name: 'JPY' },
+  zh: { rate: 7.2, symbol: '元', name: 'CNY' },
+  hi: { rate: 83, symbol: '₹', name: 'INR' },
+  es: { rate: 0.92, symbol: '€', name: 'EUR' },
+  fr: { rate: 0.92, symbol: '€', name: 'EUR' },
+  de: { rate: 0.92, symbol: '€', name: 'EUR' },
+  nl: { rate: 0.92, symbol: '€', name: 'EUR' },
+  pt: { rate: 5.1, symbol: 'R$', name: 'BRL' },
+  ru: { rate: 95, symbol: '₽', name: 'RUB' }
+};
+
+// 🎯 채널파인더 방식: 채널 국가에 따른 자동 RPM 선택
+export const getChannelFinderRpmByCountry = (country: string): { shorts: number; long: number } => {
+  const countryName = country || 'United States';
+  const rpmValues = EXPLORATION_COUNTRY_RPM_VALUES[countryName] || EXPLORATION_COUNTRY_RPM_VALUES["United States"];
+  return {
+    shorts: rpmValues.shortsRpm,
+    long: rpmValues.longRpm
+  };
+};
+
+// 💰 채널파인더 방식: 월 수익 계산 (tableMonthlyRevenue.ts 로직 복사)
+export const calculateExplorationMonthlyRevenue = (
+  channel: any,
+  language: string = 'ko'
+): { usd: number; local: string; localAmount: number } => {
+  // 1. 기본값 체크
+  if (!channel.operatingPeriod || channel.operatingPeriod <= 0) {
+    const currencyInfo = EXPLORATION_CURRENCY_EXCHANGE_RATES[language] || EXPLORATION_CURRENCY_EXCHANGE_RATES['en'];
+    return {
+      usd: 0,
+      local: language === 'en' ? '$0' : `0${currencyInfo.symbol}`,
+      localAmount: 0
+    };
+  }
+
+  // 2. 채널 국가에 따른 RPM 자동 선택 (채널파인더와 동일)
+  const countryName = channel.country || 'United States';
+  const rpmValues = EXPLORATION_COUNTRY_RPM_VALUES[countryName] || EXPLORATION_COUNTRY_RPM_VALUES["United States"];
+  const { shortsRpm, longRpm } = rpmValues;
+
+  // 3. 조회수 분할 (실제 API 데이터 사용)
+  const vsvp = channel.shortsViewsPercentage || 20;
+  const vlvp = channel.longformViewsPercentage || 80;
+
+  const shortsViews = channel.totalViews * (vsvp / 100);
+  const longViews = channel.totalViews * (vlvp / 100);
+
+  // 4. USD 수익 계산 (채널파인더와 동일)
+  const shortsRevenueUSD = (shortsViews / 1000) * shortsRpm;
+  const longRevenueUSD = (longViews / 1000) * longRpm;
+  const totalRevenueUSD = shortsRevenueUSD + longRevenueUSD;
+
+  // 5. 월평균 수익 계산
+  const monthlyRevenueUSD = totalRevenueUSD / channel.operatingPeriod;
+
+  // 6. 현지 통화 변환
+  const currencyInfo = EXPLORATION_CURRENCY_EXCHANGE_RATES[language] || EXPLORATION_CURRENCY_EXCHANGE_RATES['en'];
+  const monthlyRevenueLocal = monthlyRevenueUSD * currencyInfo.rate;
+  const amount = Math.round(monthlyRevenueLocal);
+
+  // 7. 언어별 포맷팅 (채널파인더 동일 로직)
+  let formattedLocal = '';
+
+  if (language === 'en') {
+    if (amount >= 1000000000) {
+      formattedLocal = `$${(amount / 1000000000).toFixed(1)}B`;
+    } else if (amount >= 1000000) {
+      formattedLocal = `$${(amount / 1000000).toFixed(1)}M`;
+    } else if (amount >= 1000) {
+      formattedLocal = `$${(amount / 1000).toFixed(1)}K`;
+    } else {
+      formattedLocal = `$${amount.toLocaleString()}`;
+    }
+  } else if (language === 'ko') {
+    if (amount >= 100000000) {
+      const eok = Math.floor(amount / 100000000);
+      const remainder = amount % 100000000;
+      const man = Math.floor(remainder / 10000);
+      formattedLocal = man > 0 ? `${eok}억 ${man}만원` : `${eok}억원`;
+    } else if (amount >= 10000) {
+      const man = Math.floor(amount / 10000);
+      const remainder = amount % 10000;
+      formattedLocal = remainder > 0 ? `${man}만 ${remainder.toLocaleString()}원` : `${man}만원`;
+    } else {
+      formattedLocal = `${amount.toLocaleString()}원`;
+    }
+  } else {
+    // 기타 언어는 M, B 포맷
+    const symbol = currencyInfo.symbol;
+    if (amount >= 1000000000) {
+      formattedLocal = `${(amount / 1000000000).toFixed(1)}B${symbol}`;
+    } else if (amount >= 1000000) {
+      formattedLocal = `${(amount / 1000000).toFixed(1)}M${symbol}`;
+    } else if (amount >= 1000) {
+      formattedLocal = `${(amount / 1000).toFixed(1)}K${symbol}`;
+    } else {
+      formattedLocal = `${amount.toLocaleString()}${symbol}`;
+    }
+  }
+
+  return {
+    usd: Math.round(monthlyRevenueUSD),
+    local: formattedLocal,
+    localAmount: amount
+  };
+};
+
+// 💰 기존 함수 (하위 호환성)
 export const calculateExplorationRevenue = (
   totalViews: number,
   shortsPercentage: number,
@@ -196,9 +346,7 @@ export const calculateExplorationRevenue = (
   const shortsViews = totalViews * (shortsPercentage / 100);
   const longViews = totalViews * (longPercentage / 100);
 
-  // ShortsUSD = (ShortsViews/1000) * 각 나라 숏폼 RPM (환율 적용 X)
   const shortsRevenueUsd = (shortsViews / 1000) * shortsRpm;
-  // LongUSD = (LongViews/1000) * 각 나라 롱폼 RPM (환율 적용 X)
   const longRevenueUsd = (longViews / 1000) * longRpm;
 
   return {

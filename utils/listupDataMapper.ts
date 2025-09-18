@@ -21,6 +21,17 @@ export interface ListupChannelData {
     country?: string;
     topicCategories?: string[];
     thumbnailDefault?: string;
+    // 📊 ChannelFinder 호환 필드들 (실제 API 데이터)
+    gavg?: number;        // 평균 조회수 (averageViewsPerVideo)
+    gvcc?: number;        // 총 영상수 (videosCount)
+    gspm?: number;        // 월간 구독자 증가수 (subsGainedPerMonth)
+    gspy?: number;        // 년간 구독자 증가수 (subsGainedPerYear)
+    gspd?: number;        // 일일 구독자 증가수 (subsGainedPerDay)
+    gsub?: number;        // 구독 전환율 (subscriberConversionRate) - 핵심!
+    vsvp?: number;        // 숏폼 조회수 비율
+    vlvp?: number;        // 롱폼 조회수 비율
+    vesv?: number;        // 숏폼 예상 조회수
+    velv?: number;        // 롱폼 예상 조회수
   }>;
   recentThumbnailsHistory?: Array<{
     date: string;
@@ -212,6 +223,15 @@ export function convertListupToRankingData(
         vesv: snapshot.vesv?.toString(), // 숏폼 예상 조회수
         velv: snapshot.velv?.toString(), // 롱폼 예상 조회수
         channelId: channel.channelId, // 채널 ID
+        // 📊 ChannelFinder 호환 실제 API 필드들 (20년차 개발자 접근법)
+        gavg: snapshot.gavg, // 평균 조회수 (실제 API 데이터)
+        gvcc: snapshot.videoCount, // 총 영상수 (실제 API 데이터) - JSON의 videoCount 필드 사용
+        gspm: snapshot.gspm, // 월간 구독자 증가수 (실제 API 데이터)
+        gspy: snapshot.gspy, // 년간 구독자 증가수 (실제 API 데이터)
+        gspd: snapshot.gspd, // 일일 구독자 증가수 (실제 API 데이터)
+        gsub: snapshot.gsub, // 구독 전환율 (실제 API 데이터) - 핵심!
+        gage: snapshot.gage, // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
+        gupw: snapshot.gupw, // 주당 업로드 수 (실제 API 데이터) - 업로드 빈도
         thumbnail: matchedThumbnail?.url, // 썸네일 이미지 추가
         channel: {
           name: channelName,

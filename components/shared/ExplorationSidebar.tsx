@@ -5,6 +5,7 @@ import { Language } from '../../types';
 import { ChannelData } from '../ChannelFinder/types';
 import { getChannelFinderTranslation, channelFinderI18n } from '../../i18n/channelFinderI18n';
 import { formatRevenue, calculateViewsPerSubscriber, calculateSubscriptionRate, formatLocalizedNumber } from '../ChannelFinder/utils';
+import { calculateExplorationMonthlyRevenue } from '../../utils/explorationRpmUtils';
 import countryRpmDefaults from '../../data/countryRpmDefaults.json';
 import styles from '../../styles/ChannelFinder.module.css';
 
@@ -122,19 +123,13 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
     }
   };
 
-  // 💰 USD 기준 월 수익 계산 함수 (환율 적용 X)
+  // 💰 채널파인더 방식: USD 기준 월 수익 계산
   const calculateMonthlyRevenue = () => {
+    const revenueResult = calculateExplorationMonthlyRevenue(selectedChannel, 'en');
     const dollarText = getChannelFinderTranslation(channelFinderI18n, language, 'currencies.USD') || '달러';
-    if (!selectedChannel.operatingPeriod || selectedChannel.operatingPeriod <= 0) return '$0';
 
-    // ShortsUSD + LongUSD (환율 적용 X)
-    const totalRevenueUSD = (selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm +
-                           (selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm;
-    const monthlyRevenueUSD = totalRevenueUSD / selectedChannel.operatingPeriod;
-
-    // 각 언어에 맞는 숫자 표기로 표시
-    const amount = Math.round(monthlyRevenueUSD);
-    return formatLocalizedNumber(amount, language, dollarText);
+    if (revenueResult.usd === 0) return '$0';
+    return formatLocalizedNumber(revenueResult.usd, language, dollarText);
   };
 
   // 🌍 다국가 환율 설정 - 모든 나라가 exchangeRate 상태값 사용
@@ -151,20 +146,17 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
     ru: { rate: exchangeRate, symbol: '₽', label: '← Эта сумма в рублях' }         // 러시아루블
   };
 
-  // 🇰🇷 한국 원화 월 수익 계산 함수 (기존 유지)
+  // 🇰🇷 채널파인더 방식: 한국 원화 월 수익 계산 (사용자 환율 적용)
   const calculateMonthlyRevenueKRW = () => {
-    if (!selectedChannel.operatingPeriod || selectedChannel.operatingPeriod <= 0) return '0원';
+    // 채널파인더 방식으로 USD 계산 후 사용자 설정 환율 적용
+    const usdRevenueResult = calculateExplorationMonthlyRevenue(selectedChannel, 'en');
+    if (usdRevenueResult.usd === 0) return '0원';
 
-    // USD 월 수익 계산 (환율 적용 X)
-    const totalRevenueUSD = (selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm +
-                           (selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm;
-    const monthlyRevenueUSD = totalRevenueUSD / selectedChannel.operatingPeriod;
-
-    // 마지막에만 환율 곱하기: KRW = USD * 환율
-    const monthlyRevenueKRW = monthlyRevenueUSD * exchangeRate;
-
-    // 한국 원화 포맷팅 (억, 만원 단위)
+    // 사용자가 설정한 환율 적용 (기존 기능 유지)
+    const monthlyRevenueKRW = usdRevenueResult.usd * exchangeRate;
     const amount = Math.round(monthlyRevenueKRW);
+
+    // 한국 원화 포맷팅 (채널파인더와 동일)
     if (amount >= 100000000) {
       const eok = Math.floor(amount / 100000000);
       const remainder = amount % 100000000;
@@ -187,19 +179,17 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
     }
   };
 
-  // 🌍 범용 현지 통화 월 수익 계산 함수
+  // 🌍 채널파인더 방식: 범용 현지 통화 월 수익 계산 (사용자 환율 적용)
   const calculateMonthlyRevenueLocal = (currentLanguage: Language) => {
-    if (!selectedChannel.operatingPeriod || selectedChannel.operatingPeriod <= 0) return '0';
     if (!EXCHANGE_RATES[currentLanguage]) return '0'; // 지원하지 않는 언어
 
-    // USD 월 수익 계산 (환율 적용 X)
-    const totalRevenueUSD = (selectedChannel.totalViews * (shortsPercentage / 100) / 1000) * shortsRpm +
-                           (selectedChannel.totalViews * (longPercentage / 100) / 1000) * longRpm;
-    const monthlyRevenueUSD = totalRevenueUSD / selectedChannel.operatingPeriod;
+    // 채널파인더 방식으로 USD 계산 후 사용자 설정 환율 적용
+    const usdRevenueResult = calculateExplorationMonthlyRevenue(selectedChannel, 'en');
+    if (usdRevenueResult.usd === 0) return '0';
 
-    // 마지막에만 각 국가 환율 곱하기
+    // 사용자가 설정한 환율 적용 (기존 기능 유지)
     const exchangeConfig = EXCHANGE_RATES[currentLanguage];
-    const monthlyRevenueLocal = monthlyRevenueUSD * exchangeConfig.rate;
+    const monthlyRevenueLocal = usdRevenueResult.usd * exchangeConfig.rate;
     const amount = Math.round(monthlyRevenueLocal);
 
     // formatLocalizedNumber 사용해서 각 언어에 맞게 포맷팅
@@ -454,7 +444,7 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
 
               <div className={styles.totalRevenueCard}>
                 <div className={styles.totalRevenueLabel}>{getChannelFinderTranslation(channelFinderI18n, language, 'sidebar.totalRevenue')}</div>
-                <div className={styles.totalRevenueValue}>{calculateTotalRevenue()}</div>
+                <div className={styles.totalRevenueValue}>{calculateTotalRevenue(shortsPercentage, longPercentage, shortsRpm, longRpm)}</div>
               </div>
 
               {language !== 'en' && (
