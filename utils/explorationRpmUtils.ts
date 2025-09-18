@@ -240,11 +240,70 @@ const EXPLORATION_CURRENCY_EXCHANGE_RATES = {
 
 // 🎯 채널파인더 방식: 채널 국가에 따른 자동 RPM 선택
 export const getChannelFinderRpmByCountry = (country: string): { shorts: number; long: number } => {
-  const countryName = country || '기타';
-  const rpmValues = EXPLORATION_COUNTRY_RPM_VALUES[countryName] || EXPLORATION_COUNTRY_RPM_VALUES["기타"];
+  let countryName = country || '기타';
+
+  // 국가 코드를 국가명으로 변환하는 매핑 (기존 getCountryRpm과 동일)
+  const countryCodeMap: { [key: string]: string } = {
+    'US': 'United States',
+    'KR': 'South Korea',
+    'JP': 'Japan',
+    'CN': 'China',
+    'GB': 'United Kingdom',
+    'CA': 'Canada',
+    'AU': 'Australia',
+    'DE': 'Germany',
+    'FR': 'France',
+    'BR': 'Brazil',
+    'IN': 'India',
+    'AT': 'Austria',
+    'BE': 'Belgium',
+    'DK': 'Denmark',
+    'EG': 'Egypt',
+    'FI': 'Finland',
+    'HK': 'Hong Kong',
+    'ID': 'Indonesia',
+    'IE': 'Ireland',
+    'IL': 'Israel',
+    'MX': 'Mexico',
+    'NL': 'Netherlands',
+    'NZ': 'New Zealand',
+    'NO': 'Norway',
+    'PK': 'Pakistan',
+    'PH': 'Philippines',
+    'PT': 'Portugal',
+    'SG': 'Singapore',
+    'ZA': 'South Africa',
+    'ES': 'Spain',
+    'SE': 'Sweden',
+    'CH': 'Switzerland',
+    'TW': 'Taiwan',
+    'TR': 'Turkey',
+    'AR': 'Argentina'
+  };
+
+  // 국가 코드인 경우 국가명으로 변환
+  if (countryCodeMap[countryName]) {
+    countryName = countryCodeMap[countryName];
+  }
+
+  console.log('🔍 RPM 함수 호출됨:', {
+    입력된국가: country,
+    변환된국가명: countryName,
+    사용가능한국가목록: Object.keys(countryRpmDefaults)
+  });
+
+  // countryRpmDefaults.json 사용 (채널파인더와 동일한 데이터)
+  const rpmData = countryRpmDefaults[countryName] || countryRpmDefaults["기타"];
+
+  console.log('🎯 선택된 RPM 데이터:', {
+    국가: countryName,
+    쇼츠RPM: rpmData.shorts,
+    롱폼RPM: rpmData.long
+  });
+
   return {
-    shorts: rpmValues.shortsRpm,
-    long: rpmValues.longRpm
+    shorts: rpmData.shorts,
+    long: rpmData.long
   };
 };
 
