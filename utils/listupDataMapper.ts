@@ -155,6 +155,12 @@ export function convertListupToRankingData(
   }
 
   try {
+    // 🎯 새 데이터 구조 진단 (첫 3개 채널)
+    console.log('🔍 새 데이터 구조 확인:', {
+      첫번째채널: listupChannels[0],
+      recentThumbnailsHistory: listupChannels[0]?.recentThumbnailsHistory?.slice(0, 2),
+      선택된날짜: normalizedFilters.date
+    });
 
     // 1. 기본 데이터 변환 (null 값 필터링)
     const rankingData: RankingData[] = listupChannels.map((channel, index) => {

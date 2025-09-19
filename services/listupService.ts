@@ -75,8 +75,11 @@ class ListupService {
         };
       }
 
-      // 2. API 호출 (292개 데이터 확보를 위해 limit 조정)
-      const response = await fetch(`${this.baseUrl}/api/channels?limit=500`, {
+      // 2. API 호출 (600개 데이터 확보를 위해 limit 조정)
+      const apiUrl = `${this.baseUrl}/api/channels?limit=600`;
+      console.log('🚀 [DEBUG] API 호출 시작 - URL:', apiUrl);
+
+      const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -84,13 +87,21 @@ class ListupService {
         }
       });
 
+      console.log('📡 [DEBUG] API 응답 상태:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       const result = await response.json();
+      console.log('📥 [DEBUG] API JSON 파싱 완료 - 원본 데이터 타입:', typeof result);
 
-      console.log('🔍 [DEBUG] Listup API 전체 응답:', result);
+      console.log('🔍 [DEBUG] Listup API 전체 응답 키들:', Object.keys(result));
       console.log('🔍 [DEBUG] Listup API 응답 구조:', {
         hasData: !!result.data,
         hasChannels: !!result.channels,
@@ -102,6 +113,18 @@ class ListupService {
         firstItemKeys: result.data?.[0] ? Object.keys(result.data[0]) : [],
         firstChannelKeys: result.channels?.[0] ? Object.keys(result.channels[0]) : []
       });
+
+      // 🎯 첫 번째 채널의 recentThumbnailsHistory 구조 자세히 확인
+      if (result.data && result.data[0]) {
+        const firstChannel = result.data[0];
+        console.log('🎯 [DEBUG] 첫 번째 채널 전체 구조:', firstChannel);
+        console.log('🎯 [DEBUG] 첫 번째 채널 recentThumbnailsHistory:', {
+          exists: !!firstChannel.recentThumbnailsHistory,
+          isArray: Array.isArray(firstChannel.recentThumbnailsHistory),
+          length: firstChannel.recentThumbnailsHistory?.length || 0,
+          content: firstChannel.recentThumbnailsHistory
+        });
+      }
 
       // API 응답이 data 속성에 채널 배열을 가지고 있는지 확인
       const isSuccess = result.data && Array.isArray(result.data);
@@ -173,7 +196,15 @@ class ListupService {
       // snapshots 배열에서 최신 데이터 추출 (보통 첫 번째 항목이 최신)
       const latestSnapshot = channel.snapshots?.[0] || {};
 
-
+      // 🎯 첫 3개 채널의 원본 구조 확인
+      if (index < 3) {
+        console.log(`🔍 원본 채널 ${index + 1} 구조:`, {
+          channelId: channel.channelId,
+          hasRecentThumbnails: !!channel.recentThumbnailsHistory,
+          thumbnailsLength: channel.recentThumbnailsHistory?.length || 0,
+          channelKeys: Object.keys(channel)
+        });
+      }
 
       return {
         channelId: channel.channelId || `listup_${index}`,
