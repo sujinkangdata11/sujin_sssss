@@ -89,7 +89,7 @@ export const explorationTranslations = {
     es: 'Canal', fr: 'Chaîne', de: 'Kanal', nl: 'Kanaal', pt: 'Canal', ru: 'Канал'
   },
   rankingSubscribers: {
-    en: 'Subscribers', ko: '구독자수', ja: '登録者数', zh: '订阅者数', hi: 'सब्सक्राइबर संख्या',
+    en: 'Subscribers', ko: '구독자', ja: '登録者数', zh: '订阅者数', hi: 'सब्सक्राइबर संख्या',
     es: 'Suscriptores', fr: 'Abonnés', de: 'Abonnenten', nl: 'Abonnees', pt: 'Inscritos', ru: 'Подписчики'
   },
   rankingViews: {

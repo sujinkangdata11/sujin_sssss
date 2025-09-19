@@ -172,22 +172,16 @@ const Step1: React.FC<Step1Props> = ({
 
   // 실제 채널 데이터 로드
   const loadChannelData = async () => {
-    console.log('🚀 [DEBUG] 채널 데이터 로드 시작...');
     setIsLoading(true);
     try {
-      console.log('🚀 [DEBUG] listupService.getExplorationData() 호출...');
       const response = await listupService.getExplorationData();
-      console.log('🚀 [DEBUG] API 응답:', response);
 
       if (response.success) {
         setChannelData(response.data);
-        console.log('✅ 채널 데이터 로드 성공:', response.data.length + '개 데이터 연동');
-        console.log('📊 [DEBUG] 첫 번째 채널 데이터:', response.data[0]);
 
         // 사용 가능한 날짜들 추출
         const dates = extractAvailableDates(response.data);
         setAvailableDates(dates);
-        console.log('📅 [DEBUG] 사용 가능한 날짜들:', dates);
 
         // 초기 필터로 랭킹 데이터 생성 (기본 필터 값 사용) - 🌍 번역 키 기반
         const initialFilter: FilterState = {
@@ -200,15 +194,12 @@ const Step1: React.FC<Step1Props> = ({
         };
         updateRankingData(response.data, initialFilter);
       } else {
-        console.error('❌ 채널 데이터 로드 실패:', response.message);
-        console.log('🔄 [DEBUG] 더미 데이터로 폴백');
+        setChannelData([]);
       }
     } catch (error) {
-      console.error('❌ 채널 데이터 로드 오류:', error);
-      console.log('🔄 [DEBUG] 더미 데이터로 폴백');
+      setChannelData([]);
     } finally {
       setIsLoading(false);
-      console.log('🚀 [DEBUG] 로딩 완료, isLoading:', false);
     }
   };
 
@@ -229,17 +220,11 @@ const Step1: React.FC<Step1Props> = ({
 
     const newRankingData = convertListupToRankingData(data, filterState, availableChannels);
     setRankingData(newRankingData);
-    console.log('🔄 쇼츠메이커 랭킹 데이터 업데이트:', newRankingData.length + '개 데이터 연동');
-    console.log('🔍 [DEBUG] 변환된 데이터 예시:', newRankingData.slice(0, 1));
   };
 
   // 필터 변경 핸들러 (useCallback으로 메모이제이션)
   const handleFilterChange = useCallback((newFilters: FilterState) => {
     setFilters(newFilters);
-    console.log('필터 변경됨:', {
-      선택된날짜: newFilters.selectedDate,
-      필터: newFilters
-    });
 
     // 실제 데이터가 있으면 필터 적용
     if (channelData.length > 0) {
@@ -280,33 +265,20 @@ const Step1: React.FC<Step1Props> = ({
                 const snapshot = channel.snapshots?.[0];
                 const title = snapshot?.title || '';
 
-                // 구독자 수 추출 - 디버깅과 함께
+                // 구독자 수 추출
                 let subscriberCount = 0;
-
-                console.log(`채널 ${title} 디버깅:`, {
-                  subscriberHistory: channel.subscriberHistory,
-                  snapshotSubscriberCount: snapshot?.subscriberCount,
-                  channelKeys: Object.keys(channel)
-                });
 
                 if (channel.subscriberHistory && channel.subscriberHistory.length > 0) {
                   // subscriberHistory에서 최신 데이터의 count 사용
-                  console.log(`${title} subscriberHistory:`, channel.subscriberHistory);
                   const latestSub = channel.subscriberHistory.sort((a, b) => {
                     // month 기준으로 최신 순 정렬 (2025-09 형태)
                     return b.month.localeCompare(a.month);
                   })[0];
-                  console.log(`${title} 최신 구독자 데이터:`, latestSub);
                   subscriberCount = parseInt(latestSub.count?.toString().replace(/,/g, '') || '0');
                 } else if (snapshot?.subscriberCount) {
                   // 백업: snapshot의 subscriberCount 사용
-                  console.log(`${title} snapshot subscriberCount 사용:`, snapshot.subscriberCount);
                   subscriberCount = parseInt(snapshot.subscriberCount.toString().replace(/,/g, '') || '0');
-                } else {
-                  console.log(`${title} 구독자 데이터를 찾을 수 없음`);
                 }
-
-                console.log(`채널: ${title}, 구독자: ${subscriberCount}`);
 
                 return { title, subscriberCount };
               })
@@ -314,7 +286,6 @@ const Step1: React.FC<Step1Props> = ({
               .sort((a, b) => b.subscriberCount - a.subscriberCount) // 구독자 수 많은 순
               .map(channel => channel.title);
 
-            console.log('구독자 순 정렬된 채널 목록:', channelsWithSubs.slice(0, 10));
             return channelsWithSubs;
           })()}
           availableDates={availableDates}

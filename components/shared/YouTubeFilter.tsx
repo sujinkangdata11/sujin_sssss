@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { getCountryDisplayList, getCountryCodeByDisplayName } from '../../utils/listupCountry';
 import { Language } from '../../types';
 import { useExplorationTranslation, explorationTranslations } from '../../i18n/explorationI18n';
@@ -76,19 +76,34 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
     }
   }, [selectedPeriod]);
 
-  // 필터 변경 시 부모 컴포넌트에 알림 (번역된 값으로 전달)
+  // 번역된 값들을 메모이제이션 (언어가 변경될 때만 재계산)
+  const translatedValues = useMemo(() => ({
+    filterAll: et('filterAll'),
+    filterViews: et('filterViews'),
+    filterSubscribers: et('filterSubscribers'),
+    filterWorldwide: et('filterWorldwide'),
+    // 기간별 번역도 미리 계산
+    filterDaily: et('filterDaily'),
+    filterWeekly: et('filterWeekly'),
+    filterMonthly: et('filterMonthly'),
+    filterYearly: et('filterYearly')
+  }), [language]);
+
+  // 필터 변경 시 부모 컴포넌트에 알림 (et 함수 의존성 완전 제거)
   useEffect(() => {
     if (onFilterChange) {
+      const periodTranslation = translatedValues[selectedPeriod as keyof typeof translatedValues] || translatedValues.filterMonthly;
+
       onFilterChange({
-        selectedCategory: selectedCategory === 'filterAll' ? et('filterAll') : selectedCategory,
-        selectedCriteria: selectedCriteria === 'filterViews' ? et('filterViews') : et('filterSubscribers'),
-        selectedCountry: selectedCountry === 'filterWorldwide' ? et('filterWorldwide') : selectedCountry,
-        selectedPeriod: et(selectedPeriod as keyof typeof explorationTranslations),
+        selectedCategory: selectedCategory === 'filterAll' ? translatedValues.filterAll : selectedCategory,
+        selectedCriteria: selectedCriteria === 'filterViews' ? translatedValues.filterViews : translatedValues.filterSubscribers,
+        selectedCountry: selectedCountry === 'filterWorldwide' ? translatedValues.filterWorldwide : selectedCountry,
+        selectedPeriod: periodTranslation,
         selectedDate,
-        selectedChannel: selectedChannel === 'filterAll' ? et('filterAll') : selectedChannel
+        selectedChannel: selectedChannel === 'filterAll' ? translatedValues.filterAll : selectedChannel
       });
     }
-  }, [selectedCategory, selectedCriteria, selectedCountry, selectedPeriod, selectedDate, selectedChannel, onFilterChange, et]);
+  }, [selectedCategory, selectedCriteria, selectedCountry, selectedPeriod, selectedDate, selectedChannel, onFilterChange, translatedValues]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

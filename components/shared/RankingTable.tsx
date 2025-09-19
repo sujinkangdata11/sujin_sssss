@@ -333,7 +333,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
       }}>
         <div></div>
         <div style={{ textAlign: 'center', marginLeft: '-20px' }}>채널</div>
-        <div style={{ textAlign: 'center', marginLeft: '-30px' }}>구독자수</div>
+        <div style={{ textAlign: 'center', marginLeft: '-30px' }}>구독자</div>
         <div style={{ textAlign: 'center', marginLeft: '-30px' }}>조회수</div>
         <div style={{ textAlign: 'center', marginLeft: '-30px' }}>제목</div>
       </div>
@@ -407,7 +407,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
             </div>
           </div>
 
-          {/* 구독자수 */}
+          {/* 구독자 */}
           <div style={{
             fontSize: '15px',
             fontWeight: '500',
@@ -415,7 +415,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
             textAlign: 'center'
           }}>
             {(() => {
-              // 구독자수를 한국 숫자 단위로 포맷팅
+              // 구독자를 한국 숫자 단위로 포맷팅
               const parseSubscriberCount = (subText: string): number => {
                 const cleanText = subText.replace(/[,]/g, '');
                 if (cleanText.includes('M')) {

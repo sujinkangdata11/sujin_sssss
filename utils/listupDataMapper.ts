@@ -64,7 +64,7 @@ export interface ShortsFilterState {
 function normalizeToKorean(filters: ShortsFilterState): ShortsFilterState {
   const normalizedFilters = { ...filters };
 
-  // 1. 카테고리 정규화 (explorationI18n.ts filterAll 완전 반영)
+  // 1. 카테고리 정규화
   if (filters.category.includes('All') || filters.category.includes('すべて') ||
       filters.category.includes('全部') || filters.category.includes('सभी') ||
       filters.category.includes('Todos') || filters.category.includes('Tous') ||
@@ -72,7 +72,7 @@ function normalizeToKorean(filters: ShortsFilterState): ShortsFilterState {
     normalizedFilters.category = '전체';
   }
 
-  // 2. 기준 정규화 (explorationI18n.ts filterViews & filterSubscribers 완전 반영)
+  // 2. 기준 정규화
   if (filters.criteria.includes('Views') || filters.criteria.includes('再生回数') ||
       filters.criteria.includes('观看次数') || filters.criteria.includes('दृश्य') ||
       filters.criteria.includes('Vistas') || filters.criteria.includes('Vues') ||
@@ -87,7 +87,7 @@ function normalizeToKorean(filters: ShortsFilterState): ShortsFilterState {
     normalizedFilters.criteria = '구독자';
   }
 
-  // 3. 국가 정규화 (explorationI18n.ts filterWorldwide 완전 반영)
+  // 3. 국가 정규화
   if (filters.country.includes('Worldwide') || filters.country.includes('世界中') ||
       filters.country.includes('全球') || filters.country.includes('विश्वव्यापी') ||
       filters.country.includes('Mundial') || filters.country.includes('Mondial') ||
@@ -96,7 +96,7 @@ function normalizeToKorean(filters: ShortsFilterState): ShortsFilterState {
     normalizedFilters.country = '🌍 전세계';
   }
 
-  // 4. 기간 정규화 (explorationI18n.ts 기간 번역들 완전 반영)
+  // 4. 기간 정규화
   if (filters.period.includes('Monthly') || filters.period.includes('月間') ||
       filters.period.includes('月度') || filters.period.includes('मासिक') ||
       filters.period.includes('Mensual') || filters.period.includes('Mensuel') ||
@@ -123,13 +123,19 @@ function normalizeToKorean(filters: ShortsFilterState): ShortsFilterState {
     normalizedFilters.period = '연간';
   }
 
-  // 5. 채널 정규화 (explorationI18n.ts filterAll 완전 반영)
+  // 5. 채널 정규화
   if (filters.channel && (filters.channel.includes('All') || filters.channel.includes('すべて') ||
       filters.channel.includes('全部') || filters.channel.includes('सभी') ||
       filters.channel.includes('Todos') || filters.channel.includes('Tous') ||
       filters.channel.includes('Alle') || filters.channel.includes('Все'))) {
     normalizedFilters.channel = '전체';
   }
+
+  // 🎯 구독자 디버깅을 위한 임시 로깅
+  console.log('🌍 [Translation Bridge]:', {
+    original: filters,
+    normalized: normalizedFilters
+  });
 
   return normalizedFilters;
 }
@@ -143,29 +149,12 @@ export function convertListupToRankingData(
   // 🌍 Translation Bridge 적용 - 모든 번역된 값을 한국어로 변환
   const normalizedFilters = normalizeToKorean(filters);
 
-  console.log('🎬 [DEBUG] 쇼츠메이커 데이터 변환 시작:', {
-    '입력데이터수': listupChannels.length,
-    '원본필터': filters,
-    '정규화필터': normalizedFilters,
-    '사용가능채널수': availableChannels.length
-  });
-
   if (!listupChannels || listupChannels.length === 0) {
     console.warn('⚠️ [WARNING] 변환할 데이터가 없습니다.');
     return [];
   }
 
   try {
-    // 📅 날짜 매칭 디버깅 시작
-    console.log('🔍 [DEBUG] 실제 filters 객체:', normalizedFilters);
-    console.log('🔍 [DEBUG] filters.selectedDate:', normalizedFilters.selectedDate);
-    console.log('🔍 [DEBUG] filters의 모든 키:', Object.keys(normalizedFilters));
-
-    console.log('📅 [DEBUG] 날짜 매칭 시작:', {
-      선택한기간: normalizedFilters.period,
-      선택한날짜: normalizedFilters.date || '없음',
-      전체채널수: listupChannels.length
-    });
 
     // 1. 기본 데이터 변환 (null 값 필터링)
     const rankingData: RankingData[] = listupChannels.map((channel, index) => {
@@ -223,6 +212,7 @@ export function convertListupToRankingData(
           }
         }
 
+
         // 매칭된 썸네일이 없으면 null 반환
         if (candidateThumbnails.length === 0) {
           return null;
@@ -252,15 +242,6 @@ export function convertListupToRankingData(
 
       const matchedThumbnail = getFilteredThumbnail();
 
-      // 디버깅: 처음 5개 채널의 매칭 상황 확인
-      if (index < 5) {
-        console.log(`📊 [DEBUG] 채널 ${index + 1} 매칭 상황:`, {
-          채널명: staticData.title || snapshot.title || 'Unknown',
-          타겟날짜: normalizedFilters.date || '없음',
-          매칭결과: matchedThumbnail ? matchedThumbnail.date : '매칭없음',
-          전체날짜들: channel.recentThumbnailsHistory?.slice(0, 3).map(t => t.date) || []
-        });
-      }
 
       // 매칭되는 썸네일이 없으면 이 채널은 제외
       if (!matchedThumbnail) {
@@ -308,37 +289,22 @@ export function convertListupToRankingData(
         gspy: snapshot.gspy, // 년간 구독자 증가수 (실제 API 데이터)
         gspd: snapshot.gspd, // 일일 구독자 증가수 (실제 API 데이터)
         gsub: snapshot.gsub, // 구독 전환율 (실제 API 데이터) - 핵심!
-        gage: (() => {
-          console.log(`${snapshot.title} snapshot.gage:`, snapshot.gage);
-          return snapshot.gage;
-        })(), // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
+        gage: snapshot.gage, // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
         gupw: snapshot.gupw, // 주당 업로드 수 (실제 API 데이터) - 업로드 빈도
         thumbnail: matchedThumbnail?.url, // 썸네일 이미지 추가
         videoUrl: matchedThumbnail?.videoUrl, // 비디오 URL 추가 (YouTube 임베드용)
         channel: {
           name: channelName,
           subs: formatSubscriberCount(latestSubCount),
+          subsRaw: latestSubCount, // 🎯 정렬용 원본 숫자값 추가
           avatar: snapshot.thumbnailDefault || staticData.thumbnailDefault || getChannelAvatar(staticData.title || snapshot.title || '')
         }
       };
     }).filter(Boolean); // null 값 제거
 
-    // 📊 매칭 결과 요약 + 고조회수 데이터 확인
+    // 📊 간단한 매칭 결과만
     const nullCount = listupChannels.length - rankingData.length;
-    console.log('📊 [DEBUG] 매칭 결과 요약:', {
-      전체채널: listupChannels.length + '개',
-      매칭성공: rankingData.length + '개',
-      매칭실패: nullCount + '개',
-      성공률: Math.round((rankingData.length / listupChannels.length) * 100) + '%'
-    });
-
-    // 🔥 고조회수 영상 TOP 10 확인 (정렬 전)
-    const topViews = rankingData
-      .map(item => ({ title: item.title.substring(0, 30), views: item.views, parsed: parseViews(item.views) }))
-      .sort((a, b) => b.parsed - a.parsed)
-      .slice(0, 10);
-
-    console.log('🔥 [DEBUG] 고조회수 TOP 10 (정렬 전 확인):', topViews);
+    console.log(`📊 데이터 매칭: ${rankingData.length}/${listupChannels.length} (${Math.round((rankingData.length / listupChannels.length) * 100)}%)`);
 
     // 2. 필터 적용
     let filteredData = rankingData;
@@ -349,12 +315,6 @@ export function convertListupToRankingData(
       const matchedChannels = listupChannels.filter(channel => {
         const channelTitle = channel.staticData?.title || channel.snapshots?.[0]?.title || '';
         return channelTitle === filters.channel;
-      });
-
-      console.log('📺 [DEBUG] 매칭된 채널 데이터:', {
-        검색채널명: filters.channel,
-        매칭된채널수: matchedChannels.length,
-        매칭된채널들: matchedChannels.map(ch => ch.staticData?.title || ch.snapshots?.[0]?.title)
       });
 
       if (matchedChannels.length > 0) {
@@ -432,16 +392,14 @@ export function convertListupToRankingData(
                 gspy: snapshot.gspy, // 년간 구독자 증가수 (실제 API 데이터)
                 gspd: snapshot.gspd, // 일일 구독자 증가수 (실제 API 데이터)
                 gsub: snapshot.gsub, // 구독 전환율 (실제 API 데이터) - 핵심!
-                gage: (() => {
-                  console.log(`[특정채널] ${snapshot.title} snapshot.gage:`, snapshot.gage);
-                  return snapshot.gage;
-                })(), // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
+                gage: snapshot.gage, // 채널 나이(일) (실제 API 데이터) - 운영기간 계산용
                 gupw: snapshot.gupw, // 주당 업로드 수 (실제 API 데이터) - 업로드 빈도
                 thumbnail: thumbnail.url, // 영상 썸네일
                 videoUrl: thumbnail.videoUrl, // 비디오 URL 추가 (YouTube 임베드용)
                 channel: {
                   name: channelName,
                   subs: formatSubscriberCount(subscriberCount), // snapshot의 subscriberCount 사용
+                  subsRaw: subscriberCount, // 🎯 정렬용 원본 숫자값 추가
                   avatar: snapshot.thumbnailDefault || staticData.thumbnailDefault || getChannelAvatar(staticData.title || snapshot.title || '') // 채널 프로필 이미지 (동일)
                 }
               });
@@ -449,9 +407,7 @@ export function convertListupToRankingData(
           }
         });
 
-        console.log('📺 [SUCCESS] 채널 필터링 완료:', filters.channel, '결과:', filteredData.length + '개');
       } else {
-        console.warn('📺 [WARNING] 매칭되는 채널을 찾을 수 없습니다:', filters.channel);
         filteredData = [];
       }
     }
@@ -466,17 +422,8 @@ export function convertListupToRankingData(
     }
 
     // 국가 필터
-    console.log('🌍 [DEBUG] 국가 필터 체크:', {
-      '정규화국가값': normalizedFilters.country,
-      '원본데이터수': filteredData.length
-    });
-
     if (normalizedFilters.country !== '🌍 전세계') {
       const targetCountryCode = getCountryCodeByDisplayName(normalizedFilters.country);
-      console.log('🌍 [DEBUG] 국가 필터 적용:', {
-        정규화국가: normalizedFilters.country,
-        타겟국가코드: targetCountryCode
-      });
 
       if (targetCountryCode) {
         filteredData = filteredData.filter(item => {
@@ -492,37 +439,41 @@ export function convertListupToRankingData(
           return normalizedCountry === targetCountryCode;
         });
 
-        console.log('🌍 [INFO] 국가 필터링 완료:', {
-          국가코드: targetCountryCode,
-          필터후결과: filteredData.length + '개'
-        });
       }
     }
 
     // 3. 정렬 - 🌍 Translation Bridge로 간단해짐!
+    console.log('🔍 정렬 기준 확인:', normalizedFilters.criteria);
+
     if (normalizedFilters.criteria === '조회수') {
       filteredData.sort((a, b) => {
         const aViews = parseViews(a.views);
         const bViews = parseViews(b.views);
         return bViews - aViews;
       });
-    } else if (normalizedFilters.criteria === '구독자수') {
+    } else if (normalizedFilters.criteria === '구독자') {
+      console.log('🎯 구독자 정렬 시작');
       filteredData.sort((a, b) => {
-        const aSubCount = parseSubscribers(a.channel.subs);
-        const bSubCount = parseSubscribers(b.channel.subs);
+        // 🎯 원본 숫자값으로 정렬 (포맷팅 손실 없음)
+        const aSubCount = a.channel.subsRaw || parseSubscribers(a.channel.subs);
+        const bSubCount = b.channel.subsRaw || parseSubscribers(b.channel.subs);
         return bSubCount - aSubCount;
       });
+
+      // 🔍 상위 5개 구독자 정렬 결과 확인
+      console.log('🔍 구독자 정렬 TOP 5:', filteredData.slice(0, 5).map(item => ({
+        채널명: item.channel.name,
+        구독자포맷: item.channel.subs,
+        구독자원본: item.channel.subsRaw,
+        파싱값: parseSubscribers(item.channel.subs)
+      })));
     }
 
-    console.log('✅ [SUCCESS] 쇼츠메이커 데이터 변환 완료:', {
-      '원본': listupChannels.length,
-      '필터후': filteredData.length
-    });
-
+    console.log(`✅ 최종 결과: ${filteredData.length}개 데이터`);
     return filteredData;
 
   } catch (error) {
-    console.error('❌ [ERROR] 쇼츠메이커 데이터 변환 실패:', error);
+    console.error('❌ [ERROR] 데이터 변환 실패:', error);
     return [];
   }
 }

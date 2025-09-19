@@ -286,20 +286,8 @@ export const getChannelFinderRpmByCountry = (country: string): { shorts: number;
     countryName = countryCodeMap[countryName];
   }
 
-  console.log('🔍 RPM 함수 호출됨:', {
-    입력된국가: country,
-    변환된국가명: countryName,
-    사용가능한국가목록: Object.keys(countryRpmDefaults)
-  });
-
   // countryRpmDefaults.json 사용 (채널파인더와 동일한 데이터)
   const rpmData = countryRpmDefaults[countryName] || countryRpmDefaults["기타"];
-
-  console.log('🎯 선택된 RPM 데이터:', {
-    국가: countryName,
-    쇼츠RPM: rpmData.shorts,
-    롱폼RPM: rpmData.long
-  });
 
   return {
     shorts: rpmData.shorts,
