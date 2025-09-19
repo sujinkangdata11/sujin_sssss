@@ -111,12 +111,12 @@ const Step7: React.FC<Step7Props> = ({
           <div style={{
             marginTop: '10px',
             marginBottom: '15px',
-            minHeight: '120px',
             padding: '15px',
             background: extractedKeywords ? '#f8f9fa' : '#fafafa',
             border: '1px solid #dee2e6',
             borderRadius: '12px',
-            color: '#333'
+            color: '#333',
+            width: '400px'
           }}>
             <h4 style={{ 
               marginBottom: '10px', 

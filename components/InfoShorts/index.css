@@ -55,7 +55,6 @@ main {
   padding-bottom: 100px !important;
   background: var(--background) !important;
   color: var(--text) !important;
-  min-height: 200vh !important;
   height: auto !important;
   max-height: none !important;
   display: block !important;
@@ -201,21 +200,18 @@ main {
 
 .button-column-step4 {
   width: 800px !important;
-  min-height: 200vh !important;
   height: auto !important;
   max-height: none !important;
   overflow: visible !important;
   background: var(--highlight) !important;
   border-radius: 20px !important;
   padding: 20px !important;
-  min-height: 350px !important;
 }
 
 .button-column-step5 {
   flex: 0 0 600px !important;
   min-width: 600px !important;
   max-width: 600px !important;
-  min-height: 200vh !important;
   height: auto !important;
   max-height: none !important;
   overflow: visible !important;
@@ -229,14 +225,12 @@ main {
   flex: 0 0 600px !important;
   min-width: 600px !important;
   max-width: 600px !important;
-  min-height: 200vh !important;
   height: auto !important;
   max-height: none !important;
   overflow: visible !important;
   background: var(--highlight) !important;
   border-radius: 20px !important;
   padding: 20px !important;
-  min-height: 350px !important;
 }
 
 /* Step별 아웃풋 박스 클래스 */

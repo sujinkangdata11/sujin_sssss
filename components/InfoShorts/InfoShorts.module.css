@@ -4,7 +4,7 @@
   width: 100%;
   padding: 20px;
   height: fit-content !important;
-  min-height: fit-content;
+  min-height: 200vh !important;
   background: var(--background, #ffffff);
   color: var(--text, #1A1C1E);
   overflow-x: hidden;
@@ -171,7 +171,6 @@
 
 .textarea {
   width: 100%;
-  min-height: 120px;
   padding: 12px;
   border: 2px solid var(--border);
   border-radius: 8px;

@@ -222,7 +222,7 @@ const Step2: React.FC<Step2Props> = ({
             <iframe
               width="560"
               height="315"
-              src="https://www.youtube.com/embed/JmQe-AIYh3w?si=VGrKb044BE-6CG1a&autoplay=1&mute=1"
+              src="https://www.youtube.com/embed/JmQe-AIYh3w?si=VGrKb044BE-6CG1a&autoplay=1&mute=1&loop=1"
               title="API 키 사용방법 안내"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

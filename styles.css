@@ -373,7 +373,6 @@ html, body {
   max-width: 1200px;
   margin: -20px auto 0;
   padding: var(--spacing-4);
-  min-height: 200vh !important;
   height: auto !important;
   max-height: none !important;
   overflow: visible !important;
