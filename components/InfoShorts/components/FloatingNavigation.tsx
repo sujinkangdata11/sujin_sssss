@@ -93,7 +93,10 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
     }}>
       {/* Previous Button */}
       <button
-        onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
+        onClick={() => {
+          setCurrentStep(Math.max(1, currentStep - 1));
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         disabled={currentStep === 1}
         style={{
           padding: '8px 16px',
@@ -136,7 +139,10 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
         {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
           <div
             key={step}
-            onClick={() => setCurrentStep(step)}
+            onClick={() => {
+              setCurrentStep(step);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             style={{
               cursor: 'pointer',
               display: 'flex',
@@ -173,7 +179,9 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
       <button
         onClick={() => {
           setCurrentStep(Math.min(totalSteps, currentStep + 1));
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 10);
         }}
         disabled={currentStep === totalSteps}
         style={{
