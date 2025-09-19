@@ -22,6 +22,11 @@ export interface ChannelData {
   country: string;
   youtubeUrl: string;
   videoUrl?: string; // 선택된 비디오의 YouTube URL (임베드용)
+  // YouTube 채널 ID (하트 아이콘 매칭용)
+  channelId?: string; // YouTube 채널 ID (UC로 시작하는 24자리)
+  customUrl?: string; // YouTube 커스텀 URL (@username 형태)
+  // 추가 채널 정보
+  thumbnailUrl?: string; // 채널 썸네일 URL
   // 수익 계산용 데이터 (조회수)
   shortsTotalViews: number;  // 숏폼 총 조회수
   longTotalViews: number;    // 롱폼 총 조회수

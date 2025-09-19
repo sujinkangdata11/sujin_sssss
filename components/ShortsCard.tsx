@@ -2,18 +2,396 @@
 import React from 'react';
 import { YouTubeShort, Language } from '../types';
 import { calculateRpmRate } from '../utils/rpmCalculator';
+import { useChannelFinder } from '../contexts/ChannelFinderContext';
+import HeartIcon from './HeartIcon';
+import ChannelSidebar from './ChannelFinder/components/ChannelSidebar';
+import { ChannelData } from './ChannelFinder/types';
+import { getChannelFinderTranslation, channelFinderI18n } from '../i18n/channelFinderI18n';
+import { formatRevenue, formatLocalizedNumber, calculateViewsPerSubscriber, calculateSubscriptionRate } from './ChannelFinder/utils';
+import countryRpmDefaults from '../data/countryRpmDefaults.json';
+import currencyExchangeData from '../data/currencyExchangeData.json';
+import DropdownOptions from './DropdownOptions';
+import styles from '../styles/ChannelFinder.module.css';
 
 interface ShortsCardProps {
   short: YouTubeShort;
   language: Language;
   index?: number;
+  selectedChannelForSidebar?: string | null;
+  onChannelSelect?: (channelId: string) => void;
+  onSidebarClose?: () => void;
 }
 
-const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
+const ShortsCard: React.FC<ShortsCardProps> = ({
+  short,
+  language,
+  index,
+  selectedChannelForSidebar,
+  onChannelSelect,
+  onSidebarClose
+}) => {
   const [showAllTags, setShowAllTags] = React.useState(false);
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [isCopied, setIsCopied] = React.useState(false);
   const [showTooltip, setShowTooltip] = React.useState(false);
+  const [isHeartHovered, setIsHeartHovered] = React.useState(false);
+
+  // ChannelSidebar를 위한 상태들 (채널파인더에서 복사)
+  const [hoveredStat, setHoveredStat] = React.useState<string | null>(null);
+  const [hoveredPoint, setHoveredPoint] = React.useState<number | null>(null);
+  const [currentCountry, setCurrentCountry] = React.useState(() => {
+    return language === 'ko' ? 'South Korea' : '기타';
+  });
+  const [shortsRpm, setShortsRpm] = React.useState(() => {
+    const defaultCountry = language === 'ko' ? 'South Korea' : '기타';
+    return countryRpmDefaults[defaultCountry].shorts;
+  });
+  const [longRpm, setLongRpm] = React.useState(() => {
+    const defaultCountry = language === 'ko' ? 'South Korea' : '기타';
+    return countryRpmDefaults[defaultCountry].long;
+  });
+
+  // ChannelFinder에서 채널 매칭 확인
+  const { isChannelInFinder, channelData } = useChannelFinder();
+  const showHeart = React.useMemo(() => {
+    return short.channelId ? isChannelInFinder(short.channelId) : false;
+  }, [short.channelId, isChannelInFinder]);
+
+  // 매칭되는 채널 데이터 찾기
+  const matchedChannel = React.useMemo(() => {
+    if (!short.channelId || !showHeart) return null;
+
+    return channelData.find(channel =>
+      channel.channelId === short.channelId || channel.id === short.channelId
+    ) || null;
+  }, [short.channelId, showHeart, channelData]);
+
+  // 채널파인더와 동일한 로직: 선택된 채널의 국가에 따라 RPM 설정
+  React.useEffect(() => {
+    if (matchedChannel) {
+      const channelCountry = matchedChannel.country;
+      const defaultRpm = countryRpmDefaults[channelCountry as keyof typeof countryRpmDefaults];
+      if (defaultRpm) {
+        setCurrentCountry(channelCountry);
+        setShortsRpm(defaultRpm.shorts);
+        setLongRpm(defaultRpm.long);
+      } else {
+        // 해당 국가의 데이터가 없거나 국가 설정이 없는 채널은 "기타" 사용
+        setCurrentCountry('기타');
+        setShortsRpm(countryRpmDefaults['기타'].shorts);
+        setLongRpm(countryRpmDefaults['기타'].long);
+      }
+    }
+  }, [matchedChannel]);
+
+  const [exchangeRate, setExchangeRate] = React.useState(() => {
+    // 채널파인더와 정확히 동일한 기본 환율
+    const defaultRates = {
+      ko: 1300,  // 한국원
+      ja: 150,   // 일본엔
+      zh: 7.2,   // 중국위안
+      hi: 83,    // 인도루피
+      es: 0.92,  // 스페인유로
+      fr: 0.92,  // 프랑스유로
+      de: 0.92,  // 독일유로
+      nl: 0.92,  // 네덜란드유로
+      pt: 5.1,   // 브라질헤알
+      ru: 95,    // 러시아루블
+      en: 1      // 미국달러 (기준)
+    };
+    return defaultRates[language] || 1;
+  });
+
+  // 환율 모달 상태 (채널파인더와 동일)
+  const [exchangeRateModalOpen, setExchangeRateModalOpen] = React.useState(false);
+  const [tempExchangeRate, setTempExchangeRate] = React.useState(() => {
+    const defaultRates = {
+      ko: 1300, ja: 150, zh: 7.2, hi: 83, es: 0.92,
+      fr: 0.92, de: 0.92, nl: 0.92, pt: 5.1, ru: 95, en: 1
+    };
+    return defaultRates[language] || 1;
+  });
+  const [dropdownState, setDropdownState] = React.useState<{
+    isOpen: boolean;
+    type: 'main' | 'sidebar' | null;
+    position: { x: number; y: number } | null;
+  }>({
+    isOpen: false,
+    type: null,
+    position: null
+  });
+
+  // 채널파인더와 동일한 로직: 실제 채널 데이터의 비율 사용
+  const shortsPercentage = matchedChannel?.shortsViewsPercentage !== undefined && matchedChannel?.shortsViewsPercentage !== null ? matchedChannel.shortsViewsPercentage : 20;
+  const longPercentage = matchedChannel?.longformViewsPercentage !== undefined && matchedChannel?.longformViewsPercentage !== null ? matchedChannel.longformViewsPercentage : 80;
+
+  // ChannelSidebar에 필요한 헬퍼 함수들
+  const formatSubscribers = (count: number): string => {
+    return formatLocalizedNumber(count, language, '');
+  };
+
+  const formatOperatingPeriod = (period: number): string => {
+    const months = Math.round(period);
+    if (months >= 12) {
+      const years = Math.floor(months / 12);
+      const remainingMonths = months % 12;
+      if (language === 'ko') {
+        return remainingMonths === 0 ? `${years}년` : `${years}년 ${remainingMonths}개월`;
+      }
+      return remainingMonths === 0 ? `${years}y` : `${years}y ${remainingMonths}mo`;
+    }
+    return language === 'ko' ? `${months}개월` : `${months}mo`;
+  };
+
+  // 채널파인더와 동일한 formatGrowth 로직
+  const formatGrowthNumber = (num: number): string => {
+    // 5자리까지만 표시하면서 적절한 단위 사용
+    if (language === 'ko') {
+      // 한국어: 만, 억 단위로 5자리 제한
+      if (num >= 100000000) { // 억 단위
+        const eok = Math.floor(num / 100000000);
+        const man = Math.floor((num % 100000000) / 10000);
+        if (man >= 1000) {
+          // 만의 자리가 4자리면 천 단위로 반올림
+          const roundedMan = Math.round(man / 1000) * 1000;
+          return `${eok}억 ${roundedMan / 1000}천만`;
+        } else if (man > 0) {
+          return `${eok}억 ${man}만`;
+        }
+        return `${eok}억`;
+      } else if (num >= 10000) { // 만 단위
+        const man = Math.floor(num / 10000);
+        const remainder = num % 10000;
+        if (remainder >= 1000) {
+          // 천 단위로 표시
+          const thousand = Math.round(remainder / 1000);
+          return `${man}만 ${thousand}천`;
+        } else if (remainder > 0) {
+          // 나머지가 있으면 반올림해서 천 단위로
+          const rounded = Math.round(remainder / 100) * 100;
+          if (rounded >= 1000) {
+            return `${man}만 1천`;
+          } else if (rounded > 0) {
+            return `${man}만 ${Math.round(rounded / 100)}백`;
+          }
+        }
+        return `${man}만`;
+      }
+      return num.toLocaleString();
+    } else {
+      // 영어: K, M, B 단위로 5자리 제한
+      return formatLocalizedNumber(num, language, '');
+    }
+  };
+
+  const formatGrowth = (num: number): string => {
+    return '+' + formatGrowthNumber(num);
+  };
+
+  const getCountryDisplayName = (lang: Language, country: string): string => {
+    const countryNames: Record<string, Record<Language, string>> = {
+      'South Korea': { en: 'South Korea', ko: '한국', ja: '韓国', zh: '韩国', hi: 'दक्षिण कोरिया', es: 'Corea del Sur', fr: 'Corée du Sud', de: 'Südkorea', nl: 'Zuid-Korea', pt: 'Coreia do Sul', ru: 'Южная Корея' },
+      '기타': { en: 'Other', ko: '기타', ja: 'その他', zh: '其他', hi: 'अन्य', es: 'Otros', fr: 'Autres', de: 'Andere', nl: 'Andere', pt: 'Outros', ru: 'Другие' }
+    };
+    return countryNames[country]?.[lang] || country;
+  };
+
+  // 국가 옵션 리스트 (채널파인더와 동일)
+  const countryOptions = React.useMemo(() => {
+    return Object.keys(countryRpmDefaults).map(country => ({
+      value: country,
+      label: getCountryDisplayName(language, country)
+    }));
+  }, [language]);
+
+  // RPM 조절 함수들
+  const adjustShortsRpm = (isIncrease: boolean) => {
+    setShortsRpm(prev => isIncrease ? prev + 0.01 : Math.max(0.01, prev - 0.01));
+  };
+
+  const adjustLongRpm = (isIncrease: boolean) => {
+    setLongRpm(prev => isIncrease ? prev + 0.01 : Math.max(0.01, prev - 0.01));
+  };
+
+  // 수익 계산 함수들 (채널파인더와 완전히 동일한 로직)
+  const calculateTotalRevenueValue = () => {
+    if (!matchedChannel) return 0;
+
+    // ShortsViews = TotalViews * 숏폼비율 (vsvp)
+    const shortsViews = matchedChannel.totalViews * (shortsPercentage / 100);
+    // LongViews = TotalViews * 롱폼비율 (vlvp)
+    const longViews = matchedChannel.totalViews * (longPercentage / 100);
+
+    // ShortsUSD = (ShortsViews/1000) * 각 나라 숏폼 RPM (환율 적용 X)
+    const shortsRevenueUsd = (shortsViews / 1000) * shortsRpm;
+    // LongUSD = (LongViews/1000) * 각 나라 롱폼 RPM (환율 적용 X)
+    const longRevenueUsd = (longViews / 1000) * longRpm;
+
+    // TotalUSD = ShortsUSD + LongUSD
+    const totalUSD = Math.round(shortsRevenueUsd + longRevenueUsd);
+
+    return totalUSD;
+  };
+
+  const calculateTotalRevenue = (): string => {
+    const dollarText = getChannelFinderTranslation(channelFinderI18n, language, 'currencies.USD') || '달러';
+    if (!matchedChannel) return formatLocalizedNumber(0, language, dollarText);
+
+    const totalUsd = calculateTotalRevenueValue();
+
+    return formatLocalizedNumber(totalUsd, language, dollarText);
+  };
+
+  const calculateLocalCurrencyRevenue = (): string => {
+    if (!matchedChannel) return formatRevenue(0);
+
+    // TotalUSD 값을 가져와서 환율만 곱하기
+    const totalRevenueUsd = calculateTotalRevenueValue(); // USD 숫자값 (환율 적용 X)
+
+    // KRW = TotalUSD * 각나라 환율 (환율모달창에서 변경가능)
+    const localTotal = Math.round(totalRevenueUsd * exchangeRate);
+
+    // 🌍 모든 11개 언어가 환율 반영된 localTotal 사용
+    if (language === 'ko') {
+      return formatLocalizedNumber(localTotal, language, '원'); // 한국원
+    } else if (language === 'ja') {
+      return formatLocalizedNumber(localTotal, language, '円'); // 일본엔
+    } else if (language === 'zh') {
+      return formatLocalizedNumber(localTotal, language, '元'); // 중국위안
+    } else if (language === 'hi') {
+      return formatLocalizedNumber(localTotal, language, '₹'); // 인도루피
+    } else if (language === 'es' || language === 'fr' || language === 'de' || language === 'nl') {
+      return formatLocalizedNumber(localTotal, language, '€'); // 유로
+    } else if (language === 'pt') {
+      return formatLocalizedNumber(localTotal, language, 'R$'); // 브라질헤알
+    } else if (language === 'ru') {
+      return formatLocalizedNumber(localTotal, language, '₽'); // 러시아루블
+    } else {
+      return formatLocalizedNumber(localTotal, language, '$'); // 기본 USD
+    }
+  };
+
+  // 드롭다운 관련 함수들
+  const openDropdown = (type: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDropdownState({
+      isOpen: true,
+      type: type as 'main' | 'sidebar',
+      position: { x: e.clientX, y: e.clientY }
+    });
+  };
+
+  const onCountrySelect = (value: string) => {
+    // 채널파인더와 동일한 로직
+    const newCountry = value as keyof typeof countryRpmDefaults;
+    setCurrentCountry(newCountry);
+    const rpm = countryRpmDefaults[newCountry];
+    setShortsRpm(rpm.shorts);
+    setLongRpm(rpm.long);
+
+    // 선택된 국가의 환율로 변경
+    const exchangeData = currencyExchangeData[newCountry as keyof typeof currencyExchangeData];
+    if (exchangeData) {
+      setExchangeRate(exchangeData.rate);
+      console.log('🔍 [DEBUG] 국가 RPM 변경으로 환율 업데이트:', {
+        country: newCountry,
+        newRate: exchangeData.rate,
+        shortsRpm: rpm.shorts,
+        longRpm: rpm.long
+      });
+    }
+
+    setDropdownState({ isOpen: false, type: null, position: null });
+  };
+
+  // 환율 모달 관련 함수들 (채널파인더와 동일)
+  const openExchangeRateModal = () => {
+    setTempExchangeRate(exchangeRate);
+    setExchangeRateModalOpen(true);
+  };
+
+  const closeExchangeRateModal = () => {
+    setExchangeRateModalOpen(false);
+  };
+
+  const applyExchangeRate = () => {
+    setExchangeRate(tempExchangeRate);
+    setExchangeRateModalOpen(false);
+  };
+
+  // 통화 심볼 매핑 (채널파인더와 동일)
+  const currencySettings = {
+    ko: { symbol: '원' },
+    ja: { symbol: '円' },
+    zh: { symbol: '元' },
+    hi: { symbol: '₹' },
+    es: { symbol: '€' },
+    fr: { symbol: '€' },
+    de: { symbol: '€' },
+    nl: { symbol: '€' },
+    pt: { symbol: 'R$' },
+    ru: { symbol: '₽' },
+    en: { symbol: '$' }
+  };
+
+  // 뷰/비디오 포맷팅 함수들
+  const formatViews = (views: number): string => {
+    return formatLocalizedNumber(views, language, '');
+  };
+
+  const formatVideosCount = (count: number): string => {
+    return formatLocalizedNumber(count, language, '');
+  };
+
+  const formatUploadFrequency = (frequency: number, lang?: Language): string => {
+    const currentLang = lang || language;
+    if (frequency >= 7) {
+      const perDay = Math.round(frequency / 7);
+      return currentLang === 'ko' ? `하루 ${perDay}개` : `${perDay} daily`;
+    }
+    const weekUnit = currentLang === 'ko' ? '주' : '/week';
+    return `${frequency}${weekUnit}`;
+  };
+
+  // 차트 데이터 (빈 배열로 시작)
+  const chartData: Array<{ x: number; y: number; value: string; month: string }> = [];
+  const growthTooltips: Array<{ message: string[] }> = [];
+
+  // cf 번역 함수
+  const cf = (key: string) => {
+    return getChannelFinderTranslation(channelFinderI18n, language, key) || key;
+  };
+
+  // 카드 클릭 핸들러 (하트가 있는 카드만)
+  const handleCardClick = (e: React.MouseEvent) => {
+    // 사이드바가 이미 열려있으면 클릭 무시 (race condition 방지)
+    if (selectedChannelForSidebar) {
+      console.log('🔍 [DEBUG] Card click ignored - sidebar already open');
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+
+    if (showHeart && short.channelId && onChannelSelect) {
+      console.log('🔍 [DEBUG] Card click - opening sidebar for:', short.channelId);
+      e.stopPropagation();
+      onChannelSelect(short.channelId);
+    }
+  };
+
+  // 현재 채널이 선택된 채널인지 확인
+  const isSelectedChannel = selectedChannelForSidebar === short.channelId;
+  const showSidebar = isSelectedChannel;
+
+  // 상태 추적
+  React.useEffect(() => {
+    console.log(`🔍 [DEBUG] ShortsCard ${short.channelId}:`, {
+      selectedChannelForSidebar,
+      isSelectedChannel,
+      showSidebar
+    });
+  }, [selectedChannelForSidebar, isSelectedChannel, showSidebar, short.channelId]);
+
 
   // 다국어 번역 객체
   const translations = {
@@ -495,7 +873,7 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
 
   // 채널 국가 정보를 실제 API 데이터로 변환
   const detectCountryFromChannel = (): string => {
-    console.log(`🔍 Card country check for ${short.channelTitle}: channelCountry=${short.channelCountry}`);
+    // console.log(`🔍 Card country check for ${short.channelTitle}: channelCountry=${short.channelCountry}`);
     
     // 1차: API에서 가져온 실제 채널 국가 사용
     if (short.channelCountry) {
@@ -629,21 +1007,30 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
   };
 
   return (
-    <div style={{
-      border: '1px solid #e0e0e0',
-      borderRadius: '12px',
-      overflow: 'hidden',
-      backgroundColor: 'white',
-      width: '280px',
-      minHeight: '950px',
-      display: 'flex',
-      flexDirection: 'column',
-      transition: 'height 0.3s ease'
-    }}>
+    <div
+      style={{
+        border: '1px solid #e0e0e0',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        backgroundColor: isHeartHovered ? '#f8f8f8' : 'white',
+        width: '280px',
+        minHeight: '950px',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'height 0.3s ease, background-color 0.2s ease',
+        cursor: showHeart ? 'pointer' : 'default'
+      }}
+      onMouseEnter={() => setIsHeartHovered(true)}
+      onMouseLeave={() => setIsHeartHovered(false)}
+      onClick={handleCardClick}
+    >
       {/* 썸네일 영역 */}
-      <div 
+      <div
         style={{ position: 'relative', paddingBottom: '56.25%', backgroundColor: '#f0f0f0', cursor: 'pointer' }}
-        onClick={() => window.open(`https://www.youtube.com/shorts/${short.id}`, '_blank')}
+        onClick={(e) => {
+          e.stopPropagation(); // 카드 클릭 이벤트 방지
+          window.open(`https://www.youtube.com/shorts/${short.id}`, '_blank');
+        }}
       >
         <img
           src={short.thumbnailUrl}
@@ -670,6 +1057,21 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
             fontWeight: 'bold'
           }}>
             {short.duration}
+          </div>
+        )}
+
+        {/* 하트 아이콘 - 채널파인더에 등록된 채널인 경우에만 표시 */}
+        {showHeart && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '8px',
+              right: '8px',
+              zIndex: 20,
+              pointerEvents: 'none' // 클릭 이벤트 무시
+            }}
+          >
+            <HeartIcon size={24} />
           </div>
         )}
       </div>
@@ -761,7 +1163,7 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
             <span>{t('country')}</span>
             <span style={{ fontWeight: 'bold' }}>
-              {detectCountryFromChannel()}
+              {React.useMemo(() => detectCountryFromChannel(), [short.channelCountry, short.channelTitle, short.title, language])}
             </span>
           </div>
           
@@ -1068,6 +1470,81 @@ const ShortsCard: React.FC<ShortsCardProps> = ({ short, language, index }) => {
         {/* 하단 여백 유지 */}
         <div style={{ height: '40px' }}></div>
       </div>
+
+      {/* 사이드바 - ChannelFinder와 완전히 동일한 구조 (key로 상태 리셋) */}
+      {/* TODO: 채널 ID UCWsDFcIhY2DBi3GB5uykGXA 일경우 사이드바 그림자가 달라짐 */}
+      {showSidebar && matchedChannel && (
+        <ChannelSidebar
+          key={`sidebar-${short.channelId}`} // 채널별 고유 키로 DOM 충돌 방지
+          selectedChannel={matchedChannel}
+          language={language}
+          onClose={() => {
+            console.log('🔍 [DEBUG] ChannelSidebar onClose called from overlay click');
+            if (onSidebarClose) {
+              onSidebarClose();
+            }
+          }}
+          formatSubscribers={formatSubscribers}
+          formatOperatingPeriod={formatOperatingPeriod}
+          formatGrowth={formatGrowth}
+          getCountryDisplayName={getCountryDisplayName}
+          chartData={chartData}
+          growthTooltips={growthTooltips}
+          hoveredPoint={hoveredPoint}
+          hoveredStat={hoveredStat}
+          setHoveredStat={setHoveredStat}
+          shortsPercentage={shortsPercentage}
+          longPercentage={longPercentage}
+          shortsRpm={shortsRpm}
+          longRpm={longRpm}
+          exchangeRate={exchangeRate}
+          currentCountry={currentCountry}
+          dropdownState={dropdownState}
+          openDropdown={openDropdown}
+          countryOptions={countryOptions}
+          onCountrySelect={onCountrySelect}
+          adjustShortsRpm={adjustShortsRpm}
+          adjustLongRpm={adjustLongRpm}
+          calculateTotalRevenue={calculateTotalRevenue}
+          calculateLocalCurrencyRevenue={calculateLocalCurrencyRevenue}
+          openExchangeRateModal={openExchangeRateModal}
+          setExchangeRate={setExchangeRate}
+          formatViews={formatViews}
+          formatVideosCount={formatVideosCount}
+          formatUploadFrequency={formatUploadFrequency}
+          currencyExchangeData={currencyExchangeData}
+          cf={cf}
+          embedVideoUrl={`https://www.youtube.com/watch?v=${short.id}`} // ShortsCard에서만 비디오 임베드
+        />
+      )}
+
+      {/* 환율 설정 모달 (채널파인더와 완전히 동일) */}
+      {exchangeRateModalOpen && (
+        <div className={styles.modalOverlay} onClick={closeExchangeRateModal}>
+          <div className={styles.exchangeRateModal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>{getChannelFinderTranslation(channelFinderI18n, language, 'units.exchangeRate')}</h3>
+              <button className={styles.modalClose} onClick={closeExchangeRateModal}>×</button>
+            </div>
+            <div className={styles.modalContent}>
+              <div className={styles.exchangeRateDisplay}>
+                <span>$ 1 = </span>
+                <input
+                  type="number"
+                  value={tempExchangeRate}
+                  onChange={(e) => setTempExchangeRate(Number(e.target.value))}
+                  className={styles.exchangeRateInput}
+                />
+                <span>{currencySettings[language]?.symbol || '$'}</span>
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button className={styles.cancelBtn} onClick={closeExchangeRateModal}>{getChannelFinderTranslation(channelFinderI18n, language, 'buttons.cancel')}</button>
+              <button className={styles.confirmBtn} onClick={applyExchangeRate}>{getChannelFinderTranslation(channelFinderI18n, language, 'buttons.confirm')}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

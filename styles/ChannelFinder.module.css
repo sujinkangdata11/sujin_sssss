@@ -337,13 +337,14 @@ th .resizeHandle.resizeHandleLeft {
 .sidebarOverlay {
   position: fixed;
   top: 0;
+  left: 0;
   right: 0;
-  width: 450px;
-  height: 100%;
+  bottom: 0;
+  background: transparent;
   display: flex;
   justify-content: flex-end;
   z-index: 10000;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .sidebar {
@@ -351,8 +352,16 @@ th .resizeHandle.resizeHandleLeft {
   height: 100%;
   background: white;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  animation: slideIn 0.3s ease;
   pointer-events: auto;
+}
+
+.slideIn {
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
 /* 모바일에서는 기존 사이드바 애니메이션 차단 */

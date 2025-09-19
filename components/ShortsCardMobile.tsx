@@ -1,6 +1,8 @@
 import React from 'react';
 import { YouTubeShort, Language } from '../types';
 import { calculateRpmRate } from '../utils/rpmCalculator';
+import { useChannelFinder } from '../contexts/ChannelFinderContext';
+import HeartIcon from './HeartIcon';
 
 interface ShortsCardMobileProps {
   short: YouTubeShort;
@@ -12,6 +14,12 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [isCopied, setIsCopied] = React.useState(false);
   const [showTooltip, setShowTooltip] = React.useState(false);
+
+  // ChannelFinder에서 채널 매칭 확인
+  const { isChannelInFinder } = useChannelFinder();
+  const showHeart = React.useMemo(() => {
+    return short.channelId ? isChannelInFinder(short.channelId) : false;
+  }, [short.channelId, isChannelInFinder]);
   
   /* 모바일에서 카테고리 숨기기를 위한 화면 크기 감지 */
   /* 768px 이하에서 카테고리를 숨김 (모바일/태블릿) */
@@ -689,6 +697,9 @@ const ShortsCardMobile: React.FC<ShortsCardMobileProps> = ({ short, language, in
             {short.duration}
           </div>
         )}
+
+        {/* 하트 아이콘 - 채널파인더에 등록된 채널인 경우에만 표시 */}
+        {showHeart && <HeartIcon size={20} />}
       </div>
 
       {/* 콘텐츠 영역 */}

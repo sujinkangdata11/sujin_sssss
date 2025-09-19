@@ -12,6 +12,7 @@ import ShortsCardMobile from '../components/ShortsCardMobile';
 import ApiKeyUpload from '../components/ApiKeyUpload';
 import RandomSearchModal from '../components/RandomSearchModal';
 import SEOHead from '../components/SEOHead';
+import { ChannelFinderProvider } from '../contexts/ChannelFinderContext';
 
 interface HomeProps {
   language: Language;
@@ -63,12 +64,48 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   const [randomSearchError, setRandomSearchError] = useState<string | null>(null);
   const [showDiceTooltip, setShowDiceTooltip] = useState<boolean>(true);
   const [currentLoadingMessageIndex, setCurrentLoadingMessageIndex] = useState<number>(0);
+  // 사이드바 전역 상태 관리
+  const [selectedChannelForSidebar, setSelectedChannelForSidebar] = useState<string | null>(null);
+
+  // 상태 변화 추적
+  useEffect(() => {
+    console.log('🔍 [DEBUG] selectedChannelForSidebar state changed to:', selectedChannelForSidebar);
+  }, [selectedChannelForSidebar]);
+
   // Tutorial language syncs with global language
   const videoRef = useRef<HTMLVideoElement>(null);
   
   const exampleRef = useRef<HTMLDivElement>(null);
 
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
+
+  // 사이드바 핸들러 함수들
+  const handleChannelSelect = (channelId: string) => {
+    setSelectedChannelForSidebar(channelId);
+  };
+
+  const handleSidebarClose = () => {
+    console.log('🔍 [DEBUG] Home.handleSidebarClose called');
+    console.log('🔍 [DEBUG] Before setState:', selectedChannelForSidebar);
+
+    // 강제 상태 체크 - 중복 호출 방지
+    setSelectedChannelForSidebar(prev => {
+      console.log('🔍 [DEBUG] Inside setState function, prev:', prev);
+      if (prev === null || prev === 'CLOSED') {
+        console.log('🔍 [DEBUG] Already closed, ignoring');
+        return prev;
+      }
+      console.log('🔍 [DEBUG] Setting to null');
+      return null;
+    });
+
+    console.log('🔍 [DEBUG] After setState call');
+
+    // 추가 체크: setTimeout으로 비동기 상태 확인
+    setTimeout(() => {
+      console.log('🔍 [DEBUG] State after 100ms:', selectedChannelForSidebar);
+    }, 100);
+  };
   
   // Tutorial video mapping by language
   const tutorialVideos: Record<Language, string> = {
@@ -763,7 +800,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   }, [randomSearchResults, sortBy, durationFilter]);
 
   return (
-    <>
+    <ChannelFinderProvider>
       <SEOHead
         title="VIDHUNT - Find Trending YouTube Shorts Worldwide | Free Global Shorts Finder"
         description="Discover viral YouTube Shorts across 11 countries and languages with VIDHUNT's advanced search engine. Find trending content, analyze global video performance, and boost your channel growth with data-driven insights. Free tool for content creators."
@@ -1230,16 +1267,30 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
               </div>
             </div>
             <div className="results-grid">
-              {isRandomSearchOpen 
-                ? sortedRandomResults.map(short => 
-                    isMobile 
+              {isRandomSearchOpen
+                ? sortedRandomResults.map(short =>
+                    isMobile
                       ? <ShortsCardMobile key={short.id} short={short} language={language} />
-                      : <ShortsCard key={short.id} short={short} language={language} />
+                      : <ShortsCard
+                          key={short.id}
+                          short={short}
+                          language={language}
+                          selectedChannelForSidebar={selectedChannelForSidebar}
+                          onChannelSelect={handleChannelSelect}
+                          onSidebarClose={handleSidebarClose}
+                        />
                   )
-                : sortedShorts.map(short => 
-                    isMobile 
+                : sortedShorts.map(short =>
+                    isMobile
                       ? <ShortsCardMobile key={short.id} short={short} language={language} />
-                      : <ShortsCard key={short.id} short={short} language={language} />
+                      : <ShortsCard
+                          key={short.id}
+                          short={short}
+                          language={language}
+                          selectedChannelForSidebar={selectedChannelForSidebar}
+                          onChannelSelect={handleChannelSelect}
+                          onSidebarClose={handleSidebarClose}
+                        />
                   )
               }
             </div>
@@ -1314,7 +1365,7 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
       />
 
 
-    </>
+    </ChannelFinderProvider>
   );
 };
 

@@ -41,6 +41,7 @@ interface ChannelSidebarProps {
   formatUploadFrequency: (frequency: number, language?: Language) => string;
   currencyExchangeData: Record<string, { currency: string; rate: number }>;
   cf: (key: string) => string;
+  embedVideoUrl?: string; // ShortsCard에서만 사용하는 선택적 영상 URL
 }
 
 const SubTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -80,12 +81,41 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
   formatVideosCount,
   formatUploadFrequency,
   currencyExchangeData,
-  cf
+  cf,
+  embedVideoUrl
 }) => {
   const [isClosing, setIsClosing] = useState(false);
-  
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  // 비디오 URL에서 비디오 ID 추출 함수
+  const extractVideoId = (url: string): string | null => {
+    try {
+      // YouTube URL 패턴들
+      const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+        /youtube\.com\/shorts\/([^&\n?#]+)/
+      ];
+
+      for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match) return match[1];
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
   // 로컬 드롭다운 상태
   const [localDropdownOpen, setLocalDropdownOpen] = useState(false);
+
+  // 첫 로드 이후에는 애니메이션 비활성화
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsFirstLoad(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
   
   
   // 드롭다운 핸들러
@@ -109,19 +139,19 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
     return null;
   }
 
-  // 모바일에서만 뒷배경 클릭 시 사이드바 닫기 (애니메이션 포함)
+  // 오버레이 클릭 시 사이드바 닫기 (데스크톱과 모바일 모두)
   const handleOverlayClick = (e: React.MouseEvent) => {
-    // ⚠️ IMPORTANT: React에서 window 객체 접근 시 주의사항
-    // - 항상 `typeof window !== 'undefined'` 체크 필수 (SSR 오류 방지)
-    // - 또는 useEffect 안에서만 window 접근
-    // - 직접 window 접근 시 무한 루프 및 서버 오류 발생 가능
+    // 모바일에서는 애니메이션과 함께 닫기
     if (typeof window !== 'undefined' && window.innerWidth <= 768) {
       setIsClosing(true);
-      
+
       // 애니메이션 완료 후 실제로 닫기
       setTimeout(() => {
         onClose();
       }, 300);
+    } else {
+      // 데스크톱에서는 즉시 닫기
+      onClose();
     }
   };
 
@@ -213,8 +243,8 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
     return (
       // FADE IN/OUT: 오버레이에도 mobile-closing 클래스 추가 (주의: 이상하면 이 부분만 되돌리기)
       <div className={`${styles.sidebarOverlay} ${isClosing ? 'mobile-closing' : ''}`} onClick={handleOverlayClick}>
-        <div 
-          className={`${styles.sidebar} ${isClosing ? 'mobile-closing' : ''}`}
+        <div
+          className={`${styles.sidebar} ${isClosing ? 'mobile-closing' : ''} ${isFirstLoad ? styles.slideIn : ''}`}
           onClick={(e) => e.stopPropagation()}
         >
         <div className={styles.sidebarHeader}>
@@ -254,9 +284,43 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
             </svg>
           </button>
         </div>
-        
+
         <div className={styles.sidebarContent}>
           <div className={styles.channelInfo}>
+            {/* ShortsCard에서만 표시되는 비디오 임베드 블럭 */}
+            {embedVideoUrl && (() => {
+              const videoId = extractVideoId(embedVideoUrl);
+              return videoId ? (
+                <div className={styles.infoItem} style={{ display: 'block', width: '100%', marginBottom: '16px' }}>
+                  <div style={{
+                    width: '100%',
+                    position: 'relative',
+                    paddingBottom: 'calc(177.78% - 100px)',
+                    height: 0,
+                    overflow: 'hidden',
+                    borderRadius: '8px'
+                  }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${videoId}`}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                        borderRadius: '8px'
+                      }}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
+              ) : null;
+            })()}
+
             <div className={styles.infoItem}>
               <span className={styles.label}>{getChannelFinderTranslation(channelFinderI18n, language, 'table.headers.channelName')}</span>
               <span className={styles.value}>{selectedChannel.channelName}</span>
