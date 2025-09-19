@@ -7,6 +7,8 @@ import RankingTable, { RankingData } from '../../shared/RankingTable';
 import { listupService } from '../../../services/listupService';
 import { convertListupToRankingData, ShortsFilterState, ListupChannelData } from '../../../utils/listupDataMapper';
 import { infoshortsChannels } from '../../../data/channels/infoshorts-channels';
+import { Language } from '../../../types';
+import { useExplorationTranslation } from '../../../i18n/explorationI18n';
 
 interface Step1Props {
   currentStep: number;
@@ -20,6 +22,7 @@ interface Step1Props {
   timecodeList: number[];
   setRequestedTimecode: (timecode: number) => void;
   videoColumnRef: React.RefObject<HTMLDivElement>;
+  language: Language;
 }
 
 const Step1: React.FC<Step1Props> = ({
@@ -33,19 +36,23 @@ const Step1: React.FC<Step1Props> = ({
   requestedTimecode,
   timecodeList,
   setRequestedTimecode,
-  videoColumnRef
+  videoColumnRef,
+  language
 }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [shouldRenderVideo, setShouldRenderVideo] = useState(false);
 
-  // 필터 상태 관리
+  // 🌍 다국어 번역 함수
+  const et = useExplorationTranslation(language);
+
+  // 필터 상태 관리 - 🌍 번역 키 기반 초기값
   const [filters, setFilters] = useState<FilterState>({
-    selectedCategory: '전체',
-    selectedCriteria: '조회수',
-    selectedCountry: '🌍 전세계',
-    selectedPeriod: '월간', // 디폴트: 월간
+    selectedCategory: et('filterAll'),
+    selectedCriteria: et('filterViews'),
+    selectedCountry: et('filterWorldwide'),
+    selectedPeriod: et('filterMonthly'), // 디폴트: 월간
     selectedDate: '2025-09', // 디폴트: 9월
-    selectedChannel: '전체'
+    selectedChannel: et('filterAll')
   });
 
   // 랭킹 테이블 페이지네이션 상태
@@ -182,14 +189,14 @@ const Step1: React.FC<Step1Props> = ({
         setAvailableDates(dates);
         console.log('📅 [DEBUG] 사용 가능한 날짜들:', dates);
 
-        // 초기 필터로 랭킹 데이터 생성 (기본 필터 값 사용)
+        // 초기 필터로 랭킹 데이터 생성 (기본 필터 값 사용) - 🌍 번역 키 기반
         const initialFilter: FilterState = {
-          selectedCategory: '전체',
-          selectedCriteria: '조회수',
-          selectedCountry: '🌍 전세계',
-          selectedPeriod: '일간',
-          selectedDate: 0,
-          selectedChannel: '전체'
+          selectedCategory: et('filterAll'),
+          selectedCriteria: et('filterViews'),
+          selectedCountry: et('filterWorldwide'),
+          selectedPeriod: et('filterMonthly'),
+          selectedDate: '2025-09',
+          selectedChannel: et('filterAll')
         };
         updateRankingData(response.data, initialFilter);
       } else {
@@ -246,15 +253,15 @@ const Step1: React.FC<Step1Props> = ({
       id: 'youtube-filter',
       title: (
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span>탐험하기</span>
+          <span>{et('explorationTitle')}</span>
           <span style={{
             fontSize: '12px',
             color: rankingData.length > 0 ? '#28a745' : '#dc3545',
             fontWeight: 'bold'
           }}>
             {rankingData.length > 0
-              ? `✅ ${rankingData.length}개 데이터 연동`
-              : '❌ 더미 데이터 사용중'
+              ? `✅ ${rankingData.length}${et('statusDataConnected')}`
+              : `❌ ${et('statusDummyData')}`
             }
           </span>
         </div>
@@ -265,6 +272,7 @@ const Step1: React.FC<Step1Props> = ({
       content: (
         <YouTubeFilter
           onFilterChange={handleFilterChange}
+          language={language}
           channelList={(() => {
             // 채널 데이터를 구독자 수 순으로 정렬한 후 채널명 추출
             const channelsWithSubs = channelData
@@ -371,7 +379,7 @@ const Step1: React.FC<Step1Props> = ({
         <div>
           {isLoading && (
             <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
-              🔄 데이터 로딩 중...
+              🔄 {et('statusLoading')}
             </div>
           )}
           <RankingTable
@@ -472,7 +480,7 @@ const Step1: React.FC<Step1Props> = ({
         marginBottom: '20px',
         paddingTop: '20px'
       }}>
-        개발중 ㅣ 사용가능 ㅣ 9월 30일 완료예정
+        {et('statusDevelopment')}
       </div>
 
       {/* 제목 - 가로 중앙 정렬 */}

@@ -29,6 +29,7 @@ import functions from './functions';
 import modes from './modes';
 import {timeToSecs} from './utils';
 import { processAudioFromArrayBuffer, AudioProcessingResult } from './audioProcessor';
+import { Language } from '../../types';
 
 import VideoPlayer from './VideoPlayer';
 import { ChevronDown } from './components/ChevronDown';
@@ -119,7 +120,11 @@ function extractYoutubeId(url) {
   return match && match[2].length === 11 ? match[2] : null;
 }
 
-const InfoShorts: React.FC = () => {
+interface InfoShortsProps {
+  language: Language;
+}
+
+const InfoShorts: React.FC<InfoShortsProps> = ({ language }) => {
   // 단계별 진행 상태 관리
   const [currentStep, setCurrentStep] = useState(1);
   const [previousStep, setPreviousStep] = useState(1);
@@ -1278,6 +1283,7 @@ ${referenceContent}
             timecodeList={timecodeList}
             setRequestedTimecode={setRequestedTimecode}
             videoColumnRef={videoColumnRef}
+            language={language}
           />
         
         {/* Step 2: API Key Setup */}

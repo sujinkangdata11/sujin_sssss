@@ -60,15 +60,93 @@ export interface ShortsFilterState {
   channel?: string;
 }
 
+// 🌍 Translation Bridge: 번역된 값을 한국어로 변환 (11개 언어 완전 지원)
+function normalizeToKorean(filters: ShortsFilterState): ShortsFilterState {
+  const normalizedFilters = { ...filters };
+
+  // 1. 카테고리 정규화 (explorationI18n.ts filterAll 완전 반영)
+  if (filters.category.includes('All') || filters.category.includes('すべて') ||
+      filters.category.includes('全部') || filters.category.includes('सभी') ||
+      filters.category.includes('Todos') || filters.category.includes('Tous') ||
+      filters.category.includes('Alle') || filters.category.includes('Все')) {
+    normalizedFilters.category = '전체';
+  }
+
+  // 2. 기준 정규화 (explorationI18n.ts filterViews & filterSubscribers 완전 반영)
+  if (filters.criteria.includes('Views') || filters.criteria.includes('再生回数') ||
+      filters.criteria.includes('观看次数') || filters.criteria.includes('दृश्य') ||
+      filters.criteria.includes('Vistas') || filters.criteria.includes('Vues') ||
+      filters.criteria.includes('Aufrufe') || filters.criteria.includes('Weergaven') ||
+      filters.criteria.includes('Visualizações') || filters.criteria.includes('Просмотры')) {
+    normalizedFilters.criteria = '조회수';
+  } else if (filters.criteria.includes('Subscribers') || filters.criteria.includes('登録者') ||
+             filters.criteria.includes('订阅者') || filters.criteria.includes('सब्सक्राइबर') ||
+             filters.criteria.includes('Suscriptores') || filters.criteria.includes('Abonnés') ||
+             filters.criteria.includes('Abonnenten') || filters.criteria.includes('Abonnees') ||
+             filters.criteria.includes('Inscritos') || filters.criteria.includes('Подписчики')) {
+    normalizedFilters.criteria = '구독자';
+  }
+
+  // 3. 국가 정규화 (explorationI18n.ts filterWorldwide 완전 반영)
+  if (filters.country.includes('Worldwide') || filters.country.includes('世界中') ||
+      filters.country.includes('全球') || filters.country.includes('विश्वव्यापी') ||
+      filters.country.includes('Mundial') || filters.country.includes('Mondial') ||
+      filters.country.includes('Weltweit') || filters.country.includes('Wereldwijd') ||
+      filters.country.includes('По всему миру')) {
+    normalizedFilters.country = '🌍 전세계';
+  }
+
+  // 4. 기간 정규화 (explorationI18n.ts 기간 번역들 완전 반영)
+  if (filters.period.includes('Monthly') || filters.period.includes('月間') ||
+      filters.period.includes('月度') || filters.period.includes('मासिक') ||
+      filters.period.includes('Mensual') || filters.period.includes('Mensuel') ||
+      filters.period.includes('Monatlich') || filters.period.includes('Maandelijks') ||
+      filters.period.includes('Mensal') || filters.period.includes('Ежемесячно')) {
+    normalizedFilters.period = '월간';
+  } else if (filters.period.includes('Weekly') || filters.period.includes('週間') ||
+             filters.period.includes('周度') || filters.period.includes('साप्ताहिक') ||
+             filters.period.includes('Semanal') || filters.period.includes('Hebdomadaire') ||
+             filters.period.includes('Wöchentlich') || filters.period.includes('Wekelijks') ||
+             filters.period.includes('Еженедельно')) {
+    normalizedFilters.period = '주간';
+  } else if (filters.period.includes('Daily') || filters.period.includes('日間') ||
+             filters.period.includes('日度') || filters.period.includes('दैनिक') ||
+             filters.period.includes('Diario') || filters.period.includes('Quotidien') ||
+             filters.period.includes('Täglich') || filters.period.includes('Dagelijks') ||
+             filters.period.includes('Diário') || filters.period.includes('Ежедневно')) {
+    normalizedFilters.period = '일간';
+  } else if (filters.period.includes('Yearly') || filters.period.includes('年間') ||
+             filters.period.includes('年度') || filters.period.includes('वार्षिक') ||
+             filters.period.includes('Anual') || filters.period.includes('Annuel') ||
+             filters.period.includes('Jährlich') || filters.period.includes('Jaarlijks') ||
+             filters.period.includes('Ежегодно')) {
+    normalizedFilters.period = '연간';
+  }
+
+  // 5. 채널 정규화 (explorationI18n.ts filterAll 완전 반영)
+  if (filters.channel && (filters.channel.includes('All') || filters.channel.includes('すべて') ||
+      filters.channel.includes('全部') || filters.channel.includes('सभी') ||
+      filters.channel.includes('Todos') || filters.channel.includes('Tous') ||
+      filters.channel.includes('Alle') || filters.channel.includes('Все'))) {
+    normalizedFilters.channel = '전체';
+  }
+
+  return normalizedFilters;
+}
+
 // 🎯 Listup 데이터를 랭킹 테이블로 변환
 export function convertListupToRankingData(
   listupChannels: ListupChannelData[],
   filters: ShortsFilterState,
   availableChannels: string[] = []
 ): RankingData[] {
+  // 🌍 Translation Bridge 적용 - 모든 번역된 값을 한국어로 변환
+  const normalizedFilters = normalizeToKorean(filters);
+
   console.log('🎬 [DEBUG] 쇼츠메이커 데이터 변환 시작:', {
     '입력데이터수': listupChannels.length,
-    '필터': filters,
+    '원본필터': filters,
+    '정규화필터': normalizedFilters,
     '사용가능채널수': availableChannels.length
   });
 
@@ -79,13 +157,13 @@ export function convertListupToRankingData(
 
   try {
     // 📅 날짜 매칭 디버깅 시작
-    console.log('🔍 [DEBUG] 실제 filters 객체:', filters);
-    console.log('🔍 [DEBUG] filters.selectedDate:', filters.selectedDate);
-    console.log('🔍 [DEBUG] filters의 모든 키:', Object.keys(filters));
+    console.log('🔍 [DEBUG] 실제 filters 객체:', normalizedFilters);
+    console.log('🔍 [DEBUG] filters.selectedDate:', normalizedFilters.selectedDate);
+    console.log('🔍 [DEBUG] filters의 모든 키:', Object.keys(normalizedFilters));
 
     console.log('📅 [DEBUG] 날짜 매칭 시작:', {
-      선택한기간: filters.period,
-      선택한날짜: filters.date || '없음',
+      선택한기간: normalizedFilters.period,
+      선택한날짜: normalizedFilters.date || '없음',
       전체채널수: listupChannels.length
     });
 
@@ -125,22 +203,22 @@ export function convertListupToRankingData(
         let candidateThumbnails = channel.recentThumbnailsHistory;
 
         // 선택된 날짜 값이 있으면 매칭
-        if (filters.date) {
-          if (filters.date.includes('~')) {
+        if (normalizedFilters.date) {
+          if (normalizedFilters.date.includes('~')) {
             // 주간: 날짜 범위 체크
-            const [startDate, endDate] = filters.date.split('~');
+            const [startDate, endDate] = normalizedFilters.date.split('~');
             candidateThumbnails = channel.recentThumbnailsHistory.filter(thumb =>
               thumb.date >= startDate && thumb.date <= endDate
             );
-          } else if (filters.date.length === 7) {
+          } else if (normalizedFilters.date.length === 7) {
             // 월간: YYYY-MM 형태 (예: "2025-09") - 해당 월의 모든 영상
             candidateThumbnails = channel.recentThumbnailsHistory.filter(thumb =>
-              thumb.date.startsWith(filters.date)
+              thumb.date.startsWith(normalizedFilters.date)
             );
           } else {
             // 일간: 정확한 날짜 매칭
             candidateThumbnails = channel.recentThumbnailsHistory.filter(thumb =>
-              thumb.date === filters.date
+              thumb.date === normalizedFilters.date
             );
           }
         }
@@ -178,7 +256,7 @@ export function convertListupToRankingData(
       if (index < 5) {
         console.log(`📊 [DEBUG] 채널 ${index + 1} 매칭 상황:`, {
           채널명: staticData.title || snapshot.title || 'Unknown',
-          타겟날짜: filters.date || '없음',
+          타겟날짜: normalizedFilters.date || '없음',
           매칭결과: matchedThumbnail ? matchedThumbnail.date : '매칭없음',
           전체날짜들: channel.recentThumbnailsHistory?.slice(0, 3).map(t => t.date) || []
         });
@@ -378,18 +456,25 @@ export function convertListupToRankingData(
       }
     }
 
+    // 🌍 Translation Bridge 적용: 이제 간단한 한국어 매칭만 하면 됨!
+
     // 카테고리 필터 (채널이 선택되지 않은 경우에만)
-    if (filters.category !== '전체' && (!filters.channel || filters.channel === '전체')) {
+    if (normalizedFilters.category !== '전체' && (!normalizedFilters.channel || normalizedFilters.channel === '전체')) {
       filteredData = filteredData.filter(item =>
-        item.tags.some(tag => tag.toLowerCase().includes(filters.category.toLowerCase()))
+        item.tags.some(tag => tag.toLowerCase().includes(normalizedFilters.category.toLowerCase()))
       );
     }
 
     // 국가 필터
-    if (filters.country !== '🌍 전세계') {
-      const targetCountryCode = getCountryCodeByDisplayName(filters.country);
+    console.log('🌍 [DEBUG] 국가 필터 체크:', {
+      '정규화국가값': normalizedFilters.country,
+      '원본데이터수': filteredData.length
+    });
+
+    if (normalizedFilters.country !== '🌍 전세계') {
+      const targetCountryCode = getCountryCodeByDisplayName(normalizedFilters.country);
       console.log('🌍 [DEBUG] 국가 필터 적용:', {
-        선택된국가: filters.country,
+        정규화국가: normalizedFilters.country,
         타겟국가코드: targetCountryCode
       });
 
@@ -414,12 +499,18 @@ export function convertListupToRankingData(
       }
     }
 
-    // 3. 정렬 (조회수 기준)
-    if (filters.criteria === '조회수') {
+    // 3. 정렬 - 🌍 Translation Bridge로 간단해짐!
+    if (normalizedFilters.criteria === '조회수') {
       filteredData.sort((a, b) => {
         const aViews = parseViews(a.views);
         const bViews = parseViews(b.views);
         return bViews - aViews;
+      });
+    } else if (normalizedFilters.criteria === '구독자수') {
+      filteredData.sort((a, b) => {
+        const aSubCount = parseSubscribers(a.channel.subs);
+        const bSubCount = parseSubscribers(b.channel.subs);
+        return bSubCount - aSubCount;
       });
     }
 
@@ -517,6 +608,21 @@ function getChannelAvatar(channelName: string): string {
 // 📊 조회수 텍스트를 숫자로 변환 (정렬용)
 function parseViews(viewsText: string): number {
   const cleanText = viewsText.replace(/[+,]/g, ''); // 모든 콤마와 + 제거
+
+  if (cleanText.includes('M')) {
+    return parseFloat(cleanText.replace('M', '')) * 1000000;
+  } else if (cleanText.includes('K')) {
+    return parseFloat(cleanText.replace('K', '')) * 1000;
+  }
+
+  return parseInt(cleanText) || 0;
+}
+
+// 🔢 구독자 수 파싱 (parseViews와 동일한 로직)
+function parseSubscribers(subsText: string): number {
+  if (!subsText) return 0;
+
+  const cleanText = subsText.replace(/[+,]/g, ''); // 모든 콤마와 + 제거
 
   if (cleanText.includes('M')) {
     return parseFloat(cleanText.replace('M', '')) * 1000000;

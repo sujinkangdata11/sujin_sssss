@@ -145,7 +145,7 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
           </div>
         ) : (
           <div className="info-shorts-container" style={{ width: '100%' }}>
-            <InfoShorts />
+            <InfoShorts language={language} />
           </div>
         )}
       </main>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getCountryDisplayList, getCountryCodeByDisplayName } from '../../utils/listupCountry';
+import { Language } from '../../types';
+import { useExplorationTranslation, explorationTranslations } from '../../i18n/explorationI18n';
 
 export interface YouTubeFilterProps {
   onFilterChange?: (filters: FilterState) => void;
@@ -9,6 +11,7 @@ export interface YouTubeFilterProps {
     weekly: string[];
     monthly: string[];
   };
+  language: Language;
 }
 
 export interface FilterState {
@@ -20,36 +23,72 @@ export interface FilterState {
   selectedChannel?: string;
 }
 
-const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelList, availableDates }) => {
-  const [selectedCategory, setSelectedCategory] = useState('전체');
-  const [selectedCriteria, setSelectedCriteria] = useState('조회수');
-  const [selectedCountry, setSelectedCountry] = useState('🌍 전세계');
-  const [selectedPeriod, setSelectedPeriod] = useState('월간'); // 디폴트: 월간
+const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelList, availableDates, language }) => {
+  // 🌍 다국어 번역 함수
+  const et = useExplorationTranslation(language);
+
+  // 🎯 번역 키 기반 초기값 설정 (언어 변경에 독립적)
+  const [selectedCategory, setSelectedCategory] = useState('filterAll');
+  const [selectedCriteria, setSelectedCriteria] = useState('filterViews');
+  const [selectedCountry, setSelectedCountry] = useState('filterWorldwide');
+  const [selectedPeriod, setSelectedPeriod] = useState('filterMonthly'); // 디폴트: 월간
   const [selectedDate, setSelectedDate] = useState('2025-09'); // 디폴트: 9월
-  const [selectedChannel, setSelectedChannel] = useState('전체');
+  const [selectedChannel, setSelectedChannel] = useState('filterAll');
+
+  // 🌍 필터 옵션 정의 (번역 키 기반)
+  const periodOptions = [
+    { key: 'filterDaily', value: et('filterDaily') },
+    { key: 'filterWeekly', value: et('filterWeekly') },
+    { key: 'filterMonthly', value: et('filterMonthly') },
+    { key: 'filterYearly', value: et('filterYearly') }
+  ];
+
+  const criteriaOptions = [
+    { key: 'filterViews', value: et('filterViews') },
+    { key: 'filterSubscribers', value: et('filterSubscribers') }
+  ];
+
+  // 📅 월별 매핑 (번역 키 기반)
+  const monthMapping = {
+    1: et('monthJanuary'), 2: et('monthFebruary'), 3: et('monthMarch'),
+    4: et('monthApril'), 5: et('monthMay'), 6: et('monthJune'),
+    7: et('monthJuly'), 8: et('monthAugust'), 9: et('monthSeptember'),
+    10: et('monthOctober'), 11: et('monthNovember'), 12: et('monthDecember')
+  };
+
+  // 🗓 요일 매핑 (번역 키 기반)
+  const weekdayMapping = [
+    et('weekdaySunday'), et('weekdayMonday'), et('weekdayTuesday'),
+    et('weekdayWednesday'), et('weekdayThursday'), et('weekdayFriday'), et('weekdaySaturday')
+  ];
+
+  // 📊 주차 매핑 (번역 키 기반)
+  const weekMapping = {
+    1: et('weekFirst'), 2: et('weekSecond'), 3: et('weekThird'), 4: et('weekFourth')
+  };
 
   // 기간 선택이 변경될 때 날짜 선택 리셋
   useEffect(() => {
-    if (selectedPeriod === '월간') {
+    if (selectedPeriod === 'filterMonthly') {
       setSelectedDate('2025-09'); // 월간일 때는 9월로 설정
     } else {
       setSelectedDate(''); // 다른 기간은 빈 문자열로 리셋
     }
   }, [selectedPeriod]);
 
-  // 필터 변경 시 부모 컴포넌트에 알림
+  // 필터 변경 시 부모 컴포넌트에 알림 (번역된 값으로 전달)
   useEffect(() => {
     if (onFilterChange) {
       onFilterChange({
-        selectedCategory,
-        selectedCriteria,
-        selectedCountry,
-        selectedPeriod,
+        selectedCategory: selectedCategory === 'filterAll' ? et('filterAll') : selectedCategory,
+        selectedCriteria: selectedCriteria === 'filterViews' ? et('filterViews') : et('filterSubscribers'),
+        selectedCountry: selectedCountry === 'filterWorldwide' ? et('filterWorldwide') : selectedCountry,
+        selectedPeriod: et(selectedPeriod as keyof typeof explorationTranslations),
         selectedDate,
-        selectedChannel
+        selectedChannel: selectedChannel === 'filterAll' ? et('filterAll') : selectedChannel
       });
     }
-  }, [selectedCategory, selectedCriteria, selectedCountry, selectedPeriod, selectedDate, selectedChannel, onFilterChange]);
+  }, [selectedCategory, selectedCriteria, selectedCountry, selectedPeriod, selectedDate, selectedChannel, onFilterChange, et]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -74,7 +113,7 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             marginBottom: '8px',
             textAlign: 'center'
           }}>
-            채널명
+{et('filterChannel')}
           </div>
           <div style={{
             display: 'flex',
@@ -83,8 +122,8 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             maxHeight: '300px',
             overflowY: 'auto'
           }}>
-            {(channelList ? ['전체', ...Array.from(new Set(channelList))] : [
-              '전체',
+            {(channelList ? ['filterAll', ...Array.from(new Set(channelList))] : [
+              'filterAll',
               'Film & Animation',
               'Autos & Vehicles',
               'Music',
@@ -106,10 +145,10 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                 onClick={() => {
                   setSelectedCategory(category);
                   // 채널 목록에서 선택한 경우 해당 채널로 필터링
-                  if (channelList && channelList.includes(category) && category !== '전체') {
+                  if (channelList && channelList.includes(category) && category !== 'filterAll') {
                     setSelectedChannel(category);
                   } else {
-                    setSelectedChannel('전체');
+                    setSelectedChannel('filterAll');
                   }
                 }}
                 style={{
@@ -128,7 +167,7 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                   boxSizing: 'border-box'
                 }}
               >
-                {category}
+                {category === 'filterAll' ? et('filterAll') : category}
               </div>
             ))}
           </div>
@@ -148,27 +187,27 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             marginBottom: '8px',
             textAlign: 'center'
           }}>
-            기준
+{et('filterCriteria')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {['조회수', '구독자수'].map((criteria) => (
+            {criteriaOptions.map((criteria) => (
               <div
-                key={criteria}
-                onClick={() => setSelectedCriteria(criteria)}
+                key={criteria.key}
+                onClick={() => setSelectedCriteria(criteria.key)}
                 style={{
                   height: '40px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '15px',
-                  fontWeight: selectedCriteria === criteria ? '600' : '400',
-                  backgroundColor: selectedCriteria === criteria ? 'rgba(124, 58, 237, 0.1)' : 'white',
-                  color: selectedCriteria === criteria ? 'rgb(124, 58, 237)' : '#333',
+                  fontWeight: selectedCriteria === criteria.key ? '600' : '400',
+                  backgroundColor: selectedCriteria === criteria.key ? 'rgba(124, 58, 237, 0.1)' : 'white',
+                  color: selectedCriteria === criteria.key ? 'rgb(124, 58, 237)' : '#333',
                   borderRadius: '10px',
                   cursor: 'pointer'
                 }}
               >
-                {criteria}
+                {et(criteria.key)}
               </div>
             ))}
           </div>
@@ -188,7 +227,7 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             marginBottom: '8px',
             textAlign: 'center'
           }}>
-            국가
+{et('filterCountry')}
           </div>
           <div style={{
             display: 'flex',
@@ -197,27 +236,32 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             maxHeight: '300px',
             overflowY: 'auto'
           }}>
-            {getCountryDisplayList().map((country) => (
-              <div
-                key={country}
-                onClick={() => setSelectedCountry(country)}
-                style={{
-                  height: '40px',
-                  minHeight: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '15px',
-                  fontWeight: selectedCountry === country ? '600' : '400',
-                  backgroundColor: selectedCountry === country ? 'rgba(124, 58, 237, 0.1)' : 'white',
-                  color: selectedCountry === country ? 'rgb(124, 58, 237)' : '#333',
-                  borderRadius: '10px',
-                  cursor: 'pointer'
-                }}
-              >
-                {country}
-              </div>
-            ))}
+            {getCountryDisplayList().map((country, index) => {
+              const isWorldwide = index === 0; // 첫 번째가 '🌍 전세계'
+              const countryKey = isWorldwide ? 'filterWorldwide' : country;
+
+              return (
+                <div
+                  key={country}
+                  onClick={() => setSelectedCountry(countryKey)}
+                  style={{
+                    height: '40px',
+                    minHeight: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '15px',
+                    fontWeight: selectedCountry === countryKey ? '600' : '400',
+                    backgroundColor: selectedCountry === countryKey ? 'rgba(124, 58, 237, 0.1)' : 'white',
+                    color: selectedCountry === countryKey ? 'rgb(124, 58, 237)' : '#333',
+                    borderRadius: '10px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {isWorldwide ? et('filterWorldwide') : country}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -235,27 +279,27 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             marginBottom: '8px',
             textAlign: 'center'
           }}>
-            기간
+{et('filterPeriod')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {['일간', '주간', '월간', '연간'].map((period) => (
+            {periodOptions.map((period) => (
               <div
-                key={period}
-                onClick={() => setSelectedPeriod(period)}
+                key={period.key}
+                onClick={() => setSelectedPeriod(period.key)}
                 style={{
                   height: '40px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '15px',
-                  fontWeight: selectedPeriod === period ? '600' : '400',
-                  backgroundColor: selectedPeriod === period ? 'rgba(124, 58, 237, 0.1)' : 'white',
-                  color: selectedPeriod === period ? 'rgb(124, 58, 237)' : '#333',
+                  fontWeight: selectedPeriod === period.key ? '600' : '400',
+                  backgroundColor: selectedPeriod === period.key ? 'rgba(124, 58, 237, 0.1)' : 'white',
+                  color: selectedPeriod === period.key ? 'rgb(124, 58, 237)' : '#333',
                   borderRadius: '10px',
                   cursor: 'pointer'
                 }}
               >
-                {period}
+                {period.value}
               </div>
             ))}
           </div>
@@ -275,7 +319,7 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             marginBottom: '8px',
             textAlign: 'center'
           }}>
-            날짜
+{et('filterDate')}
           </div>
           <div style={{
             display: 'flex',
@@ -287,10 +331,10 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
             {(() => {
               const dates = [];
 
-              if (selectedPeriod === '일간') {
+              if (selectedPeriod === 'filterDaily') {
                 // 일간: 실제 데이터가 있는 날짜들만 표시
                 const dailyDates = availableDates?.daily || [];
-                const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+                const weekdays = weekdayMapping;
 
                 dailyDates.slice(0, 10).forEach((dateStr, i) => { // 최대 10개까지만
                   const date = new Date(dateStr);
@@ -314,17 +358,17 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                     </div>
                   );
                 });
-              } else if (selectedPeriod === '주간') {
+              } else if (selectedPeriod === 'filterWeekly') {
                 // 주간: 현재 날짜 기준으로 과거 주차만 표시
                 const today = new Date();
                 const currentDate = today.getDate();
                 const currentWeek = Math.ceil(currentDate / 7);
 
                 const allWeeks = [
-                  { label: '9월 1주', range: '2025-09-01~2025-09-07', weekNumber: 1 },
-                  { label: '9월 2주', range: '2025-09-08~2025-09-15', weekNumber: 2 },
-                  { label: '9월 3주', range: '2025-09-16~2025-09-22', weekNumber: 3 },
-                  { label: '9월 4주', range: '2025-09-23~2025-09-30', weekNumber: 4 }
+                  { label: `${et('monthSeptember')} ${et('weekFirst')}`, range: '2025-09-01~2025-09-07', weekNumber: 1 },
+                  { label: `${et('monthSeptember')} ${et('weekSecond')}`, range: '2025-09-08~2025-09-15', weekNumber: 2 },
+                  { label: `${et('monthSeptember')} ${et('weekThird')}`, range: '2025-09-16~2025-09-22', weekNumber: 3 },
+                  { label: `${et('monthSeptember')} ${et('weekFourth')}`, range: '2025-09-23~2025-09-30', weekNumber: 4 }
                 ];
 
                 // 현재 주차까지만 필터링
@@ -343,10 +387,10 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                     </div>
                   );
                 });
-              } else if (selectedPeriod === '월간') {
+              } else if (selectedPeriod === 'filterMonthly') {
                 // 월간: 9월만 표시
                 const months = [
-                  { label: '9월', range: '2025-09' }
+                  { label: et('monthSeptember'), range: '2025-09' }
                 ];
 
                 months.forEach((month, i) => {
@@ -362,9 +406,9 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                     </div>
                   );
                 });
-              } else if (selectedPeriod === '연간') {
+              } else if (selectedPeriod === 'filterYearly') {
                 // 연간: 2025년만 표시
-                const years = ['2025년'];
+                const years = [et('year2025')];
 
                 years.forEach((year, i) => {
                   dates.push(
