@@ -1084,31 +1084,25 @@ ${wordGroup}
     downloadFileName: string;
     progressColor?: string;
   }) => (
-    <div style={{ 
-      backgroundColor: 'white', 
-      border: '1px solid #dee2e6', 
-      borderRadius: '8px', 
+    <div style={{
+      backgroundColor: 'white',
+      border: '1px solid #dee2e6',
+      borderRadius: '12px',
       padding: '15px',
-      marginTop: '15px'
+      marginBottom: '20px',
+      width: '600px',
+      height: '106px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
     }}>
-      <div style={{ 
-        fontSize: '16px', 
-        fontWeight: 'bold', 
-        color: progressColor === '#28a745' ? '#28a745' : '#333', 
-        marginBottom: '15px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px'
-      }}>
-        {title}
-      </div>
-      
       <div style={{
         display: 'flex',
         alignItems: 'center',
         gap: '15px',
-        marginBottom: '15px',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        width: '100%'
       }}>
         {/* 플레이/일시정지 버튼 */}
         <button
@@ -1621,6 +1615,32 @@ ${referenceContent}
           extractedKeywords={extractedKeywords}
           scrollToColumn={scrollToColumn}
           keywordExtractionError={keywordExtractionError}
+          generatedAudio={generatedAudio}
+          processedAudio={processedAudio}
+          currentTime={currentTime}
+          duration={duration}
+          isPlaying={isPlaying}
+          handleAudioPlay={handleAudioPlay}
+          handleAudioSeek={(time) => {
+            if (currentAudio && duration > 0) {
+              currentAudio.currentTime = time;
+              setCurrentTime(time);
+            }
+          }}
+          AudioPlayer={AudioPlayer}
+          processedCurrentTime={processedCurrentTime}
+          processedDuration={processedDuration}
+          processedAudioPlaying={processedAudioPlaying}
+          handleProcessedAudioPlay={handleProcessedAudioPlay}
+          handleProcessedAudioSeek={(time) => {
+            if (processedCurrentAudio && processedDuration > 0) {
+              processedCurrentAudio.currentTime = time;
+              setProcessedCurrentTime(time);
+            }
+          }}
+          selectedAudioSource={selectedAudioSource}
+          setSelectedAudioSource={setSelectedAudioSource}
+          selectedVoice={selectedVoice}
         />
 
       {/* ================================================ */}

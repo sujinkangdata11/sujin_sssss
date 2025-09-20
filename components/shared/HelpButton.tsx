@@ -14,7 +14,7 @@ const HelpButton: React.FC<HelpButtonProps> = ({
   helpContent,
   title = "도움이 필요하신가요?",
   stepName = "영상분석",
-  checklistTitle = "영상 분석이 가능한 경우",
+  checklistTitle = "이 기능이 가능한 경우",
   checklistContent,
   contactMessage
 }) => {

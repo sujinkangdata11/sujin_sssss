@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '../InfoShorts.module.css';
 import HelpButton from '../../shared/HelpButton';
 
@@ -14,6 +14,23 @@ interface Step7Props {
   extractedKeywords: string;
   scrollToColumn: (columnRef: React.RefObject<HTMLDivElement>) => void;
   keywordExtractionError: string;
+  // 6단계 음성 재생 관련 props
+  generatedAudio: ArrayBuffer | null;
+  processedAudio: ArrayBuffer | null;
+  currentTime: number;
+  duration: number;
+  isPlaying: boolean;
+  handleAudioPlay: () => void;
+  handleAudioSeek: (time: number) => void;
+  AudioPlayer: React.ComponentType<any>;
+  processedCurrentTime: number;
+  processedDuration: number;
+  processedAudioPlaying: boolean;
+  handleProcessedAudioPlay: () => void;
+  handleProcessedAudioSeek: (time: number) => void;
+  selectedAudioSource: string;
+  setSelectedAudioSource: (source: string) => void;
+  selectedVoice: string;
 }
 
 const Step7: React.FC<Step7Props> = ({
@@ -27,8 +44,49 @@ const Step7: React.FC<Step7Props> = ({
   isExtractingKeywords,
   extractedKeywords,
   scrollToColumn,
-  keywordExtractionError
+  keywordExtractionError,
+  // 6단계 음성 재생 관련 props
+  generatedAudio,
+  processedAudio,
+  currentTime,
+  duration,
+  isPlaying,
+  handleAudioPlay,
+  handleAudioSeek,
+  AudioPlayer,
+  processedCurrentTime,
+  processedDuration,
+  processedAudioPlaying,
+  handleProcessedAudioPlay,
+  handleProcessedAudioSeek,
+  selectedAudioSource,
+  setSelectedAudioSource,
+  selectedVoice
 }) => {
+  // 6단계 음성 재생 관련 로직 활용
+  const hasGeneratedAudio = generatedAudio !== null;
+  const hasProcessedAudio = processedAudio !== null;
+  const youtubeIframeRef = useRef<HTMLIFrameElement>(null);
+
+  const getMessageText = () => {
+    return "이전 단계에서 음성을 생성하세요";
+  };
+
+  // 7단계 특정 YouTube 영상과 동기화된 재생
+  const handleStep7SyncPlay = () => {
+    // 음성 재생
+    if (selectedAudioSource === 'original' && hasGeneratedAudio) {
+      handleAudioPlay();
+    } else if (selectedAudioSource === 'processed' && hasProcessedAudio) {
+      handleProcessedAudioPlay();
+    }
+
+    // 7단계 YouTube 영상 무음 재생
+    if (youtubeIframeRef.current) {
+      // postMessage로 YouTube iframe에 재생 명령 전송
+      youtubeIframeRef.current.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    }
+  };
 
   return (
     <div className="step-card" style={{
@@ -64,7 +122,7 @@ const Step7: React.FC<Step7Props> = ({
         stepName="관련영상 찾기"
         helpContent={
           <div>
-            <h4 style={{ marginTop: 0 }}>❌ 영상 분석이 불가능한 경우</h4>
+            <h4 style={{ marginTop: 0 }}>❌ 이 기능이 불가능한 경우</h4>
             <p>1. Chrome 외 브라우저 [ 사파리, 마이크로소프트 엣지, 네이버 브라우저, 웨일, 파이어폭스 등 브라우저 ]</p>
             <div style={{ margin: '0.5rem 0', display: 'flex', justifyContent: 'flex-start', gap: '10px' }}>
               <img
@@ -92,11 +150,163 @@ const Step7: React.FC<Step7Props> = ({
                 }}
               />
             </div>
-            <p>2. 60초 이상 긴 영상</p>
+            <p>2. 3번 생성을 하지 않은 경우</p>
           </div>
         }
       />
       
+      {/* 새로운 빈 블럭 */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+        marginBottom: '2rem'
+      }}>
+        <div style={{
+          background: 'white',
+          borderRadius: '16px',
+          padding: '1.5rem 2rem',
+          width: '800px',
+          minHeight: '100px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          {youtubeVideoId ? (
+            <>
+              <h3 style={{
+                fontWeight: 'bold',
+                color: '#333',
+                fontSize: '18px',
+                margin: '0 0 20px 0',
+                textAlign: 'center'
+              }}>
+                분석한 쇼츠 영상
+              </h3>
+
+              {/* 오디오 소스 선택 드롭다운 */}
+              <div style={{
+                marginBottom: '20px',
+                display: 'flex',
+                justifyContent: 'center'
+              }}>
+                <select
+                  value={selectedAudioSource}
+                  style={{
+                    backgroundColor: 'white',
+                    color: '#333',
+                    border: '1px solid #ccc',
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    fontSize: '14px',
+                    outline: 'none'
+                  }}
+                  onChange={(e) => {
+                    setSelectedAudioSource(e.target.value);
+                  }}
+                >
+                  <option value="original">1. 원본음성</option>
+                  <option value="processed">2. 무음제거음성</option>
+                </select>
+              </div>
+
+              {/* 6단계와 동일한 AudioPlayer 컴포넌트 사용 */}
+              {hasGeneratedAudio && selectedAudioSource === 'original' && (
+                <AudioPlayer
+                  title="원본 음성"
+                  audioBuffer={generatedAudio}
+                  isPlaying={isPlaying}
+                  currentTime={currentTime}
+                  duration={duration}
+                  onPlay={handleStep7SyncPlay}
+                  onSeek={handleAudioSeek}
+                  downloadFileName={`${selectedVoice}-original-audio.wav`}
+                  progressColor="#007bff"
+                />
+              )}
+
+              {hasProcessedAudio && selectedAudioSource === 'processed' && (
+                <AudioPlayer
+                  title="무음제거 음성"
+                  audioBuffer={processedAudio}
+                  isPlaying={processedAudioPlaying}
+                  currentTime={processedCurrentTime}
+                  duration={processedDuration}
+                  onPlay={handleStep7SyncPlay}
+                  onSeek={handleProcessedAudioSeek}
+                  downloadFileName={`${selectedVoice}-processed-audio.wav`}
+                  progressColor="#28a745"
+                />
+              )}
+
+              {!hasProcessedAudio && selectedAudioSource === 'processed' && (
+                <div style={{
+                  width: '600px',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '12px',
+                  padding: '40px 20px',
+                  marginBottom: '20px',
+                  border: '1px solid #e9ecef',
+                  textAlign: 'center'
+                }}>
+                  <div style={{
+                    fontSize: '16px',
+                    color: '#666',
+                    fontFamily: 'system-ui, -apple-system, sans-serif'
+                  }}>
+                    {getMessageText()}
+                  </div>
+                </div>
+              )}
+
+              {!hasGeneratedAudio && selectedAudioSource === 'original' && (
+                <div style={{
+                  width: '600px',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '12px',
+                  padding: '40px 20px',
+                  marginBottom: '20px',
+                  border: '1px solid #e9ecef',
+                  textAlign: 'center'
+                }}>
+                  <div style={{
+                    fontSize: '16px',
+                    color: '#666',
+                    fontFamily: 'system-ui, -apple-system, sans-serif'
+                  }}>
+                    {getMessageText()}
+                  </div>
+                </div>
+              )}
+
+
+              <iframe
+                ref={youtubeIframeRef}
+                width="315"
+                height="560"
+                src={`https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1&modestbranding=1&rel=0&showinfo=0&controls=1&iv_load_policy=3&fs=1&disablekb=1&autohide=1&color=white&theme=light&cc_load_policy=0&hl=ko&origin=${window.location.origin}&mute=1`}
+                title="YouTube Shorts Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{
+                  borderRadius: '12px'
+                }}
+              />
+            </>
+          ) : (
+            <div style={{
+              color: '#666',
+              fontSize: '16px',
+              textAlign: 'center'
+            }}>
+              분석할 쇼츠 영상을 먼저 입력해주세요.
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="sixth-column" ref={sixthColumnRef} style={{
         display: 'flex',
         flexDirection: 'column',

@@ -244,7 +244,7 @@ const Step6: React.FC<Step6Props> = ({
         stepName="자막생성"
         helpContent={
           <div>
-            <h4 style={{ marginTop: 0 }}>❌ 영상 분석이 불가능한 경우</h4>
+            <h4 style={{ marginTop: 0 }}>❌ 이 기능이 불가능한 경우</h4>
             <p>1. Chrome 외 브라우저 [ 사파리, 마이크로소프트 엣지, 네이버 브라우저, 웨일, 파이어폭스 등 브라우저 ]</p>
             <div style={{ margin: '0.5rem 0', display: 'flex', justifyContent: 'flex-start', gap: '10px' }}>
               <img
@@ -272,7 +272,7 @@ const Step6: React.FC<Step6Props> = ({
                 }}
               />
             </div>
-            <p>2. 60초 이상 긴 영상</p>
+            <p>2. 1000자 이상의 긴 글, 또는 10자 이하의 분량이 적은 글</p>
           </div>
         }
       />
@@ -291,15 +291,32 @@ const Step6: React.FC<Step6Props> = ({
           padding: '20px',
           width: '400px'
         }}>
-          <h3 style={{ 
-            fontSize: '18px', 
-            fontWeight: 'bold', 
-            color: '#333d4b', 
-            marginBottom: '16px',
-            textAlign: 'center'
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '16px'
           }}>
-            스크립트 설정
-          </h3>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 'bold',
+              color: '#333d4b',
+              margin: 0,
+              flex: 1,
+              textAlign: 'center'
+            }}>
+              스크립트 설정
+            </h3>
+            <div style={{
+              fontSize: '14px',
+              color: '#666',
+              fontWeight: '500',
+              minWidth: '100px',
+              textAlign: 'right'
+            }}>
+              공백포함 {scriptText.length}자
+            </div>
+          </div>
           <div>
             <textarea
               value={scriptText}
@@ -608,7 +625,10 @@ const Step6: React.FC<Step6Props> = ({
       {/* 음성 생성 결과 블럭 */}
       <div style={{
         width: '800px',
-        margin: '20px auto 0 auto'
+        margin: '20px auto 0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
       }}>
 
             {isGeneratingAudio && <LoadingMessage type="voice" />}
@@ -632,7 +652,8 @@ const Step6: React.FC<Step6Props> = ({
                 padding: '20px',
                 background: '#e8f4f8',
                 border: '1px solid #bee5eb',
-                borderRadius: '12px'
+                borderRadius: '12px',
+                width: '600px'
               }}>
                 <div style={{
                   fontSize: '18px',
@@ -725,17 +746,19 @@ const Step6: React.FC<Step6Props> = ({
                 </div>
 
                 {processedAudio && (
-                  <AudioPlayer
-                    title="무음제거된 음성"
-                    audioBuffer={processedAudio}
-                    isPlaying={processedAudioPlaying}
-                    currentTime={processedCurrentTime}
-                    duration={processedDuration}
-                    onPlay={handleProcessedAudioPlay}
-                    onSeek={handleProcessedAudioSeek}
-                    downloadFileName={`processed-${selectedVoice}-audio.wav`}
-                    progressColor="rgb(98, 193, 177)"
-                  />
+                  <div style={{ marginLeft: '-20px', marginTop: '20px' }}>
+                    <AudioPlayer
+                      title="무음제거된 음성"
+                      audioBuffer={processedAudio}
+                      isPlaying={processedAudioPlaying}
+                      currentTime={processedCurrentTime}
+                      duration={processedDuration}
+                      onPlay={handleProcessedAudioPlay}
+                      onSeek={handleProcessedAudioSeek}
+                      downloadFileName={`processed-${selectedVoice}-audio.wav`}
+                      progressColor="rgb(98, 193, 177)"
+                    />
+                  </div>
                 )}
               </div>
             )}
@@ -746,7 +769,8 @@ const Step6: React.FC<Step6Props> = ({
                 padding: '20px',
                 background: '#fff3cd',
                 border: '1px solid #ffeaa7',
-                borderRadius: '12px'
+                borderRadius: '12px',
+                width: '600px'
               }}>
                 <div style={{
                   fontSize: '18px',

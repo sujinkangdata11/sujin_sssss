@@ -179,7 +179,7 @@ const Step3: React.FC<Step3Props> = ({
         stepName="영상분석"
         helpContent={
           <div>
-            <h4 style={{ marginTop: 0 }}>❌ 영상 분석이 불가능한 경우</h4>
+            <h4 style={{ marginTop: 0 }}>❌ 이 기능이 불가능한 경우</h4>
             <p>1. Chrome 외 브라우저 [ 사파리, 마이크로소프트 엣지, 네이버 브라우저, 웨일, 파이어폭스 등 브라우저 ]</p>
             <div style={{ margin: '0.5rem 0', display: 'flex', justifyContent: 'flex-start', gap: '10px' }}>
               <img
