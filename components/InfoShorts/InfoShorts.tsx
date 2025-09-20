@@ -166,6 +166,7 @@ const InfoShorts: React.FC<InfoShortsProps> = ({ language }) => {
   const [showSidebar, setShowSidebar] = useState(true);
   const [customPrompt, setCustomPrompt] = useState('');
   const [apiKey, setApiKey] = useState('');
+
   const [uploadedFiles, setUploadedFiles] = useState({
     example1: null,
     example2: null,
@@ -326,7 +327,7 @@ ${examplesText}
         rewritePrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,
-        apiKey,
+        apiKey.trim(),
       );
 
       console.log('재작성 응답:', response);
@@ -593,7 +594,7 @@ ${allText}
         analysisPrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,
-        apiKey,
+        apiKey.trim(),
       );
 
       console.log('분석 응답:', response);
@@ -651,7 +652,7 @@ ${referenceContent}
         analysisPrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,
-        apiKey,
+        apiKey.trim(),
       );
 
       console.log('분석 응답2:', response);
@@ -709,7 +710,7 @@ ${analysisContent}
         keywordPrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,
-        apiKey,
+        apiKey.trim(),
       );
 
       console.log('키워드 추출 응답:', response);
@@ -1253,7 +1254,7 @@ ${referenceContent}
         analysisPrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,
-        apiKey,
+        apiKey.trim(),
       );
 
       console.log('분석 응답3:', response);
@@ -1403,7 +1404,7 @@ ${referenceContent}
           setVoiceSpeed={setVoiceSpeed}
           voicePitch={voicePitch}
           setVoicePitch={setVoicePitch}
-          handleGenerateAudio={() => {
+          handleGenerateAudio={async () => {
             if (!scriptText.trim()) {
               alert('대사를 먼저 입력해주세요.');
               return;
@@ -1421,10 +1422,11 @@ ${referenceContent}
               .replace(/[@#$%^&*()]/g, '')
               .replace(/:\s*:/g, ':');
             
+            const actualApiKey = apiKey.trim();
             generateVoice({
               text: cleanedText,
               userVoice: selectedVoice,
-              apiKey: apiKey.trim()
+              apiKey: actualApiKey
             }).then(async (result) => {
               if (result.success && result.audioBuffer) {
                 setGeneratedAudio(result.audioBuffer);

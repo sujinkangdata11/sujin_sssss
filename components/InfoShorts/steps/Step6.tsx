@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../InfoShorts.module.css';
 import { VOICE_CONFIGS } from '../tts/voiceMapping';
+import HelpButton from '../../shared/HelpButton';
 
 interface Step6Props {
   currentStep: number;
@@ -239,6 +240,42 @@ const Step6: React.FC<Step6Props> = ({
       })(),
       transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
     }}>
+      <HelpButton
+        stepName="자막생성"
+        helpContent={
+          <div>
+            <h4 style={{ marginTop: 0 }}>❌ 영상 분석이 불가능한 경우</h4>
+            <p>1. Chrome 외 브라우저 [ 사파리, 마이크로소프트 엣지, 네이버 브라우저, 웨일, 파이어폭스 등 브라우저 ]</p>
+            <div style={{ margin: '0.5rem 0', display: 'flex', justifyContent: 'flex-start', gap: '10px' }}>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/5/52/Safari_browser_logo.svg"
+                alt="Safari Browser"
+                style={{
+                  width: '32px',
+                  height: '32px'
+                }}
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg"
+                alt="Microsoft Edge Browser"
+                style={{
+                  width: '32px',
+                  height: '32px'
+                }}
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg"
+                alt="Firefox Browser"
+                style={{
+                  width: '32px',
+                  height: '32px'
+                }}
+              />
+            </div>
+            <p>2. 60초 이상 긴 영상</p>
+          </div>
+        }
+      />
 
       {/* 스크립트 설정 블럭 + 음성 타입 선택 블럭을 가로로 배치 */}
       <div style={{

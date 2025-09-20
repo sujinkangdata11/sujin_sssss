@@ -72,59 +72,21 @@ const Step1: React.FC<Step1Props> = ({
     monthly: []
   });
 
-  // 더미 랭킹 데이터 (백업용)
-  const dummyRankingData: RankingData[] = [
-    {
-      rank: 1, change: '▲9', title: 'Rock ✓ YA😴Body ✓ (⚠Don\'t try this⚠) #Shorts',
-      tags: ['#Shorts', '#trending'], date: '2025.08.29', views: '+20,911,279',
-      channel: { name: '치단빈 Cha Da...', subs: '9,800,000', avatar: '👤' }
+  // 스켈레톤 로딩 데이터 (실제 데이터 구조와 일치하는 플레이스홀더)
+  const skeletonRankingData: RankingData[] = Array.from({ length: 10 }, (_, i) => ({
+    rank: i + 1,
+    change: '',
+    title: '', // 스켈레톤에서는 빈 문자열
+    tags: [],
+    date: '',
+    views: '',
+    channel: {
+      name: '', // 스켈레톤에서는 빈 문자열
+      subs: '',
+      avatar: ''
     },
-    {
-      rank: 2, change: '▼1', title: 'MENTE MÁ - Nakama & Mc Staff | Dance Cover #krstudio',
-      tags: ['#krstudio'], date: '2025.08.27', views: '+17,477,547',
-      channel: { name: 'KrStudio [원...', subs: '563,000', avatar: '🎬' }
-    },
-    {
-      rank: 3, change: '▲1', title: '혼한 아이돌 연습생이 부르는 HUNTR/X - Golden 레전드 뽑은ㄷㄷ',
-      tags: ['#추니그룹', '#레단해'], date: '2025.07.19', views: '+10,717,557',
-      channel: { name: 'SOONIGROUP...', subs: '549,000', avatar: '👥' }
-    },
-    {
-      rank: 4, change: 'NEW', title: '버닝 파이어는 연주 소리가 진짜일까?? #피아노 #피아노연주',
-      tags: ['#피아노', '#피아노연주'], date: '2025.09.02', views: '+8,460,808',
-      channel: { name: '1분간박', subs: '15,700', avatar: '🎹' }
-    },
-    {
-      rank: 5, change: '-', title: '감치가 \'HUNTR/X - GOLDEN\'을 부르는 외국인 룸메이트.. 남지가 이 고를이 가능하다고..?',
-      tags: ['#huntrx', '#golden', '#reaction'], date: '2025.07.31', views: '+8,437,023',
-      channel: { name: '오명화 Ohye...', subs: '558,000', avatar: '👩' }
-    },
-    {
-      rank: 6, change: '▲2', title: '신나는 댄스 챌린지 #dance #viral',
-      tags: ['#dance', '#viral'], date: '2025.08.30', views: '+7,234,567',
-      channel: { name: '댄스킹...', subs: '2,100,000', avatar: '💃' }
-    },
-    {
-      rank: 7, change: '▼3', title: '맛집 리뷰 솔직후기 #foodie #review',
-      tags: ['#foodie', '#review'], date: '2025.08.28', views: '+6,789,012',
-      channel: { name: '맛집탐험가...', subs: '890,000', avatar: '🍴' }
-    },
-    {
-      rank: 8, change: 'NEW', title: '펫샵에서 만난 귀여운 강아지들 #pets #cute',
-      tags: ['#pets', '#cute'], date: '2025.09.01', views: '+5,432,109',
-      channel: { name: '펫러버...', subs: '670,000', avatar: '🐕' }
-    },
-    {
-      rank: 9, change: '▲1', title: '게임 하이라이트 모음 #gaming #highlight',
-      tags: ['#gaming', '#highlight'], date: '2025.08.29', views: '+4,876,543',
-      channel: { name: '게임마스터...', subs: '1,200,000', avatar: '🎮' }
-    },
-    {
-      rank: 10, change: '-', title: '여행 브이로그 제주도 편 #travel #vlog',
-      tags: ['#travel', '#vlog'], date: '2025.08.26', views: '+3,654,321',
-      channel: { name: '여행유튜버...', subs: '450,000', avatar: '✈️' }
-    }
-  ];
+    isSkeleton: true // 스켈레톤 식별용 플래그
+  } as RankingData));
 
   // 실제 데이터에서 사용 가능한 날짜들 추출
   const extractAvailableDates = (channels: ListupChannelData[]) => {
@@ -241,12 +203,12 @@ const Step1: React.FC<Step1Props> = ({
           <span>{et('explorationTitle')}</span>
           <span style={{
             fontSize: '12px',
-            color: rankingData.length > 0 ? '#28a745' : '#dc3545',
+            color: rankingData.length > 0 ? '#28a745' : '#3b82f6',
             fontWeight: 'bold'
           }}>
             {rankingData.length > 0
               ? `✅ ${rankingData.length}${et('statusDataConnected')}`
-              : `❌ ${et('statusDummyData')}`
+              : `${et('statusDummyData')}`
             }
           </span>
         </div>
@@ -355,15 +317,15 @@ const Step1: React.FC<Step1Props> = ({
           )}
           <RankingTable
             data={(() => {
-              // 실제 API 데이터 우선, 없으면 더미 데이터
-              const data = rankingData.length > 0 ? rankingData : dummyRankingData;
+              // 실제 API 데이터 우선, 없으면 스켈레톤 데이터
+              const data = rankingData.length > 0 ? rankingData : skeletonRankingData;
               const startIndex = (currentRankingPage - 1) * 10;
               const endIndex = startIndex + 10;
               return data.slice(startIndex, endIndex);
             })()}
             currentPage={currentRankingPage}
             onPageChange={setCurrentRankingPage}
-            totalPages={Math.ceil((rankingData.length > 0 ? rankingData.length : dummyRankingData.length) / 10)}
+            totalPages={Math.ceil((rankingData.length > 0 ? rankingData.length : skeletonRankingData.length) / 10)}
           />
         </div>
       ),

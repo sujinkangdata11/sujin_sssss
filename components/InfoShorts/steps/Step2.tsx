@@ -1,4 +1,6 @@
 import React from 'react';
+import HelpButton from '../../shared/HelpButton';
+import DeveloperApiButton from '../../shared/DeveloperApiButton';
 
 interface Step2Props {
   currentStep: number;
@@ -45,7 +47,34 @@ const Step2: React.FC<Step2Props> = ({
       })(),
       transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
     }}>
-      
+      <HelpButton
+        stepName="Gemini 키 입력"
+        checklistTitle={
+          <>
+            Gemini API 키 를 얻는 것이 어려울 경우,<br />
+            아래 개발자가 미리 등록한 API를 쓰세요
+          </>
+        }
+        checklistContent={
+          <>
+            1. 주의 ㅣ 동시에 여러명이 사용할 경우 동작이 안될 수 있음<br />
+            2. 주의 ㅣ API 할당량이 소요되면 동작이 안될 수 있음<br />
+            <div style={{ marginTop: '1rem', textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
+              <DeveloperApiButton
+                onApiKeySet={(apiKey) => setApiKey(apiKey)}
+                buttonText="개발자 API 키 사용하기"
+              />
+            </div>
+          </>
+        }
+        contactMessage={
+          <>
+            Gemini 키 관련 궁금하신 것이 있거나 오류가 있다면,<br />
+            스크린샷(선택사항)과 오류내용을 보내주세요.
+          </>
+        }
+      />
+
       {/* Gemini API Key 입력 섹션 */}
       <div style={{ 
         display: 'flex',
@@ -109,14 +138,20 @@ const Step2: React.FC<Step2Props> = ({
           }}>
             <input
               id="apiKey2"
-              type="password"
+              type={apiKey.startsWith('AIzaSy') ? 'text' : 'password'}
+              readOnly={apiKey.startsWith('AIzaSy') && apiKey.length > 30}
               placeholder="Enter your Gemini API key..."
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
+              value={apiKey.startsWith('AIzaSy') && apiKey.length > 30 ? '개발자 api키를 입력완료' : apiKey}
+              onChange={(e) => {
+                // 개발자 키 사용 상태가 아닐 때만 변경 허용
+                if (!(apiKey.startsWith('AIzaSy') && apiKey.length > 30)) {
+                  setApiKey(e.target.value);
+                }
+              }}
               style={{
                 width: '340px',
-                backgroundColor: 'rgb(249, 250, 251)',
-                border: '0.5px solid rgb(124, 58, 237)',
+                backgroundColor: (apiKey.startsWith('AIzaSy') && apiKey.length > 30) ? '#f0f9ff' : 'rgb(249, 250, 251)',
+                border: (apiKey.startsWith('AIzaSy') && apiKey.length > 30) ? '1px solid #10b981' : '0.5px solid rgb(124, 58, 237)',
                 borderRadius: '0.75rem',
                 boxShadow: 'var(--shadow-sm)',
                 padding: '0.875rem var(--spacing-4)',

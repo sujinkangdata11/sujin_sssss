@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import styles from '../InfoShorts.module.css';
+import HelpButton from '../../shared/HelpButton';
 
 // YouTube iframe API 타입 선언
 declare global {
@@ -174,6 +175,42 @@ const Step3: React.FC<Step3Props> = ({
       })(),
       transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
     }}>
+      <HelpButton
+        stepName="영상분석"
+        helpContent={
+          <div>
+            <h4 style={{ marginTop: 0 }}>❌ 영상 분석이 불가능한 경우</h4>
+            <p>1. Chrome 외 브라우저 [ 사파리, 마이크로소프트 엣지, 네이버 브라우저, 웨일, 파이어폭스 등 브라우저 ]</p>
+            <div style={{ margin: '0.5rem 0', display: 'flex', justifyContent: 'flex-start', gap: '10px' }}>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/5/52/Safari_browser_logo.svg"
+                alt="Safari Browser"
+                style={{
+                  width: '32px',
+                  height: '32px'
+                }}
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg"
+                alt="Microsoft Edge Browser"
+                style={{
+                  width: '32px',
+                  height: '32px'
+                }}
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg"
+                alt="Firefox Browser"
+                style={{
+                  width: '32px',
+                  height: '32px'
+                }}
+              />
+            </div>
+            <p>2. 60초 이상 긴 영상</p>
+          </div>
+        }
+      />
       {/* 비디오 컨테이너 - 절대 위치로 제목 옆에 배치 */}
       <div style={{
         position: 'absolute',

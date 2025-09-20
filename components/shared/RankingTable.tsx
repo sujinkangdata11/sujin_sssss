@@ -35,6 +35,7 @@ export interface RankingData {
     subs: string;
     avatar: string;
   };
+  isSkeleton?: boolean; // 스켈레톤 로딩 상태 표시용
 }
 
 export interface RankingTableProps {
@@ -50,6 +51,22 @@ const RankingTable: React.FC<RankingTableProps> = ({
   onPageChange,
   totalPages
 }) => {
+  // 스켈레톤 애니메이션 CSS 추가 (채널파인더와 동일한 shimmer 효과)
+  React.useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shimmer {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
   // 사이드바 상태 관리
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RankingData | null>(null);
@@ -361,7 +378,7 @@ const RankingTable: React.FC<RankingTableProps> = ({
         onMouseLeave={(e) => {
           e.currentTarget.style.backgroundColor = 'transparent';
         }}
-        onClick={() => handleItemClick(item)}>
+        onClick={() => !item.isSkeleton && handleItemClick(item)}>
           {/* 순위 */}
           <div style={{ textAlign: 'center' }}>
             <span style={{ fontSize: '14px', fontWeight: '600' }}>{displayRank}</span>
@@ -373,26 +390,30 @@ const RankingTable: React.FC<RankingTableProps> = ({
               width: '80px',
               height: '80px',
               borderRadius: '50%',
-              backgroundColor: '#d1d5db',
+              background: item.isSkeleton ? 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)' : '#d1d5db',
+              backgroundSize: item.isSkeleton ? '200% 100%' : 'auto',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '6px',
               color: '#6b7280',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              animation: item.isSkeleton ? 'shimmer 1.5s infinite' : 'none'
             }}>
-              {item.channel.avatar && item.channel.avatar !== '👤' ? (
-                <img
-                  src={item.channel.avatar}
-                  alt={item.channel.name}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover'
-                  }}
-                />
-              ) : (
-                '👤'
+              {item.isSkeleton ? '' : (
+                item.channel.avatar && item.channel.avatar !== '👤' ? (
+                  <img
+                    src={item.channel.avatar}
+                    alt={item.channel.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                ) : (
+                  '👤'
+                )
               )}
             </div>
             <div>
@@ -400,9 +421,15 @@ const RankingTable: React.FC<RankingTableProps> = ({
                 fontSize: '15px',
                 fontWeight: '500',
                 color: '#111827',
-                textAlign: 'center'
+                textAlign: 'center',
+                width: '80px',
+                height: item.isSkeleton ? '16px' : 'auto',
+                background: item.isSkeleton ? 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)' : 'transparent',
+                backgroundSize: item.isSkeleton ? '200% 100%' : 'auto',
+                borderRadius: item.isSkeleton ? '4px' : '0',
+                animation: item.isSkeleton ? 'shimmer 1.5s infinite' : 'none'
               }}>
-                {item.channel.name}
+                {item.isSkeleton ? '' : item.channel.name}
               </div>
             </div>
           </div>
@@ -412,23 +439,36 @@ const RankingTable: React.FC<RankingTableProps> = ({
             fontSize: '15px',
             fontWeight: '500',
             color: '#6b7280',
-            textAlign: 'center'
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center'
           }}>
-            {(() => {
-              // 구독자를 한국 숫자 단위로 포맷팅
-              const parseSubscriberCount = (subText: string): number => {
-                const cleanText = subText.replace(/[,]/g, '');
-                if (cleanText.includes('M')) {
-                  return parseFloat(cleanText.replace('M', '')) * 1000000;
-                } else if (cleanText.includes('K')) {
-                  return parseFloat(cleanText.replace('K', '')) * 1000;
-                }
-                return parseInt(cleanText) || 0;
-              };
+            {item.isSkeleton ? (
+              <div style={{
+                width: '60px',
+                height: '16px',
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+                backgroundSize: '200% 100%',
+                borderRadius: '4px',
+                animation: 'shimmer 1.5s infinite'
+              }} />
+            ) : (
+              (() => {
+                // 구독자를 한국 숫자 단위로 포맷팅
+                const parseSubscriberCount = (subText: string): number => {
+                  const cleanText = subText.replace(/[,]/g, '');
+                  if (cleanText.includes('M')) {
+                    return parseFloat(cleanText.replace('M', '')) * 1000000;
+                  } else if (cleanText.includes('K')) {
+                    return parseFloat(cleanText.replace('K', '')) * 1000;
+                  }
+                  return parseInt(cleanText) || 0;
+                };
 
-              const subsCount = parseSubscriberCount(item.channel.subs);
-              return formatLocalizedNumber(subsCount, 'ko', '명');
-            })()}
+                const subsCount = parseSubscriberCount(item.channel.subs);
+                return formatLocalizedNumber(subsCount, 'ko', '명');
+              })()
+            )}
           </div>
 
           {/* 조회수 */}
@@ -436,23 +476,36 @@ const RankingTable: React.FC<RankingTableProps> = ({
             fontSize: '15px',
             fontWeight: '600',
             color: '#ef4444',
-            textAlign: 'center'
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center'
           }}>
-            {(() => {
-              // 조회수를 한국 숫자 단위로 포맷팅
-              const parseViews = (viewsText: string): number => {
-                const cleanText = viewsText.replace(/[+,]/g, '');
-                if (cleanText.includes('M')) {
-                  return parseFloat(cleanText.replace('M', '')) * 1000000;
-                } else if (cleanText.includes('K')) {
-                  return parseFloat(cleanText.replace('K', '')) * 1000;
-                }
-                return parseInt(cleanText) || 0;
-              };
+            {item.isSkeleton ? (
+              <div style={{
+                width: '70px',
+                height: '16px',
+                background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+                backgroundSize: '200% 100%',
+                borderRadius: '4px',
+                animation: 'shimmer 1.5s infinite'
+              }} />
+            ) : (
+              (() => {
+                // 조회수를 한국 숫자 단위로 포맷팅
+                const parseViews = (viewsText: string): number => {
+                  const cleanText = viewsText.replace(/[+,]/g, '');
+                  if (cleanText.includes('M')) {
+                    return parseFloat(cleanText.replace('M', '')) * 1000000;
+                  } else if (cleanText.includes('K')) {
+                    return parseFloat(cleanText.replace('K', '')) * 1000;
+                  }
+                  return parseInt(cleanText) || 0;
+                };
 
-              const viewsCount = parseViews(item.views);
-              return formatLocalizedNumber(viewsCount, 'ko', '회');
-            })()}
+                const viewsCount = parseViews(item.views);
+                return formatLocalizedNumber(viewsCount, 'ko', '회');
+              })()
+            )}
           </div>
 
           {/* 제목 */}
@@ -461,7 +514,8 @@ const RankingTable: React.FC<RankingTableProps> = ({
             <div style={{
               width: '180px',
               height: '100px',
-              backgroundColor: '#d1d5db',
+              background: item.isSkeleton ? 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)' : '#d1d5db',
+              backgroundSize: item.isSkeleton ? '200% 100%' : 'auto',
               borderRadius: '4px',
               display: 'flex',
               alignItems: 'center',
@@ -469,20 +523,23 @@ const RankingTable: React.FC<RankingTableProps> = ({
               fontSize: '8px',
               color: '#6b7280',
               marginBottom: '4px',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              animation: item.isSkeleton ? 'shimmer 1.5s infinite' : 'none'
             }}>
-              {item.thumbnail ? (
-                <img
-                  src={item.thumbnail}
-                  alt={item.title}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover'
-                  }}
-                />
-              ) : (
-                '썸네일'
+              {item.isSkeleton ? '' : (
+                item.thumbnail ? (
+                  <img
+                    src={item.thumbnail}
+                    alt={item.title}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                ) : (
+                  '썸네일'
+                )
               )}
             </div>
 
@@ -496,9 +553,14 @@ const RankingTable: React.FC<RankingTableProps> = ({
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                width: '180px'
+                width: '180px',
+                height: item.isSkeleton ? '16px' : 'auto',
+                background: item.isSkeleton ? 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)' : 'transparent',
+                backgroundSize: item.isSkeleton ? '200% 100%' : 'auto',
+                borderRadius: item.isSkeleton ? '4px' : '0',
+                animation: item.isSkeleton ? 'shimmer 1.5s infinite' : 'none'
               }}>
-                {item.title}
+                {item.isSkeleton ? '' : item.title}
               </div>
               <div style={{
                 fontSize: '13px',

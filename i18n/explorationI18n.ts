@@ -289,8 +289,8 @@ export const explorationTranslations = {
     es: 'datos conectados', fr: 'données connectées', de: 'Daten verbunden', nl: 'data verbonden', pt: 'dados conectados', ru: 'данные подключены'
   },
   statusDummyData: {
-    en: 'Using dummy data', ko: '더미 데이터 사용중', ja: 'ダミーデータ使用中', zh: '使用虚拟数据', hi: 'डमी डेटा का उपयोग',
-    es: 'Usando datos ficticios', fr: 'Utilisation de données fictives', de: 'Dummy-Daten verwenden', nl: 'Dummy-gegevens gebruiken', pt: 'Usando dados fictícios', ru: 'Использование фиктивных данных'
+    en: '🥶 Connecting to data..', ko: '🥶 데이터 연결 중..', ja: '🥶 データ接続中..', zh: '🥶 数据连接中..', hi: '🥶 डेटा कनेक्ट हो रहा है..',
+    es: '🥶 Conectando a datos..', fr: '🥶 Connexion aux données..', de: '🥶 Datenverbindung..', nl: '🥶 Verbinding met data..', pt: '🥶 Conectando dados..', ru: '🥶 Подключение к данным..'
   },
   statusDevelopment: {
     en: 'Under Development | Available | Completion scheduled for September 30', ko: '개발중 ㅣ 사용가능 ㅣ 9월 30일 완료예정', ja: '開発中 ㅣ 利用可能 ㅣ 9月30日完成予定', zh: '开发中 ㅣ 可使用 ㅣ 9月30日完成预定', hi: 'विकास में ㅣ उपलब्ध ㅣ 30 सितंबर को पूर्ण होने की योजना',
