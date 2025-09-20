@@ -138,20 +138,20 @@ const Step2: React.FC<Step2Props> = ({
           }}>
             <input
               id="apiKey2"
-              type={apiKey.startsWith('AIzaSy') ? 'text' : 'password'}
-              readOnly={apiKey.startsWith('AIzaSy') && apiKey.length > 30}
+              type={apiKey === 'DEVELOPER_API_KEY_ACTIVE' ? 'text' : 'password'}
+              readOnly={apiKey === 'DEVELOPER_API_KEY_ACTIVE'}
               placeholder="Enter your Gemini API key..."
-              value={apiKey.startsWith('AIzaSy') && apiKey.length > 30 ? '개발자 api키를 입력완료' : apiKey}
+              value={apiKey === 'DEVELOPER_API_KEY_ACTIVE' ? '개발자 api키를 입력완료' : apiKey}
               onChange={(e) => {
                 // 개발자 키 사용 상태가 아닐 때만 변경 허용
-                if (!(apiKey.startsWith('AIzaSy') && apiKey.length > 30)) {
+                if (apiKey !== 'DEVELOPER_API_KEY_ACTIVE') {
                   setApiKey(e.target.value);
                 }
               }}
               style={{
                 width: '340px',
-                backgroundColor: (apiKey.startsWith('AIzaSy') && apiKey.length > 30) ? '#f0f9ff' : 'rgb(249, 250, 251)',
-                border: (apiKey.startsWith('AIzaSy') && apiKey.length > 30) ? '1px solid #10b981' : '0.5px solid rgb(124, 58, 237)',
+                backgroundColor: apiKey === 'DEVELOPER_API_KEY_ACTIVE' ? '#f0f9ff' : 'rgb(249, 250, 251)',
+                border: apiKey === 'DEVELOPER_API_KEY_ACTIVE' ? '1px solid #10b981' : '0.5px solid rgb(124, 58, 237)',
                 borderRadius: '0.75rem',
                 boxShadow: 'var(--shadow-sm)',
                 padding: '0.875rem var(--spacing-4)',

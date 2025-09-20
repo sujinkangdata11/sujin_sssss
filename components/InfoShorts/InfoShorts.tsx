@@ -167,6 +167,124 @@ const InfoShorts: React.FC<InfoShortsProps> = ({ language }) => {
   const [customPrompt, setCustomPrompt] = useState('');
   const [apiKey, setApiKey] = useState('');
 
+  // 🔑 키 관리 유틸리티 함수들
+  const isDeveloperKey = (key: string): boolean => {
+    return key === 'DEVELOPER_API_KEY_ACTIVE';
+  };
+
+  const getAllDeveloperKeys = async (): Promise<string[]> => {
+    try {
+      console.log('🔍 [KEY ROTATION] keys1.txt에서 모든 키 가져오기 시작...');
+
+      const timestamp = Date.now();
+      const apiKeysResponse = await fetch(`/keys1.txt?t=${timestamp}`, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+
+      if (!apiKeysResponse.ok) {
+        throw new Error('keys1.txt 파일을 가져올 수 없습니다.');
+      }
+
+      const apiKeysText = await apiKeysResponse.text();
+      const lines = apiKeysText.split('\n').filter(line => line.trim());
+
+      let allKeys: string[] = [];
+
+      for (const line of lines) {
+        if (line.startsWith('GEMINI_API_KEYS=')) {
+          const encryptedKeys = line.split('=')[1].split(',').map(key => key.trim().replace(/"/g, ''));
+
+          // 모든 키 복호화 (첫 1자리를 뒤로 이동)
+          const decryptedKeys = encryptedKeys.map(key => {
+            if (key.length < 1) return key;
+            const front1 = key.substring(0, 1);
+            const rest = key.substring(1);
+            return rest + front1;
+          });
+
+          allKeys = decryptedKeys;
+          break;
+        }
+      }
+
+      console.log(`✅ [KEY ROTATION] 총 ${allKeys.length}개의 키를 발견했습니다.`);
+      allKeys.forEach((key, index) => {
+        console.log(`🔑 [KEY ROTATION] 키 ${index + 1}: ${key.substring(0, 10)}...${key.slice(-4)}`);
+      });
+
+      return allKeys;
+    } catch (error) {
+      console.error('❌ [KEY ROTATION] getAllDeveloperKeys 실패:', error);
+      throw error;
+    }
+  };
+
+  // 🔄 키 로테이션이 포함된 API 호출 래퍼 함수
+  const generateContentWithKeyRotation = async (
+    prompt: string,
+    functionDeclarations: any[],
+    url: string,
+    currentApiKey: string
+  ) => {
+    console.log('🚀 [KEY ROTATION] API 호출 시작...');
+
+    // 개발자 키가 아니면 기존 방식으로 호출
+    if (!isDeveloperKey(currentApiKey)) {
+      console.log('🔑 [KEY ROTATION] 사용자 수동 입력 키 사용 - 기존 로직 적용');
+      return await generateContent(prompt, functionDeclarations, url, currentApiKey);
+    }
+
+    console.log('🔑 [KEY ROTATION] 개발자 키 감지 - 키 로테이션 로직 적용');
+
+    try {
+      // 모든 개발자 키 가져오기
+      const allKeys = await getAllDeveloperKeys();
+
+      if (allKeys.length === 0) {
+        throw new Error('사용 가능한 개발자 키가 없습니다.');
+      }
+
+      // 각 키를 순차적으로 시도
+      for (let i = 0; i < allKeys.length; i++) {
+        const keyToTry = allKeys[i];
+        const isLastKey = i === allKeys.length - 1;
+
+        console.log(`🔄 [KEY ROTATION] ${i + 1}/${allKeys.length} 키 시도 중... (${keyToTry.substring(0, 10)}...${keyToTry.slice(-4)})`);
+
+        try {
+          const result = await generateContent(prompt, functionDeclarations, url, keyToTry);
+          console.log(`✅ [KEY ROTATION] ${i + 1}번째 키로 성공! API 호출 완료`);
+          return result;
+        } catch (error: any) {
+          const errorMessage = error.message || error.toString();
+          console.log(`❌ [KEY ROTATION] ${i + 1}번째 키 실패:`, errorMessage);
+
+          if (isLastKey) {
+            // 마지막 키까지 실패한 경우 - 사용자에게 에러 메시지 표시
+            console.log('💥 [KEY ROTATION] 모든 키 시도 완료 - 사용자에게 에러 메시지 표시');
+            throw new Error('이 gemini 키는 할당량이 다 찼어요. 다른 Gemini 키를 입력해주세요');
+          } else {
+            // 마지막 키가 아니면 어떤 에러든 조용히 다음 키 시도
+            console.log(`🔄 [KEY ROTATION] ${i + 1}번째 키 실패 - 다음 키 시도... (에러 종류: ${errorMessage.slice(0, 50)}...)`);
+            continue;
+          }
+        }
+      }
+
+      // 이 코드는 실행되지 않아야 함
+      throw new Error('예상치 못한 오류가 발생했습니다.');
+
+    } catch (error: any) {
+      console.error('💥 [KEY ROTATION] generateContentWithKeyRotation 최종 실패:', error);
+      throw error;
+    }
+  };
+
   const [uploadedFiles, setUploadedFiles] = useState({
     example1: null,
     example2: null,
@@ -323,7 +441,7 @@ ${examplesText}
 
 위 예시들의 스타일을 참고해서 현재 대사를 다시 작성해주세요. 예시들의 톤, 문체, 표현 방식을 분석해서 동일한 스타일로 대사를 재작성해주세요. 각 예시의 분량만큼만 적어주세요. 즉, 공백포함 300자 이내로 적어주세요.`;
 
-      const response = await generateContent(
+      const response = await generateContentWithKeyRotation(
         rewritePrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,
@@ -457,13 +575,13 @@ ${examplesText}
       }
     ];
 
-    const resp = await generateContent(
+    const resp = await generateContentWithKeyRotation(
       isCustomMode
         ? modes[mode].prompt(customPrompt)
         : modes[mode].prompt,
       functionDeclarations,
       `https://www.youtube.com/watch?v=${youtubeVideoId}`,
-      apiKey,
+      apiKey.trim(),
     );
 
     console.log('응답 객체:', resp);
@@ -570,14 +688,14 @@ ${examplesText}
 
     setIsLoadingAnalysis(true);
     setSelectedAnalysisType(type);
-    
+
     const allText = timecodeList.map(item => item.text).join('\n');
     const languageMap = {
       '한국어': 'Korean',
-      '일본어': 'Japanese', 
+      '일본어': 'Japanese',
       '영어': 'English'
     };
-    
+
     const basePrompt = `다음은 YouTube 영상에서 추출한 내용입니다:
 
 ${allText}
@@ -590,7 +708,7 @@ ${allText}
 - ${specificPrompt}`;
 
     try {
-      const response = await generateContent(
+      const response = await generateContentWithKeyRotation(
         analysisPrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,
@@ -648,7 +766,7 @@ ${referenceContent}
 - ${specificPrompt}`;
 
     try {
-      const response = await generateContent(
+      const response = await generateContentWithKeyRotation(
         analysisPrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,
@@ -706,7 +824,7 @@ ${analysisContent}
 - 좋은 예: "윙포일", "글라이딩", "항공역학" vs 나쁜 예: "윙", "비행", "바람"`;
 
     try {
-      const response = await generateContent(
+      const response = await generateContentWithKeyRotation(
         keywordPrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,
@@ -1250,7 +1368,7 @@ ${referenceContent}
 - ${specificPrompt}`;
 
     try {
-      const response = await generateContent(
+      const response = await generateContentWithKeyRotation(
         analysisPrompt,
         [],
         `https://www.youtube.com/watch?v=${youtubeVideoId}`,

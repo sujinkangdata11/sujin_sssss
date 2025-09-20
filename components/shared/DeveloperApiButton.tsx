@@ -39,7 +39,7 @@ const DeveloperApiButton: React.FC<DeveloperApiButtonProps> = ({
           }]
         })
       });
-      return response.status !== 401 && response.status !== 403 && response.status !== 429;
+      return response.status !== 400 && response.status !== 401 && response.status !== 403 && response.status !== 429;
     } catch (error) {
       console.error('Gemini API key test failed:', error);
       return false;
@@ -95,14 +95,9 @@ const DeveloperApiButton: React.FC<DeveloperApiButtonProps> = ({
         throw new Error('사용 가능한 Gemini API 키가 없습니다.');
       }
 
-      // 작동하는 키 찾기 (키 로테이션)
-      const workingKey = await findWorkingGeminiKey(geminiApiKeys);
-
-      if (!workingKey) {
-        throw new Error('아.. 아쉽게도 이전 검색이 마지막 할당량이었어요.');
-      }
-
-      return workingKey;
+      // 첫 번째 키를 바로 반환 (실제 사용 시점에 키 로테이션 적용)
+      console.log('🔑 [DEVELOPER_KEY] 첫 번째 키 반환 (키 검증 없이):', geminiApiKeys[0].substring(0, 10) + '...');
+      return geminiApiKeys[0];
 
     } catch (error: any) {
       console.error('Failed to get developer API key:', error);
@@ -116,9 +111,9 @@ const DeveloperApiButton: React.FC<DeveloperApiButtonProps> = ({
     try {
       const apiKey = await getDeveloperApiKey();
       if (apiKey) {
-        // 실제 복호화된 키를 직접 전달
-        console.log('🔑 실제 API 키 전달:', apiKey);
-        onApiKeySet(apiKey);
+        // 특별한 개발자 키 표시용 값 전달
+        console.log('🔑 개발자 키 모드 활성화');
+        onApiKeySet('DEVELOPER_API_KEY_ACTIVE');
         setIsSuccess(true);
       }
     } catch (error: any) {
