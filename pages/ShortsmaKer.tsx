@@ -91,7 +91,6 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
           display: 'flex',
           justifyContent: 'center',
           marginBottom: '2rem',
-          borderBottom: '1px solid #e5e7eb',
           backgroundColor: 'rgba(255, 255, 255, 0.8)',
           borderRadius: '16px 16px 0 0',
           padding: '0 1rem'
