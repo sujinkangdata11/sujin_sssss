@@ -294,6 +294,32 @@ const Step7: React.FC<Step7Props> = ({
                   borderRadius: '12px'
                 }}
               />
+
+              {/* YouTube 다운로드 버튼 */}
+              <button
+                className="button generateButton"
+                onClick={() => {
+                  const downloadUrl = `https://ssyoutube.com/watch?v=${youtubeVideoId}`;
+                  window.open(downloadUrl, '_blank');
+                }}
+                style={{
+                  marginTop: '15px',
+                  width: '170px',
+                  fontSize: '15px',
+                  border: 'none',
+                  backgroundColor: 'rgb(124, 58, 237)',
+                  color: 'white',
+                  borderRadius: '12px'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgb(104, 48, 197)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgb(124, 58, 237)';
+                }}
+              >
+                📥 유튜브 다운로드
+              </button>
             </>
           ) : (
             <div style={{
