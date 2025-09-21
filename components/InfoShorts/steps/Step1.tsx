@@ -406,24 +406,16 @@ const Step1: React.FC<Step1Props> = ({
         maxHeight: '90vh'
       }}>
       {/* 개발중 안내 메시지 */}
-      <div style={{
-        fontSize: '15px',
-        color: '#dc3545',
-        textAlign: 'center',
-        marginBottom: '20px',
-        paddingTop: '20px'
-      }}>
-        {et('statusDevelopment')}
-      </div>
 
       {/* 제목 - 가로 중앙 정렬 */}
       <div style={{
-        fontSize: 'clamp(24px, 5vw, 32px)',
+        fontSize: '26px',
         fontWeight: 'bold',
         color: '#333d4b',
-        textAlign: 'center'
+        textAlign: 'center',
+        paddingTop: '20px'
       }}>
-        쇼츠링크를 입력하세요
+        쇼츠링크 입력하기
       </div>
 
       {/* URL 입력 폼 - 가로 중앙 정렬 */}

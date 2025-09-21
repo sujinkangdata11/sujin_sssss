@@ -292,10 +292,6 @@ export const explorationTranslations = {
     en: '🥶 Connecting to data..', ko: '🥶 데이터 연결 중..', ja: '🥶 データ接続中..', zh: '🥶 数据连接中..', hi: '🥶 डेटा कनेक्ट हो रहा है..',
     es: '🥶 Conectando a datos..', fr: '🥶 Connexion aux données..', de: '🥶 Datenverbindung..', nl: '🥶 Verbinding met data..', pt: '🥶 Conectando dados..', ru: '🥶 Подключение к данным..'
   },
-  statusDevelopment: {
-    en: 'Under Development | Available | Completion scheduled for September 30', ko: '개발중 ㅣ 사용가능 ㅣ 9월 30일 완료예정', ja: '開発中 ㅣ 利用可能 ㅣ 9月30日完成予定', zh: '开发中 ㅣ 可使用 ㅣ 9月30日完成预定', hi: 'विकास में ㅣ उपलब्ध ㅣ 30 सितंबर को पूर्ण होने की योजना',
-    es: 'En desarrollo ㅣ Disponible ㅣ Finalización programada para 30 de septiembre', fr: 'En développement ㅣ Disponible ㅣ Achèvement prévu le 30 septembre', de: 'In Entwicklung ㅣ Verfügbar ㅣ Fertigstellung für 30. September geplant', nl: 'In ontwikkeling ㅣ Beschikbaar ㅣ Voltooiing gepland voor 30 september', pt: 'Em desenvolvimento ㅣ Disponível ㅣ Conclusão programada para 30 de setembro', ru: 'В разработке ㅣ Доступно ㅣ Завершение запланировано на 30 сентября'
-  }
 };
 
 // 🛠 번역 함수 (ShortsCard 패턴)
