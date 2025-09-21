@@ -112,16 +112,14 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
     return null;
   }
 
-  // 모바일에서만 뒷배경 클릭 시 사이드바 닫기 (애니메이션 포함)
+  // 모든 디바이스에서 뒷배경 클릭 시 사이드바 닫기 (애니메이션 포함)
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
-      setIsClosing(true);
+    setIsClosing(true);
 
-      // 애니메이션 완료 후 실제로 닫기
-      setTimeout(() => {
-        onClose();
-      }, 300);
-    }
+    // 애니메이션 완료 후 실제로 닫기
+    setTimeout(() => {
+      onClose();
+    }, 300);
   };
 
   // 💰 채널파인더와 완전 동일한 USD 기준 월 수익 계산

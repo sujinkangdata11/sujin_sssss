@@ -505,9 +505,10 @@ async function testApiKey(apiKey) {
 // Mark API key as quota exhausted
 async function markKeyAsExhausted(keyIndex, env) {
   try {
-    const cooldownTime = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
-    await env.API_KEY_STATUS?.put(`key_${keyIndex}_status`, 'quota_exceeded');
-    await env.API_KEY_STATUS?.put(`key_${keyIndex}_cooldown`, cooldownTime.toString());
+    // 임시 주석처리 - 실시간 데이터를 위해 캐시 비활성화
+    // const cooldownTime = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+    // await env.API_KEY_STATUS?.put(`key_${keyIndex}_status`, 'quota_exceeded');
+    // await env.API_KEY_STATUS?.put(`key_${keyIndex}_cooldown`, cooldownTime.toString());
   } catch (error) {
     console.error('Failed to mark key as exhausted:', error);
   }

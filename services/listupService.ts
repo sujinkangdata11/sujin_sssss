@@ -63,17 +63,17 @@ class ListupService {
     try {
       console.log('🎬 [INFO] 쇼츠메이커 탐험 데이터 가져오는 중...');
 
-      // 1. 캐시 확인 먼저
-      const cachedData = this.getCacheData('exploration_data');
-      if (cachedData) {
-        console.log('📦 [INFO] 캐시된 데이터 사용 (1일 TTL)');
-        return {
-          success: true,
-          data: cachedData,
-          message: `${cachedData.length}개 캐시된 탐험 데이터 로드 완료`,
-          fromCache: true
-        };
-      }
+      // 1. 캐시 확인 먼저 (임시 주석처리 - 데이터 일관성 확인용)
+      // const cachedData = this.getCacheData('exploration_data');
+      // if (cachedData) {
+      //   console.log('📦 [INFO] 캐시된 데이터 사용 (1일 TTL)');
+      //   return {
+      //     success: true,
+      //     data: cachedData,
+      //     message: `${cachedData.length}개 캐시된 탐험 데이터 로드 완료`,
+      //     fromCache: true
+      //   };
+      // }
 
       // 2. API 호출 (600개 데이터 확보를 위해 limit 조정)
       const apiUrl = `${this.baseUrl}/api/channels?limit=600`;
