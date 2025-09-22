@@ -20,6 +20,10 @@ interface ShortsCardProps {
   selectedChannelForSidebar?: string | null;
   onChannelSelect?: (channelId: string) => void;
   onSidebarClose?: () => void;
+  // 빈 사이드바용 별도 props
+  selectedEmptyChannel?: string | null;
+  onEmptyChannelSelect?: (channelId: string) => void;
+  onEmptySidebarClose?: () => void;
 }
 
 const ShortsCard: React.FC<ShortsCardProps> = ({
@@ -28,7 +32,11 @@ const ShortsCard: React.FC<ShortsCardProps> = ({
   index,
   selectedChannelForSidebar,
   onChannelSelect,
-  onSidebarClose
+  onSidebarClose,
+  // 빈 사이드바용 별도 props
+  selectedEmptyChannel,
+  onEmptyChannelSelect,
+  onEmptySidebarClose
 }) => {
   const [showAllTags, setShowAllTags] = React.useState(false);
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -379,9 +387,31 @@ const ShortsCard: React.FC<ShortsCardProps> = ({
     }
   };
 
+  // 빈 사이드바용 클릭 핸들러 (하트가 없는 카드 전용)
+  const handleEmptyCardClick = (e: React.MouseEvent) => {
+    // 이미 사이드바가 열려있으면 클릭 무시
+    if (selectedChannelForSidebar || selectedEmptyChannel) {
+      console.log('🔍 [DEBUG] Empty card click ignored - sidebar already open');
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+
+    // 하트가 없는 카드만 처리
+    if (!showHeart && short.channelId && onEmptyChannelSelect) {
+      console.log('🔍 [DEBUG] Empty card click - opening empty sidebar for:', short.channelId);
+      e.stopPropagation();
+      onEmptyChannelSelect(short.channelId);
+    }
+  };
+
   // 현재 채널이 선택된 채널인지 확인
   const isSelectedChannel = selectedChannelForSidebar === short.channelId;
   const showSidebar = isSelectedChannel;
+
+  // 빈 사이드바 표시 여부 확인
+  const isSelectedEmptyChannel = selectedEmptyChannel === short.channelId;
+  const showEmptySidebar = isSelectedEmptyChannel;
 
   // 상태 추적
   React.useEffect(() => {
@@ -1018,11 +1048,11 @@ const ShortsCard: React.FC<ShortsCardProps> = ({
         display: 'flex',
         flexDirection: 'column',
         transition: 'height 0.3s ease, background-color 0.2s ease',
-        cursor: showHeart ? 'pointer' : 'default'
+        cursor: (showHeart || (!showHeart && onEmptyChannelSelect)) ? 'pointer' : 'default'
       }}
       onMouseEnter={() => setIsHeartHovered(true)}
       onMouseLeave={() => setIsHeartHovered(false)}
-      onClick={handleCardClick}
+      onClick={showHeart ? handleCardClick : handleEmptyCardClick}
     >
       {/* 썸네일 영역 */}
       <div
@@ -1516,6 +1546,150 @@ const ShortsCard: React.FC<ShortsCardProps> = ({
           cf={cf}
           embedVideoUrl={`https://www.youtube.com/watch?v=${short.id}`} // ShortsCard에서만 비디오 임베드
         />
+      )}
+
+      {/* 빈 사이드바 - 하트가 없는 카드용 */}
+      {showEmptySidebar && (
+        <div
+          className={styles.sidebarOverlay}
+          onClick={(e) => {
+            // 오버레이 클릭 시 사이드바 닫기 (데스크톱 전용)
+            if (onEmptySidebarClose) {
+              onEmptySidebarClose();
+            }
+          }}
+        >
+          <div
+            className={styles.sidebar}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.sidebarHeader}>
+              <h3>
+                <button
+                  onClick={() => {
+                    if (onEmptySidebarClose) {
+                      onEmptySidebarClose();
+                    }
+                  }}
+                  className={styles.backBtn}
+                >
+                  ←
+                </button>
+                @{short.channelTitle}
+              </h3>
+              <button
+                className={styles.youtubeVisitBtn}
+                onClick={() => {
+                  const channelUrl = `https://www.youtube.com/channel/${short.channelId}`;
+                  window.open(channelUrl, '_blank');
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                <svg width="20" height="12" viewBox="0 0 20 12" fill="none" style={{marginLeft: '4px'}}>
+                  <path d="M1 6H19M19 6L14 1M19 6L14 11" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <div className={styles.sidebarContent}>
+              <div className={styles.channelInfo}>
+                {/* 유튜브 쇼츠 임베디드 블럭 - 하트 사이드바와 동일 */}
+                {(() => {
+                  const extractVideoId = (url: string): string | null => {
+                    try {
+                      // YouTube URL 패턴들
+                      const patterns = [
+                        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+                        /youtube\.com\/shorts\/([^&\n?#]+)/
+                      ];
+
+                      for (const pattern of patterns) {
+                        const match = url.match(pattern);
+                        if (match) return match[1];
+                      }
+                      return null;
+                    } catch {
+                      return null;
+                    }
+                  };
+
+                  const embedVideoUrl = `https://www.youtube.com/watch?v=${short.id}`;
+                  const videoId = extractVideoId(embedVideoUrl);
+                  return videoId ? (
+                    <div className={styles.infoItem} style={{ display: 'block', width: '100%', marginBottom: '16px' }}>
+                      <div style={{
+                        width: '100%',
+                        position: 'relative',
+                        paddingBottom: 'calc(177.78% - 100px)',
+                        height: 0,
+                        overflow: 'hidden',
+                        borderRadius: '8px'
+                      }}>
+                        <iframe
+                          src={`https://www.youtube.com/embed/${videoId}`}
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            border: 'none',
+                            borderRadius: '8px'
+                          }}
+                          title="YouTube video player"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+
+                      {/* YouTube 다운로드 버튼 */}
+                      <div style={{
+                        marginTop: '12px',
+                        display: 'flex',
+                        justifyContent: 'center'
+                      }}>
+                        <button
+                          onClick={() => {
+                            const downloadUrl = `https://ssyoutube.com/watch?v=${videoId}`;
+                            window.open(downloadUrl, '_blank');
+                          }}
+                          style={{
+                            padding: '8px 16px',
+                            backgroundColor: 'rgb(124, 58, 237)',
+                            border: 'none',
+                            borderRadius: '12px',
+                            fontSize: '14px',
+                            cursor: 'pointer',
+                            color: 'white',
+                            transition: '0.2s',
+                            fontWeight: '600'
+                          }}
+                        >
+                          이 영상 다운받기
+                        </button>
+                      </div>
+                    </div>
+                  ) : null;
+                })()}
+
+                <div className={styles.infoItem}>
+                  <span className={styles.label}>채널명</span>
+                  <span className={styles.value}>{short.channelTitle}</span>
+                </div>
+                <div className={styles.infoItem}>
+                  <span className={styles.label}>구독자</span>
+                  <span className={styles.value}>
+                    {short.subscriberCount ? formatNumber(short.subscriberCount) : 'N/A'}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
       )}
 
       {/* 환율 설정 모달 (채널파인더와 완전히 동일) */}

@@ -66,11 +66,17 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
   const [currentLoadingMessageIndex, setCurrentLoadingMessageIndex] = useState<number>(0);
   // 사이드바 전역 상태 관리
   const [selectedChannelForSidebar, setSelectedChannelForSidebar] = useState<string | null>(null);
+  // 빈 사이드바 전역 상태 관리
+  const [selectedEmptyChannel, setSelectedEmptyChannel] = useState<string | null>(null);
 
   // 상태 변화 추적
   useEffect(() => {
     console.log('🔍 [DEBUG] selectedChannelForSidebar state changed to:', selectedChannelForSidebar);
   }, [selectedChannelForSidebar]);
+
+  useEffect(() => {
+    console.log('🔍 [DEBUG] selectedEmptyChannel state changed to:', selectedEmptyChannel);
+  }, [selectedEmptyChannel]);
 
   // Tutorial language syncs with global language
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -106,7 +112,18 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
       console.log('🔍 [DEBUG] State after 100ms:', selectedChannelForSidebar);
     }, 100);
   };
-  
+
+  // 빈 사이드바 핸들러 함수들
+  const handleEmptyChannelSelect = (channelId: string) => {
+    console.log('🔍 [DEBUG] handleEmptyChannelSelect called for:', channelId);
+    setSelectedEmptyChannel(channelId);
+  };
+
+  const handleEmptySidebarClose = () => {
+    console.log('🔍 [DEBUG] handleEmptySidebarClose called');
+    setSelectedEmptyChannel(null);
+  };
+
   // Tutorial video mapping by language
   const tutorialVideos: Record<Language, string> = {
     en: 'tKlYb7j1W5M',        // 미국/영어
@@ -1278,6 +1295,9 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
                           selectedChannelForSidebar={selectedChannelForSidebar}
                           onChannelSelect={handleChannelSelect}
                           onSidebarClose={handleSidebarClose}
+                          selectedEmptyChannel={selectedEmptyChannel}
+                          onEmptyChannelSelect={handleEmptyChannelSelect}
+                          onEmptySidebarClose={handleEmptySidebarClose}
                         />
                   )
                 : sortedShorts.map(short =>
@@ -1290,6 +1310,9 @@ const Home: React.FC<HomeProps> = ({ language, onLanguageSelect }) => {
                           selectedChannelForSidebar={selectedChannelForSidebar}
                           onChannelSelect={handleChannelSelect}
                           onSidebarClose={handleSidebarClose}
+                          selectedEmptyChannel={selectedEmptyChannel}
+                          onEmptyChannelSelect={handleEmptyChannelSelect}
+                          onEmptySidebarClose={handleEmptySidebarClose}
                         />
                   )
               }

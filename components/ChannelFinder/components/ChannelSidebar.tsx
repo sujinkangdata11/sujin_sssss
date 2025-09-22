@@ -317,6 +317,33 @@ const ChannelSidebar: React.FC<ChannelSidebarProps> = ({
                       allowFullScreen
                     />
                   </div>
+
+                  {/* YouTube 다운로드 버튼 - ShortsCard에서만 표시 */}
+                  <div style={{
+                    marginTop: '12px',
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}>
+                    <button
+                      onClick={() => {
+                        const downloadUrl = `https://ssyoutube.com/watch?v=${videoId}`;
+                        window.open(downloadUrl, '_blank');
+                      }}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: 'rgb(124, 58, 237)',
+                        border: 'none',
+                        borderRadius: '12px',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                        color: 'white',
+                        transition: '0.2s',
+                        fontWeight: '600'
+                      }}
+                    >
+                      이 영상 다운받기
+                    </button>
+                  </div>
                 </div>
               ) : null;
             })()}
