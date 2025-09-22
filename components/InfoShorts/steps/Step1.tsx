@@ -341,16 +341,51 @@ const Step1: React.FC<Step1Props> = ({
       content: (
         <div style={{
           height: '200px',
-          backgroundColor: '#f5f5f5',
-          borderRadius: '12px',
+          background: 'rgb(249, 250, 251)',
+          border: '1px solid rgb(209, 213, 219)',
+          borderRadius: '16px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           color: '#999',
-          fontSize: '14px',
-          border: '1px solid #e0e0e0'
+          fontSize: '14px'
         }}>
-          {/* 빈 블록 - 필요시 내용 추가 */}
+          <div style={{
+            textAlign: 'center',
+            lineHeight: '1.6',
+            color: '#666'
+          }}>
+            <div style={{
+              fontWeight: 'bold',
+              color: '#d97706',
+              marginBottom: '12px',
+              fontSize: '16px'
+            }}>
+              ⚠️ 주의사항
+            </div>
+            <div style={{ fontSize: '14px', fontWeight: 'normal' }}>
+              이 데이터는 밤 12시에 데이터를 수집하여, 그 다음날 업데이트하는 방식입니다.
+              <br />
+              최대 1~3일이 소요되며, 실시간 데이터가 아닙니다.
+              <br />
+              <br />
+              따라서 바로 10분 전 업로드, 1시간 전 업로드의 실시간 데이터를 보기 위해서는
+              <br />
+              <a
+                href="https://www.vidhunt.me/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: '#2563eb',
+                  fontWeight: 'normal',
+                  textDecoration: 'underline',
+                  cursor: 'pointer'
+                }}
+              >
+                "쇼츠파인더"
+              </a>를 이용하셔야 합니다.
+            </div>
+          </div>
         </div>
       ),
       customStyle: {
