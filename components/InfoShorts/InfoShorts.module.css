@@ -6,7 +6,6 @@
   box-sizing: border-box; /* 원복용 삭제처리가능 - Step 1: 패딩 포함 계산 */
   padding: 20px;
   height: fit-content !important;
-  min-height: 200vh !important;
   background: var(--background, #ffffff);
   color: var(--text, #1A1C1E);
   overflow-x: hidden;

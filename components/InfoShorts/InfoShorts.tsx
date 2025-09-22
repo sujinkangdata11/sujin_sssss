@@ -150,6 +150,13 @@ const InfoShorts: React.FC<InfoShortsProps> = ({ language }) => {
   const [youtubeUrlInput, setYoutubeUrlInput] = useState('');
   const [youtubeVideoId, setYoutubeVideoId] = useState(null);
 
+  // 디버깅: youtubeVideoId 상태 변화 추적
+  useEffect(() => {
+    console.log('🎯 [HEIGHT DEBUG] youtubeVideoId 변경됨:', youtubeVideoId);
+    console.log('🎯 [HEIGHT DEBUG] currentStep:', currentStep);
+    console.log('🎯 [HEIGHT DEBUG] 계산된 높이:', (youtubeVideoId && currentStep === 1) ? '250vh' : '200vh');
+  }, [youtubeVideoId, currentStep]);
+
   // 전역 이벤트 리스너 - ExplorationSidebar에서 URL 받기
   useEffect(() => {
     const handleSetYoutubeUrl = (event: CustomEvent) => {
@@ -1418,6 +1425,10 @@ ${referenceContent}
     }
   };
 
+  // 디버깅: 렌더링시 현재 상태 출력
+  const currentHeight = (youtubeVideoId && currentStep === 1) ? '250vh' : '200vh';
+  console.log('🎯 [RENDER DEBUG] 렌더링시 youtubeVideoId:', youtubeVideoId, '| currentStep:', currentStep, '| 높이:', currentHeight);
+
   return (
     <main className={c(theme, styles.infoShortsContainer)} style={{
       /* position: 'relative', */ /* 원복용 삭제처리가능 - Step 1: 스크롤 방지용 삭제 */
@@ -1425,7 +1436,7 @@ ${referenceContent}
       maxWidth: '100vw', /* 원복용 삭제처리가능 - Step 1: 가로폭 제한 */
       boxSizing: 'border-box', /* 원복용 삭제처리가능 - Step 1: 패딩 포함 계산 */
       overflow: 'visible',
-      minHeight: 'fit-content'
+      minHeight: currentHeight
     }}>
         {/* Step 1: YouTube URL Input */}
         <Step1
