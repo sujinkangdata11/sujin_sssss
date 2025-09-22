@@ -333,6 +333,29 @@ const Step1: React.FC<Step1Props> = ({
         padding: '0 0 clamp(1rem, 4vw, 2rem) 0',
         textAlign: 'center'
       }
+    },
+    {
+      title: '',
+      description: '',
+      onClick: () => {},
+      content: (
+        <div style={{
+          height: '200px',
+          backgroundColor: '#f5f5f5',
+          borderRadius: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#999',
+          fontSize: '14px',
+          border: '1px solid #e0e0e0'
+        }}>
+          {/* 빈 블록 - 필요시 내용 추가 */}
+        </div>
+      ),
+      customStyle: {
+        padding: '0 0 clamp(2rem, 6vw, 4rem) 0'
+      }
     }
   ];
 
@@ -363,6 +386,7 @@ const Step1: React.FC<Step1Props> = ({
         top: 0,
         left: 0,
         width: '100%',
+        paddingTop: '100px', /* 원복용 삭제처리가능 - 탭 네비게이션 가림 방지용 */
         opacity: currentStep === 1 ? 1 : 0,
         visibility: currentStep === 1 ? 'visible' : 'hidden',
         pointerEvents: currentStep === 1 ? 'auto' : 'none',

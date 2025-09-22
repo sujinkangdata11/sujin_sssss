@@ -1382,7 +1382,14 @@ ${referenceContent}
   };
 
   return (
-    <main className={c(theme, styles.infoShortsContainer)} style={{ position: 'relative', overflow: 'visible', minHeight: 'fit-content' }}>
+    <main className={c(theme, styles.infoShortsContainer)} style={{
+      /* position: 'relative', */ /* 원복용 삭제처리가능 - Step 1: 스크롤 방지용 삭제 */
+      width: '100%', /* 원복용 삭제처리가능 - Step 1: 가로폭 제한 */
+      maxWidth: '100vw', /* 원복용 삭제처리가능 - Step 1: 가로폭 제한 */
+      boxSizing: 'border-box', /* 원복용 삭제처리가능 - Step 1: 패딩 포함 계산 */
+      overflow: 'visible',
+      minHeight: 'fit-content'
+    }}>
         {/* Step 1: YouTube URL Input */}
         <Step1
             currentStep={currentStep}

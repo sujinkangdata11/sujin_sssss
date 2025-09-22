@@ -2,6 +2,8 @@
 
 .infoShortsContainer {
   width: 100%;
+  max-width: 100vw; /* 원복용 삭제처리가능 - Step 1: 가로폭 제한 */
+  box-sizing: border-box; /* 원복용 삭제처리가능 - Step 1: 패딩 포함 계산 */
   padding: 20px;
   height: fit-content !important;
   min-height: 200vh !important;
@@ -9,6 +11,7 @@
   color: var(--text, #1A1C1E);
   overflow-x: hidden;
   overflow-y: visible;
+  /* position: relative; */ /* 원복용 삭제처리가능 - Step 1: 스크롤 방지용 삭제 */
 }
 
 .light {

@@ -85,7 +85,9 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
         <span style={{ color: '#4f46e5', fontWeight: '600' }}>ShortsmaKer</span>
       </nav>
       
-      <main className="main-container">
+      <main className="main-container" style={{
+        position: 'relative' /* 원복용 삭제처리가능 - tab-navigation 위치 고정용 */
+      }}>
         {/* Tab Navigation */}
         <div className="tab-navigation" style={{
           display: 'flex',
