@@ -150,6 +150,43 @@ const InfoShorts: React.FC<InfoShortsProps> = ({ language }) => {
   const [youtubeUrlInput, setYoutubeUrlInput] = useState('');
   const [youtubeVideoId, setYoutubeVideoId] = useState(null);
 
+  // 전역 이벤트 리스너 - ExplorationSidebar에서 URL 받기
+  useEffect(() => {
+    const handleSetYoutubeUrl = (event: CustomEvent) => {
+      const url = event.detail?.url;
+      if (url) {
+        console.log('🎯 전역 이벤트로 URL 받음:', url);
+        setYoutubeUrlInput(url);
+
+        // URL 입력 후 자동으로 확인 버튼 클릭
+        setTimeout(() => {
+          const submitButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
+          if (submitButton) {
+            console.log('🚀 확인 버튼 자동 클릭');
+            submitButton.click();
+          } else {
+            console.log('❌ 확인 버튼을 찾을 수 없습니다');
+            // 대안: 텍스트로 찾기
+            const buttons = document.querySelectorAll('button');
+            for (const btn of buttons) {
+              if (btn.textContent?.includes('확인')) {
+                console.log('🚀 확인 버튼 (텍스트로) 자동 클릭');
+                btn.click();
+                break;
+              }
+            }
+          }
+        }, 300);
+      }
+    };
+
+    window.addEventListener('setYoutubeUrl', handleSetYoutubeUrl as EventListener);
+
+    return () => {
+      window.removeEventListener('setYoutubeUrl', handleSetYoutubeUrl as EventListener);
+    };
+  }, []);
+
   // 입력 필드가 비워지면 비디오 ID도 초기화
   useEffect(() => {
     if (!youtubeUrlInput.trim()) {

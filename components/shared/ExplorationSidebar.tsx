@@ -43,6 +43,7 @@ interface ExplorationSidebarProps {
   formatUploadFrequency: (frequency: number, language?: Language) => string;
   currencyExchangeData: Record<string, { currency: string; rate: number }>;
   cf: (key: string) => string;
+  setYoutubeUrlInput: (value: string) => void;
 }
 
 const SubTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -82,7 +83,8 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
   formatVideosCount,
   formatUploadFrequency,
   currencyExchangeData,
-  cf
+  cf,
+  setYoutubeUrlInput
 }) => {
   const [isClosing, setIsClosing] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -316,7 +318,8 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
                   marginTop: '12px',
                   display: 'flex',
                   justifyContent: 'center',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  gap: '10px'
                 }}>
                   <button
                     onClick={() => {
@@ -349,6 +352,61 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
                     }}
                   >
                     {isCopied ? '✅ 영상링크 복사완료' : '📋 영상링크 복사하기'}
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      // 1. 브라우저 최상단으로 스크롤
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                      // 2. 사이드바 닫기
+                      onClose();
+
+                      // 3. 입력칸에 영상 링크 입력 (약간의 지연 후)
+                      setTimeout(() => {
+                        if (selectedChannel.videoUrl) {
+                          // YouTube URL을 Shorts URL로 변환
+                          const convertToShortsUrl = (url: string) => {
+                            // YouTube 영상 ID 추출
+                            const videoIdMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+                            if (videoIdMatch) {
+                              const videoId = videoIdMatch[1];
+                              return `https://www.youtube.com/shorts/${videoId}`;
+                            }
+                            return url; // 변환 실패시 원본 반환
+                          };
+
+                          const shortsUrl = convertToShortsUrl(selectedChannel.videoUrl);
+                          console.log('🔄 원본 URL:', selectedChannel.videoUrl);
+                          console.log('🔄 변환된 Shorts URL:', shortsUrl);
+
+                          // 전역 이벤트로 URL 전달
+                          window.dispatchEvent(new CustomEvent('setYoutubeUrl', {
+                            detail: { url: shortsUrl }
+                          }));
+
+                          console.log('✅ 전역 이벤트로 URL 전달 완료:', shortsUrl);
+                        }
+                      }, 200);
+                    }}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      color: 'rgb(124, 58, 237)',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(124, 58, 237, 0.2)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(124, 58, 237, 0.1)';
+                    }}
+                  >
+                    🚀 이 영상으로 시작하기
                   </button>
                 </div>
               )}
