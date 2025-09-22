@@ -75,90 +75,144 @@ class ListupService {
         };
       }
 
-      // 2. API 호출 (600개 데이터 확보를 위해 limit 조정)
-      const apiUrl = `${this.baseUrl}/api/channels?limit=600`;
-      console.log('🚀 [DEBUG] API 호출 시작 - URL:', apiUrl);
+      // 2. API 호출 시도 (Cloudflare Workers)
+      try {
+        const apiUrl = `${this.baseUrl}/api/channels?limit=600`;
+        console.log('🚀 [DEBUG] API 호출 시작 - URL:', apiUrl);
 
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
-
-      console.log('📡 [DEBUG] API 응답 상태:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        headers: Object.fromEntries(response.headers.entries())
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      console.log('📥 [DEBUG] API JSON 파싱 완료 - 원본 데이터 타입:', typeof result);
-
-      console.log('🔍 [DEBUG] Listup API 전체 응답 키들:', Object.keys(result));
-      console.log('🔍 [DEBUG] Listup API 응답 구조:', {
-        hasData: !!result.data,
-        hasChannels: !!result.channels,
-        isArray: Array.isArray(result.data),
-        isChannelsArray: Array.isArray(result.channels),
-        dataLength: result.data?.length || 0,
-        channelsLength: result.channels?.length || 0,
-        responseKeys: Object.keys(result),
-        firstItemKeys: result.data?.[0] ? Object.keys(result.data[0]) : [],
-        firstChannelKeys: result.channels?.[0] ? Object.keys(result.channels[0]) : []
-      });
-
-      // 🎯 첫 번째 채널의 recentThumbnailsHistory 구조 자세히 확인
-      if (result.data && result.data[0]) {
-        const firstChannel = result.data[0];
-        console.log('🎯 [DEBUG] 첫 번째 채널 전체 구조:', firstChannel);
-        console.log('🎯 [DEBUG] 첫 번째 채널 recentThumbnailsHistory:', {
-          exists: !!firstChannel.recentThumbnailsHistory,
-          isArray: Array.isArray(firstChannel.recentThumbnailsHistory),
-          length: firstChannel.recentThumbnailsHistory?.length || 0,
-          content: firstChannel.recentThumbnailsHistory
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          signal: AbortSignal.timeout(30000) // 30초 타임아웃
         });
-      }
 
-      // API 응답이 data 속성에 채널 배열을 가지고 있는지 확인
-      const isSuccess = result.data && Array.isArray(result.data);
+        console.log('📡 [DEBUG] API 응답 상태:', {
+          status: response.status,
+          statusText: response.statusText,
+          ok: response.ok
+        });
 
-      if (!isSuccess) {
-        console.error('❌ [ERROR] Listup API 파싱 실패:', {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ [SUCCESS] API 호출 성공');
+
+        console.log('📥 [DEBUG] API JSON 파싱 완료 - 원본 데이터 타입:', typeof result);
+        console.log('🔍 [DEBUG] Listup API 전체 응답 키들:', Object.keys(result));
+        console.log('🔍 [DEBUG] Listup API 응답 구조:', {
           hasData: !!result.data,
           hasChannels: !!result.channels,
           isArray: Array.isArray(result.data),
           isChannelsArray: Array.isArray(result.channels),
-          responseType: typeof result,
-          responseKeys: Object.keys(result)
+          dataLength: result.data?.length || 0,
+          channelsLength: result.channels?.length || 0,
+          responseKeys: Object.keys(result),
+          firstItemKeys: result.data?.[0] ? Object.keys(result.data[0]) : [],
+          firstChannelKeys: result.channels?.[0] ? Object.keys(result.channels[0]) : []
         });
-        throw new Error(result.message || result.error || 'Listup API에서 유효하지 않은 응답');
+
+        // 🎯 첫 번째 채널의 recentThumbnailsHistory 구조 자세히 확인
+        if (result.data && result.data[0]) {
+          const firstChannel = result.data[0];
+          console.log('🎯 [DEBUG] 첫 번째 채널 전체 구조:', firstChannel);
+          console.log('🎯 [DEBUG] 첫 번째 채널 recentThumbnailsHistory:', {
+            exists: !!firstChannel.recentThumbnailsHistory,
+            isArray: Array.isArray(firstChannel.recentThumbnailsHistory),
+            length: firstChannel.recentThumbnailsHistory?.length || 0,
+            content: firstChannel.recentThumbnailsHistory
+          });
+        }
+
+        // API 응답이 data 속성에 채널 배열을 가지고 있는지 확인
+        const isSuccess = result.data && Array.isArray(result.data);
+
+        if (!isSuccess) {
+          console.error('❌ [ERROR] Listup API 파싱 실패:', {
+            hasData: !!result.data,
+            hasChannels: !!result.channels,
+            isArray: Array.isArray(result.data),
+            isChannelsArray: Array.isArray(result.channels),
+            responseType: typeof result,
+            responseKeys: Object.keys(result)
+          });
+          throw new Error(result.message || result.error || 'Listup API에서 유효하지 않은 응답');
+        }
+
+        console.log('✅ [SUCCESS] 데이터 소스 응답 성공:', {
+          데이터수: result.data?.length || 0,
+          응답키들: Object.keys(result),
+          첫번째데이터키들: result.data?.[0] ? Object.keys(result.data[0]) : []
+        });
+
+        // Listup 데이터를 ChannelFinder 형태로 변환
+        const transformedData = this.transformListupDataToChannelFinder(result.data || []);
+
+        // 변환된 데이터를 캐시에 저장
+        this.setCacheData('exploration_data', transformedData);
+
+        return {
+          success: true,
+          data: transformedData,
+          message: `Cloudflare Workers에서 ${transformedData.length}개 탐험 데이터 로드 완료`,
+          fromCache: false
+        };
+
+      } catch (error) {
+        console.error('❌ [ERROR] API 호출 실패, 로컬 데이터로 폴백:', error);
+
+        // 2. 로컬 JSON 파일 폴백
+        try {
+          console.log('📂 [INFO] 로컬 kv-data.json 파일 로드 시도');
+          const localData = await import('../src/data/kv-data.json');
+          const result = localData.default;
+
+          console.log('✅ [SUCCESS] 로컬 데이터 로드 성공');
+          console.log('📥 [DEBUG] 로컬 데이터 구조:', {
+            hasData: !!result.data,
+            hasChannels: !!result.channels,
+            dataLength: result.data?.length || 0,
+            channelsLength: result.channels?.length || 0,
+            responseKeys: Object.keys(result)
+          });
+
+          // 로컬 JSON은 channels 속성에 채널 배열을 가지고 있음
+          const isSuccess = result.channels && Array.isArray(result.channels);
+
+          if (!isSuccess) {
+            console.error('❌ [ERROR] 로컬 데이터 파싱 실패:', {
+              hasData: !!result.data,
+              hasChannels: !!result.channels,
+              isArray: Array.isArray(result.data),
+              isChannelsArray: Array.isArray(result.channels),
+              responseType: typeof result,
+              responseKeys: Object.keys(result)
+            });
+            throw new Error('로컬 데이터에서 유효하지 않은 형식');
+          }
+
+          // Listup 데이터를 ChannelFinder 형태로 변환 (로컬은 channels 사용)
+          const transformedData = this.transformListupDataToChannelFinder(result.channels || []);
+
+          // 변환된 데이터를 캐시에 저장
+          this.setCacheData('exploration_data', transformedData);
+
+          return {
+            success: true,
+            data: transformedData,
+            message: `로컬 백업 데이터에서 ${transformedData.length}개 탐험 데이터 로드 완료`,
+            fromCache: false
+          };
+
+        } catch (localError) {
+          console.error('❌ [ERROR] 로컬 데이터 로드 실패:', localError);
+          throw new Error(`모든 데이터 소스 실패 - API: ${error instanceof Error ? error.message : '알 수 없는 오류'}, 로컬: ${localError instanceof Error ? localError.message : '알 수 없는 오류'}`);
+        }
       }
-
-      console.log('✅ [SUCCESS] Listup API 응답 성공:', {
-        데이터수: result.data?.length || 0,
-        응답키들: Object.keys(result),
-        첫번째데이터키들: result.data?.[0] ? Object.keys(result.data[0]) : []
-      });
-
-      // Listup 데이터를 ChannelFinder 형태로 변환
-      const transformedData = this.transformListupDataToChannelFinder(result.data || []);
-
-      // 3. 변환된 데이터를 캐시에 저장
-      this.setCacheData('exploration_data', transformedData);
-
-      return {
-        success: true,
-        data: transformedData,
-        message: result.message || `${transformedData.length}개 탐험 데이터 로드 완료`,
-        fromCache: false
-      };
 
     } catch (error) {
       console.error('🎬 [ERROR] Listup API 호출 실패:', error);
