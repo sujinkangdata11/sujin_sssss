@@ -8,7 +8,6 @@
   height: fit-content !important;
   background: var(--background, #ffffff);
   color: var(--text, #1A1C1E);
-  overflow-x: hidden;
   overflow-y: visible;
   /* position: relative; */ /* 원복용 삭제처리가능 - Step 1: 스크롤 방지용 삭제 */
 }

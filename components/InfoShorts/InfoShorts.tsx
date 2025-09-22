@@ -1263,6 +1263,25 @@ ${wordGroup}
     </div>
   );
 
+  // 오디오 플레이어 리셋 함수 (Step6 -> Step7 이동 시 사용)
+  const resetAudioPlayers = () => {
+    // 원본 오디오 리셋
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      setIsPlaying(false);
+      setCurrentTime(0);
+    }
+
+    // 무음제거 오디오 리셋
+    if (processedCurrentAudio) {
+      processedCurrentAudio.pause();
+      processedCurrentAudio.currentTime = 0;
+      setProcessedAudioPlaying(false);
+      setProcessedCurrentTime(0);
+    }
+  };
+
   const handleAudioPlay = async () => {
     if (!generatedAudio) return;
 
@@ -1703,7 +1722,7 @@ ${referenceContent}
       {/* ================================================ */}
       
       {/* Floating Navigation */}
-      <FloatingNavigation 
+      <FloatingNavigation
         currentStep={currentStep}
         setCurrentStep={handleStepChange}
         totalSteps={7}
@@ -1716,6 +1735,7 @@ ${referenceContent}
           step5: analysisResult2 && analysisResult2.trim().length > 0,
           step6: generatedAudio !== null
         }}
+        resetAudioPlayers={resetAudioPlayers}
       />
     </main>
   );

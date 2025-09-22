@@ -13,6 +13,7 @@ interface FloatingNavigationProps {
     step5?: boolean;
     step6?: boolean;
   };
+  resetAudioPlayers?: () => void;
 }
 
 const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
@@ -20,7 +21,8 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
   setCurrentStep,
   totalSteps,
   youtubeVideoId,
-  stepCompletionStates = {}
+  stepCompletionStates = {},
+  resetAudioPlayers
 }) => {
   const [showFloating, setShowFloating] = useState(false);
 
@@ -178,6 +180,10 @@ const FloatingNavigation: React.FC<FloatingNavigationProps> = ({
       {/* Next Button */}
       <button
         onClick={() => {
+          // Step6에서 Step7로 넘어갈 때 오디오 플레이어 리셋
+          if (currentStep === 6 && resetAudioPlayers) {
+            resetAudioPlayers();
+          }
           setCurrentStep(Math.min(totalSteps, currentStep + 1));
           setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
