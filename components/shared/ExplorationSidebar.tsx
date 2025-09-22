@@ -119,7 +119,7 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
     // 애니메이션 완료 후 실제로 닫기
     setTimeout(() => {
       onClose();
-    }, 300);
+    }, 1000);
   };
 
   // 💰 채널파인더와 완전 동일한 USD 기준 월 수익 계산
@@ -211,9 +211,9 @@ const ExplorationSidebar: React.FC<ExplorationSidebarProps> = ({
   try {
     return createPortal(
       // FADE IN/OUT: 오버레이에도 mobile-closing 클래스 추가 (주의: 이상하면 이 부분만 되돌리기)
-      <div className={`${styles.sidebarOverlay} ${isClosing ? 'mobile-closing' : ''}`} onClick={handleOverlayClick}>
+      <div className={`${styles.sidebarOverlay} ${isClosing ? styles.mobileClosing : ''}`} onClick={handleOverlayClick}>
         <div
-          className={`${styles.sidebar} ${isClosing ? 'mobile-closing' : ''}`}
+          className={`${styles.sidebar} ${isClosing ? styles.mobileClosing : ''}`}
           onClick={(e) => e.stopPropagation()}
           style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
         >

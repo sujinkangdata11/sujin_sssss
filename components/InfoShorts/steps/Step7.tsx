@@ -93,7 +93,6 @@ const Step7: React.FC<Step7Props> = ({
       position: 'absolute',
       top: 0,
       left: 0,
-      marginTop: '100px', /* 원복용 삭제처리가능 - 탭 네비게이션 가림 방지용 */
       background: 'rgb(249, 250, 251)',
       border: '1px solid rgb(209, 213, 219)',
       borderRadius: '16px',

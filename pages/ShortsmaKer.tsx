@@ -84,54 +84,54 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
         <span style={{ margin: '0 0.5rem' }}>&gt;</span>
         <span style={{ color: '#4f46e5', fontWeight: '600' }}>ShortsmaKer</span>
       </nav>
-      
+
+      {/* Tab Navigation */}
+      <div className="tab-navigation" style={{
+        display: 'flex',
+        justifyContent: 'center',
+        marginBottom: '2rem',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: '16px 16px 0 0',
+        padding: '0 1rem'
+      }}>
+        <button
+          onClick={() => setActiveTab('analyzer')}
+          style={{
+            padding: '1rem 0.5rem',
+            border: 'none',
+            backgroundColor: 'transparent',
+            color: activeTab === 'analyzer' ? '#4f46e5' : '#6b7280',
+            fontWeight: activeTab === 'analyzer' ? '600' : '400',
+            borderBottom: activeTab === 'analyzer' ? '2px solid #4f46e5' : '2px solid transparent',
+            cursor: 'pointer',
+            fontSize: '16px',
+            transition: 'all 0.2s ease',
+            marginRight: '1rem'
+          }}
+        >
+          지식쇼츠
+        </button>
+        <button
+          onClick={() => setActiveTab('maker')}
+          style={{
+            padding: '1rem 0.5rem',
+            border: 'none',
+            backgroundColor: 'transparent',
+            color: activeTab === 'maker' ? '#4f46e5' : '#6b7280',
+            fontWeight: activeTab === 'maker' ? '600' : '400',
+            borderBottom: activeTab === 'maker' ? '2px solid #4f46e5' : '2px solid transparent',
+            cursor: 'pointer',
+            fontSize: '16px',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          썸 쇼츠
+        </button>
+      </div>
+
       <main className="main-container" style={{
         position: 'relative' /* 원복용 삭제처리가능 - tab-navigation 위치 고정용 */
       }}>
-        {/* Tab Navigation */}
-        <div className="tab-navigation" style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '2rem',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-          borderRadius: '16px 16px 0 0',
-          padding: '0 1rem'
-        }}>
-          <button
-            onClick={() => setActiveTab('analyzer')}
-            style={{
-              padding: '1rem 0.5rem',
-              border: 'none',
-              backgroundColor: 'transparent',
-              color: activeTab === 'analyzer' ? '#4f46e5' : '#6b7280',
-              fontWeight: activeTab === 'analyzer' ? '600' : '400',
-              borderBottom: activeTab === 'analyzer' ? '2px solid #4f46e5' : '2px solid transparent',
-              cursor: 'pointer',
-              fontSize: '16px',
-              transition: 'all 0.2s ease',
-              marginRight: '1rem'
-            }}
-          >
-            지식쇼츠
-          </button>
-          <button
-            onClick={() => setActiveTab('maker')}
-            style={{
-              padding: '1rem 0.5rem',
-              border: 'none',
-              backgroundColor: 'transparent',
-              color: activeTab === 'maker' ? '#4f46e5' : '#6b7280',
-              fontWeight: activeTab === 'maker' ? '600' : '400',
-              borderBottom: activeTab === 'maker' ? '2px solid #4f46e5' : '2px solid transparent',
-              cursor: 'pointer',
-              fontSize: '16px',
-              transition: 'all 0.2s ease'
-            }}
-          >
-            썰 쇼츠
-          </button>
-        </div>
-
         {/* Tab Content */}
         {activeTab === 'maker' ? (
           <div className="coming-soon-container">

@@ -353,15 +353,37 @@ th .resizeHandle.resizeHandleLeft {
   background: white;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   pointer-events: auto;
+  animation: sidebarSlideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; /* 주석삭제할수있음 - 등장 애니메이션 */
 }
 
+/* 주석삭제할수있음 - 사이드바 닫힐 때 애니메이션 */
+.mobileClosing {
+  animation: sidebarSlideOut 1s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+/* 주석삭제할수있음 - 사이드바 슬라이드 인 애니메이션 */
+@keyframes sidebarSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* 주석삭제할수있음 - 사이드바 슬라이드 아웃 애니메이션 */
+@keyframes sidebarSlideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* 주석삭제할수있음 - 기존 slideIn 클래스 유지 (호환성) */
 .slideIn {
-  animation: slideIn 0.3s ease forwards;
-}
-
-@keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  animation: sidebarSlideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 }
 
 /* 모바일에서는 기존 사이드바 애니메이션 차단 */
@@ -369,16 +391,11 @@ th .resizeHandle.resizeHandleLeft {
   .sidebar {
     animation: none !important;
   }
-  
+
   @keyframes slideIn {
     from { transform: translateY(100%); }
     to { transform: translateY(0); }
   }
-}
-
-@keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
 }
 
 .sidebarHeader {

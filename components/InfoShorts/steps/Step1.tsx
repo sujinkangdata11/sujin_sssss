@@ -385,8 +385,7 @@ const Step1: React.FC<Step1Props> = ({
         position: 'absolute',
         top: 0,
         left: 0,
-        width: '100%',
-        paddingTop: '100px', /* 원복용 삭제처리가능 - 탭 네비게이션 가림 방지용 */
+        width: '97%', /* 원복용 삭제처리가능 - 가로폭 살짝 줄임 */
         opacity: currentStep === 1 ? 1 : 0,
         visibility: currentStep === 1 ? 'visible' : 'hidden',
         pointerEvents: currentStep === 1 ? 'auto' : 'none',
