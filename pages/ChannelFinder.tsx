@@ -524,17 +524,6 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
             progress += Math.random() * 15 + 5; // 5-20% 증가
             if (progress > 95) progress = 95; // 95%에서 멈춤
             setLoadingProgress(Math.min(progress, 95));
-
-            // 메시지 업데이트
-            if (progress < 30) {
-              setLoadingMessage('1000개씩 배치 처리 중... (1/4)');
-            } else if (progress < 60) {
-              setLoadingMessage('1000개씩 배치 처리 중... (2/4)');
-            } else if (progress < 85) {
-              setLoadingMessage('1000개씩 배치 처리 중... (3/4)');
-            } else {
-              setLoadingMessage('1000개씩 배치 처리 중... (4/4)');
-            }
           }, 800);
         // }
 

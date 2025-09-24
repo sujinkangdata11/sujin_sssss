@@ -277,6 +277,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       cancel: "キャンセル",
       confirm: "確認"
     },
+    loading: {
+      title: "データ読み込み中",
+      channelData: "しばらくお待ちください..."
+    },
     currencies: {
       USD: "ドル",
       KRW: "ウォン", 
@@ -374,6 +378,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     buttons: {
       cancel: "取消",
       confirm: "确认"
+    },
+    loading: {
+      title: "数据加载中",
+      channelData: "请稍等..."
     },
     currencies: {
       USD: "美元",
@@ -473,6 +481,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       cancel: "रद्द करें",
       confirm: "पुष्टि करें"
     },
+    loading: {
+      title: "डेटा लोड हो रहा है",
+      channelData: "कृपया प्रतीक्षा करें..."
+    },
     currencies: {
       USD: "डॉलर",
       KRW: "वॉन", 
@@ -570,6 +582,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     buttons: {
       cancel: "Cancelar",
       confirm: "Confirmar"
+    },
+    loading: {
+      title: "Cargando datos",
+      channelData: "Por favor espere..."
     },
     currencies: {
       USD: "Dólar",
@@ -669,6 +685,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       cancel: "Annuler",
       confirm: "Confirmer"
     },
+    loading: {
+      title: "Chargement des données",
+      channelData: "Veuillez patienter..."
+    },
     currencies: {
       USD: "Dollar",
       KRW: "Won", 
@@ -766,6 +786,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     buttons: {
       cancel: "Abbrechen",
       confirm: "Bestätigen"
+    },
+    loading: {
+      title: "Daten werden geladen",
+      channelData: "Bitte warten..."
     },
     currencies: {
       USD: "Dollar",
@@ -865,6 +889,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       cancel: "Annuleren",
       confirm: "Bevestigen"
     },
+    loading: {
+      title: "Gegevens laden",
+      channelData: "Even geduld..."
+    },
     currencies: {
       USD: "Dollar",
       KRW: "Won", 
@@ -963,6 +991,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       cancel: "Cancelar",
       confirm: "Confirmar"
     },
+    loading: {
+      title: "Carregando dados",
+      channelData: "Por favor, aguarde..."
+    },
     currencies: {
       USD: "Dólar",
       KRW: "Won", 
@@ -1060,6 +1092,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     buttons: {
       cancel: "Отмена",
       confirm: "Подтвердить"
+    },
+    loading: {
+      title: "Загрузка данных",
+      channelData: "Пожалуйста, подождите..."
     },
     currencies: {
       USD: "доллар",
