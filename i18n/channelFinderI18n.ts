@@ -73,6 +73,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
       cancel: "Cancel",
       confirm: "Confirm"
     },
+    loading: {
+      title: "Loading Data",
+      channelData: "Please wait while we fetch channel data..."
+    },
     currencies: {
       USD: "Dollar",
       KRW: "Won", 
@@ -170,6 +174,10 @@ export const channelFinderI18n: Record<Language, Record<string, any>> = {
     buttons: {
       cancel: "취소",
       confirm: "확인"
+    },
+    loading: {
+      title: "데이터 로딩 중",
+      channelData: "잠시만 기다려주세요..."
     },
     currencies: {
       USD: "달러",

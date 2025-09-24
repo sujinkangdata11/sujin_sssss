@@ -8,6 +8,7 @@ import Pagination from '../components/Pagination';
 import countryRpmDefaults from '../data/countryRpmDefaults.json';
 import currencyExchangeData from '../data/currencyExchangeData.json';
 import { cloudflareService } from '../services/mainFinder/cloudflareService';
+import { cache } from '../services/mainFinder/cache';
 import { calculateTableMonthlyRevenue, calculateMonthlyRevenueUSD } from '../utils/tableMonthlyRevenue';
 import { CONFIG, countryDisplayNames } from '../components/ChannelFinder/constants';
 import { ChannelFinderProps, ChannelData } from '../components/ChannelFinder/types';
@@ -20,6 +21,7 @@ import ChannelSidebar from '../components/ChannelFinder/components/ChannelSideba
 import TableSkeleton from '../components/ChannelFinder/components/TableSkeleton';
 import SidebarSkeleton from '../components/ChannelFinder/components/SidebarSkeleton';
 import FilterTagsSection, { FilterState } from '../components/ChannelFinder/components/FilterTagsSection';
+import LoadingModal from '../components/ChannelFinder/components/LoadingModal';
 import { applyFilters } from '../components/ChannelFinder/filters/sentenceFilters';
 import styles from '../styles/ChannelFinder.module.css';
 import '../styles/ChannelFinderMobile.css';
@@ -241,6 +243,9 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
   const [loading, setLoading] = useState(true); // 데이터 로딩 상태
   const [hoveredPoint, setHoveredPoint] = useState<number | null>(null); // 호버된 포인트 인덱스
   const [hoveredStat, setHoveredStat] = useState<string | null>(null); // 호버된 통계 항목
+  const [showLoadingModal, setShowLoadingModal] = useState(false); // 로딩 모달 표시 상태
+  const [loadingProgress, setLoadingProgress] = useState(0); // 로딩 진행률 (0-100)
+  const [loadingMessage, setLoadingMessage] = useState(''); // 로딩 메시지
   const [apiStatus, setApiStatus] = useState<{
     isConnected: boolean;
     message: string;
@@ -491,16 +496,62 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
     const loadChannelData = async () => {
       try {
         setLoading(true);
+
+        // 캐시 확인
+        const cachedData = cache.get('cloudflare_channel_data');
+        const hasCachedData = cachedData && Array.isArray(cachedData) && cachedData.length > 0;
+
+        // 임시: 항상 로딩 모달 표시 (디자인 확인용)
+        // if (!hasCachedData) {
+          setShowLoadingModal(true);
+          setLoadingProgress(0);
+          setLoadingMessage('8000개 채널 데이터를 가져오고 있습니다...');
+        // }
+
         setApiStatus({
           isConnected: false,
           message: '데이터를 불러오고 있습니다...',
           dataSource: 'mock'
         });
-        
+
         console.log('📊 [INFO] 채널 데이터 로딩 시작...');
-        
+
+        // 임시: 항상 프로그레스 업데이트 시뮬레이션 (디자인 확인용)
+        let progressInterval: NodeJS.Timeout | null = null;
+        // if (!hasCachedData) {
+          let progress = 0;
+          progressInterval = setInterval(() => {
+            progress += Math.random() * 15 + 5; // 5-20% 증가
+            if (progress > 95) progress = 95; // 95%에서 멈춤
+            setLoadingProgress(Math.min(progress, 95));
+
+            // 메시지 업데이트
+            if (progress < 30) {
+              setLoadingMessage('1000개씩 배치 처리 중... (1/4)');
+            } else if (progress < 60) {
+              setLoadingMessage('1000개씩 배치 처리 중... (2/4)');
+            } else if (progress < 85) {
+              setLoadingMessage('1000개씩 배치 처리 중... (3/4)');
+            } else {
+              setLoadingMessage('1000개씩 배치 처리 중... (4/4)');
+            }
+          }, 800);
+        // }
+
         // CloudflareService에서 데이터 가져오기
         const result = await cloudflareService.getChannelData();
+
+        // 프로그레스 완료 및 정리
+        if (progressInterval) {
+          clearInterval(progressInterval);
+          setLoadingProgress(100);
+          setLoadingMessage('완료!');
+
+          // 잠시 100% 보여주고 모달 닫기
+          setTimeout(() => {
+            setShowLoadingModal(false);
+          }, 500);
+        }
         
         if (result.success && result.data.length > 0) {
           console.log('✅ [SUCCESS] 채널 데이터 로드 성공:', result.data.length, '개');
@@ -539,6 +590,12 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
         
       } catch (error) {
         console.error('❌ [ERROR] 채널 데이터 로딩 실패:', error);
+
+        // 로딩 모달 닫기
+        if (showLoadingModal) {
+          setShowLoadingModal(false);
+        }
+
         // 에러 발생시 더미 데이터 사용
         
         // 기본 정렬: 구독자 수 높은 순
@@ -1397,6 +1454,14 @@ const ChannelFinder: React.FC<ChannelFinderProps> = ({ language }) => {
           </div>
         </div>
       )}
+
+      {/* 로딩 모달 */}
+      <LoadingModal
+        isOpen={showLoadingModal}
+        language={language}
+        progress={loadingProgress}
+        message={loadingMessage}
+      />
     </>
   );
 };
