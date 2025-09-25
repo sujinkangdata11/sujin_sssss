@@ -689,7 +689,7 @@ const Step5: React.FC<Step5Props> = ({
                     <button
                       onClick={() => setIsTranslationLanguageModalOpen(true)}
                       style={{
-                        width: '170px',
+                        width: '190px',
                         height: '45px',
                         padding: '0 12px',
                         border: '1px solid #ccc',

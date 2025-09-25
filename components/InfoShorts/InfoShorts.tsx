@@ -1459,8 +1459,8 @@ ${referenceContent}
       throw new Error('Gemini API 키를 입력해주세요.');
     }
 
-    const prompt = `이 대사를 "${languageName}"로 번역해주되, 짧은 문장 단위로 줄바꿈 표시로 "//" 슬러시 2개로 끊어줘. 또한 언어는 "${languageName}" 원어민이 보았을 때 자주 쓰는 단어와 익숙한 표현으로 자연스럽게 번역해줘. 다만 "전문적 용어"는 그 의미에 맞게 "${languageName}"로 잘 번역해줘.
-출력은 "${languageName}" 텍스트만 포함하고, 추가 설명은 넣지 마세요.
+    const prompt = `이 대사를 "${languageName}"로 번역해주되, 한 문장 내에 자연스럽게 2~3개 단어 단위로 "//" 슬러시 2개로 끊어줘. 또한 언어는 "${languageName}" 원어민이 보았을 때 자주 쓰는 단어와 익숙한 표현으로 자연스럽게 번역해줘. 다만 "전문적 용어"는 그 의미에 맞게 "${languageName}"로 잘 번역해줘.
+아웃풋은 "${languageName}" 텍스트만 출력해줘. 문장과 문장 사이도 "//"로 표시해줘.
 
 --- 원문 ---
 ${trimmedText}`;
