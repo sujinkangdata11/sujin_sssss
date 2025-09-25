@@ -273,14 +273,15 @@ const InfoShorts: React.FC<InfoShortsProps> = ({ language }) => {
     prompt: string,
     functionDeclarations: any[],
     url: string,
-    currentApiKey: string
+    currentApiKey: string,
+    modelName: string = 'models/gemini-2.5-flash'
   ) => {
     console.log('🚀 [KEY ROTATION] API 호출 시작...');
 
     // 개발자 키가 아니면 기존 방식으로 호출
     if (!isDeveloperKey(currentApiKey)) {
       console.log('🔑 [KEY ROTATION] 사용자 수동 입력 키 사용 - 기존 로직 적용');
-      return await generateContent(prompt, functionDeclarations, url, currentApiKey);
+      return await generateContent(prompt, functionDeclarations, url, currentApiKey, modelName);
     }
 
     console.log('🔑 [KEY ROTATION] 개발자 키 감지 - 키 로테이션 로직 적용');
@@ -301,7 +302,7 @@ const InfoShorts: React.FC<InfoShortsProps> = ({ language }) => {
         console.log(`🔄 [KEY ROTATION] ${i + 1}/${allKeys.length} 키 시도 중... (${keyToTry.substring(0, 10)}...${keyToTry.slice(-4)})`);
 
         try {
-          const result = await generateContent(prompt, functionDeclarations, url, keyToTry);
+          const result = await generateContent(prompt, functionDeclarations, url, keyToTry, modelName);
           console.log(`✅ [KEY ROTATION] ${i + 1}번째 키로 성공! API 호출 완료`);
           return result;
         } catch (error: any) {
@@ -1445,18 +1446,51 @@ ${referenceContent}
   };
 
   // 디버깅: 렌더링시 현재 상태 출력
-  const currentHeight = (youtubeVideoId && currentStep === 1) ? '250vh' : '200vh';
+  const currentHeight = currentStep === 5 ? '300vh' : (youtubeVideoId && currentStep === 1) ? '250vh' : '200vh';
   console.log('🎯 [RENDER DEBUG] 렌더링시 youtubeVideoId:', youtubeVideoId, '| currentStep:', currentStep, '| 높이:', currentHeight);
 
+  const handleTranslateScript = async ({ text, languageName }: { text: string; languageName: string; }) => {
+    const trimmedText = text.trim();
+    if (!trimmedText) {
+      throw new Error('번역할 스크립트가 없습니다.');
+    }
+
+    if (!apiKey.trim()) {
+      throw new Error('Gemini API 키를 입력해주세요.');
+    }
+
+    const prompt = `이 대사를 "${languageName}"로 번역해주되, 짧은 문장 단위로 줄바꿈 표시로 "//" 슬러시 2개로 끊어줘. 또한 언어는 "${languageName}" 원어민이 보았을 때 자주 쓰는 단어와 익숙한 표현으로 자연스럽게 번역해줘. 다만 "전문적 용어"는 그 의미에 맞게 "${languageName}"로 잘 번역해줘.
+출력은 "${languageName}" 텍스트만 포함하고, 추가 설명은 넣지 마세요.
+
+--- 원문 ---
+${trimmedText}`;
+
+    try {
+      const contentUrl = youtubeVideoId ? `https://www.youtube.com/watch?v=${youtubeVideoId}` : '';
+      const response = await generateContentWithKeyRotation(
+        prompt,
+        [],
+        contentUrl,
+        apiKey.trim(),
+        'models/gemini-2.5-pro'
+      );
+
+      const translationText = response.text || response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+      if (!translationText.trim()) {
+        throw new Error('번역 결과를 가져올 수 없습니다.');
+      }
+
+      return translationText;
+    } catch (error) {
+      console.error('번역 API 오류:', error);
+      throw error;
+    }
+  };
+
   return (
-    <main className={c(theme, styles.infoShortsContainer)} style={{
-      /* position: 'relative', */ /* 원복용 삭제처리가능 - Step 1: 스크롤 방지용 삭제 */
-      width: '100%', /* 원복용 삭제처리가능 - Step 1: 가로폭 제한 */
-      maxWidth: '100vw', /* 원복용 삭제처리가능 - Step 1: 가로폭 제한 */
-      boxSizing: 'border-box', /* 원복용 삭제처리가능 - Step 1: 패딩 포함 계산 */
-      overflow: 'visible',
-      minHeight: currentHeight
-    }}>
+    <main className={c(theme, styles.infoShortsContainer)}>
+      <div className={styles.stepViewport} style={{ minHeight: currentHeight }}>
         {/* Step 1: YouTube URL Input */}
         <Step1
             currentStep={currentStep}
@@ -1569,6 +1603,7 @@ ${referenceContent}
             handleRewriteWithExamples={handleRewriteWithExamples}
             isLoadingRewrite={isLoadingRewrite}
             rewrittenResult={rewrittenResult}
+            handleTranslateScript={handleTranslateScript}
           />
         
         {/* Step 6: Voice Generation */}
@@ -1716,6 +1751,8 @@ ${referenceContent}
           setSelectedAudioSource={setSelectedAudioSource}
           selectedVoice={selectedVoice}
         />
+
+      </div>
 
       {/* ================================================ */}
       {/* 📱 FOUR-COLUMN-LAYOUT 끝 (여기서 모든 칼럼 종료) */}

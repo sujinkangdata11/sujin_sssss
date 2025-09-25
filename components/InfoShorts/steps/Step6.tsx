@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import styles from '../InfoShorts.module.css';
 import { VOICE_CONFIGS } from '../tts/voiceMapping';
 import HelpButton from '../../shared/HelpButton';
@@ -104,6 +105,8 @@ const Step6: React.FC<Step6Props> = ({
   const [voiceSearch, setVoiceSearch] = React.useState('');
   const [isPreviewPlaying, setIsPreviewPlaying] = React.useState<string | null>(null);
   const [previewAudio, setPreviewAudio] = React.useState<HTMLAudioElement | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = React.useState('ko'); // 기본값을 한국어로 설정
+  const [isLanguageModalOpen, setIsLanguageModalOpen] = React.useState(false); // 언어 모달 상태
 
   // voiceMapping.ts에서 실제 음성 데이터를 사용
   const voiceOptions = React.useMemo(() => {
@@ -211,10 +214,7 @@ const Step6: React.FC<Step6Props> = ({
   }, [previewAudio]);
 
   return (
-    <div className="step-card" style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
+    <div className={styles.stepLayer} style={{
       background: 'rgb(249, 250, 251)',
       border: '1px solid rgb(209, 213, 219)',
       borderRadius: '16px',
@@ -237,8 +237,7 @@ const Step6: React.FC<Step6Props> = ({
           }
         }
         return stepNumber > (currentStep || 1) ? 'translateX(100%)' : 'translateX(-100%)';
-      })(),
-      transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      })()
     }}>
       <HelpButton
         stepName="자막생성"
@@ -277,6 +276,7 @@ const Step6: React.FC<Step6Props> = ({
         }
       />
 
+
       {/* 스크립트 설정 블럭 + 음성 타입 선택 블럭을 가로로 배치 */}
       <div style={{
         display: 'flex',
@@ -303,9 +303,10 @@ const Step6: React.FC<Step6Props> = ({
               color: '#333d4b',
               margin: 0,
               flex: 1,
-              textAlign: 'center'
+              textAlign: 'center',
+              marginLeft: '40px'
             }}>
-              스크립트 설정
+              스크립트
             </h3>
             <div style={{
               fontSize: '14px',
@@ -353,16 +354,13 @@ const Step6: React.FC<Step6Props> = ({
               marginBottom: '16px',
               textAlign: 'center'
             }}>
-              음성 타입 선택
+              음성 선택
             </h3>
             
-            {/* 검색 입력 필드 */}
+            {/* 언어 선택 버튼 */}
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
-              <input
-                type="text"
-                value={voiceSearch}
-                onChange={(e) => setVoiceSearch(e.target.value)}
-                placeholder="음성 이름 검색... (예: 영수, 수진)"
+              <button
+                onClick={() => setIsLanguageModalOpen(true)}
                 style={{
                   width: '270px',
                   height: '45px',
@@ -372,17 +370,50 @@ const Step6: React.FC<Step6Props> = ({
                   fontSize: '16px',
                   backgroundColor: 'white',
                   color: '#333',
-                  outline: 'none'
+                  outline: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s ease'
                 }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#7c3aed';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(124, 58, 237, 0.1)';
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8f9fa';
+                  e.currentTarget.style.borderColor = '#7c3aed';
                 }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#ccc';
-                  e.target.style.boxShadow = 'none';
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.borderColor = '#ccc';
                 }}
-              />
+              >
+                <span style={{ fontSize: '20px' }}>
+                  {selectedLanguage === 'ko' ? '🇰🇷' :
+                   selectedLanguage === 'ja' ? '🇯🇵' :
+                   selectedLanguage === 'en' ? '🇺🇸' :
+                   selectedLanguage === 'es' ? '🇪🇸' :
+                   selectedLanguage === 'zh' ? '🇨🇳' :
+                   selectedLanguage === 'fr' ? '🇫🇷' :
+                   selectedLanguage === 'de' ? '🇩🇪' :
+                   selectedLanguage === 'pt' ? '🇵🇹' :
+                   selectedLanguage === 'ru' ? '🇷🇺' :
+                   selectedLanguage === 'hi' ? '🇮🇳' :
+                   selectedLanguage === 'nl' ? '🇳🇱' : '🇰🇷'}
+                </span>
+                <span>
+                  {selectedLanguage === 'ko' ? '한국어' :
+                   selectedLanguage === 'ja' ? '일본어' :
+                   selectedLanguage === 'en' ? '영어' :
+                   selectedLanguage === 'es' ? '스페인어' :
+                   selectedLanguage === 'zh' ? '중국어' :
+                   selectedLanguage === 'fr' ? '프랑스어' :
+                   selectedLanguage === 'de' ? '독일어' :
+                   selectedLanguage === 'pt' ? '포르투갈어' :
+                   selectedLanguage === 'ru' ? '러시아어' :
+                   selectedLanguage === 'hi' ? '힌디어' :
+                   selectedLanguage === 'nl' ? '네덜란드어' : '한국어'}
+                </span>
+              </button>
             </div>
             
             {/* 왼쪽 화살표 */}
@@ -500,7 +531,7 @@ const Step6: React.FC<Step6Props> = ({
                       width: '100%',
                       height: '100%',
                       borderRadius: '12px',
-                      border: selectedVoice === voiceKey ? '2px solid #7c3aed' : '1px solid #ccc',
+                      border: selectedVoice === voiceKey ? '1px solid #7c3aed' : '1px solid #ccc',
                       background: selectedVoice === voiceKey ? '#f3f0ff' : 'white',
                       color: selectedVoice === voiceKey ? '#7c3aed' : '#333',
                       cursor: 'pointer',
@@ -902,6 +933,251 @@ const Step6: React.FC<Step6Props> = ({
               </div>
             )}
       </div>
+
+      {/* 언어 선택 모달 */}
+      {isLanguageModalOpen && createPortal(
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10000
+        }}
+        onClick={() => setIsLanguageModalOpen(false)}
+        >
+          <div style={{
+            background: 'white',
+            borderRadius: '16px',
+            padding: '2rem',
+            width: '650px',
+            height: '490px',
+            overflow: 'auto'
+          }}
+          onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: '1.5rem',
+              position: 'relative'
+            }}>
+              <h3 style={{
+                margin: 0,
+                color: '#333d4b',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                textAlign: 'center'
+              }}>
+                언어 선택
+              </h3>
+              <button
+                onClick={() => setIsLanguageModalOpen(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  color: '#666',
+                  padding: '0',
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'absolute',
+                  right: '0'
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            {/* 언어 선택 버튼들 */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
+              alignItems: 'center'
+            }}>
+              {/* 첫 번째 줄 - 3개 */}
+              <div style={{
+                display: 'flex',
+                gap: '15px',
+                justifyContent: 'center'
+              }}>
+                {[
+                  { code: 'ko', name: '한국어', flag: '🇰🇷' },
+                  { code: 'ja', name: '일본어', flag: '🇯🇵' },
+                  { code: 'en', name: '영어', flag: '🇺🇸' }
+                ].map((language) => (
+                  <button
+                    key={language.code}
+                    onClick={() => {
+                      setSelectedLanguage(language.code);
+                      setIsLanguageModalOpen(false);
+                    }}
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      border: selectedLanguage === language.code ? '2px solid rgb(124, 58, 237)' : '1px solid #ccc',
+                      borderRadius: '12px',
+                      background: selectedLanguage === language.code ? 'rgb(243, 240, 255)' : 'white',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '14px',
+                      fontWeight: selectedLanguage === language.code ? 'bold' : 'normal',
+                      color: selectedLanguage === language.code ? 'rgb(124, 58, 237)' : '#333',
+                      transition: 'all 0.2s ease',
+                      gap: '8px'
+                    }}
+                    onMouseOver={(e) => {
+                      if (selectedLanguage !== language.code) {
+                        e.currentTarget.style.backgroundColor = '#f8f9fa';
+                      }
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseOut={(e) => {
+                      if (selectedLanguage !== language.code) {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      } else {
+                        e.currentTarget.style.backgroundColor = 'rgb(243, 240, 255)';
+                      }
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <span style={{ fontSize: '32px' }}>{language.flag}</span>
+                    <span>{language.name}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* 두 번째 줄 - 4개 */}
+              <div style={{
+                display: 'flex',
+                gap: '15px',
+                justifyContent: 'center'
+              }}>
+                {[
+                  { code: 'es', name: '스페인어', flag: '🇪🇸' },
+                  { code: 'zh', name: '중국어', flag: '🇨🇳' },
+                  { code: 'fr', name: '프랑스어', flag: '🇫🇷' },
+                  { code: 'de', name: '독일어', flag: '🇩🇪' }
+                ].map((language) => (
+                  <button
+                    key={language.code}
+                    onClick={() => {
+                      setSelectedLanguage(language.code);
+                      setIsLanguageModalOpen(false);
+                    }}
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      border: selectedLanguage === language.code ? '2px solid rgb(124, 58, 237)' : '1px solid #ccc',
+                      borderRadius: '12px',
+                      background: selectedLanguage === language.code ? 'rgb(243, 240, 255)' : 'white',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '14px',
+                      fontWeight: selectedLanguage === language.code ? 'bold' : 'normal',
+                      color: selectedLanguage === language.code ? 'rgb(124, 58, 237)' : '#333',
+                      transition: 'all 0.2s ease',
+                      gap: '8px'
+                    }}
+                    onMouseOver={(e) => {
+                      if (selectedLanguage !== language.code) {
+                        e.currentTarget.style.backgroundColor = '#f8f9fa';
+                      }
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseOut={(e) => {
+                      if (selectedLanguage !== language.code) {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      } else {
+                        e.currentTarget.style.backgroundColor = 'rgb(243, 240, 255)';
+                      }
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <span style={{ fontSize: '32px' }}>{language.flag}</span>
+                    <span>{language.name}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* 세 번째 줄 - 4개 */}
+              <div style={{
+                display: 'flex',
+                gap: '15px',
+                justifyContent: 'center'
+              }}>
+                {[
+                  { code: 'pt', name: '포르투갈어', flag: '🇵🇹' },
+                  { code: 'ru', name: '러시아어', flag: '🇷🇺' },
+                  { code: 'hi', name: '힌디어', flag: '🇮🇳' },
+                  { code: 'nl', name: '네덜란드어', flag: '🇳🇱' }
+                ].map((language) => (
+                  <button
+                    key={language.code}
+                    onClick={() => {
+                      setSelectedLanguage(language.code);
+                      setIsLanguageModalOpen(false);
+                    }}
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      border: selectedLanguage === language.code ? '2px solid rgb(124, 58, 237)' : '1px solid #ccc',
+                      borderRadius: '12px',
+                      background: selectedLanguage === language.code ? 'rgb(243, 240, 255)' : 'white',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '14px',
+                      fontWeight: selectedLanguage === language.code ? 'bold' : 'normal',
+                      color: selectedLanguage === language.code ? 'rgb(124, 58, 237)' : '#333',
+                      transition: 'all 0.2s ease',
+                      gap: '8px'
+                    }}
+                    onMouseOver={(e) => {
+                      if (selectedLanguage !== language.code) {
+                        e.currentTarget.style.backgroundColor = '#f8f9fa';
+                      }
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseOut={(e) => {
+                      if (selectedLanguage !== language.code) {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      } else {
+                        e.currentTarget.style.backgroundColor = 'rgb(243, 240, 255)';
+                      }
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <span style={{ fontSize: '32px' }}>{language.flag}</span>
+                    <span>{language.name}</span>
+                  </button>
+                ))}
+              </div>
+
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

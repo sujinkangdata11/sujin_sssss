@@ -415,11 +415,8 @@ const Step1: React.FC<Step1Props> = ({
 
   return (
     <div
-      className="step1-container"
+      className={styles.stepLayer}
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
         width: '97%', /* 원복용 삭제처리가능 - 가로폭 살짝 줄임 */
         opacity: currentStep === 1 ? 1 : 0,
         visibility: currentStep === 1 ? 'visible' : 'hidden',
@@ -445,7 +442,6 @@ const Step1: React.FC<Step1Props> = ({
           // 기본 숨김 상태 - 화면 밖에 대기
           return stepNumber > (currentStep || 1) ? 'translateX(100%)' : 'translateX(-100%)';
         })(),
-        transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
       }}
     >
       {/* 메인 카드 - 이제 relative positioning */}

@@ -31,6 +31,7 @@ interface Step5Props {
   handleRewriteWithExamples: () => void;
   isLoadingRewrite: boolean;
   rewrittenResult: string;
+  handleTranslateScript: (params: { text: string; languageName: string }) => Promise<string>;
 }
 
 const Step5: React.FC<Step5Props> = ({
@@ -60,7 +61,8 @@ const Step5: React.FC<Step5Props> = ({
   handleFileDelete,
   handleRewriteWithExamples,
   isLoadingRewrite,
-  rewrittenResult
+  rewrittenResult,
+  handleTranslateScript
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState<{ type: string; prompt: string } | null>(null);
@@ -68,11 +70,36 @@ const Step5: React.FC<Step5Props> = ({
   const [showExampleModal, setShowExampleModal] = useState(false);
   const [selectedExample, setSelectedExample] = useState(1);
   const [showFullContent, setShowFullContent] = useState<number | null>(null);
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [translationText, setTranslationText] = useState('');
+  const [translationText2, setTranslationText2] = useState('');
+  const [selectedTranslationLanguage, setSelectedTranslationLanguage] = useState('ko');
+  const [isTranslationLanguageModalOpen, setIsTranslationLanguageModalOpen] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  const translationLanguageMeta: Record<string, { name: string; flag: string }> = {
+    ko: { name: '한국어', flag: '🇰🇷' },
+    ja: { name: '일본어', flag: '🇯🇵' },
+    en: { name: '영어', flag: '🇺🇸' },
+    es: { name: '스페인어', flag: '🇪🇸' },
+    zh: { name: '중국어', flag: '🇨🇳' },
+    fr: { name: '프랑스어', flag: '🇫🇷' },
+    de: { name: '독일어', flag: '🇩🇪' },
+    pt: { name: '포르투갈어', flag: '🇵🇹' },
+    ru: { name: '러시아어', flag: '🇷🇺' },
+    hi: { name: '힌디어', flag: '🇮🇳' },
+    nl: { name: '네덜란드어', flag: '🇳🇱' }
+  };
+
+  const translationLanguageGroups: string[][] = [
+    ['ko', 'ja', 'en'],
+    ['es', 'zh', 'fr', 'de'],
+    ['pt', 'ru', 'hi', 'nl']
+  ];
+
+  const currentTranslationLanguage = translationLanguageMeta[selectedTranslationLanguage] || translationLanguageMeta.ko;
   return (
-    <div className="step-card" style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
+    <div className={styles.stepLayer} style={{
       background: 'rgb(249, 250, 251)',
       border: '1px solid rgb(209, 213, 219)',
       borderRadius: '16px',
@@ -95,8 +122,7 @@ const Step5: React.FC<Step5Props> = ({
           }
         }
         return stepNumber > (currentStep || 1) ? 'translateX(100%)' : 'translateX(-100%)';
-      })(),
-      transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      })()
     }}>
       <HelpButton
         stepName="음성분석"
@@ -483,6 +509,304 @@ const Step5: React.FC<Step5Props> = ({
               </div>
             )}
           </div>
+
+          {/* 번역 기능 블럭 */}
+          <div style={{
+            marginTop: '20px',
+            padding: '20px',
+            background: 'rgb(249, 250, 251)',
+            borderRadius: '16px',
+            width: '800px',
+            margin: '20px auto 0 auto',
+            transition: 'all 0.3s ease'
+          }}>
+            {/* 번역하기 버튼 - 항상 표시 */}
+            <div style={{
+              textAlign: 'center',
+              marginBottom: showTranslation ? '20px' : '0'
+            }}>
+              <button
+                onClick={() => {
+                  setShowTranslation(!showTranslation);
+                  if (!showTranslation) {
+                    setTranslationText(analysisResult2 || rewrittenResult || '');
+                  }
+                }}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: 'rgb(249, 250, 251)',
+                  color: 'black',
+                  border: '1px solid rgb(209, 213, 219)',
+                  borderRadius: '12px',
+                  fontSize: '15px',
+                  fontWeight: 'normal',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  margin: '0 auto'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgb(249, 250, 251)';
+                }}
+              >
+                이 대사를 번역하기
+                <svg
+                  width="10"
+                  height="6"
+                  viewBox="0 0 10 6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{
+                    transform: showTranslation ? 'rotate(180deg)' : 'none',
+                    transition: 'transform 0.2s ease'
+                  }}
+                >
+                  <path
+                    d="M1 1.5L5 4.5L9 1.5"
+                    stroke="#7c3aed"
+                    strokeWidth="1"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* 스크립트 영역 - 아코디언 형식으로 펼쳐짐 */}
+            {showTranslation && (
+              <div style={{
+                display: 'flex',
+                gap: '20px',
+                width: '100%',
+                transform: 'translateX(-30px)'
+              }}>
+                {/* 첫 번째 스크립트 블럭 - 텍스트 채워짐 */}
+                <div style={{
+                  background: 'white',
+                  borderRadius: '16px',
+                  padding: '20px',
+                  width: '400px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '16px'
+                  }}>
+                    <h3 style={{
+                      fontSize: '18px',
+                      fontWeight: 'bold',
+                      color: '#333d4b',
+                      margin: 0,
+                      flex: 1,
+                      textAlign: 'center',
+                      marginLeft: '40px'
+                    }}>
+                      원본 스크립트
+                    </h3>
+                    <div style={{
+                      fontSize: '14px',
+                      color: '#666',
+                      fontWeight: '500',
+                      minWidth: '100px',
+                      textAlign: 'right'
+                    }}>
+                      공백포함 {translationText.length}자
+                    </div>
+                  </div>
+                  <div>
+                    <textarea
+                      value={translationText}
+                      onChange={(e) => setTranslationText(e.target.value)}
+                      rows={12}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #ccc',
+                        borderRadius: '12px',
+                        fontSize: '18px',
+                        backgroundColor: 'white',
+                        color: '#333',
+                        resize: 'vertical',
+                        lineHeight: '1.8'
+                      }}
+                      placeholder="원본 텍스트를 입력하세요..."
+                    />
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    marginTop: '16px'
+                  }}>
+                    <DownloadCopyButtons
+                      content={translationText}
+                      filename="원본_스크립트"
+                    />
+                  </div>
+                </div>
+
+                {/* 두 번째 스크립트 블럭 - 빈 칸 */}
+                <div style={{
+                  background: 'white',
+                  borderRadius: '16px',
+                  padding: '20px',
+                  width: '400px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '16px'
+                  }}>
+                    <h3 style={{
+                      fontSize: '18px',
+                      fontWeight: 'bold',
+                      color: '#333d4b',
+                      margin: 0,
+                      flex: 1,
+                      textAlign: 'center',
+                      marginLeft: '40px'
+                    }}>
+                      번역 언어 선택
+                    </h3>
+                    <div style={{
+                      fontSize: '14px',
+                      color: '#666',
+                      fontWeight: '500',
+                      minWidth: '100px',
+                      textAlign: 'right'
+                    }}>
+                      공백포함 {translationText2.length}자
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px', gap: '10px' }}>
+                    <button
+                      onClick={() => setIsTranslationLanguageModalOpen(true)}
+                      style={{
+                        width: '170px',
+                        height: '45px',
+                        padding: '0 12px',
+                        border: '1px solid #ccc',
+                        borderRadius: '12px',
+                        fontSize: '16px',
+                        backgroundColor: 'white',
+                        color: '#333',
+                        outline: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f8f9fa';
+                        e.currentTarget.style.borderColor = '#7c3aed';
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor = 'white';
+                        e.currentTarget.style.borderColor = '#ccc';
+                      }}
+                    >
+                      <span style={{ fontSize: '20px' }}>{currentTranslationLanguage.flag}</span>
+                      <span>{currentTranslationLanguage.name}</span>
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (!translationText.trim()) {
+                          alert('먼저 번역할 스크립트를 입력하거나 생성해주세요.');
+                          return;
+                        }
+                        setIsTranslating(true);
+                        try {
+                          const translated = await handleTranslateScript({
+                            text: translationText,
+                            languageName: currentTranslationLanguage.name
+                          });
+                          setTranslationText2(translated.trim());
+                        } catch (error) {
+                          console.error('번역 오류:', error);
+                          const message = error instanceof Error ? error.message : '번역 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.';
+                          alert(message);
+                        } finally {
+                          setIsTranslating(false);
+                        }
+                      }}
+                      disabled={isTranslating}
+                      style={{
+                        width: '150px',
+                        height: '45px',
+                        padding: '0 16px',
+                        border: 'none',
+                        borderRadius: '12px',
+                        fontSize: '16px',
+                        backgroundColor: '#7c3aed',
+                        color: 'white',
+                        outline: 'none',
+                        cursor: isTranslating ? 'not-allowed' : 'pointer',
+                        fontWeight: 600,
+                        transition: 'background-color 0.2s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        opacity: 1
+                      }}
+                    >
+                      {isTranslating ? (
+                        <div style={{
+                          width: '16px',
+                          height: '16px',
+                          border: '2px solid transparent',
+                          borderTop: '2px solid white',
+                          borderRadius: '50%',
+                          animation: 'spin 1s linear infinite'
+                        }} />
+                      ) : (
+                        '번역하기'
+                      )}
+                    </button>
+                  </div>
+                  <div>
+                    <textarea
+                      value={translationText2}
+                      onChange={(e) => setTranslationText2(e.target.value)}
+                      rows={12}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #ccc',
+                        borderRadius: '12px',
+                        fontSize: '18px',
+                        backgroundColor: 'white',
+                        color: '#333',
+                        resize: 'vertical',
+                        lineHeight: '1.8'
+                      }}
+                      placeholder="번역된 텍스트가 여기에 표시됩니다..."
+                    />
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    marginTop: '16px'
+                  }}>
+                    <DownloadCopyButtons
+                      content={translationText2}
+                      filename={`${currentTranslationLanguage.name}_번역`}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -606,6 +930,141 @@ const Step5: React.FC<Step5Props> = ({
               )}
             </div>
             
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {isTranslationLanguageModalOpen && createPortal(
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 10000
+          }}
+          onClick={() => setIsTranslationLanguageModalOpen(false)}
+        >
+          <div
+            style={{
+              background: 'white',
+              borderRadius: '16px',
+              padding: '2rem',
+              width: '650px',
+              height: '490px',
+              overflow: 'auto'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: '1.5rem',
+              position: 'relative'
+            }}>
+              <h3 style={{
+                margin: 0,
+                color: '#333d4b',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                textAlign: 'center'
+              }}>
+                언어 선택
+              </h3>
+              <button
+                onClick={() => setIsTranslationLanguageModalOpen(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  color: '#666',
+                  padding: '0',
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'absolute',
+                  right: '0'
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
+              alignItems: 'center'
+            }}>
+              {translationLanguageGroups.map((group, groupIndex) => (
+                <div
+                  key={`translation-language-group-${groupIndex}`}
+                  style={{
+                    display: 'flex',
+                    gap: '15px',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {group.map((code) => {
+                    const meta = translationLanguageMeta[code];
+                    return (
+                      <button
+                        key={code}
+                        onClick={() => {
+                          setSelectedTranslationLanguage(code);
+                          setIsTranslationLanguageModalOpen(false);
+                        }}
+                        style={{
+                          width: '100px',
+                          height: '100px',
+                          border: selectedTranslationLanguage === code ? '2px solid rgb(124, 58, 237)' : '1px solid #ccc',
+                          borderRadius: '12px',
+                          background: selectedTranslationLanguage === code ? 'rgb(243, 240, 255)' : 'white',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '14px',
+                          fontWeight: selectedTranslationLanguage === code ? 'bold' : 'normal',
+                          color: selectedTranslationLanguage === code ? 'rgb(124, 58, 237)' : '#333',
+                          transition: 'all 0.2s ease',
+                          gap: '8px'
+                        }}
+                        onMouseOver={(e) => {
+                          if (selectedTranslationLanguage !== code) {
+                            e.currentTarget.style.backgroundColor = '#f8f9fa';
+                          }
+                          e.currentTarget.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseOut={(e) => {
+                          if (selectedTranslationLanguage !== code) {
+                            e.currentTarget.style.backgroundColor = 'white';
+                          } else {
+                            e.currentTarget.style.backgroundColor = 'rgb(243, 240, 255)';
+                          }
+                          e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                      >
+                        <span style={{ fontSize: '32px' }}>{meta?.flag}</span>
+                        <span>{meta?.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
         </div>,
         document.body

@@ -54,10 +54,7 @@ const Step4: React.FC<Step4Props> = ({
   const [modalContent, setModalContent] = useState<{ type: string; prompt: string } | null>(null);
   const [selectedMode, setSelectedMode] = useState<string>('과학적 관점');
   return (
-    <div className="step-card" style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
+    <div className={styles.stepLayer} style={{
       background: 'rgb(249, 250, 251)',
       border: '1px solid rgb(209, 213, 219)',
       borderRadius: '16px',
@@ -80,8 +77,7 @@ const Step4: React.FC<Step4Props> = ({
           }
         }
         return stepNumber > (currentStep || 1) ? 'translateX(100%)' : 'translateX(-100%)';
-      })(),
-      transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      })()
     }}>
       <HelpButton
         stepName="관점분석"

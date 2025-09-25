@@ -138,10 +138,7 @@ const Step3: React.FC<Step3Props> = ({
   };
 
   return (
-    <div className="step-card" style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
+    <div className={styles.stepLayer} style={{
       background: 'rgb(249, 250, 251)',
       border: '1px solid rgb(209, 213, 219)',
       borderRadius: '16px',
@@ -154,7 +151,7 @@ const Step3: React.FC<Step3Props> = ({
       pointerEvents: currentStep === 3 ? 'auto' : 'none',
       transform: (() => {
         const stepNumber = 3;
-        
+
         // 현재 활성 카드
         if (currentStep === stepNumber) return 'translateX(0)';
         
@@ -172,8 +169,7 @@ const Step3: React.FC<Step3Props> = ({
         
         // 기본 숨김 상태 - 화면 밖에 대기
         return stepNumber > (currentStep || 1) ? 'translateX(100%)' : 'translateX(-100%)';
-      })(),
-      transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      })()
     }}>
       <HelpButton
         stepName="영상분석"

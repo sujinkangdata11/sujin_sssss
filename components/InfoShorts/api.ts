@@ -14,6 +14,7 @@ async function generateContent(
   functionDeclarations: FunctionDeclaration[],
   youtubeUrl: string,
   apiKey: string,
+  modelName: string = 'models/gemini-2.5-flash',
   maxRetries: number = 3,
 ) {
   // API 키 정리 및 검증
@@ -28,19 +29,27 @@ async function generateContent(
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const response = await ai.models.generateContent({
-        model: 'models/gemini-2.5-flash',
-        contents: [{
-          parts: [
+      const parts = youtubeUrl
+        ? [
             {
               fileData: {
                 fileUri: youtubeUrl,
               },
             },
             {
-              text: text, // 여기에 A/V captions, Custom 등 각 버튼의 프롬프트가 들어감
+              text,
             },
-          ],
+          ]
+        : [
+            {
+              text,
+            },
+          ];
+
+      const response = await ai.models.generateContent({
+        model: modelName,
+        contents: [{
+          parts,
         }],
         config: {
           systemInstruction,
