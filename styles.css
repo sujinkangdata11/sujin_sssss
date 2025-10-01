@@ -1514,6 +1514,36 @@ select.form-input {
   text-align: right;
 }
 
+.footer-visit-stats {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-base);
+  color: #374151;
+  font-family: var(--font-family);
+  margin-top: var(--spacing-4);
+}
+
+.footer-visit-label {
+  color: #6b7280;
+}
+
+.footer-visit-value {
+  font-weight: 600;
+}
+
+.footer-visit-divider {
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.footer-admin-wrapper {
+  margin-top: var(--spacing-4);
+  text-align: right;
+}
+
 .footer-contact-link {
   color: #374151; /* dark grey text */
   font-family: var(--font-family);
@@ -2459,9 +2489,17 @@ select.form-input {
     text-align: left; /* change to left alignment */
     order: 2; /* move to bottom */
   }
-  
+
   .footer-left {
     order: 1; /* keep at top */
+  }
+
+  .footer-visit-stats {
+    justify-content: flex-start;
+  }
+
+  .footer-admin-wrapper {
+    text-align: left;
   }
   
   .footer-contact-link {
@@ -3249,4 +3287,3 @@ select.form-input {
     font-size: 1.125rem;
   }
 }
-

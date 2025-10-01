@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useRef, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Language } from './types';
 import { SUPPORTED_LANGUAGES } from './constants';
@@ -196,13 +196,77 @@ const detectBrowserLanguage = (): Language => {
   return 'en';
 };
 
+const TOTAL_VISIT_KEY = 'vidhunt_total_visits';
+const DAILY_VISIT_KEY = 'vidhunt_daily_visits';
+const DAILY_DATE_KEY = 'vidhunt_daily_date';
+
+const getKstDateKey = () => {
+  const now = new Date();
+  const utcMillis = now.getTime() + now.getTimezoneOffset() * 60000;
+  const kstMillis = utcMillis + 9 * 60 * 60000; // KST is UTC+9
+  return new Date(kstMillis).toISOString().split('T')[0];
+};
+
+const formatVisitCount = (value: number) => {
+  return Number.isFinite(value) ? value.toLocaleString() : '0';
+};
+
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>(detectBrowserLanguage());
+  const [visitCounts, setVisitCounts] = useState(() => {
+    if (typeof window === 'undefined') {
+      return { total: 0, daily: 0 };
+    }
+
+    try {
+      const storedTotal = Number.parseInt(window.localStorage.getItem(TOTAL_VISIT_KEY) ?? '0', 10);
+      const storedDaily = Number.parseInt(window.localStorage.getItem(DAILY_VISIT_KEY) ?? '0', 10);
+      const storedDate = window.localStorage.getItem(DAILY_DATE_KEY);
+      const today = getKstDateKey();
+
+      const total = Number.isFinite(storedTotal) ? storedTotal : 0;
+      const daily = storedDate === today && Number.isFinite(storedDaily) ? storedDaily : 0;
+
+      return { total, daily };
+    } catch {
+      return { total: 0, daily: 0 };
+    }
+  });
+  const hasRecordedVisit = useRef(false);
   
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
 
   // 📝 Google Drive 설정 함수 제거됨 (CloudflareService로 대체됨)
   // 이제 채널 데이터는 ChannelFinder에서 CloudflareService를 통해 자동으로 로드됩니다.
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || hasRecordedVisit.current) {
+      return;
+    }
+
+    hasRecordedVisit.current = true;
+
+    try {
+      const today = getKstDateKey();
+      const total = Number.parseInt(window.localStorage.getItem(TOTAL_VISIT_KEY) ?? '0', 10);
+      const daily = Number.parseInt(window.localStorage.getItem(DAILY_VISIT_KEY) ?? '0', 10);
+      const storedDate = window.localStorage.getItem(DAILY_DATE_KEY);
+
+      const safeTotal = Number.isFinite(total) ? total : 0;
+      const safeDaily = Number.isFinite(daily) ? daily : 0;
+
+      const nextTotal = safeTotal + 1;
+      const nextDaily = storedDate === today ? safeDaily + 1 : 1;
+
+      window.localStorage.setItem(TOTAL_VISIT_KEY, String(nextTotal));
+      window.localStorage.setItem(DAILY_VISIT_KEY, String(nextDaily));
+      window.localStorage.setItem(DAILY_DATE_KEY, today);
+
+      setVisitCounts({ total: nextTotal, daily: nextDaily });
+    } catch (error) {
+      console.error('Failed to record visit counters', error);
+    }
+  }, []);
 
   return (
     <Router>
@@ -229,10 +293,17 @@ const App: React.FC = () => {
           <div className="footer-container">
             <div className="footer-content">
               <div className="footer-left">
-                <p className="footer-copyright">{t('footerCopyright')}</p>
+                <p className="footer-copyright">© 2025 Project VIDHUNT Corp.</p>
                 <div className="footer-description">
-                  <p>{t('footerDescription1')}</p>
-                  <p>{t('footerDescription2')}</p>
+                  <p>이 웹사이트의 저작권은 VIDHUNT에게 있습니다.</p>
+                  <p>기능 사용에 대한 문의는 개발자에게 문의해주세요.</p>
+                </div>
+                <div className="footer-visit-stats">
+                  <span className="footer-visit-label">누적 방문자 :</span>
+                  <span className="footer-visit-value">{formatVisitCount(visitCounts.total)}</span>
+                  <span className="footer-visit-divider">|</span>
+                  <span className="footer-visit-label">일일 방문자 :</span>
+                  <span className="footer-visit-value">{formatVisitCount(visitCounts.daily)}</span>
                 </div>
               </div>
               <div className="footer-right">
@@ -240,14 +311,12 @@ const App: React.FC = () => {
                   href="mailto:help.vidhunt@gmail.com"
                   className="footer-contact-link"
                 >
-                  {t('footerContactLink')}
+                  개발자에게 문의하기
                 </a>
-                <p className="footer-contact-desc" style={{whiteSpace: 'pre-line'}}>
-                  {t('footerContactDesc')}
+                <p className="footer-contact-desc" style={{ whiteSpace: 'pre-line' }}>
+                  원하는 기능이나 오류가 있다면 언제든지 이메일로 알려주세요.
                 </p>
-                
-                {/* Hidden Admin Buttons */}
-                <div style={{ marginTop: '1rem', float: 'right' }}>
+                <div className="footer-admin-wrapper">
                   <button 
                     onClick={() => window.location.href = '/admin'}
                     title="Admin Access"
