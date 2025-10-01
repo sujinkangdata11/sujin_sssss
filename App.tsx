@@ -314,7 +314,7 @@ const App: React.FC = () => {
                   개발자에게 문의하기
                 </a>
                 <p className="footer-contact-desc" style={{ whiteSpace: 'pre-line' }}>
-                  원하는 기능이나 오류가 있다면 언제든지 이메일로 알려주세요.
+                  {'원하는 기능이나 오류가 있다면\n언제든지 이메일로 알려주세요.'}
                 </p>
                 <div className="footer-admin-wrapper">
                   <button 
