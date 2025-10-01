@@ -1,0 +1,20 @@
+# 🔢 VIDHUNT 방문자 통계 API - Cloudflare Workers 설정
+name = "vidhunt-visitor-api"
+main = "cloudflare-worker-visitor-api.js"
+compatibility_date = "2024-01-01"
+account_id = "fc1814f8a93d6c57f82d5fcec656baab"
+
+# 🗄️ KV Namespace 바인딩 (방문자 통계 저장용)
+[[kv_namespaces]]
+binding = "VISITOR_STATS"
+id = "b92bb380baee4615b2e4090292190205"
+
+# 🌐 커스텀 도메인 설정 (옵션)
+[env.production]
+routes = [
+  { pattern = "vidhunt-visitor-api.fc1814f8a93d6c57f82d5fcec656baab.workers.dev/*", zone_name = "" }
+]
+
+# 📊 변수 설정
+[vars]
+ENVIRONMENT = "production"

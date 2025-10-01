@@ -4,6 +4,7 @@ import { Language } from './types';
 import { SUPPORTED_LANGUAGES } from './constants';
 import { translations } from './i18n/translations';
 import LanguageSelector from './components/LanguageSelector';
+import { visitorService, VisitorStats } from './services/visitorService';
 // Google Drive 서비스는 더 이상 사용하지 않음 (CloudflareService로 대체됨)
 
 //// 🏠 홈 페이지만 즉시 로딩 (사용자가 가장 많이 사용하는 페이지)
@@ -196,42 +197,13 @@ const detectBrowserLanguage = (): Language => {
   return 'en';
 };
 
-const TOTAL_VISIT_KEY = 'vidhunt_total_visits';
-const DAILY_VISIT_KEY = 'vidhunt_daily_visits';
-const DAILY_DATE_KEY = 'vidhunt_daily_date';
-
-const getKstDateKey = () => {
-  const now = new Date();
-  const utcMillis = now.getTime() + now.getTimezoneOffset() * 60000;
-  const kstMillis = utcMillis + 9 * 60 * 60000; // KST is UTC+9
-  return new Date(kstMillis).toISOString().split('T')[0];
-};
-
 const formatVisitCount = (value: number) => {
   return Number.isFinite(value) ? value.toLocaleString() : '0';
 };
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>(detectBrowserLanguage());
-  const [visitCounts, setVisitCounts] = useState(() => {
-    if (typeof window === 'undefined') {
-      return { total: 0, daily: 0 };
-    }
-
-    try {
-      const storedTotal = Number.parseInt(window.localStorage.getItem(TOTAL_VISIT_KEY) ?? '0', 10);
-      const storedDaily = Number.parseInt(window.localStorage.getItem(DAILY_VISIT_KEY) ?? '0', 10);
-      const storedDate = window.localStorage.getItem(DAILY_DATE_KEY);
-      const today = getKstDateKey();
-
-      const total = Number.isFinite(storedTotal) ? storedTotal : 0;
-      const daily = storedDate === today && Number.isFinite(storedDaily) ? storedDaily : 0;
-
-      return { total, daily };
-    } catch {
-      return { total: 0, daily: 0 };
-    }
-  });
+  const [visitCounts, setVisitCounts] = useState<{ total: number; daily: number }>({ total: 0, daily: 0 });
   const hasRecordedVisit = useRef(false);
   
   const t = (key: keyof typeof translations['en']) => translations[language][key] || translations['en'][key];
@@ -239,6 +211,7 @@ const App: React.FC = () => {
   // 📝 Google Drive 설정 함수 제거됨 (CloudflareService로 대체됨)
   // 이제 채널 데이터는 ChannelFinder에서 CloudflareService를 통해 자동으로 로드됩니다.
 
+  // 🌐 방문자 통계 로드 및 기록 (Cloudflare API 연동)
   useEffect(() => {
     if (typeof window === 'undefined' || hasRecordedVisit.current) {
       return;
@@ -246,26 +219,40 @@ const App: React.FC = () => {
 
     hasRecordedVisit.current = true;
 
-    try {
-      const today = getKstDateKey();
-      const total = Number.parseInt(window.localStorage.getItem(TOTAL_VISIT_KEY) ?? '0', 10);
-      const daily = Number.parseInt(window.localStorage.getItem(DAILY_VISIT_KEY) ?? '0', 10);
-      const storedDate = window.localStorage.getItem(DAILY_DATE_KEY);
+    const recordVisitAsync = async () => {
+      try {
+        // 방문 기록 및 통계 업데이트
+        const stats = await visitorService.recordVisit();
+        setVisitCounts({
+          total: stats.totalVisits,
+          daily: stats.dailyVisits
+        });
+        console.log('✅ [App] 방문자 통계 업데이트:', stats);
+      } catch (error) {
+        console.error('❌ [App] 방문자 통계 기록 실패:', error);
+        // API 실패 시에도 기본값 유지 (fallback이 자동 처리됨)
+      }
+    };
 
-      const safeTotal = Number.isFinite(total) ? total : 0;
-      const safeDaily = Number.isFinite(daily) ? daily : 0;
+    recordVisitAsync();
+  }, []);
 
-      const nextTotal = safeTotal + 1;
-      const nextDaily = storedDate === today ? safeDaily + 1 : 1;
+  // 🔄 주기적으로 최신 통계 조회 (5분마다)
+  useEffect(() => {
+    const updateStatsInterval = setInterval(async () => {
+      try {
+        const stats = await visitorService.getVisitorStats();
+        setVisitCounts({
+          total: stats.totalVisits,
+          daily: stats.dailyVisits
+        });
+      } catch (error) {
+        // 조용히 실패 (사용자 경험에 영향 없이)
+        console.warn('⚠️ [App] 주기적 통계 업데이트 실패:', error);
+      }
+    }, 5 * 60 * 1000); // 5분
 
-      window.localStorage.setItem(TOTAL_VISIT_KEY, String(nextTotal));
-      window.localStorage.setItem(DAILY_VISIT_KEY, String(nextDaily));
-      window.localStorage.setItem(DAILY_DATE_KEY, today);
-
-      setVisitCounts({ total: nextTotal, daily: nextDaily });
-    } catch (error) {
-      console.error('Failed to record visit counters', error);
-    }
+    return () => clearInterval(updateStatsInterval);
   }, []);
 
   return (
