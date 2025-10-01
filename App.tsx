@@ -286,10 +286,10 @@ const App: React.FC = () => {
                   <p>기능 사용에 대한 문의는 개발자에게 문의해주세요.</p>
                 </div>
                 <div className="footer-visit-stats">
-                  <span className="footer-visit-label">누적 방문자 :</span>
+                  <span className="footer-visit-label">{t('visitorStatsTotal')} :</span>
                   <span className="footer-visit-value">{formatVisitCount(visitCounts.total)}</span>
                   <span className="footer-visit-divider">|</span>
-                  <span className="footer-visit-label">일일 방문자 :</span>
+                  <span className="footer-visit-label">{t('visitorStatsDaily')} :</span>
                   <span className="footer-visit-value">{formatVisitCount(visitCounts.daily)}</span>
                 </div>
               </div>
