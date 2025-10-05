@@ -29,7 +29,7 @@ class VisitorService {
           timestamp: new Date().toISOString(),
           timezone: 'Asia/Seoul'
         }),
-        signal: AbortSignal.timeout(10000)
+        signal: this.createTimeoutSignal(10000)
       });
 
       if (!response.ok) {
@@ -60,7 +60,7 @@ class VisitorService {
         headers: {
           'Accept': 'application/json',
         },
-        signal: AbortSignal.timeout(8000)
+        signal: this.createTimeoutSignal(8000)
       });
 
       if (!response.ok) {
@@ -184,6 +184,25 @@ class VisitorService {
     return new Date(kstMillis).toISOString().split('T')[0];
   }
 
+  // ⏱️ 브라우저 호환 타임아웃 시그널 생성
+  private createTimeoutSignal(timeoutMs: number): AbortSignal | undefined {
+    try {
+      if (typeof AbortSignal !== 'undefined' && typeof (AbortSignal as unknown as { timeout?: (ms: number) => AbortSignal }).timeout === 'function') {
+        return (AbortSignal as unknown as { timeout: (ms: number) => AbortSignal }).timeout(timeoutMs);
+      }
+    } catch (error) {
+      console.warn('⚠️ [VisitorService] AbortSignal.timeout 사용 불가, 수동 타임아웃으로 전환:', error);
+    }
+
+    if (typeof AbortController !== 'undefined') {
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), timeoutMs);
+      return controller.signal;
+    }
+
+    return undefined;
+  }
+
   // 🔧 설정 관리
   setApiUrl(url: string): void {
     this.baseUrl = url;
@@ -195,7 +214,7 @@ class VisitorService {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(5000)
+        signal: this.createTimeoutSignal(5000)
       });
 
       return {
