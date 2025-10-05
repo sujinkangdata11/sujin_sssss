@@ -64,7 +64,7 @@ const Step1: React.FC<Step1Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [availableDates, setAvailableDates] = useState<{
     daily: string[];
-    weekly: string[];
+    weekly: { label: string; range: string }[];
     monthly: string[];
   }>({
     daily: [],
@@ -106,19 +106,42 @@ const Step1: React.FC<Step1Props> = ({
     const daily = sortedDates;
 
     // 주간: 날짜들을 주별로 그룹화
-    const weeklyGroups = new Map<string, string[]>();
+    const weeklyGroups = new Map<string, { label: string; dates: string[]; sortKey: string }>();
     daily.forEach(date => {
-      const dateObj = new Date(date);
-      const weekNum = Math.ceil(dateObj.getDate() / 7);
-      const month = dateObj.getMonth() + 1;
-      const weekKey = `${month}월 ${weekNum}주`;
+      const [yearStr, monthStr, dayStr] = date.split('-');
+      const year = parseInt(yearStr, 10);
+      const month = parseInt(monthStr, 10);
+      const day = parseInt(dayStr, 10);
+      const weekNum = Math.ceil(day / 7);
+      const weekKey = `${year}-${monthStr}-${weekNum}`;
+      const label = `${month}월 ${weekNum}주`;
 
       if (!weeklyGroups.has(weekKey)) {
-        weeklyGroups.set(weekKey, []);
+        weeklyGroups.set(weekKey, { label, dates: [], sortKey: '' });
       }
-      weeklyGroups.get(weekKey)?.push(date);
+
+      const group = weeklyGroups.get(weekKey);
+      if (group) {
+        group.dates.push(date);
+        const sortedDates = [...group.dates].sort((a, b) => a.localeCompare(b));
+        const startDate = sortedDates[0];
+        const endDate = sortedDates[sortedDates.length - 1];
+        group.sortKey = endDate;
+      }
     });
-    const weekly = Array.from(weeklyGroups.keys());
+
+    const weekly = Array.from(weeklyGroups.values())
+      .sort((a, b) => b.sortKey.localeCompare(a.sortKey))
+      .slice(0, 4)
+      .map(group => {
+        const sorted = [...group.dates].sort((a, b) => a.localeCompare(b));
+        const startDate = sorted[0];
+        const endDate = sorted[sorted.length - 1];
+        return {
+          label: group.label,
+          range: `${startDate}~${endDate}`
+        };
+      });
 
     // 월간: 년-월 형태로 그룹화
     const monthlyGroups = new Set<string>();
@@ -187,6 +210,7 @@ const Step1: React.FC<Step1Props> = ({
   // 필터 변경 핸들러 (useCallback으로 메모이제이션)
   const handleFilterChange = useCallback((newFilters: FilterState) => {
     setFilters(newFilters);
+    setCurrentRankingPage(1);
 
     // 실제 데이터가 있으면 필터 적용
     if (channelData.length > 0) {

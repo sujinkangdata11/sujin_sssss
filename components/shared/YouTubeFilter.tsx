@@ -8,7 +8,7 @@ export interface YouTubeFilterProps {
   channelList?: string[];
   availableDates?: {
     daily: string[];
-    weekly: string[];
+    weekly: { label: string; range: string }[];
     monthly: string[];
   };
   language: Language;
@@ -71,10 +71,17 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
   useEffect(() => {
     if (selectedPeriod === 'filterMonthly') {
       setSelectedDate('2025-09'); // 월간일 때는 9월로 설정
+    } else if (selectedPeriod === 'filterWeekly') {
+      const firstWeek = availableDates?.weekly?.[0];
+      if (firstWeek) {
+        setSelectedDate(firstWeek.range);
+      } else {
+        setSelectedDate('');
+      }
     } else {
       setSelectedDate(''); // 다른 기간은 빈 문자열로 리셋
     }
-  }, [selectedPeriod]);
+  }, [selectedPeriod, availableDates]);
 
   // 번역된 값들을 메모이제이션 (언어가 변경될 때만 재계산)
   const translatedValues = useMemo(() => ({
@@ -374,24 +381,11 @@ const YouTubeFilter: React.FC<YouTubeFilterProps> = ({ onFilterChange, channelLi
                   );
                 });
               } else if (selectedPeriod === 'filterWeekly') {
-                // 주간: 현재 날짜 기준으로 과거 주차만 표시
-                const today = new Date();
-                const currentDate = today.getDate();
-                const currentWeek = Math.ceil(currentDate / 7);
+                const weeklyDates = availableDates?.weekly || [];
 
-                const allWeeks = [
-                  { label: `${et('monthSeptember')} ${et('weekFirst')}`, range: '2025-09-01~2025-09-07', weekNumber: 1 },
-                  { label: `${et('monthSeptember')} ${et('weekSecond')}`, range: '2025-09-08~2025-09-15', weekNumber: 2 },
-                  { label: `${et('monthSeptember')} ${et('weekThird')}`, range: '2025-09-16~2025-09-22', weekNumber: 3 },
-                  { label: `${et('monthSeptember')} ${et('weekFourth')}`, range: '2025-09-23~2025-09-30', weekNumber: 4 }
-                ];
-
-                // 현재 주차까지만 필터링
-                const weeks = allWeeks.filter(week => week.weekNumber <= currentWeek);
-
-                weeks.forEach((week, i) => {
+                weeklyDates.forEach((week, i) => {
                   dates.push(
-                    <div key={i} onClick={() => setSelectedDate(week.range)} style={{
+                    <div key={`${week.label}-${i}`} onClick={() => setSelectedDate(week.range)} style={{
                       height: '40px', minHeight: '40px', maxHeight: '40px', display: 'flex',
                       alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: selectedDate === week.range ? '600' : '400',
                       backgroundColor: selectedDate === week.range ? 'rgba(124, 58, 237, 0.1)' : 'white',
