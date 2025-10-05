@@ -1446,7 +1446,7 @@ ${referenceContent}
   };
 
   // 디버깅: 렌더링시 현재 상태 출력
-  const currentHeight = currentStep === 5 ? '300vh' : (youtubeVideoId && currentStep === 1) ? '250vh' : '200vh';
+  const currentHeight = currentStep === 5 ? '300vh' : (youtubeVideoId && currentStep === 1) ? '250vh' : '210vh';
   console.log('🎯 [RENDER DEBUG] 렌더링시 youtubeVideoId:', youtubeVideoId, '| currentStep:', currentStep, '| 높이:', currentHeight);
 
   const handleTranslateScript = async ({ text, languageName }: { text: string; languageName: string; }) => {
