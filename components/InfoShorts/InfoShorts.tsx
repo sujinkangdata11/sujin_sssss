@@ -41,6 +41,9 @@ import Step5 from './steps/Step5';
 import Step6 from './steps/Step6';
 import Step7 from './steps/Step7';
 import FloatingNavigation from './components/FloatingNavigation';
+import { fetchChannelIds } from '../../utils/channelCsv';
+
+const INFO_CHANNEL_CSV_URL = new URL('../../pages/channel_ID/info_channel.csv', import.meta.url).href;
 
 // 텍스트 다운로드 및 복사 버튼 컴포넌트
 interface DownloadCopyButtonsProps {
@@ -129,6 +132,7 @@ const InfoShorts: React.FC<InfoShortsProps> = ({ language }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [previousStep, setPreviousStep] = useState(1);
   const [navigationDirection, setNavigationDirection] = useState<'next' | 'prev' | null>(null);
+  const [allowedChannelIds, setAllowedChannelIds] = useState<string[] | null>(null);
   
   // 커스텀 setCurrentStep 함수 - 방향 감지
   const handleStepChange = (newStep: number) => {
@@ -202,6 +206,33 @@ const InfoShorts: React.FC<InfoShortsProps> = ({ language }) => {
       setRequestedTimecode(null);
     }
   }, [youtubeUrlInput]);
+
+  useEffect(() => {
+    let isCancelled = false;
+    const controller = new AbortController();
+
+    const loadChannelIds = async () => {
+      try {
+        const ids = await fetchChannelIds(INFO_CHANNEL_CSV_URL, { signal: controller.signal });
+        if (!isCancelled) {
+          setAllowedChannelIds(ids);
+        }
+      } catch (error) {
+        if (controller.signal.aborted || isCancelled) {
+          return;
+        }
+        console.error('info_channel.csv 로드 실패:', error);
+        setAllowedChannelIds([]);
+      }
+    };
+
+    loadChannelIds();
+
+    return () => {
+      isCancelled = true;
+      controller.abort();
+    };
+  }, []);
   const [timecodeList, setTimecodeList] = useState(null);
   const [requestedTimecode, setRequestedTimecode] = useState(null);
   const [selectedMode, setSelectedMode] = useState(Object.keys(modes)[0]);
@@ -1505,6 +1536,7 @@ ${trimmedText}`;
             setRequestedTimecode={setRequestedTimecode}
             videoColumnRef={videoColumnRef}
             language={language}
+            allowedChannelIds={allowedChannelIds}
           />
         
         {/* Step 2: API Key Setup */}

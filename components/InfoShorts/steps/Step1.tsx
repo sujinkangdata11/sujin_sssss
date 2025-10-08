@@ -10,6 +10,81 @@ import { infoshortsChannels } from '../../../data/channels/infoshorts-channels';
 import { Language } from '../../../types';
 import { useExplorationTranslation } from '../../../i18n/explorationI18n';
 
+const extractAvailableDatesFromChannels = (channels: ListupChannelData[]) => {
+  const allDates = new Set<string>();
+
+  channels.forEach(channel => {
+    if (channel.recentThumbnailsHistory) {
+      channel.recentThumbnailsHistory.forEach(thumbnail => {
+        allDates.add(thumbnail.date);
+      });
+    }
+  });
+
+  const sortedDates = Array.from(allDates).sort((a, b) => b.localeCompare(a));
+
+  const daily = sortedDates;
+
+  const weeklyGroups = new Map<string, { label: string; dates: string[]; sortKey: string }>();
+  daily.forEach(date => {
+    const [yearStr, monthStr, dayStr] = date.split('-');
+    const year = parseInt(yearStr, 10);
+    const month = parseInt(monthStr, 10);
+    const day = parseInt(dayStr, 10);
+    const weekNum = Math.ceil(day / 7);
+    const weekKey = `${year}-${monthStr}-${weekNum}`;
+    const label = `${month}월 ${weekNum}주`;
+
+    if (!weeklyGroups.has(weekKey)) {
+      weeklyGroups.set(weekKey, { label, dates: [], sortKey: '' });
+    }
+
+    const group = weeklyGroups.get(weekKey);
+    if (group) {
+      group.dates.push(date);
+      const sortedForGroup = [...group.dates].sort((a, b) => a.localeCompare(b));
+      const startDate = sortedForGroup[0];
+      const endDate = sortedForGroup[sortedForGroup.length - 1];
+      group.sortKey = endDate;
+    }
+  });
+
+  const weekly = Array.from(weeklyGroups.values())
+    .sort((a, b) => b.sortKey.localeCompare(a.sortKey))
+    .slice(0, 4)
+    .map(group => {
+      const sorted = [...group.dates].sort((a, b) => a.localeCompare(b));
+      const startDate = sorted[0];
+      const endDate = sorted[sorted.length - 1];
+      return {
+        label: group.label,
+        range: `${startDate}~${endDate}`
+      };
+    });
+
+  const monthlyGroups = new Set<string>();
+  daily.forEach(date => {
+    const yearMonth = date.slice(0, 7);
+    const month = parseInt(yearMonth.split('-')[1]);
+    monthlyGroups.add(`${month}월`);
+  });
+  const monthly = Array.from(monthlyGroups);
+
+  return { daily, weekly, monthly };
+};
+
+const filterChannelsByIds = (channels: ListupChannelData[], allowedIds?: string[] | null) => {
+  if (!Array.isArray(allowedIds)) {
+    return channels;
+  }
+
+  if (allowedIds.length === 0) {
+    return [];
+  }
+
+  return channels.filter(channel => allowedIds.includes(channel.channelId));
+};
+
 interface Step1Props {
   currentStep: number;
   previousStep: number;
@@ -23,6 +98,7 @@ interface Step1Props {
   setRequestedTimecode: (timecode: number) => void;
   videoColumnRef: React.RefObject<HTMLDivElement>;
   language: Language;
+  allowedChannelIds?: string[] | null;
 }
 
 const Step1: React.FC<Step1Props> = ({
@@ -37,13 +113,18 @@ const Step1: React.FC<Step1Props> = ({
   timecodeList,
   setRequestedTimecode,
   videoColumnRef,
-  language
+  language,
+  allowedChannelIds
 }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [shouldRenderVideo, setShouldRenderVideo] = useState(false);
 
   // 🌍 다국어 번역 함수
   const et = useExplorationTranslation(language);
+  const filterAllLabel = et('filterAll');
+  const filterViewsLabel = et('filterViews');
+  const filterWorldwideLabel = et('filterWorldwide');
+  const filterMonthlyLabel = et('filterMonthly');
 
   // 필터 상태 관리 - 🌍 번역 키 기반 초기값
   const [filters, setFilters] = useState<FilterState>({
@@ -61,7 +142,7 @@ const Step1: React.FC<Step1Props> = ({
   // 실제 데이터 상태 관리
   const [channelData, setChannelData] = useState<ListupChannelData[]>([]);
   const [rankingData, setRankingData] = useState<RankingData[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [availableDates, setAvailableDates] = useState<{
     daily: string[];
     weekly: { label: string; range: string }[];
@@ -88,105 +169,68 @@ const Step1: React.FC<Step1Props> = ({
     isSkeleton: true // 스켈레톤 식별용 플래그
   } as RankingData));
 
-  // 실제 데이터에서 사용 가능한 날짜들 추출
-  const extractAvailableDates = (channels: ListupChannelData[]) => {
-    const allDates = new Set<string>();
-
-    channels.forEach(channel => {
-      if (channel.recentThumbnailsHistory) {
-        channel.recentThumbnailsHistory.forEach(thumbnail => {
-          allDates.add(thumbnail.date);
-        });
-      }
-    });
-
-    const sortedDates = Array.from(allDates).sort((a, b) => b.localeCompare(a)); // 최신순 정렬
-
-    // 일간: 실제 날짜들
-    const daily = sortedDates;
-
-    // 주간: 날짜들을 주별로 그룹화
-    const weeklyGroups = new Map<string, { label: string; dates: string[]; sortKey: string }>();
-    daily.forEach(date => {
-      const [yearStr, monthStr, dayStr] = date.split('-');
-      const year = parseInt(yearStr, 10);
-      const month = parseInt(monthStr, 10);
-      const day = parseInt(dayStr, 10);
-      const weekNum = Math.ceil(day / 7);
-      const weekKey = `${year}-${monthStr}-${weekNum}`;
-      const label = `${month}월 ${weekNum}주`;
-
-      if (!weeklyGroups.has(weekKey)) {
-        weeklyGroups.set(weekKey, { label, dates: [], sortKey: '' });
-      }
-
-      const group = weeklyGroups.get(weekKey);
-      if (group) {
-        group.dates.push(date);
-        const sortedDates = [...group.dates].sort((a, b) => a.localeCompare(b));
-        const startDate = sortedDates[0];
-        const endDate = sortedDates[sortedDates.length - 1];
-        group.sortKey = endDate;
-      }
-    });
-
-    const weekly = Array.from(weeklyGroups.values())
-      .sort((a, b) => b.sortKey.localeCompare(a.sortKey))
-      .slice(0, 4)
-      .map(group => {
-        const sorted = [...group.dates].sort((a, b) => a.localeCompare(b));
-        const startDate = sorted[0];
-        const endDate = sorted[sorted.length - 1];
-        return {
-          label: group.label,
-          range: `${startDate}~${endDate}`
-        };
-      });
-
-    // 월간: 년-월 형태로 그룹화
-    const monthlyGroups = new Set<string>();
-    daily.forEach(date => {
-      const yearMonth = date.slice(0, 7); // YYYY-MM
-      const month = parseInt(yearMonth.split('-')[1]);
-      monthlyGroups.add(`${month}월`);
-    });
-    const monthly = Array.from(monthlyGroups);
-
-    return { daily, weekly, monthly };
-  };
-
-  // 실제 채널 데이터 로드
-  const loadChannelData = async () => {
-    setIsLoading(true);
-    try {
-      const response = await listupService.getExplorationData();
-
-      if (response.success) {
-        setChannelData(response.data);
-
-        // 사용 가능한 날짜들 추출
-        const dates = extractAvailableDates(response.data);
-        setAvailableDates(dates);
-
-        // 초기 필터로 랭킹 데이터 생성 (기본 필터 값 사용) - 🌍 번역 키 기반
-        const initialFilter: FilterState = {
-          selectedCategory: et('filterAll'),
-          selectedCriteria: et('filterViews'),
-          selectedCountry: et('filterWorldwide'),
-          selectedPeriod: et('filterMonthly'),
-          selectedDate: '2025-09',
-          selectedChannel: et('filterAll')
-        };
-        updateRankingData(response.data, initialFilter);
-      } else {
-        setChannelData([]);
-      }
-    } catch (error) {
-      setChannelData([]);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    if (allowedChannelIds === null) {
+      return;
     }
-  };
+
+    let isCancelled = false;
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await listupService.getExplorationData();
+
+        if (isCancelled) {
+          return;
+        }
+
+        if (response.success) {
+          const filteredChannels = filterChannelsByIds(response.data, allowedChannelIds);
+
+          setChannelData(filteredChannels);
+
+          const dates = extractAvailableDatesFromChannels(filteredChannels);
+          setAvailableDates(dates);
+
+          const initialFilter: FilterState = {
+            selectedCategory: filterAllLabel,
+            selectedCriteria: filterViewsLabel,
+            selectedCountry: filterWorldwideLabel,
+            selectedPeriod: filterMonthlyLabel,
+            selectedDate: '2025-09',
+            selectedChannel: filterAllLabel
+          };
+
+          updateRankingData(filteredChannels, initialFilter);
+        } else {
+          setChannelData([]);
+          setRankingData([]);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setChannelData([]);
+          setRankingData([]);
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    allowedChannelIds,
+    filterAllLabel,
+    filterViewsLabel,
+    filterWorldwideLabel,
+    filterMonthlyLabel
+  ]);
 
   // 필터에 따른 랭킹 데이터 업데이트 (쇼츠메이커용)
   const updateRankingData = (data: ListupChannelData[], currentFilters: FilterState) => {
@@ -199,7 +243,7 @@ const Step1: React.FC<Step1Props> = ({
       channel: currentFilters.selectedChannel
     };
 
-    const availableChannels = channelData.map(channel =>
+    const availableChannels = data.map(channel =>
       channel.staticData?.title || channel.snapshots?.[0]?.title || ''
     ).filter(Boolean);
 
@@ -419,10 +463,6 @@ const Step1: React.FC<Step1Props> = ({
   ];
 
   // 컴포넌트 마운트 시 실제 데이터 로드
-  useEffect(() => {
-    loadChannelData();
-  }, []);
-
   useEffect(() => {
     if (youtubeVideoId) {
       // 비디오가 있을 때: 먼저 렌더링한 후 애니메이션 시작

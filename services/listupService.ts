@@ -77,7 +77,7 @@ class ListupService {
 
       // 2. API 호출 시도 (Cloudflare Workers)
       try {
-        const apiUrl = `${this.baseUrl}/api/channels?limit=600`;
+        const apiUrl = `${this.baseUrl}/api/channels?limit=700`;
         console.log('🚀 [DEBUG] API 호출 시작 - URL:', apiUrl);
 
         const response = await fetch(apiUrl, {

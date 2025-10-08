@@ -4,6 +4,7 @@ import { Language } from '../types';
 import { translations } from '../i18n/translations';
 import SEOHead from '../components/SEOHead';
 import InfoShorts from '../components/InfoShorts/InfoShorts';
+import StoryShorts from '../components/StoryShorts/StoryShorts';
 import YouTubeHoverPlayer from '../components/YouTubeHoverPlayer';
 
 interface ShortsmaKerProps {
@@ -146,7 +147,7 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
                 transition: 'all 0.2s ease'
               }}
             >
-              썸 쇼츠
+              썰 쇼츠
             </button>
           </div>
 
@@ -155,19 +156,12 @@ const ShortsmaKer: React.FC<ShortsmaKerProps> = ({ language }) => {
           }}>
             {/* Tab Content */}
             {activeTab === 'maker' ? (
-              <div className="coming-soon-container">
-                <div className="coming-soon-content">
-                  <h1 className="coming-soon-title">Coming Soon</h1>
-                  <p className="coming-soon-description">
-                    Powerful tools for creating amazing short videos are being developed.
-                    <br />
-                    Stay tuned for updates!
-                  </p>
-                </div>
+              <div className="info-shorts-container" style={{ width: '100%' }}>
+                <StoryShorts key="story-shorts" language={language} />
               </div>
             ) : (
               <div className="info-shorts-container" style={{ width: '100%' }}>
-                <InfoShorts language={language} />
+                <InfoShorts key="info-shorts" language={language} />
               </div>
             )}
           </main>
