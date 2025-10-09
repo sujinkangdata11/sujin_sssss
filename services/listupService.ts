@@ -152,6 +152,11 @@ class ListupService {
         // Listup 데이터를 ChannelFinder 형태로 변환
         const transformedData = this.transformListupDataToChannelFinder(result.data || []);
 
+        if (!transformedData || transformedData.length === 0) {
+          console.warn('⚠️ [WARNING] Listup API가 빈 데이터셋을 반환했습니다. 로컬 데이터로 폴백합니다.');
+          throw new Error('Listup API returned empty dataset');
+        }
+
         // 변환된 데이터를 캐시에 저장
         this.setCacheData('exploration_data', transformedData);
 
@@ -197,6 +202,11 @@ class ListupService {
 
           // Listup 데이터를 ChannelFinder 형태로 변환 (로컬은 channels 사용)
           const transformedData = this.transformListupDataToChannelFinder(result.channels || []);
+
+          if (!transformedData || transformedData.length === 0) {
+            console.warn('⚠️ [WARNING] 로컬 백업 데이터도 비어 있습니다.');
+            throw new Error('Local backup dataset is empty');
+          }
 
           // 변환된 데이터를 캐시에 저장
           this.setCacheData('exploration_data', transformedData);
